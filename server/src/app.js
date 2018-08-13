@@ -13,7 +13,7 @@ const expressValidator = require('express-validator')
 const flash = require('connect-flash')
 const index = require('./routes/index')
 
-const port = process.env.PORT || 8081
+const config = require('./config/config')
 
 app.use(morgan('combined'))
 app.use(cors())
@@ -94,10 +94,12 @@ passport.deserializeUser(function(id, done) {
 })
 
 // Connect to a local Mongo Database
-mongoose.connect('mongodb://localhost/vue-caffe')
-  .then(() => console.log('Database connected!'))
+mongoose.connect('mongodb://localhost:27017/vue-caffe', {useNewUrlParser: true})
+  .then(() => {
+    console.log('Database connected!')
+    // Start server
+    app.listen(config.port, function() {
+      console.log(`Listening on port: ${config.port}`)
+    })
+  })
   .catch((err) => console.error(err))
-
-app.listen(port, function() {
-  console.log(`Listening on port: ${port}`)
-})

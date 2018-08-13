@@ -15,9 +15,9 @@ export default new Router({
       redirect: '/'
     },
     {
-      path: '/page',
-      name: 'page',
-      component: require('@/components/Page').default
+      path: '/admin/home',
+      name: 'admin-home',
+      component: require('@/components/admin/Home').default
     }
   ]
 })

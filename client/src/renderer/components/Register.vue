@@ -1,7 +1,6 @@
 <template>
   <div class="home">
-    <h1>Home</h1>
-    <router-link to="page">page</router-link>
+    <h1>Register</h1>
       <input
         type="text"
         name="username"
@@ -17,7 +16,7 @@
         <br>
         <br>
         <input
-          type="password2"
+          type="password"
           name="password2"
           v-model="password2"
           placeholder="Confirm password" />
@@ -44,6 +43,9 @@ export default {
         password: this.password,
         password2: this.password2
       })
+      this.$router.push({
+        name: 'admin-home'
+      })
       console.log(response.data)
     },
     async login() {
@@ -57,5 +59,5 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 </style>
