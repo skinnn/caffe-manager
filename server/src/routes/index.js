@@ -6,56 +6,38 @@ const auth = require('../controllers/ensureAuthenticated')
 const dateHandler = require('../controllers/getDate')
 const fs = require('fs')
 const path = require('path')
+const AuthenticationController = require('../controllers/AuthenticationController')
+const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
 
-const Storage = require('../models/storage')
-const User = require('../models/user')
-const Article = require('../models/article')
-const Table = require('../models/table')
+const Storage = require('../models/Storage')
+const User = require('../models/User')
+const Article = require('../models/Article')
+const Table = require('../models/Table')
 const Order = require('../models/Order')
 const ReservedArticle = require('../models/ReservedArticle')
 
+// Time stamp
 router.use(function timeLog(req, res, next) {
   console.log('Route hit - Time: ', new Date().toJSON())
   next()
 })
 
-router.post('/login', function(req, res) {
-  res.send({
-    message: `Logged in: ${req.body.username}`
-  })
-})
+// User Login
+router.post('/login-user',
+  AuthenticationController.loginUser)
 
-// Register user
-router.post('/register', function(req, res) {
-  const username = req.body.username
-  const password = req.body.password
-  const password2 = req.body.password2
+// Admin Login
+router.post('/login-admin',
+  AuthenticationController.loginAdmin)
 
-  // Validation
-  req.checkBody('username', 'Username is required!').notEmpty()
-  req.checkBody('password', 'Password is required!').notEmpty()
-  req.checkBody('password2', 'Passwords do not match!').equals(req.body.password)
+// Register User
+router.post('/register-user',
+  AuthenticationControllerPolicy.register,
+  AuthenticationController.registerUser)
 
-  let errors = req.validationErrors()
-  if (errors) {
-    console.log(errors)
-  } else {
-    let newUser = new User({
-      username: username,
-      password: password
-    })
-    User.createUser(newUser, function(err, user) {
-      if (err) {
-        throw err
-      } else {
-        console.log(user)
-      }
-    })
-    // req.flash('success_msg', 'New user has been registered!')
-    res.send({
-      message: `Registered: ${req.body.username}`
-    })
-  }
-})
+// Register Admin
+router.post('/register-admin',
+  AuthenticationControllerPolicy.register,
+  AuthenticationController.registerAdmin)
 
 module.exports = router

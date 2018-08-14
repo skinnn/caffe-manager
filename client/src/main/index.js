@@ -10,6 +10,9 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
+// Icon path
+let iconPath = process.cwd() + '/static/logo/logomark.png'
+
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
@@ -20,9 +23,10 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 563,
+    height: 600,
     useContentSize: true,
-    width: 1000
+    width: 1000,
+    icon: iconPath
   })
 
   mainWindow.loadURL(winURL)

@@ -22,4 +22,4 @@ const TableSchema = new Schema({
   }
 }, { autoIndex: false })
 
-module.exports = mongoose.model('Table', TableSchema)
+let Table = module.exports = mongoose.model('Table', TableSchema)

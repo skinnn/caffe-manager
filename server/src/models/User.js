@@ -5,7 +5,8 @@ const bcrypt = require('bcryptjs')
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   password: {
     type: String,
@@ -26,12 +27,12 @@ const UserSchema = new Schema({
 
 })
 
-module.exports = mongoose.model('User', UserSchema)
+let User = module.exports = mongoose.model('User', UserSchema)
 
 module.exports.createUser = function(newUser, callback) {
   bcrypt.genSalt(10, function(err, salt) {
     if (err) {
-      console.log(err)
+      return console.log(err)
     }
     bcrypt.hash(newUser.password, salt, function(err, hash) {
       if (err) {
@@ -43,7 +44,6 @@ module.exports.createUser = function(newUser, callback) {
   })
 }
 
-/* eslint-disable */
 module.exports.getUserByUsername = function(username, callback) {
   let query = {username: username}
   User.findOne(query, callback)
@@ -53,10 +53,9 @@ module.exports.getUserById = function(id, callback) {
   User.findById(id, callback)
 }
 
-module.exports.comparePassword = function(candidatePassword, hash, callback) {
+module.exports.compareUserPassword = function(candidatePassword, hash, callback) {
   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-    if(err) throw err
+    if (err) throw err
     callback(null, isMatch)
   })
 }
-/* eslint-enable */

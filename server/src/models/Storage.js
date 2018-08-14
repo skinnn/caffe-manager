@@ -16,4 +16,4 @@ const StorageSchema = new Schema({
   }
 }, { autoIndex: false })
 
-module.exports = mongoose.model('Storage', StorageSchema)
+let Storage = module.exports = mongoose.model('Storage', StorageSchema)

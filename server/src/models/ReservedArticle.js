@@ -28,4 +28,4 @@ const reservedArticleSchema = new Schema({
 
 }, { autoIndex: false })
 
-module.exports = mongoose.model('reservedArticle', reservedArticleSchema)
+let reservedArticle = module.exports = mongoose.model('reservedArticle', reservedArticleSchema)

@@ -21,11 +21,11 @@ const OrderSchema = new Schema({
 
 }, { autoIndex: false })
 
+let Order = module.exports = mongoose.model('Order', OrderSchema)
+
 // Get Orders by Table IDs
 module.exports.getOrdersByTableIds = function(location, callback) {
   let query = {location: location}
   // eslint-disable-next-line
   Order.find(query, callback)
 }
-
-module.exports = mongoose.model('Order', OrderSchema)

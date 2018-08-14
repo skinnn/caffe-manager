@@ -8,8 +8,7 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
-const expressValidator = require('express-validator')
+// const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash')
 const index = require('./routes/index')
 
@@ -34,24 +33,6 @@ app.use(require('express-session')({
 app.use(passport.initialize())
 app.use(passport.session())
 
-// Express-validator
-app.use(expressValidator({
-  errorFormatter: function(param, msg, value) {
-    let namespace = param.split('.')
-    let root = namespace.shift()
-    let formParam = root
-
-    while (namespace.length) {
-      formParam += '[' + namespace.shift() + ']'
-    }
-    return {
-      param: formParam,
-      msg: msg,
-      value: value
-    }
-  }
-}))
-
 // Global Variables
 app.use(function(req, res, next) {
   res.locals.success_msg = req.flash('success_msg')
@@ -65,33 +46,33 @@ app.use(function(req, res, next) {
 app.use('/', index)
 
 // Passport config
-const User = require('./models/user')
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.getUserByUsername(username, function(err, user) {
-      if (err) throw err
-      if (!user) {
-        return done(null, false, {message: 'Unknown User'})
-      }
-      User.comparePassword(password, user.password, function(err, isMatch) {
-        if (err) throw err
-        if (isMatch) {
-          return done(null, user)
-        } else {
-          return done(null, false, {message: 'Invalid password'})
-        }
-      })
-    })
-  }))
-
-passport.serializeUser(function(user, done) {
-  done(null, user.id)
-})
-passport.deserializeUser(function(id, done) {
-  User.getUserById(id, function(err, user) {
-    done(err, user)
-  })
-})
+// const User = require('./models/user')
+// passport.use(new LocalStrategy(
+//   function(username, password, done) {
+//     User.getUserByUsername(username, function(err, user) {
+//       if (err) throw err
+//       if (!user) {
+//         return done(null, false, {message: 'Unknown User'})
+//       }
+//       User.comparePassword(password, user.password, function(err, isMatch) {
+//         if (err) throw err
+//         if (isMatch) {
+//           return done(null, user)
+//         } else {
+//           return done(null, false, {message: 'Invalid password'})
+//         }
+//       })
+//     })
+//   }))
+//
+// passport.serializeUser(function(user, done) {
+//   done(null, user.id)
+// })
+// passport.deserializeUser(function(id, done) {
+//   User.getUserById(id, function(err, user) {
+//     done(err, user)
+//   })
+// })
 
 // Connect to a local Mongo Database
 mongoose.connect('mongodb://localhost:27017/vue-caffe', {useNewUrlParser: true})
