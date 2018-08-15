@@ -9,10 +9,24 @@ module.exports = {
       const username = req.body.username
       const password = req.body.password
       const password2 = req.body.password2
+      const userMenu = [
+        {
+          'warehouse': req.body.userMenu.warehouse,
+          'title': 'Warehouse',
+          'icon': 'storage'
+        },
+        {
+          'tables': req.body.userMenu.tables,
+          'title': 'Tables',
+          'icon': 'tables'
+        }
+      ]
+      console.log(userMenu)
 
       const newUser = new User({
         username: username,
-        password: password
+        password: password,
+        userMenu: userMenu
       })
       await User.createUser(newUser, function(err, user) {
         if (err) {
@@ -23,7 +37,8 @@ module.exports = {
         } else {
           console.log(user)
           res.send({
-            user: user
+            user: user,
+            success: `You have successfully registered. ${user.username}`
           })
         }
       })

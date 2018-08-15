@@ -3,11 +3,15 @@ const Joi = require('joi')
 module.exports = {
   register(req, res, next) {
     const schema = {
-      username: Joi.string(),
+      username: Joi.string().required(),
       password: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{6,32}$')
-      ),
-      password2: Joi.any().valid(Joi.ref('password')).options({ language: { any: { allowOnly: 'must match password' } } }).label('Password Confirmation')
+      ).required(),
+      password2: Joi.any().valid(Joi.ref('password')).options({ language: { any: { allowOnly: 'must match password' } } }).label('Password Confirmation'),
+      userMenu: Joi.object().keys({
+        warehouse: Joi.boolean().required(),
+        tables: Joi.boolean().required()
+      })
     }
 
     const { error, value } = Joi.validate(req.body, schema)
@@ -29,6 +33,11 @@ module.exports = {
         case 'password2':
           res.status(400).send({
             error: 'Passwords do not match.'
+          })
+          break
+        case 'userMenu':
+          res.status(400).send({
+            error: `You must provide user with some permissions.`
           })
           break
         default:

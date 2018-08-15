@@ -7,6 +7,7 @@ const dateHandler = require('../controllers/getDate')
 const fs = require('fs')
 const path = require('path')
 const AuthenticationController = require('../controllers/AuthenticationController')
+const UserMenuController = require('../controllers/UserMenuController')
 const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
 
 const Storage = require('../models/Storage')
@@ -39,5 +40,9 @@ router.post('/user/register',
 router.post('/admin/register',
   AuthenticationControllerPolicy.register,
   AuthenticationController.registerAdmin)
+
+// Get User Home data
+router.get('/user/home',
+  UserMenuController.getUserMenu)
 
 module.exports = router

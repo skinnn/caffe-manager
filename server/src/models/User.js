@@ -16,6 +16,10 @@ const UserSchema = new Schema({
     type: String,
     default: ''
   },
+  userMenu: {
+    type: Array,
+    required: true
+  },
   date: {
     type: Date,
     default: Date.now

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-home">
+  <div class="user-tables">
     <user-side-menu />
   </div>
 </template>
@@ -25,6 +25,10 @@ export default {
 
   .list-title {
     font-size: 17px;
+  }
+
+  .active {
+
   }
 
 </style>

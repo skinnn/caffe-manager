@@ -6,10 +6,10 @@
           <v-toolbar-title class="toolbar-title">Register User</v-toolbar-title>
         </v-toolbar>
         <div class="register-page pl-4 pr-4 pb-3 pt-4">
-          <router-link to="admin/register">Admin Register</router-link>
-          <router-link to="admin/login">Admin Login</router-link>
-          <router-link to="user/register">User Register</router-link>
-          <router-link to="user/login">User Login</router-link>
+          <router-link to="/admin/register">Admin Register</router-link>
+          <router-link to="/admin/login">Admin Login</router-link>
+          <router-link to="/user/register" event="">User Register</router-link>
+          <router-link to="/">User Login</router-link>
           <v-text-field
             type="text"
             v-model="username"
@@ -28,6 +28,15 @@
               label="Confirm Password:"
               outline
               ></v-text-field>
+              <h3 class="mt-4">Permissions</h3>
+              <v-checkbox
+                :label="`Warehouse - ${userMenu.warehouse.toString()}`"
+                v-model="userMenu.warehouse"
+              ></v-checkbox>
+              <v-checkbox
+                :label="`Tables - ${userMenu.tables.toString()}`"
+                v-model="userMenu.tables"
+              ></v-checkbox>
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="succes-msg" v-if="success" v-html="success" />
@@ -54,7 +63,11 @@ export default {
       password: '',
       password2: '',
       error: null,
-      success: null
+      success: null,
+      userMenu: {
+        warehouse: false,
+        tables: false
+      }
     }
   },
   methods: {
@@ -63,7 +76,11 @@ export default {
         const response = await AuthenticationService.registerUser({
           username: this.username,
           password: this.password,
-          password2: this.password2
+          password2: this.password2,
+          userMenu: {
+            warehouse: this.userMenu.warehouse,
+            tables: this.userMenu.tables
+          }
         })
         this.success = `User <span style="color: blue; font-size:17px;">${this.username}</span>
          registered successfully.`
@@ -72,8 +89,8 @@ export default {
           this.$router.push({
             name: 'user-login'
           })
+          console.log(`User: ${response.data.user.username} has been registered successfully.`)
         }
-        console.log('Register successfull: ', response.data)
       } catch (error) {
         console.log(error)
         this.success = ''

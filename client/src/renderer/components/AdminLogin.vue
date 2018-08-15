@@ -3,13 +3,13 @@
     <v-flex xs6 offset-xs3>
       <div class="white elevation-5">
         <v-toolbar class="black toolbar" flat dense>
-          <v-toolbar-title class="toolbar-title">User Login</v-toolbar-title>
+          <v-toolbar-title class="toolbar-title">Admin Login</v-toolbar-title>
         </v-toolbar>
         <div class="register-page pl-4 pr-4 pb-3 pt-4">
           <router-link to="/admin/register">Admin Register</router-link>
-          <router-link to="/admin/login">Admin Login</router-link>
+          <router-link to="/admin/login" event="">Admin Login</router-link>
           <router-link to="/user/register">User Register</router-link>
-          <router-link to="/" event="">User Login</router-link>
+          <router-link to="/">User Login</router-link>
           <v-text-field
             type="text"
             v-model="username"
@@ -28,7 +28,7 @@
           <br>
           <v-btn class="green login-button"
             block
-            @click="loginUser">
+            @click="loginAdmin">
             Login
           </v-btn>
         </div>
@@ -51,15 +51,15 @@ export default {
     }
   },
   methods: {
-    async loginUser() {
+    async loginAdmin() {
       try {
-        const response = await AuthenticationService.loginUser({
+        const response = await AuthenticationService.loginAdmin({
           username: this.username,
           password: this.password
         })
-        if (response.data.user) {
+        if (response.data.admin) {
           this.$router.push({
-            name: 'user-home'
+            name: 'admin-home'
           })
         }
         console.log('Login successfull: ', response.data)

@@ -5,9 +5,10 @@ import Router from 'vue-router'
 const UserRegister = require('@/components/UserRegister').default
 const AdminRegister = require('@/components/admin/AdminRegister').default
 const UserLogin = require('@/components/UserLogin').default
-const AdminLogin = require('@/components/admin/AdminLogin').default
+const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
 const UserHome = require('@/components/user/UserHome').default
+const UserTables = require('@/components/user/UserTables').default
 
 Vue.use(Router)
 
@@ -15,8 +16,12 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: '/user-register',
-      component: UserRegister
+      name: 'user-login',
+      component: UserLogin
+    },
+    {
+      path: '*',
+      redirect: '/'
     },
     {
       path: '/admin/register',
@@ -24,13 +29,9 @@ export default new Router({
       component: AdminRegister
     },
     {
-      path: '*',
-      redirect: '/'
-    },
-    {
-      path: '/user/login',
-      name: 'user-login',
-      component: UserLogin
+      path: '/user/register',
+      name: 'user-register',
+      component: UserRegister
     },
     {
       path: '/admin/login',
@@ -46,6 +47,11 @@ export default new Router({
       path: '/user/home',
       name: 'user-home',
       component: UserHome
+    },
+    {
+      path: '/user/tables',
+      name: 'user-tables',
+      component: UserTables
     }
   ]
 })

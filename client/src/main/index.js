@@ -26,7 +26,10 @@ function createWindow() {
     height: 600,
     useContentSize: true,
     width: 1000,
-    icon: iconPath
+    icon: iconPath,
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
 
   mainWindow.loadURL(winURL)
