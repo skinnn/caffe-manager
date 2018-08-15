@@ -60,7 +60,7 @@ export default {
   methods: {
     async registerUser() {
       try {
-        await AuthenticationService.registerUser({
+        const response = await AuthenticationService.registerUser({
           username: this.username,
           password: this.password,
           password2: this.password2
@@ -68,9 +68,12 @@ export default {
         this.success = `User <span style="color: blue; font-size:17px;">${this.username}</span>
          registered successfully.`
         this.error = ''
-        // this.$router.push({
-        //   name: 'login'
-        // })
+        if (response.data.user) {
+          this.$router.push({
+            name: 'user-login'
+          })
+        }
+        console.log('Register successfull: ', response.data)
       } catch (error) {
         console.log(error)
         this.success = ''

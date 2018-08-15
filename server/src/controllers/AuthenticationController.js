@@ -22,7 +22,9 @@ module.exports = {
           })
         } else {
           console.log(user)
-          res.send(user.toJSON())
+          res.send({
+            user: user
+          })
         }
       })
     } catch (err) {
@@ -51,7 +53,9 @@ module.exports = {
           })
         } else {
           console.log(admin)
-          res.send(admin.toJSON())
+          res.send({
+            admin: admin
+          })
         }
       })
     } catch (err) {

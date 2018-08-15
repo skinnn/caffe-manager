@@ -62,7 +62,7 @@ export default {
             name: 'user-home'
           })
         }
-        console.log(response.data)
+        console.log('Login successfull: ', response.data)
       } catch (error) {
         console.log(error)
         this.success = ''
