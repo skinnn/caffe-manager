@@ -29,6 +29,8 @@ app.use(require('express-session')({
   saveUninitialized: true
 }))
 
+// Passport config
+require('./config/passport')(passport)
 // Passport middleware
 app.use(passport.initialize())
 app.use(passport.session())

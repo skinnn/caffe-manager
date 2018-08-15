@@ -26,8 +26,8 @@ module.exports = {
         }
       })
     } catch (err) {
-      res.status(400).send({
-        error: 'An error occurred.'
+      res.status(500).send({
+        error: 'An error has occurred trying to register the user.'
       })
     }
   },
@@ -55,53 +55,65 @@ module.exports = {
         }
       })
     } catch (err) {
-      res.status(400).send({
-        error: 'An error occurred.'
+      res.status(500).send({
+        error: 'An error has occurred trying to register the admin.'
       })
     }
   },
 
   // User Login
-  loginUser(req, res, next) {
-    passport.authenticate('local', function(err, user, info) {
-      if (err) {
-        return next(err)
-      }
-      if (!user) {
-        return res.send({
-          message: 'Log in authentication failed.'
-        })
-      }
-      req.logIn(user, function(err) {
+  async loginUser(req, res, next) {
+    try {
+      passport.authenticate('local', function(err, user, info) {
         if (err) {
           return next(err)
         }
-        return res.send({
-          message: `Logged in: ${user.username}`
+        if (!user) {
+          return res.status(403).send({
+            error: 'Login authentication has failed.'
+          })
+        }
+        req.logIn(user, function(err) {
+          if (err) {
+            return next(err)
+          }
+          return res.send({
+            user: user
+          })
         })
+      })(req, res, next)
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to log in.'
       })
-    })(req, res, next)
+    }
   },
 
   // Admin Login
-  loginAdmin(req, res, next) {
-    passport.authenticate('local', function(err, admin, info) {
-      if (err) {
-        return next(err)
-      }
-      if (!admin) {
-        return res.send({
-          message: 'Log in authentication failed.'
-        })
-      }
-      req.logIn(admin, function(err) {
+  async loginAdmin(req, res, next) {
+    try {
+      passport.authenticate('local', function(err, admin, info) {
         if (err) {
           return next(err)
         }
-        return res.send({
-          message: `Logged in: ${admin.username}`
+        if (!admin) {
+          return res.send({
+            error: 'Log in authentication failed.'
+          })
+        }
+        req.logIn(admin, function(err) {
+          if (err) {
+            return next(err)
+          }
+          return res.send({
+            success: `Logged in: ${admin.username}`
+          })
         })
+      })(req, res, next)
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to log in.'
       })
-    })(req, res, next)
+    }
   }
 }

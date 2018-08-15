@@ -3,10 +3,13 @@
     <v-flex xs6 offset-xs3>
       <div class="white elevation-5">
         <v-toolbar class="black toolbar" flat dense>
-          <v-toolbar-title class="toolbar-title">Register User</v-toolbar-title>
+          <v-toolbar-title class="toolbar-title">Register Admin</v-toolbar-title>
         </v-toolbar>
         <div class="register-page pl-4 pr-4 pb-3 pt-4">
-          <router-link to="register-admin">Register Admin</router-link>
+          <router-link to="admin/register">Admin Register</router-link>
+          <router-link to="admin/login">Admin Login</router-link>
+          <router-link to="user/register">User Register</router-link>
+          <router-link to="user/login">User Login</router-link>
           <v-text-field
             type="text"
             v-model="username"
@@ -31,7 +34,7 @@
           <br>
           <v-btn class="green register-button"
             block
-            @click="registerUser">
+            @click="registerAdmin">
             Register
           </v-btn>
         </div>
@@ -55,14 +58,14 @@ export default {
     }
   },
   methods: {
-    async registerUser() {
+    async registerAdmin() {
       try {
-        await AuthenticationService.registerUser({
+        await AuthenticationService.registerAdmin({
           username: this.username,
           password: this.password,
           password2: this.password2
         })
-        this.success = `User <span style="color: blue; font-size:17px;">${this.username}</span>
+        this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username}</span>
          registered successfully.`
         this.error = ''
         // this.$router.push({

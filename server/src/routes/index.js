@@ -23,20 +23,20 @@ router.use(function timeLog(req, res, next) {
 })
 
 // User Login
-router.post('/login-user',
+router.post('/user/login',
   AuthenticationController.loginUser)
 
 // Admin Login
-router.post('/login-admin',
+router.post('/admin/login',
   AuthenticationController.loginAdmin)
 
 // Register User
-router.post('/register-user',
+router.post('/user/register',
   AuthenticationControllerPolicy.register,
   AuthenticationController.registerUser)
 
 // Register Admin
-router.post('/register-admin',
+router.post('/admin/register',
   AuthenticationControllerPolicy.register,
   AuthenticationController.registerAdmin)
 

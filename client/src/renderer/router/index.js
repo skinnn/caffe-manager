@@ -2,10 +2,12 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // Components
-const RegisterUser = require('@/components/RegisterUser').default
-const Login = require('@/components/Login').default
-const AdminHome = require('@/components/admin/Home').default
-const RegisterAdmin = require('@/components/admin/RegisterAdmin').default
+const UserRegister = require('@/components/UserRegister').default
+const AdminRegister = require('@/components/admin/AdminRegister').default
+const UserLogin = require('@/components/UserLogin').default
+const AdminLogin = require('@/components/admin/AdminLogin').default
+const AdminHome = require('@/components/admin/AdminHome').default
+const UserHome = require('@/components/user/UserHome').default
 
 Vue.use(Router)
 
@@ -13,27 +15,37 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'register-user',
-      component: RegisterUser
+      name: '/user-register',
+      component: UserRegister
     },
     {
-      path: '/register-admin',
-      name: 'register-admin',
-      component: RegisterAdmin
+      path: '/admin/register',
+      name: 'admin-register',
+      component: AdminRegister
     },
     {
       path: '*',
       redirect: '/'
     },
     {
-      path: '/login',
-      name: 'login',
-      component: Login
+      path: '/user/login',
+      name: 'user-login',
+      component: UserLogin
+    },
+    {
+      path: '/admin/login',
+      name: 'admin-login',
+      component: AdminLogin
     },
     {
       path: '/admin/home',
       name: 'admin-home',
       component: AdminHome
+    },
+    {
+      path: '/user/home',
+      name: 'user-home',
+      component: UserHome
     }
   ]
 })
