@@ -14,12 +14,14 @@ module.exports = {
         {
           'warehouse': req.body.userMenu.warehouse,
           'title': 'Warehouse',
-          'icon': 'storage'
+          'icon': 'storage',
+          'route': '/user/warehouse'
         },
         {
           'tables': req.body.userMenu.tables,
           'title': 'Tables',
-          'icon': 'view_carousel'
+          'icon': 'view_carousel',
+          'route': '/user/tables'
         }
       ]
       console.log(userMenu)

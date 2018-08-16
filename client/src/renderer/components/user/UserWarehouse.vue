@@ -1,6 +1,6 @@
 <template>
-  <div class="user-tables">
-    <h2 class="title">Tables</h2>
+  <div class="user-warehouse">
+    <h2 class="title">Warehouse</h2>
     <user-side-menu />
   </div>
 </template>
@@ -13,7 +13,6 @@ export default {
     UserSideMenu
   },
   methods: {
-
   }
 }
 </script>

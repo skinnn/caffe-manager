@@ -4,13 +4,18 @@ module.exports = {
   // Get user menu
   async getUserMenu(req, res) {
     try {
-      const users = await User.find({}, function(err, users) {
+      let query = { username: 'user' }
+      const user = await User.findOne(query, function(err, user) {
         if (err) {
           console.log(err)
         } else {
-          res.send(users)
+          console.log(user)
+          res.send(user)
         }
       })
+      // console.log(req.user)
+      // const user = req.user
+      // res.send(user)
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to get the menu.'

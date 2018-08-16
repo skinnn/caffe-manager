@@ -9,6 +9,7 @@ const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
 const UserHome = require('@/components/user/UserHome').default
 const UserTables = require('@/components/user/UserTables').default
+const UserWarehouse = require('@/components/user/UserWarehouse').default
 
 Vue.use(Router)
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/user/tables',
       name: 'user-tables',
       component: UserTables
+    },
+    {
+      path: '/user/warehouse',
+      name: 'user-warehouse',
+      component: UserWarehouse
     }
   ]
 })

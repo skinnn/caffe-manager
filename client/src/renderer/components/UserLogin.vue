@@ -53,11 +53,11 @@ export default {
   methods: {
     async loginUser() {
       try {
-        const response = await AuthenticationService.loginUser({
+        const response = (await AuthenticationService.loginUser({
           username: this.username,
           password: this.password
-        })
-        if (response.data.user) {
+        })).data
+        if (response.user) {
           this.$router.push({
             name: 'user-home'
           })
