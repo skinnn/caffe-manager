@@ -12,6 +12,9 @@ export default {
   },
   loginAdmin(credentials) {
     return Api().post('admin/login', credentials)
+  },
+  logoutUser(credentials) {
+    return Api().get('user/logout', credentials)
   }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer permanent>
+    <v-navigation-drawer permanent fixed width="260">
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
@@ -14,10 +14,8 @@
 
       <v-divider></v-divider>
 
-      <v-list dense class="pt-0 blue">
+      <v-list class="pt-0 pb-0">
         <v-list-tile
-          color="white"
-          active-class="default-class my-class"
           v-for="item in this.userMenu"
           :key="item.title"
           @click=""
@@ -43,24 +41,53 @@ import UserMenuService from '@/services/UserMenuService'
 export default {
   data() {
     return {
+      user: null,
       users: [],
       userMenu: []
     }
   },
   methods: {
-    navigateTo() {
-      this.$router.push({
-        name: 'user-tables'
-      })
-    }
+    // navigateTo() {
+    //   this.$router.push({
+    //     name: 'user-tables'
+    //   })
+    // }
   },
   async mounted() {
     this.users = (await UserMenuService.getUserMenu()).data
     // TODO: Serve menu only from the user who is logged in
 
-    // Menu from the first user in the array
-    this.userMenu = this.users[0].userMenu
-    console.log(this.users[0].userMenu[0])
+    // if (this.user.userMenu[1].tables) {
+    //   let tables = this.user.userMenu[1]
+    //   this.userMenu.push(tables)
+    //   console.log('Tables: ', tables)
+    // }
+    //
+    // if (this.user.userMenu[0].warehouse) {
+    //   let warehouse = this.user.userMenu[0]
+    //   this.userMenu.push(warehouse)
+    //   console.log('Warehouse: ', warehouse)
+    // }
+
+    /*
+      Menu from the first user in the users array
+    */
+
+    // Push tables to the menu if there is permission
+    if (this.users[0].userMenu[1].tables) {
+      let tables = this.users[0].userMenu[1]
+      this.userMenu.push(tables)
+      // console.log('Tables: ', tables)
+    }
+
+    // Push warehouse to the menu if there is permission
+    if (this.users[0].userMenu[0].warehouse) {
+      let warehouse = this.users[0].userMenu[0]
+      this.userMenu.push(warehouse)
+      // console.log('Warehouse: ', warehouse)
+    }
+
+    console.log('Current menu is: ', this.userMenu)
   }
 }
 </script>

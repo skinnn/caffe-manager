@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Admin = require('../models/Admin')
 
 module.exports = {
+
   // User Register
   async registerUser(req, res) {
     try {
@@ -18,7 +19,7 @@ module.exports = {
         {
           'tables': req.body.userMenu.tables,
           'title': 'Tables',
-          'icon': 'tables'
+          'icon': 'view_carousel'
         }
       ]
       console.log(userMenu)
@@ -132,6 +133,20 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to log in.'
+      })
+    }
+  },
+
+  // User Logout
+  async logoutUser(req, res) {
+    try {
+      req.logout()
+      res.send({
+        success: 'You are logged out.'
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to logout.'
       })
     }
   }

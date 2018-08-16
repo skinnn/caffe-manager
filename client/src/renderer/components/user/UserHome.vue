@@ -1,6 +1,11 @@
 <template>
   <div class="user-home">
-    <user-side-menu />
+    <div>
+      <user-side-menu />
+    </div>
+    <v-btn class="logout-btn pink">
+      <router-link class="logout-link" to="/user/logout">Logout</router-link>
+    </v-btn>
   </div>
 </template>
 
@@ -25,6 +30,17 @@ export default {
 
   .list-title {
     font-size: 17px;
+  }
+
+  .logout-btn {
+    position: relative;
+    left: 90%;
+    z-index: 99;
+  }
+
+  .logout-link {
+    text-decoration: none;
+    color: white;
   }
 
 </style>

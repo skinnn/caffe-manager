@@ -27,6 +27,10 @@ router.use(function timeLog(req, res, next) {
 router.post('/user/login',
   AuthenticationController.loginUser)
 
+// User Logout
+router.get('/user/logout',
+  AuthenticationController.logoutUser)
+
 // Admin Login
 router.post('/admin/login',
   AuthenticationController.loginAdmin)

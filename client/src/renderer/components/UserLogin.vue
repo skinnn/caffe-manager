@@ -69,6 +69,14 @@ export default {
         this.error = error.response.data.error
       }
     }
+  },
+  async mounted() {
+    // TODO: Fire this only if user is logged in
+    let response = (await AuthenticationService.logoutUser()).data
+    this.success = response.success
+    setTimeout(() => {
+      this.success = null
+    }, 3000)
   }
 }
 </script>
