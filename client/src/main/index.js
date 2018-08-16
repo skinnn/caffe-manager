@@ -23,9 +23,11 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 600,
+    minHeight: 600,
+    minWidth: 1000,
+    title: 'Caffe Manager',
+    fullscreenable: true,
     useContentSize: true,
-    width: 1000,
     icon: iconPath,
     webPreferences: {
       nodeIntegration: true

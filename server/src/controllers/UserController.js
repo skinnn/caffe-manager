@@ -2,7 +2,7 @@ const User = require('../models/User')
 
 module.exports = {
   // Get user menu
-  async getUserMenu(req, res) {
+  async getUserHome(req, res) {
     try {
       let query = { username: 'user' }
       const user = await User.findOne(query, function(err, user) {

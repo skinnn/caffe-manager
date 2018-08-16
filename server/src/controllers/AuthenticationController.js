@@ -86,7 +86,7 @@ module.exports = {
   // User Login
   async loginUser(req, res, next) {
     try {
-      passport.authenticate('local', function(err, user, info) {
+      await passport.authenticate('local', function(err, user, info) {
         if (err) {
           return next(err)
         }
@@ -114,7 +114,7 @@ module.exports = {
   // Admin Login
   async loginAdmin(req, res, next) {
     try {
-      passport.authenticate('local', function(err, admin, info) {
+      await passport.authenticate('local', function(err, admin, info) {
         if (err) {
           return next(err)
         }
@@ -142,10 +142,12 @@ module.exports = {
   // User Logout
   async logoutUser(req, res) {
     try {
-      req.logout()
+      await req.logout()
+
       res.send({
-        success: 'You are logged out.'
+        loggedOutMessage: 'Logged out.'
       })
+      console.log('pap')
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to logout.'

@@ -6,7 +6,7 @@
           <v-list-tile>
             <v-list-tile-title class="title">
                 <v-icon>settings</v-icon>
-                User
+                {{ $store.state.user.username }}
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import UserMenuService from '@/services/UserMenuService'
+import UserService from '@/services/UserService'
 
 export default {
   data() {
@@ -51,21 +51,20 @@ export default {
     }
   },
   async mounted() {
-    const response = (await UserMenuService.getUserMenu()).data
-    // TODO: Serve menu only from the user who is logged in
-
+    const response = (await UserService.getUserHome()).data
     console.log(response)
+    // TODO: Serve menu only from the user who is logged in
 
     if (response.userMenu[1].tables) {
       let tables = response.userMenu[1]
       this.userMenu.push(tables)
-      console.log('Tables: ', tables)
+      // console.log('Tables: ', tables)
     }
 
     if (response.userMenu[0].warehouse) {
       let warehouse = response.userMenu[0]
       this.userMenu.push(warehouse)
-      console.log('Warehouse: ', warehouse)
+      // console.log('Warehouse: ', warehouse)
     }
 
     /*

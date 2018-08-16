@@ -1,7 +1,11 @@
 import Api from '@/services/Api'
 
 export default {
-  getUserMenu(credentials) {
+  getUserLoginPage(credentials) {
+    return Api().get('/', credentials)
+  },
+
+  getUserHome(credentials) {
     return Api().get('user/home', credentials)
   }
 }

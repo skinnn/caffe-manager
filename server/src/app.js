@@ -54,7 +54,7 @@ app.use('/', index)
 // })
 
 // Connect to a local Mongo Database
-mongoose.connect('mongodb://localhost:27017/vue-caffe', {useNewUrlParser: true})
+mongoose.connect(config.db.uri, { useNewUrlParser: true })
   .then(() => {
     console.log('Database connected!')
     // Start server

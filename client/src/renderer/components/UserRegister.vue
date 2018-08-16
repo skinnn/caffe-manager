@@ -10,33 +10,36 @@
           <router-link to="/admin/login">Admin Login</router-link>
           <router-link to="/user/register" event="">User Register</router-link>
           <router-link to="/">User Login</router-link>
-          <v-text-field
-            type="text"
-            v-model="username"
-            label="Username:"
-            outline
+          <form name="register-user-form" autocomplete="off">
+            <v-text-field
+              type="text"
+              v-model="username"
+              label="Username:"
+              outline
             ></v-text-field>
-          <v-text-field
-            type="password"
-            v-model="password"
-            label="Password:"
-            outline
+            <v-text-field
+              type="password"
+              v-model="password"
+              label="Password:"
+              outline
+              autocomplete="new-password"
             ></v-text-field>
             <v-text-field
               type="password"
               v-model="password2"
               label="Confirm Password:"
               outline
-              ></v-text-field>
-              <h3 class="mt-4">Permissions</h3>
-              <v-checkbox
-                :label="`Warehouse - ${userMenu.warehouse.toString()}`"
-                v-model="userMenu.warehouse"
-              ></v-checkbox>
-              <v-checkbox
-                :label="`Tables - ${userMenu.tables.toString()}`"
-                v-model="userMenu.tables"
-              ></v-checkbox>
+            ></v-text-field>
+            <h3 class="mt-4">Permissions</h3>
+            <v-checkbox
+              :label="`Warehouse - ${userMenu.warehouse.toString()}`"
+              v-model="userMenu.warehouse"
+            ></v-checkbox>
+            <v-checkbox
+              :label="`Tables - ${userMenu.tables.toString()}`"
+              v-model="userMenu.tables"
+            ></v-checkbox>
+          </form>
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="succes-msg" v-if="success" v-html="success" />
@@ -73,7 +76,7 @@ export default {
   methods: {
     async registerUser() {
       try {
-        const response = await AuthenticationService.registerUser({
+        const response = (await AuthenticationService.registerUser({
           username: this.username,
           password: this.password,
           password2: this.password2,
@@ -81,20 +84,20 @@ export default {
             warehouse: this.userMenu.warehouse,
             tables: this.userMenu.tables
           }
-        })
+        })).data
         this.success = `User <span style="color: blue; font-size:17px;">${this.username}</span>
          registered successfully.`
         this.error = ''
-        if (response.data.user) {
+        if (response.user) {
           this.$router.push({
             name: 'user-login'
           })
-          console.log(`User: ${response.data.user.username} has been registered successfully.`)
+          console.log(`User: ${response.user.username} has been registered successfully.`)
         }
       } catch (error) {
         console.log(error)
         this.success = ''
-        this.error = error.response.data.error
+        this.error = error.response.error
       }
     }
   }

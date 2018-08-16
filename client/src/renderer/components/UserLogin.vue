@@ -57,12 +57,16 @@ export default {
           username: this.username,
           password: this.password
         })).data
+        // Navigate to user home page
         if (response.user) {
           this.$router.push({
             name: 'user-home'
           })
+          // Set user in the vuex store
+          this.$store.dispatch('setUser', response.user)
         }
-        console.log('Login successfull: ', response.data)
+
+        console.log('Login successfull: ', response.user.username)
       } catch (error) {
         console.log(error)
         this.success = null
@@ -72,11 +76,12 @@ export default {
   },
   async mounted() {
     // TODO: Fire this only if user is logged in
-    let response = (await AuthenticationService.logoutUser()).data
-    this.success = response.success
-    setTimeout(() => {
-      this.success = null
-    }, 3000)
+    if (!this.$store.state.isUserLoggedIn) {
+      this.success = 'You are logged out.'
+      setTimeout(() => {
+        this.success = null
+      }, 3000)
+    }
   }
 }
 </script>
