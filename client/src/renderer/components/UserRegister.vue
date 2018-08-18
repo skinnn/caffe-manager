@@ -6,10 +6,10 @@
           <v-toolbar-title class="toolbar-title">Register User</v-toolbar-title>
         </v-toolbar>
         <div class="register-page pl-4 pr-4 pb-3 pt-4">
-          <router-link to="/admin/register">Admin Register</router-link>
-          <router-link to="/admin/login">Admin Login</router-link>
-          <router-link to="/user/register" event="">User Register</router-link>
-          <router-link to="/">User Login</router-link>
+          <router-link to="/admin/register"><v-btn color="blue">Admin Register</v-btn></router-link>
+          <router-link to="/admin/login"><v-btn color="blue">Admin Login</v-btn></router-link>
+          <router-link to="/user/register" event=""><v-btn color="blue">User Register</v-btn></router-link>
+          <router-link to="/"><v-btn color="blue">User Login</v-btn></router-link>
           <form name="register-user-form" autocomplete="off">
             <v-text-field
               type="text"
@@ -30,6 +30,7 @@
               label="Confirm Password:"
               outline
             ></v-text-field>
+
             <h3 class="mt-4">Permissions</h3>
             <v-checkbox
               :label="`Warehouse - ${userMenu.warehouse.toString()}`"
@@ -68,6 +69,7 @@ export default {
       error: null,
       success: null,
       userMenu: {
+        home: true, // Default is that all users have home page
         warehouse: false,
         tables: false
       }
@@ -81,6 +83,7 @@ export default {
           password: this.password,
           password2: this.password2,
           userMenu: {
+            home: this.userMenu.home,
             warehouse: this.userMenu.warehouse,
             tables: this.userMenu.tables
           }

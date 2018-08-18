@@ -36,12 +36,10 @@
 </template>
 
 <script>
-import UserService from '@/services/UserService'
 
 export default {
   data() {
     return {
-      user: null,
       userMenu: []
     }
   },
@@ -50,40 +48,28 @@ export default {
       this.$router.push(route)
     }
   },
-  async mounted() {
-    const response = (await UserService.getUserHome()).data
-    console.log(response)
-    // TODO: Serve menu only from the user who is logged in
+  mounted() {
+    const loggedInUser = this.$store.state.user
 
-    if (response.userMenu[1].tables) {
-      let tables = response.userMenu[1]
-      this.userMenu.push(tables)
-      // console.log('Tables: ', tables)
+    if (this.$store.state.isUserLoggedIn === true) {
+      // Add home to the menu by default
+      const home = loggedInUser.userMenu[2]
+      this.userMenu.push(home)
+
+      // If permission is granted add tables to the menu
+      if (loggedInUser.userMenu[1].tables) {
+        const tables = loggedInUser.userMenu[1]
+        this.userMenu.push(tables)
+      }
+
+      // If permission is granted add warehouse to the menu
+      if (loggedInUser.userMenu[0].warehouse) {
+        const warehouse = loggedInUser.userMenu[0]
+        this.userMenu.push(warehouse)
+      }
     }
 
-    if (response.userMenu[0].warehouse) {
-      let warehouse = response.userMenu[0]
-      this.userMenu.push(warehouse)
-      // console.log('Warehouse: ', warehouse)
-    }
-
-    /*
-      Menu from the first user in the users array
-    */
-
-    // Push tables to the menu if there is permission
-    // if (this.users[0].userMenu[1].tables) {
-    //   let tables = this.users[0].userMenu[1]
-    //   this.userMenu.push(tables)
-    // }
-
-    // Push warehouse to the menu if there is permission
-    // if (this.users[0].userMenu[0].warehouse) {
-    //   let warehouse = this.users[0].userMenu[0]
-    //   this.userMenu.push(warehouse)
-    // }
-
-    console.log('Current menu is: ', this.userMenu)
+    // console.log('Current menu is: ', this.userMenu)
   }
 }
 </script>

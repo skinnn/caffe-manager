@@ -9,6 +9,7 @@ module.exports = {
       ).required(),
       password2: Joi.any().valid(Joi.ref('password')).options({ language: { any: { allowOnly: 'must match password' } } }).label('Password Confirmation'),
       userMenu: Joi.object().keys({
+        home: Joi.boolean().required(),
         warehouse: Joi.boolean().required(),
         tables: Joi.boolean().required()
       })

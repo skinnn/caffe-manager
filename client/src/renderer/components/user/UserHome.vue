@@ -4,7 +4,7 @@
       <user-side-menu />
     </div>
       <v-layout column class="blue right-side">
-        <v-flex class="yellow">
+        <v-flex>
           <div class="user-header">
               <h1 class="heading">Home</h1>
               <v-btn @click="logoutUser" class="logout-btn pink">
@@ -48,8 +48,8 @@ export default {
       try {
         const response = (await AuthenticationService.logoutUser()).data
 
-        if (response.loggedOutMessage) {
-          // Set isLoggedIn state to false
+        if (response.user === false) {
+          // Set user and isLoggedIn states to false
           this.$store.dispatch('setUser', null)
           // Redirect to user login page
           this.$router.push({
@@ -86,6 +86,8 @@ export default {
 
   .user-container {
     height: 100%;
+    width: 100%;
+    margin-left: 5%;
   }
 
   .right-side {
@@ -102,10 +104,6 @@ export default {
     left: 90%;
     top: 6%;
     z-index: 99;
-  }
-
-  .logout-link {
-    text-decoration: none;
     color: white;
   }
 

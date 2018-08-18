@@ -10,6 +10,7 @@ module.exports = {
       const username = req.body.username
       const password = req.body.password
       const password2 = req.body.password2
+      // Create user menu
       const userMenu = [
         {
           'warehouse': req.body.userMenu.warehouse,
@@ -22,6 +23,12 @@ module.exports = {
           'title': 'Tables',
           'icon': 'view_carousel',
           'route': '/user/tables'
+        },
+        {
+          'home': req.body.userMenu.home,
+          'title': 'Home',
+          'icon': 'home',
+          'route': '/user/home'
         }
       ]
       console.log(userMenu)
@@ -145,9 +152,9 @@ module.exports = {
       await req.logout()
 
       res.send({
+        user: false,
         loggedOutMessage: 'Logged out.'
       })
-      console.log('pap')
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to logout.'

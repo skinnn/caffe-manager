@@ -9,7 +9,8 @@ const path = require('path')
 
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
-const UserController = require('../controllers/UserController')
+
+// Policies
 const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
 // const ensureAuthenticated = require('../controllers/ensureAuthenticated')
 
@@ -48,9 +49,5 @@ router.post('/user/register',
 router.post('/admin/register',
   AuthenticationControllerPolicy.register,
   AuthenticationController.registerAdmin)
-
-// Get User Home data
-router.get('/user/home',
-  UserController.getUserHome)
 
 module.exports = router
