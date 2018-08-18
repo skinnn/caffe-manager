@@ -4,7 +4,7 @@
       <v-list>
         <v-list-tile>
           <v-list-tile-title class="title">
-            Caffe Manager - Admin Menu
+            {{ this.$store.state.admin.username }}
           </v-list-tile-title>
         </v-list-tile>
       </v-list>
@@ -13,17 +13,23 @@
     <v-divider></v-divider>
 
     <v-list dense class="pt-0">
-      <v-list-tile
-        v-for="item in items"
-        :key="item.title"
-        @click=""
-      >
+      <v-list-tile>
         <v-list-tile-action>
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-icon>home</v-icon>
         </v-list-tile-action>
 
         <v-list-tile-content>
-          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          <v-list-tile-title>Home</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+
+      <v-list-tile>
+        <v-list-tile-action>
+          <v-icon>storage</v-icon>
+        </v-list-tile-action>
+
+        <v-list-tile-content>
+          <v-list-tile-title>Warehouse</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list>
@@ -32,6 +38,9 @@
 
 <script>
 export default {
+  mounted() {
+
+  }
 }
 </script>
 

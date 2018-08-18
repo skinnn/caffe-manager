@@ -60,17 +60,21 @@ export default {
   methods: {
     async registerAdmin() {
       try {
-        await AuthenticationService.registerAdmin({
+        const response = (await AuthenticationService.registerAdmin({
           username: this.username,
           password: this.password,
           password2: this.password2
-        })
+        })).data
         this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username}</span>
          registered successfully.`
         this.error = ''
-        // this.$router.push({
-        //   name: 'login'
-        // })
+        // If registering was successfull redirect to admin login page
+        if (response.admin) {
+          this.$router.push({
+            name: 'admin-login'
+          })
+          // console.log(`Admin: ${response.admin.username} has been registered successfully.`)
+        }
       } catch (error) {
         console.log(error)
         this.success = ''

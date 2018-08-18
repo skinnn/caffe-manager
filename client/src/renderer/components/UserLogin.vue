@@ -66,7 +66,7 @@ export default {
           this.$store.dispatch('setUser', response.user)
         }
 
-        console.log('Login successfull: ', response.user.username)
+        // console.log('Login successfull: ', response.user.username)
       } catch (error) {
         console.log(error)
         this.success = null
@@ -75,9 +75,9 @@ export default {
     }
   },
   async mounted() {
-    // TODO: Fire this only if user is logged in
-    if (!this.$store.state.isUserLoggedIn) {
-      this.success = 'You are logged out.'
+    // TODO: Fire this only if logout was clicked
+    if (!this.$store.state.isUserLoggedIn && !this.$store.state.isAdminLoggedIn) {
+      this.success = 'Logged out.'
       setTimeout(() => {
         this.success = null
       }, 3000)

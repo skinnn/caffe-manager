@@ -40,14 +40,18 @@ router.get('/user/logout',
 router.post('/admin/login',
   AuthenticationController.loginAdmin)
 
+// Admin Logout
+router.get('/admin/logout',
+  AuthenticationController.logoutAdmin)
+
 // Register User
 router.post('/user/register',
-  AuthenticationControllerPolicy.register,
+  AuthenticationControllerPolicy.registerUser,
   AuthenticationController.registerUser)
 
 // Register Admin
 router.post('/admin/register',
-  AuthenticationControllerPolicy.register,
+  AuthenticationControllerPolicy.registerAdmin,
   AuthenticationController.registerAdmin)
 
 module.exports = router

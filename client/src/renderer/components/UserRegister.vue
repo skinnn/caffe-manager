@@ -91,11 +91,12 @@ export default {
         this.success = `User <span style="color: blue; font-size:17px;">${this.username}</span>
          registered successfully.`
         this.error = ''
+        // If registering was successfull redirect to user login page
         if (response.user) {
           this.$router.push({
             name: 'user-login'
           })
-          console.log(`User: ${response.user.username} has been registered successfully.`)
+          // console.log(`User: ${response.user.username} has been registered successfully.`)
         }
       } catch (error) {
         console.log(error)

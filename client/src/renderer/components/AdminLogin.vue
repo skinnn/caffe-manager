@@ -53,21 +53,33 @@ export default {
   methods: {
     async loginAdmin() {
       try {
-        const response = await AuthenticationService.loginAdmin({
+        const response = (await AuthenticationService.loginAdmin({
           username: this.username,
           password: this.password
-        })
-        if (response.data.admin) {
+        })).data
+        if (response.admin) {
           this.$router.push({
             name: 'admin-home'
           })
+          // Set admin in the vuex store
+          this.$store.dispatch('setAdmin', response.admin)
         }
-        console.log('Login successfull: ', response.data)
+
+        // console.log('Login successfull: ', response.admin.username)
       } catch (error) {
         console.log(error)
         this.success = null
         this.error = error.response.data.error
       }
+    }
+  },
+  mounted() {
+    // TODO: Fire this only if logout was clicked
+    if (!this.$store.state.isAdminLoggedIn && !this.$store.state.isAdminLoggedIn) {
+      this.success = 'Logged out.'
+      setTimeout(() => {
+        this.success = null
+      }, 3000)
     }
   }
 }

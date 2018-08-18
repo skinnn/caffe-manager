@@ -77,9 +77,9 @@ module.exports = {
             error: 'This username is already in use.'
           })
         } else {
-          console.log(admin)
           res.send({
-            admin: admin
+            admin: admin,
+            success: `You have successfully registered. ${admin.username}`
           })
         }
       })
@@ -93,7 +93,7 @@ module.exports = {
   // User Login
   async loginUser(req, res, next) {
     try {
-      await passport.authenticate('local', function(err, user, info) {
+      await passport.authenticate('user', function(err, user, info) {
         if (err) {
           return next(err)
         }
@@ -121,21 +121,22 @@ module.exports = {
   // Admin Login
   async loginAdmin(req, res, next) {
     try {
-      await passport.authenticate('local', function(err, admin, info) {
+      await passport.authenticate('admin', function(err, user, info) {
         if (err) {
           return next(err)
         }
-        if (!admin) {
-          return res.send({
+        if (!user) {
+          return res.status(403).send({
             error: 'Log in authentication failed.'
           })
         }
-        req.logIn(admin, function(err) {
+        req.logIn(user, function(err) {
           if (err) {
             return next(err)
           }
           return res.send({
-            success: `Logged in: ${admin.username}`
+            admin: user,
+            success: `Logged in: ${user.username}`
           })
         })
       })(req, res, next)
@@ -160,5 +161,22 @@ module.exports = {
         error: 'An error has occurred trying to logout.'
       })
     }
+  },
+
+  // Admin Logout
+  async logoutAdmin(req, res) {
+    try {
+      await req.logout()
+
+      res.send({
+        admin: false,
+        loggedOutMessage: 'Logged out.'
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to logout.'
+      })
+    }
   }
-}
+
+} /* Module exports */
