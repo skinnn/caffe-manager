@@ -1,42 +1,42 @@
 <template>
-  <div class="user-home">
+  <div class="admin-warehouse">
     <div>
-      <user-side-menu />
+      <admin-side-menu />
     </div>
-    <v-layout column class="blue right-side">
-      <v-flex>
-        <div class="user-header">
-            <h1 class="heading">Tables</h1>
-            <v-btn @click="logoutUser" class="logout-btn pink">
-              Logout
-            </v-btn>
-        </div>
-      </v-flex>
+      <v-layout column class="blue right-side">
+        <v-flex>
+          <div class="admin-header">
+              <h1 class="heading">Warehouse</h1>
+              <v-btn @click="logoutAdmin" class="logout-btn pink">
+                Logout
+              </v-btn>
+          </div>
+        </v-flex>
 
-      <v-flex class="user-container">
-        <!-- Display messages -->
-        <div class="error-msg" v-if="error" v-html="error" />
-        <div class="succes-msg" v-if="success" v-html="success" />
+        <v-flex class="admin-container">
+          <!-- Display messages -->
+          <div class="error-msg" v-if="error" v-html="error" />
+          <div class="succes-msg" v-if="success" v-html="success" />
 
-        <!-- Should list the tables for currently logged user -->
-        <p>Table 1</p>
-        <p>Table 2</p>
-        <p>Table 3</p>
-        <p>Table 4</p>
-        <p>Table 5</p>
-        <p>Table 6</p>
-      </v-flex>
-    </v-layout>
+          <!-- Should list the storages from the db -->
+          <p>Storage 1</p>
+          <p>Storage 2</p>
+          <p>Storage 3</p>
+          <p>Storage 4</p>
+          <p>Storage 5</p>
+          <p>Storage 6</p>
+        </v-flex>
+      </v-layout>
   </div>
 </template>
 
 <script>
-import UserSideMenu from '@/components/user/UserSideMenu'
+import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
 
 export default {
   components: {
-    UserSideMenu
+    AdminSideMenu
   },
   data() {
     return {
@@ -45,16 +45,16 @@ export default {
     }
   },
   methods: {
-    async logoutUser() {
+    async logoutAdmin() {
       try {
-        const response = (await AuthenticationService.logoutUser()).data
+        const response = (await AuthenticationService.logoutAdmin()).data
 
         if (response.loggedOutMessage) {
-          // Set user and isLoggedIn states to false
-          this.$store.dispatch('setUser', null)
-          // Redirect to user login page
+          // Set admin and isLoggedIn state to false
+          this.$store.dispatch('setAdmin', null)
+          // Redirect to admin login page
           this.$router.push({
-            name: 'user-login'
+            name: 'admin-login'
           })
         }
       } catch (error) {
@@ -69,7 +69,7 @@ export default {
 
 <style scoped>
 
-  .user-header {
+  .admin-header {
     position: fixed;
     min-height: 100px;
     width: 100%;
@@ -85,7 +85,7 @@ export default {
     font-size: 31px;
   }
 
-  .user-container {
+  .admin-container {
     height: 100%;
     width: 100%;
     margin-left: 5%;

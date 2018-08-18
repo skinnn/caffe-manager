@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer permanent fixed width="260">
+    <v-navigation-drawer stateless permanent fixed width="260">
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
