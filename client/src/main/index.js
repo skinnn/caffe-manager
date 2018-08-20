@@ -23,21 +23,32 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    minHeight: 600,
-    minWidth: 1000,
-    title: 'Caffe Manager',
-    fullscreenable: true,
+    minHeight: 650,
+    minWidth: 1100,
+    center: true,
     useContentSize: true,
+    // fullscreen: true,
     icon: iconPath,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    title: 'Caffe Manager'
   })
 
   mainWindow.loadURL(winURL)
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  mainWindow.on('close', function(e) {
+    // Prompt the user before quitting with yes or no
+    var choice = require('electron').dialog.showMessageBox(this,
+      {
+        type: 'question',
+        buttons: ['Yes', 'No'],
+        title: 'Confirm',
+        message: 'Are you sure you want to quit?'
+      })
+    if (choice === 1) {
+      e.preventDefault()
+    }
   })
 }
 
