@@ -19,7 +19,6 @@
 
         <!-- List of all admins in the db -->
         <div class="list-of-admins">
-          <!-- Admin list -->
           <v-list two-line>
             <v-list-tile
                 v-for="admin in this.admins"

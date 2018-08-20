@@ -18,6 +18,7 @@ const AdminAdminList = require('@/components/admin/AdminAdminList').default
 const AdminUserList = require('@/components/admin/AdminUserList').default
 const AdminViewAdmin = require('@/components/admin/AdminViewAdmin').default
 const AdminEditAdmin = require('@/components/admin/AdminEditAdmin').default
+const AdminViewUser = require('@/components/admin/AdminViewUser').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
 
 Vue.use(Router)
@@ -94,6 +95,11 @@ export default new Router({
       path: '/admin/:adminId',
       name: 'admin-view-admin',
       component: AdminViewAdmin
+    },
+    {
+      path: '/admin/:userId',
+      name: 'admin-view-user',
+      component: AdminViewUser
     },
     {
       path: '/admin/taxes',

@@ -18,13 +18,27 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <!-- Should list all the tables by their owners/users -->
-        <p>User 1</p>
-        <p>User 2</p>
-        <p>User 3</p>
-        <p>User 4</p>
-        <p>User 5</p>
-        <p>User 6</p>
+        <!-- List of all users in the db -->
+        <div class="list-of-users">
+          <v-list two-line>
+            <v-list-tile
+                v-for="user in this.users"
+                :key="user._id"
+                @click="viewUser(user._id)"
+            >
+
+              <v-list-tile-action>
+                  <v-icon>people</v-icon>
+                </v-list-tile-action>
+
+                <v-list-tile-content>
+                  <v-list-tile-title>{{user.username}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{user.name}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </div>
+
       </v-flex>
     </v-layout>
   </div>
@@ -33,6 +47,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
+import AdminService from '@/services/AdminService'
 
 export default {
   components: {
@@ -40,8 +55,27 @@ export default {
   },
   data() {
     return {
+      users: [],
       error: null,
       success: null
+    }
+  },
+  async mounted() {
+    try {
+      const response = (await AdminService.getAllUsers()).data
+
+      // Get User list
+      if (response.users) {
+        const users = this.users
+        // Add user in the users array
+        response.users.forEach(function(user) {
+          users.push(user)
+        })
+      }
+    } catch (error) {
+      this.success = null
+      this.error = error.response.data.error
+      console.log(error)
     }
   },
   methods: {
@@ -62,6 +96,9 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
+    },
+    viewUser(userId) {
+      this.$router.push({name: 'admin-view-user', params: {userId}})
     }
   }
 }
@@ -71,6 +108,10 @@ export default {
 
   .list-title {
     font-size: 17px;
+  }
+
+  .list-of-users {
+    width: 100%;
   }
 
   .logout-btn {

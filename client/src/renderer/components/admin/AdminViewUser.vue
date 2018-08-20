@@ -7,8 +7,8 @@
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">
-              Admin: {{admin.name}}
-              <v-btn @click="editAdmin(admin._id)" class="yellow">
+              User: {{user.name}}
+              <v-btn @click="editUser(user._id)" class="yellow">
                 Edit
               </v-btn>
             </h1>
@@ -24,9 +24,9 @@
         <div class="success-msg" v-if="success" v-html="success" />
 
         <div class="admin-info">
-          <p>Username: {{admin.username}}</p>
-          <p>ID: {{admin._id}}</p>
-          <p>Full name: {{admin.name}}</p>
+          <p>Username: {{user.username}}</p>
+          <p>ID: {{user._id}}</p>
+          <p>Full name: {{user.name}}</p>
         </div>
 
       </v-flex>
@@ -45,18 +45,18 @@ export default {
   },
   data() {
     return {
-      admin: {},
+      user: {},
       error: null,
       success: null
     }
   },
   async mounted() {
     try {
-      const adminId = this.$store.state.route.params.adminId
-      const response = (await AdminService.getAdminById(adminId)).data
+      const userId = this.$store.state.route.params.userId
+      const response = (await AdminService.getUserById(userId)).data
 
-      if (response.admin) {
-        this.admin = response.admin
+      if (response.user) {
+        this.user = response.user
       }
     } catch (error) {
       this.success = null
@@ -82,8 +82,8 @@ export default {
         this.error = error.response.data.error
       }
     },
-    editAdmin(adminId) {
-      this.$router.push({name: 'admin-edit-admin', params: {adminId}})
+    editUser(userId) {
+      this.$router.push({name: 'admin-edit-user', params: {userId}})
     }
   }
 }

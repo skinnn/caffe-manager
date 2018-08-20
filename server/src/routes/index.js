@@ -10,6 +10,7 @@ const path = require('path')
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
 const AdminController = require('../controllers/AdminController')
+// const UserController = require('../controllers/UserController')
 
 // Policies
 const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
@@ -20,6 +21,10 @@ router.use(function timeLog(req, res, next) {
   console.log('Route hit - Time: ', new Date().toJSON())
   next()
 })
+
+// Get all users
+router.get('/admin/users',
+  AdminController.getAllUsers)
 
 // User Login
 router.post('/user/login',
@@ -58,5 +63,9 @@ router.get('/admin/:adminId',
 // Save Admin
 router.put('/admin/:adminId',
   AdminController.saveAdmin)
+
+// Get User by id
+router.get('/admin/user/:userId',
+  AdminController.getUserById)
 
 module.exports = router

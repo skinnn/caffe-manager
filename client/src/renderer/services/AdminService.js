@@ -9,5 +9,11 @@ export default {
   },
   saveAdmin(admin) {
     return Api().put(`admin/${admin._id}`, admin)
+  },
+  getAllUsers() {
+    return Api().get('admin/users')
+  },
+  getUserById(userId) {
+    return Api().get(`admin/user/${userId}`)
   }
 }
