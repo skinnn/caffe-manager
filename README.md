@@ -2,17 +2,14 @@
 
 ## First
 
-### Make sure you have NodeJS and MongoDB installed locally.
-- [Download NodeJS](https://nodejs.org/en/)
-- [Download MongoDB](https://www.mongodb.com/)
+### Make sure you have [NodeJS](https://nodejs.org/en/) and [MongoDB](https://www.mongodb.com/) installed locally.
 
 ## How to run
 
 1. Clone or download the code repo
-2. Open terminal to code repository
-3. Make sure a copy of `Node.exe` and `Node.lib` are copied to the root of the code repo
-4. Run `npm install` in the root "caffe-manager" and in the "express-app" folder to install all the dependencies
-5. Run `npm start` in the root to start the application
+2. Run `npm install` in the **client** and in the **server** folder to install all the dependencies
+3. Run `npm start` in **server** folder to start the server
+4. Run `npm start` in **client** folder to start the client
 
 :tada: :fireworks:
 
