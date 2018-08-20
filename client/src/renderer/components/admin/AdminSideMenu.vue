@@ -56,7 +56,7 @@
             </v-list-tile-action>
           </v-list-tile>
         </v-list-tile>
-          <v-list-tile @click="navigateTo({ name: 'admin-admin-create' })">
+          <v-list-tile @click="navigateTo({ name: 'admin-register' })">
             <v-list-tile-title>Create Admin</v-list-tile-title>
             <v-list-tile-action>
               <v-icon>person_add</v-icon>

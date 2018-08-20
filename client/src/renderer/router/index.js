@@ -9,7 +9,7 @@ const UserTables = require('@/components/user/UserTables').default
 const UserWarehouse = require('@/components/user/UserWarehouse').default
 
 // Admin Components
-const AdminRegister = require('@/components/admin/AdminRegister').default
+// const AdminRegister = require('@/components/admin/AdminRegister').default
 const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
 const AdminWarehouse = require('@/components/admin/AdminWarehouse').default
@@ -21,6 +21,7 @@ const AdminEditAdmin = require('@/components/admin/AdminEditAdmin').default
 const AdminEditUser = require('@/components/admin/AdminEditUser').default
 const AdminViewUser = require('@/components/admin/AdminViewUser').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
+const AdminCreateAdmin = require('@/components/admin/AdminCreateAdmin').default
 
 Vue.use(Router)
 
@@ -60,7 +61,7 @@ export default new Router({
     {
       path: '/admin/register',
       name: 'admin-register',
-      component: AdminRegister
+      component: AdminCreateAdmin
     },
     {
       path: '/admin/login',
