@@ -6,7 +6,7 @@
     <v-layout column class="blue right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">Staff Members:</h1>
+            <h1 class="heading">Staff Members</h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
             </v-btn>
