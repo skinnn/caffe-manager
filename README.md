@@ -1,5 +1,7 @@
 # Vue-caffe
 
+### Node.js, Electron, Express, Vue.js
+
 ## First
 
 ### Make sure you have [NodeJS](https://nodejs.org/en/) and [MongoDB](https://www.mongodb.com/) installed locally.
