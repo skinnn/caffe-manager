@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-view">
+  <div class="admin-edit">
     <div>
       <admin-side-menu />
     </div>
@@ -7,9 +7,9 @@
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">
-              User: {{user.name}}
-              <v-btn @click="editUser(user._id)" class="yellow">
-                Edit
+              Edit User: {{user.name}}
+              <v-btn @click="saveUser(user._id)" class="yellow">
+                Save
               </v-btn>
             </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
@@ -23,10 +23,19 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <div class="admin-info">
-          <p>Username: {{user.username}}</p>
-          <p>ID: {{user._id}}</p>
-          <p>Full name: {{user.name}}</p>
+        <div class="admin-edit">
+          <!--TODO fix error where admin is defined as null -->
+
+          <v-text-field
+            type="text"
+            v-model="user.username"
+            outline
+          ></v-text-field>
+          <v-text-field
+            type="text"
+            v-model="user.name"
+            outline
+          ></v-text-field>
         </div>
 
       </v-flex>
@@ -64,6 +73,19 @@ export default {
     }
   },
   methods: {
+    async saveUser(userId) {
+      try {
+        const saved = (await AdminService.saveUser(this.user)).data
+        console.log(saved)
+        this.$router.push({
+          name: 'admin-view-user',
+          params: {userId}
+        })
+      } catch (error) {
+        this.success = null
+        this.error = error.response.data.error
+      }
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -80,9 +102,6 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
-    },
-    editUser(userId) {
-      this.$router.push({name: 'admin-edit-user', params: {userId}})
     }
   }
 }
@@ -90,7 +109,7 @@ export default {
 
 <style scoped lang="scss">
 
-  .admin-info {
+  .admin-edit {
     width: 100%;
   }
 

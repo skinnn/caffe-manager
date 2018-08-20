@@ -64,6 +64,10 @@ router.get('/admin/:adminId',
 router.put('/admin/:adminId',
   AdminController.saveAdmin)
 
+// Save User
+router.put('/admin/user/:userId',
+  AdminController.saveUser)
+
 // Get User by id
 router.get('/admin/user/:userId',
   AdminController.getUserById)

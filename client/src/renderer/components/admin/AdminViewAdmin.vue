@@ -77,7 +77,6 @@ export default {
           })
         }
       } catch (error) {
-        console.log(error)
         this.success = null
         this.error = error.response.data.error
       }

@@ -15,5 +15,8 @@ export default {
   },
   getUserById(userId) {
     return Api().get(`admin/user/${userId}`)
+  },
+  saveUser(user) {
+    return Api().put(`admin/user/${user._id}`, user)
   }
 }

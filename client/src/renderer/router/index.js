@@ -18,6 +18,7 @@ const AdminAdminList = require('@/components/admin/AdminAdminList').default
 const AdminUserList = require('@/components/admin/AdminUserList').default
 const AdminViewAdmin = require('@/components/admin/AdminViewAdmin').default
 const AdminEditAdmin = require('@/components/admin/AdminEditAdmin').default
+const AdminEditUser = require('@/components/admin/AdminEditUser').default
 const AdminViewUser = require('@/components/admin/AdminViewUser').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
 
@@ -110,6 +111,11 @@ export default new Router({
       path: '/admin/:adminId/edit',
       name: 'admin-edit-admin',
       component: AdminEditAdmin
+    },
+    {
+      path: '/admin/user/:userId/edit',
+      name: 'admin-edit-user',
+      component: AdminEditUser
     }
   ]
 })

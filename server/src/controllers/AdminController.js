@@ -102,6 +102,27 @@ module.exports = {
         error: 'An error has occurred trying to get the admin data.'
       })
     }
+  },
+
+  // Save User by id
+  async saveUser(req, res) {
+    try {
+      let query = {_id: req.params.userId}
+
+      await User.update(query, req.body, function(err, user) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.send({
+            user: user
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to update the user data.'
+      })
+    }
   }
 
 } /* Module exports */
