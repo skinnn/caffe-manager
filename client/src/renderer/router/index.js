@@ -14,6 +14,11 @@ const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
 const AdminWarehouse = require('@/components/admin/AdminWarehouse').default
 const AdminTables = require('@/components/admin/AdminTables').default
+const AdminAdminList = require('@/components/admin/AdminAdminList').default
+const AdminUserList = require('@/components/admin/AdminUserList').default
+const AdminViewAdmin = require('@/components/admin/AdminViewAdmin').default
+const AdminEditAdmin = require('@/components/admin/AdminEditAdmin').default
+const AdminTaxes = require('@/components/admin/AdminTaxes').default
 
 Vue.use(Router)
 
@@ -74,6 +79,31 @@ export default new Router({
       path: '/admin/tables',
       name: 'admin-tables',
       component: AdminTables
+    },
+    {
+      path: '/admin/admin-list',
+      name: 'admin-admin-list',
+      component: AdminAdminList
+    },
+    {
+      path: '/admin/user-list',
+      name: 'admin-user-list',
+      component: AdminUserList
+    },
+    {
+      path: '/admin/:adminId',
+      name: 'admin-view-admin',
+      component: AdminViewAdmin
+    },
+    {
+      path: '/admin/taxes',
+      name: 'admin-taxes',
+      component: AdminTaxes
+    },
+    {
+      path: '/admin/:adminId/edit',
+      name: 'admin-edit-admin',
+      component: AdminEditAdmin
     }
   ]
 })

@@ -28,9 +28,15 @@
               label="Confirm Password:"
               outline
               ></v-text-field>
+              <v-text-field
+                type="text"
+                v-model="name"
+                label="Full name:"
+                outline
+                ></v-text-field>
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
-          <div class="succes-msg" v-if="success" v-html="success" />
+          <div class="success-msg" v-if="success" v-html="success" />
           <br>
           <v-btn class="green register-button"
             block
@@ -53,6 +59,7 @@ export default {
       username: '',
       password: '',
       password2: '',
+      name: '',
       error: null,
       success: null
     }
@@ -63,17 +70,18 @@ export default {
         const response = (await AuthenticationService.registerAdmin({
           username: this.username,
           password: this.password,
-          password2: this.password2
+          password2: this.password2,
+          name: this.name
         })).data
-        this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username}</span>
-         registered successfully.`
-        this.error = ''
-        // If registering was successfull redirect to admin login page
+        // If registering was successful redirect to admin login page
         if (response.admin) {
           this.$router.push({
             name: 'admin-login'
           })
-          // console.log(`Admin: ${response.admin.username} has been registered successfully.`)
+
+          this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username}</span>
+           registered successfully.`
+          this.error = ''
         }
       } catch (error) {
         console.log(error)
@@ -85,28 +93,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
   .toolbar-title {
     color: white;
-  }
-
-  .error-msg {
-    background-color: pink;
-    color: red;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
-  }
-
-  .succes-msg {
-    background-color: #b2ffb2;
-    color: green;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
   }
 
   .highlight-user {

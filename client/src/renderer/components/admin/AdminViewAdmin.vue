@@ -1,12 +1,17 @@
 <template>
-  <div class="admin-home">
+  <div class="admin-view">
     <div>
       <admin-side-menu />
     </div>
     <v-layout column class="blue right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">Home</h1>
+            <h1 class="heading">
+              Admin: {{admin.name}}
+              <v-btn @click="editAdmin(admin._id)" class="yellow">
+                Edit
+              </v-btn>
+            </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
             </v-btn>
@@ -18,12 +23,13 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
+        <div class="admin-info">
+          <!--TODO fix error where admin is defined as null -->
+          <p>{{admin.username}}</p>
+          <p>{{admin._id}}</p>
+          <p>{{admin.name}}</p>
+        </div>
+
       </v-flex>
     </v-layout>
   </div>
@@ -32,6 +38,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
+import AdminService from '@/services/AdminService'
 
 export default {
   components: {
@@ -39,8 +46,22 @@ export default {
   },
   data() {
     return {
+      admin: {},
       error: null,
       success: null
+    }
+  },
+  async mounted() {
+    try {
+      const adminId = this.$store.state.route.params.adminId
+      const response = (await AdminService.getAdminById(adminId)).data
+
+      if (response.admin) {
+        this.admin = response.admin
+      }
+    } catch (error) {
+      this.success = null
+      this.error = error.response.data.error
     }
   },
   methods: {
@@ -48,12 +69,12 @@ export default {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
 
-        if (response.admin === false) {
+        if (response.loggedOutMessage) {
           // Set admin and isLoggedIn states to false
           this.$store.dispatch('setAdmin', null)
           // Redirect to admin login page
           this.$router.push({
-            name: 'user-login'
+            name: 'admin-login'
           })
         }
       } catch (error) {
@@ -61,12 +82,19 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
+    },
+    editAdmin(adminId) {
+      this.$router.push({name: 'admin-edit-admin', params: {adminId}})
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+
+  .admin-info {
+    width: 100%;
+  }
 
   .list-title {
     font-size: 17px;

@@ -6,6 +6,7 @@ module.exports = {
     const schema = {
       // TODO: Username must have between 3 and 15 characters
       username: Joi.string().required(),
+      name: Joi.string().required(),
       password: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{6,32}$')
       ).required(),
@@ -24,6 +25,12 @@ module.exports = {
         case 'username':
           res.status(400).send({
             error: 'You must provide a valid username.'
+          })
+          break
+
+        case 'name':
+          res.status(400).send({
+            error: 'You must provide a name.'
           })
           break
 
@@ -62,6 +69,7 @@ module.exports = {
     const schema = {
       // TODO: Username must have between 3 and 15 characters
       username: Joi.string().required(),
+      name: Joi.string().required(),
       password: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{6,32}$')
       ).required(),
@@ -77,6 +85,12 @@ module.exports = {
         case 'username':
           res.status(400).send({
             error: 'You must provide a valid username. It must contain between 3 and 15 characters.'
+          })
+          break
+
+        case 'name':
+          res.status(400).send({
+            error: 'You must provide a name.'
           })
           break
 

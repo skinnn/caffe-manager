@@ -37,6 +37,12 @@ let mainConfig = {
         test: /\.node$/,
         use: 'node-loader'
       }
+    ],
+    loaders: [
+      {
+        test: /\.scss/,
+        loaders: ['style', 'css', 'sass']
+      }
     ]
   },
   node: {

@@ -20,8 +20,3 @@ export default {
     return Api().get('admin/logout', credentials)
   }
 }
-
-// AuthenticationService.register({
-//   email: 'testing@gmail.com',
-//   password: '12345678'
-// })

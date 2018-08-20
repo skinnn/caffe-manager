@@ -9,18 +9,11 @@ const path = require('path')
 
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
+const AdminController = require('../controllers/AdminController')
 
 // Policies
 const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
 // const ensureAuthenticated = require('../controllers/ensureAuthenticated')
-
-// Models
-const Storage = require('../models/Storage')
-const User = require('../models/User')
-const Article = require('../models/Article')
-const Table = require('../models/Table')
-const Order = require('../models/Order')
-const ReservedArticle = require('../models/ReservedArticle')
 
 // Time stamp
 router.use(function timeLog(req, res, next) {
@@ -53,5 +46,17 @@ router.post('/user/register',
 router.post('/admin/register',
   AuthenticationControllerPolicy.registerAdmin,
   AuthenticationController.registerAdmin)
+
+// Get all admins
+router.get('/admin/admins',
+  AdminController.getAllAdmins)
+
+// Get Admin by id
+router.get('/admin/:adminId',
+  AdminController.getAdminById)
+
+// Save Admin
+router.put('/admin/:adminId',
+  AdminController.saveAdmin)
 
 module.exports = router

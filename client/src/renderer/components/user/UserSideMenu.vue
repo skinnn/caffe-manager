@@ -74,7 +74,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
   .my-class {
     background-color: red;

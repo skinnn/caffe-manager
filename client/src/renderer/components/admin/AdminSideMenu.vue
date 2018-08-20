@@ -86,7 +86,7 @@
         <v-list-tile slot="activator">
           <v-list-tile-title class="list-tile-title">Tax Manager</v-list-tile-title>
         </v-list-tile>
-          <v-list-tile @click="navigateTo({ name: 'admin-tax-manager' })">
+          <v-list-tile @click="navigateTo({ name: 'admin-taxes' })">
             <v-list-tile-title>Taxes</v-list-tile-title>
             <v-list-tile-action>
               <v-icon>gavel</v-icon>
@@ -109,7 +109,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
   .dashboard-title {
   }

@@ -1,30 +1,44 @@
 <template>
-  <div class="admin-tables">
+  <div class="admin-list">
     <div>
       <admin-side-menu />
     </div>
     <v-layout column class="blue right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">Tables</h1>
+            <h1 class="heading">Admins:</h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
             </v-btn>
         </div>
       </v-flex>
-
       <v-flex class="admin-container">
         <!-- Display messages -->
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <!-- Should list all the tables by their owners/users -->
-        <p>Table 1</p>
-        <p>Table 2</p>
-        <p>Table 3</p>
-        <p>Table 4</p>
-        <p>Table 5</p>
-        <p>Table 6</p>
+        <!-- List of all admins in the db -->
+        <div class="list-of-admins">
+          <!-- Admin list -->
+          <v-list two-line>
+            <v-list-tile
+                v-for="admin in this.admins"
+                :key="admin._id"
+                @click="viewAdmin(admin._id)"
+            >
+
+              <v-list-tile-action>
+                  <v-icon>gavel</v-icon>
+                </v-list-tile-action>
+
+                <v-list-tile-content>
+                  <v-list-tile-title>{{admin.username}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{admin.name}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </div>
+
       </v-flex>
     </v-layout>
   </div>
@@ -33,6 +47,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
+import AdminService from '@/services/AdminService'
 
 export default {
   components: {
@@ -40,8 +55,26 @@ export default {
   },
   data() {
     return {
+      admins: [],
       error: null,
       success: null
+    }
+  },
+  async mounted() {
+    // Get Admin list
+    const response = (await AdminService.getAllAdmins()).data
+    if (response.admins) {
+      const admins = this.admins
+      const currentLoggedInAdmin = this.$store.state.admin.username
+      // Add admin in the admins array
+      response.admins.forEach(function(admin) {
+        // Don't display the currently logged in admin
+        if (admin.username === currentLoggedInAdmin) {
+          return false
+        } else {
+          admins.push(admin)
+        }
+      })
     }
   },
   methods: {
@@ -62,12 +95,19 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
+    },
+    viewAdmin(adminId) {
+      this.$router.push({name: 'admin-view-admin', params: {adminId}})
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+
+  .list-of-admins {
+    width: 100%;
+  }
 
   .list-title {
     font-size: 17px;

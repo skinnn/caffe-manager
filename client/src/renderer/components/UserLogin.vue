@@ -24,7 +24,7 @@
             ></v-text-field>
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
-          <div class="succes-msg" v-if="success" v-html="success" />
+          <div class="success-msg" v-if="success" v-html="success" />
           <br>
           <v-btn class="green login-button"
             block
@@ -86,25 +86,7 @@ export default {
 }
 </script>
 
-<style scoped>
-
-  .error-msg {
-    background-color: pink;
-    color: red;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
-  }
-
-  .succes-msg {
-    background-color: #b2ffb2;
-    color: green;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
-  }
+<style scoped lang="scss">
 
   .toolbar-title {
     color: white;

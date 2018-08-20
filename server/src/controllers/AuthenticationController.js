@@ -8,6 +8,7 @@ module.exports = {
   async registerUser(req, res) {
     try {
       const username = req.body.username
+      const name = req.body.name
       const password = req.body.password
       const password2 = req.body.password2
       // Create user menu
@@ -36,6 +37,7 @@ module.exports = {
       const newUser = new User({
         username: username,
         password: password,
+        name: name,
         userMenu: userMenu
       })
       await User.createUser(newUser, function(err, user) {
@@ -65,10 +67,12 @@ module.exports = {
       const username = req.body.username
       const password = req.body.password
       const password2 = req.body.password2
+      const name = req.body.name
 
       const newAdmin = new Admin({
         username: username,
-        password: password
+        password: password,
+        name: name
       })
       await Admin.createAdmin(newAdmin, function(err, admin) {
         if (err) {

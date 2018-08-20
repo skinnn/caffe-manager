@@ -18,6 +18,12 @@
               outline
             ></v-text-field>
             <v-text-field
+              type="text"
+              v-model="name"
+              label="Full name:"
+              outline
+            ></v-text-field>
+            <v-text-field
               type="password"
               v-model="password"
               label="Password:"
@@ -43,7 +49,7 @@
           </form>
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
-          <div class="succes-msg" v-if="success" v-html="success" />
+          <div class="success-msg" v-if="success" v-html="success" />
           <br>
           <v-btn class="green register-button"
             block
@@ -66,6 +72,7 @@ export default {
       username: '',
       password: '',
       password2: '',
+      name: '',
       error: null,
       success: null,
       userMenu: {
@@ -82,54 +89,38 @@ export default {
           username: this.username,
           password: this.password,
           password2: this.password2,
+          name: this.name,
           userMenu: {
             home: this.userMenu.home,
             warehouse: this.userMenu.warehouse,
             tables: this.userMenu.tables
           }
         })).data
-        this.success = `User <span style="color: blue; font-size:17px;">${this.username}</span>
-         registered successfully.`
-        this.error = ''
-        // If registering was successfull redirect to user login page
+
+        // If registering was successful redirect to user login page and print success msg
         if (response.user) {
           this.$router.push({
             name: 'user-login'
           })
-          // console.log(`User: ${response.user.username} has been registered successfully.`)
+
+          this.success = `User <span style="color: blue; font-size:17px;">${this.username}</span>
+           registered successfully.`
+          this.error = ''
         }
       } catch (error) {
         console.log(error)
         this.success = ''
-        this.error = error.response.error
+        this.error = error.response.data.error
       }
     }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
   .toolbar-title {
     color: white;
-  }
-
-  .error-msg {
-    background-color: pink;
-    color: red;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
-  }
-
-  .succes-msg {
-    background-color: #b2ffb2;
-    color: green;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
   }
 
   .highlight-user {

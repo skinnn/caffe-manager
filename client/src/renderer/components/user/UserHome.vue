@@ -16,7 +16,7 @@
         <v-flex class="user-container">
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
-          <div class="succes-msg" v-if="success" v-html="success" />
+          <div class="success-msg" v-if="success" v-html="success" />
 
           <p>content</p>
           <p>content</p>
@@ -66,7 +66,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
   .user-header {
     position: fixed;
@@ -84,45 +84,15 @@ export default {
     font-size: 31px;
   }
 
-  .user-container {
-    height: 100%;
-    width: 100%;
-    margin-left: 5%;
-  }
-
-  .right-side {
-    margin-left: 18.9%;
-    width: 100%;
-  }
-
   .list-title {
     font-size: 17px;
   }
 
   .logout-btn {
-    position: fixed;
-    left: 90%;
-    top: 6%;
-    z-index: 99;
+    position: relative;
+    bottom: 20px;
+    left: 70%;
     color: white;
-  }
-
-  .error-msg {
-    background-color: pink;
-    color: red;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
-  }
-
-  .succes-msg {
-    background-color: #b2ffb2;
-    color: green;
-    border-radius: 5px;
-    padding: 7px;
-    text-align: center;
-    font-size: 15px;
   }
 
 </style>
