@@ -25,6 +25,7 @@
 
   .admin-container {
     margin-top: 100px;
+    margin-left: 0;
     height: 100%;
     width: 100%;
     // margin-left: 40px;
@@ -37,8 +38,8 @@
   }
 
   .right-side {
-    margin-left: 18.9%;
-    width: 83%;
+    margin-left: 236px;
+    // width: 100%;
   }
 
   .admin-header {

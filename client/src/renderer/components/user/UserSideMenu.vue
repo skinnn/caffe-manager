@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- mini-variant option instead of permanent can be used for tablet devices -->
     <v-navigation-drawer stateless permanent fixed width="260">
       <v-toolbar flat>
         <v-list>

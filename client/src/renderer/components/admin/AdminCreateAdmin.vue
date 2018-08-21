@@ -16,7 +16,6 @@
       </v-flex>
 
       <v-flex class="admin-container">
-        <div class="admin-create">
 
           <v-text-field
             type="text"
@@ -50,7 +49,6 @@
           <v-btn @click="registerAdmin()" class="yellow">
             Create
           </v-btn>
-        </div>
 
       </v-flex>
     </v-layout>
@@ -131,10 +129,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
-  .admin-create {
-    width: 50%;
-  }
 
   .list-title {
     font-size: 17px;
