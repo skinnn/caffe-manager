@@ -49,7 +49,7 @@ export default {
       try {
         const response = (await AuthenticationService.logoutUser()).data
 
-        if (response.loggedOutMessage) {
+        if (response.user === false) {
           // Set user and isLoggedIn states to false
           this.$store.dispatch('setUser', null)
           // Redirect to user login page

@@ -40,8 +40,8 @@ app.use(function(req, res, next) {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.error_msg = req.flash('error_msg')
   res.locals.error = req.flash('error')
-  res.locals.user = req.user || null
-  res.locals.admin = req.admin || null
+  // res.locals.user = req.user || null
+  // res.locals.user = req.user || null
   next()
 })
 
@@ -51,6 +51,7 @@ app.use('/', index)
 // Logout when nodemon restarts the server
 // app.get('*', function(req, res, next) {
 //   res.locals.user = req.user || null
+//   res.locals.admin = req.admin || null
 //   next()
 // })
 

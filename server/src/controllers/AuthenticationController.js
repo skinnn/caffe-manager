@@ -125,22 +125,22 @@ module.exports = {
   // Admin Login
   async loginAdmin(req, res, next) {
     try {
-      await passport.authenticate('admin', function(err, user, info) {
+      await passport.authenticate('admin', function(err, admin, info) {
         if (err) {
           return next(err)
         }
-        if (!user) {
+        if (!admin) {
           return res.status(403).send({
             error: 'Log in authentication failed.'
           })
         }
-        req.logIn(user, function(err) {
+        req.logIn(admin, function(err) {
           if (err) {
             return next(err)
           }
           return res.send({
-            admin: user,
-            success: `Logged in: ${user.username}`
+            admin: admin,
+            success: `Logged in: ${admin.username}`
           })
         })
       })(req, res, next)

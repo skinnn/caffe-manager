@@ -25,15 +25,15 @@ module.exports = function(passport) {
 
   // Admin Local Strategy
   passport.use('admin', new LocalStrategy(function(username, password, done) {
-    Admin.getAdminByUsername(username, function(err, user) {
+    Admin.getAdminByUsername(username, function(err, admin) {
       if (err) throw err
-      if (!user) {
+      if (!admin) {
         return done(null, false, { error: 'Unknown Admin' })
       }
-      Admin.compareAdminPassword(password, user.password, function(err, isMatch) {
+      Admin.compareAdminPassword(password, admin.password, function(err, isMatch) {
         if (err) throw err
         if (isMatch) {
-          return done(null, user)
+          return done(null, admin)
         } else {
           return done(null, false, { error: 'Invalid password' })
         }
@@ -41,18 +41,6 @@ module.exports = function(passport) {
     })
   }))
 
-  // Working
-  // passport.serializeUser(function(user, done) {
-  //   done(null, user.id)
-  // })
-  //
-  // passport.deserializeUser(function(id, done) {
-  //   User.getUserById(id, function(err, user) {
-  //     done(err, user)
-  //   })
-  // })
-
-  // Experimenting
   passport.serializeUser(function(user, done) {
     var key = {
       id: user.id,
@@ -62,7 +50,7 @@ module.exports = function(passport) {
   })
 
   passport.deserializeUser(function(key, done) {
-    // this could be more complex with a switch or if statements
+    // This could be more complex with a switch or if statements
     var Model = key.type === 'user' ? User : Admin
 
     Model.findOne({_id: key.id}, '-salt -password', function(err, user) {

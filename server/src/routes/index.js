@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const passport = require('passport')
 const multer = require('multer')
-const auth = require('../controllers/ensureAuthenticated')
 const dateHandler = require('../controllers/getDate')
 const fs = require('fs')
 const path = require('path')
@@ -10,7 +9,7 @@ const path = require('path')
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
 const AdminController = require('../controllers/AdminController')
-// const UserController = require('../controllers/UserController')
+const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
 const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
@@ -22,6 +21,7 @@ router.use(function timeLog(req, res, next) {
   next()
 })
 
+// TODO: Secure all routes only for admin and user
 // Get all users
 router.get('/admin/users',
   AdminController.getAllUsers)

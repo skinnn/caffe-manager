@@ -60,20 +60,25 @@ export default {
     }
   },
   async mounted() {
-    // Get Admin list
-    const response = (await AdminService.getAllAdmins()).data
-    if (response.admins) {
-      const admins = this.admins
-      const currentLoggedInAdmin = this.$store.state.admin.username
-      // Add admin in the admins array
-      response.admins.forEach(function(admin) {
-        // Don't display the currently logged in admin
-        if (admin.username === currentLoggedInAdmin) {
-          return false
-        } else {
-          admins.push(admin)
-        }
-      })
+    try {
+      // Get Admin list
+      const response = (await AdminService.getAllAdmins()).data
+      if (response.admins) {
+        const admins = this.admins
+        const currentLoggedInAdmin = this.$store.state.admin.username
+        // Add admin in the admins array
+        response.admins.forEach(function(admin) {
+          // Don't display the currently logged in admin
+          if (admin.username === currentLoggedInAdmin) {
+            return false
+          } else {
+            admins.push(admin)
+          }
+        })
+      }
+    } catch (error) {
+      this.success = null
+      this.error = error.response.data.error
     }
   },
   methods: {
