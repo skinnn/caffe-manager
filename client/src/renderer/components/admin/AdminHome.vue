@@ -3,7 +3,7 @@
     <div>
       <admin-side-menu />
     </div>
-    <v-layout column class="blue right-side">
+    <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">Home</h1>
@@ -18,12 +18,13 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
-        <p>content</p>
+        <p>Name: {{this.$store.state.admin.name}}</p>
+        <p>Username: {{this.$store.state.admin.username}}</p>
+        <p>Store name: </p>
+        <p>Telephone: </p>
+        <p>Address: </p>
+        <p>Create date: {{this.$store.state.admin.date}}</p>
+        <p>Last time updated: {{this.$store.state.admin.updatedDate}}</p>
       </v-flex>
     </v-layout>
   </div>

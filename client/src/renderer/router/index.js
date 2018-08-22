@@ -7,21 +7,24 @@ const UserLogin = require('@/components/UserLogin').default
 const UserHome = require('@/components/user/UserHome').default
 const UserTables = require('@/components/user/UserTables').default
 const UserWarehouse = require('@/components/user/UserWarehouse').default
-
 // Admin Components
-// const AdminRegister = require('@/components/admin/AdminRegister').default
 const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
-const AdminWarehouse = require('@/components/admin/AdminWarehouse').default
 const AdminTables = require('@/components/admin/AdminTables').default
-const AdminAdminList = require('@/components/admin/AdminAdminList').default
-const AdminUserList = require('@/components/admin/AdminUserList').default
-const AdminViewAdmin = require('@/components/admin/AdminViewAdmin').default
-const AdminEditAdmin = require('@/components/admin/AdminEditAdmin').default
-const AdminEditUser = require('@/components/admin/AdminEditUser').default
-const AdminViewUser = require('@/components/admin/AdminViewUser').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
-const AdminCreateAdmin = require('@/components/admin/AdminCreateAdmin').default
+
+// Storage-Manager
+const AdminStorageList = require('@/components/admin/storage-manager/StorageList').default
+const AdminCreateStorage = require('@/components/admin/storage-manager/CreateStorage').default
+// Admin-Manager
+const AdminCreateAdmin = require('@/components/admin/admin-manager/CreateAdmin').default
+const AdminViewAdmin = require('@/components/admin/admin-manager/ViewAdmin').default
+const AdminEditAdmin = require('@/components/admin/admin-manager/EditAdmin').default
+const AdminAdminList = require('@/components/admin/admin-manager/AdminList').default
+// User-Manager
+const AdminUserList = require('@/components/admin/user-manager/UserList').default
+const AdminEditUser = require('@/components/admin/user-manager/EditUser').default
+const AdminViewUser = require('@/components/admin/user-manager/ViewUser').default
 
 Vue.use(Router)
 
@@ -74,11 +77,6 @@ export default new Router({
       component: AdminHome
     },
     {
-      path: '/admin/warehouse',
-      name: 'admin-warehouse',
-      component: AdminWarehouse
-    },
-    {
       path: '/admin/tables',
       name: 'admin-tables',
       component: AdminTables
@@ -117,6 +115,16 @@ export default new Router({
       path: '/admin/user/:userId/edit',
       name: 'admin-edit-user',
       component: AdminEditUser
+    },
+    {
+      path: '/admin/storage-list',
+      name: 'admin-storage-list',
+      component: AdminStorageList
+    },
+    {
+      path: '/admin/storage/create',
+      name: 'admin-create-storage',
+      component: AdminCreateStorage
     }
   ]
 })

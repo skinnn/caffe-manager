@@ -18,6 +18,7 @@
       <!-- List -->
       <v-list dense class="pt-0">
 
+        <!-- Home -->
         <v-list-tile @click="navigateTo({ name: 'admin-home' })">
           <v-list-tile-action>
             <v-icon>home</v-icon>
@@ -27,15 +28,27 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile @click="navigateTo({ name: 'admin-warehouse' })">
-          <v-list-tile-action>
-            <v-icon>storage</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
+        <!-- Warehouse -->
+        <v-list-group prepend-icon="storage" value="true">
+          <v-list-tile slot="activator">
             <v-list-tile-title class="list-tile-title">Warehouse</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          </v-list-tile>
+            <v-list-tile @click="navigateTo({ name: 'admin-storage-list' })">
+              <v-list-tile-title>Storage List</v-list-tile-title>
+              <v-list-tile-action>
+                <v-icon>format_list_numbered</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list-tile>
+            <v-list-tile @click="navigateTo({ name: 'admin-create-storage' })">
+              <v-list-tile-title>Create Storage</v-list-tile-title>
+              <v-list-tile-action>
+                <v-icon>add</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+        </v-list-group>
 
+        <!-- Tables -->
         <v-list-tile @click="navigateTo({ name: 'admin-tables' })">
           <v-list-tile-action>
             <v-icon>view_carousel</v-icon>
@@ -45,7 +58,7 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <!-- Groups -->
+        <!-- Admin Manager -->
         <v-list-group prepend-icon="gavel" value="true">
           <v-list-tile slot="activator">
             <v-list-tile-title class="list-tile-title">Admin Manager</v-list-tile-title>
@@ -65,6 +78,7 @@
             </v-list-tile>
         </v-list-group>
 
+        <!-- Staff Manager -->
         <v-list-group prepend-icon="people" value="true">
           <v-list-tile slot="activator">
             <v-list-tile-title class="list-tile-title">Staff Manager</v-list-tile-title>
@@ -83,6 +97,7 @@
             </v-list-tile>
         </v-list-group>
 
+        <!-- Tax manager -->
         <v-list-group prepend-icon="attach_money" value="true">
           <v-list-tile slot="activator">
             <v-list-tile-title class="list-tile-title">Tax Manager</v-list-tile-title>

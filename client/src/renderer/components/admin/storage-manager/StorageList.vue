@@ -1,31 +1,31 @@
 <template>
-  <div class="admin-tables">
+  <div class="admin-storage-list">
     <div>
       <admin-side-menu />
     </div>
-    <v-layout column class="right-side">
-      <v-flex>
-        <div class="admin-header">
-            <h1 class="heading">Tables</h1>
-            <v-btn @click="logoutAdmin" class="logout-btn pink">
-              Logout
-            </v-btn>
-        </div>
-      </v-flex>
+      <v-layout column class="blue right-side">
+        <v-flex>
+          <div class="admin-header">
+              <h1 class="heading">Storage List</h1>
+              <v-btn @click="logoutAdmin" class="logout-btn pink">
+                Logout
+              </v-btn>
+          </div>
+        </v-flex>
 
-      <v-flex class="admin-container">
-        <!-- Display messages -->
-        <div class="error-msg" v-if="error" v-html="error" />
-        <div class="success-msg" v-if="success" v-html="success" />
+        <v-flex class="admin-container">
+          <!-- Display messages -->
+          <div class="error-msg" v-if="error" v-html="error" />
+          <div class="success-msg" v-if="success" v-html="success" />
 
-        <!-- Should list all the tables by their owners/users -->
-        <div class="list-of-storages">
+          <!-- Should list the storages from the db -->
+          <div class="list-of-storages">
           <!--
           <v-list two-line>
             <v-list-tile
-                v-for="table in this.table"
-                :key="table._id"
-                @click="viewTable(table._id)"
+                v-for="storage in this.storage"
+                :key="storage._id"
+                @click="viewStorage(storage._id)"
             >
 
               <v-list-tile-action>
@@ -33,15 +33,15 @@
                 </v-list-tile-action>
 
                 <v-list-tile-content>
-                  <v-list-tile-title>{{table.name}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{table.articleNumber}}</v-list-tile-sub-title>
+                  <v-list-tile-title>{{storage.name}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{storage.articleNumber}}</v-list-tile-sub-title>
                 </v-list-tile-content>
             </v-list-tile>
           </v-list>
           -->
         </div>
-      </v-flex>
-    </v-layout>
+        </v-flex>
+      </v-layout>
   </div>
 </template>
 
@@ -55,7 +55,6 @@ export default {
   },
   data() {
     return {
-      tables: [],
       error: null,
       success: null
     }
@@ -66,7 +65,7 @@ export default {
         const response = (await AuthenticationService.logoutAdmin()).data
 
         if (response.loggedOutMessage) {
-          // Set admin and isLoggedIn states to false
+          // Set admin and isLoggedIn state to false
           this.$store.dispatch('setAdmin', null)
           // Redirect to admin login page
           this.$router.push({
