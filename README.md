@@ -8,12 +8,20 @@
 
 ## How to run
 
-1. Clone or download the code repo
-2. Run `npm install` in the **client** and in the **server** folder to install all the dependencies
-3. Run `npm start` in **server** folder to start the server
-4. Run `npm start` in **client** folder to start the client
+1. Clone - `git clone https://github.com/skinnn/vue-caffe.git` or download the code repo
+2. Run `npm run install-dependencies` in the **root** folder to install all the dependencies
+3. To start the app (both client and server) run `npm start` in the **root** folder
 
 :tada: :fireworks:
+
+## Run Alternatively
+
+1. After installing all the dependencies, in the first terminal inside the **client** folder you can run `npm start` to start the client
+2. In the second terminal inside the **server** folder you can run `npm start` to start the server
+
+
+- Client default port: 9080
+- Server default port: 8080
 
 
 ## License
