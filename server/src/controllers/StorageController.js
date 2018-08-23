@@ -8,7 +8,7 @@ module.exports = {
       let storage = new Storage()
       console.log(req.body)
       storage.name = req.body.storageName
-      // Check if the name is typed and CREATE storage in the db
+      // Check if the name is typed and create storage in the db
       if (storage.name !== '') {
         await storage.save(function(err) {
           if (err) {
@@ -27,6 +27,26 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to create the storage.'
+      })
+    }
+  },
+
+  // Get All Storages
+  async getAllStorages(req, res) {
+    try {
+      await Storage.find({}, function(err, storages) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log(storages)
+          res.send({
+            storages: storages
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to get the list of storages.'
       })
     }
   }

@@ -20,10 +20,9 @@
 
           <!-- Should list the storages from the db -->
           <div class="list-of-storages">
-          <!--
           <v-list two-line>
             <v-list-tile
-                v-for="storage in this.storage"
+                v-for="storage in this.storages"
                 :key="storage._id"
                 @click="viewStorage(storage._id)"
             >
@@ -38,8 +37,8 @@
                 </v-list-tile-content>
             </v-list-tile>
           </v-list>
-          -->
         </div>
+
         </v-flex>
       </v-layout>
   </div>
@@ -48,6 +47,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
+import StorageService from '@/services/StorageService'
 
 export default {
   components: {
@@ -55,8 +55,28 @@ export default {
   },
   data() {
     return {
+      storages: [],
       error: null,
       success: null
+    }
+  },
+  async mounted() {
+    try {
+      const response = (await StorageService.getAllStorages()).data
+      console.log(response)
+
+      // Get User list
+      if (response.storages) {
+        const storages = this.storages
+        // Add user in the storages array
+        response.storages.forEach(function(user) {
+          storages.push(user)
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      this.success = ''
+      this.error = error.response.data.error
     }
   },
   methods: {

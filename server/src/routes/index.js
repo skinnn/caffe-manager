@@ -23,6 +23,11 @@ router.use(function timeLog(req, res, next) {
 })
 
 // TODO: Secure all routes only for admin and user
+
+// Get all Storages
+router.get('/admin/storages',
+  StorageController.getAllStorages)
+
 // Get all users
 router.get('/admin/users',
   AdminController.getAllUsers)
@@ -53,7 +58,7 @@ router.post('/admin/register',
   AuthenticationControllerPolicy.registerAdmin,
   AuthenticationController.registerAdmin)
 
-// Get all admins
+// Get all Admins
 router.get('/admin/admins',
   AdminController.getAllAdmins)
 
