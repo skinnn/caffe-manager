@@ -16,16 +16,16 @@
       </v-flex>
 
       <v-flex class="admin-container">
-        <!-- Display messages -->
-          <div class="error-msg" v-if="error" v-html="error" />
-          <div class="success-msg" v-if="success" v-html="success" />
-
           <v-text-field
             type="text"
             v-model="storageName"
             label="Storage Name:"
             outline
           ></v-text-field>
+
+          <!-- Display messages -->
+          <div class="error-msg" v-if="error" v-html="error" />
+          <div class="success-msg" v-if="success" v-html="success" />
 
           <v-btn @click="createStorage()" class="yellow">
             Create
@@ -39,6 +39,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
+import StorageService from '@/services/StorageService'
 
 export default {
   components: {
@@ -46,10 +47,7 @@ export default {
   },
   data() {
     return {
-      username: '',
-      name: '',
-      password: '',
-      password2: '',
+      storageName: '',
       error: null,
       success: null
     }
@@ -59,7 +57,23 @@ export default {
   },
   methods: {
     async createStorage() {
-      // const response = (awaut StorageService.createStorage()).data
+      try {
+        const response = (await StorageService.createStorage({
+          storageName: this.storageName
+        })).data
+
+        if (response.saved) {
+          this.success = response.success
+          setTimeout(() => {
+            this.success = null
+          }, 3000)
+          console.log(response)
+        }
+      } catch (error) {
+        console.log(error)
+        this.success = ''
+        this.error = error.response.data.error
+      }
     },
     async logoutAdmin() {
       try {

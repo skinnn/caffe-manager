@@ -9,6 +9,7 @@ const path = require('path')
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
 const AdminController = require('../controllers/AdminController')
+const StorageController = require('../controllers/StorageController')
 const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
@@ -71,5 +72,9 @@ router.put('/admin/user/:userId',
 // Get User by id
 router.get('/admin/user/:userId',
   AdminController.getUserById)
+
+// Create Storage
+router.post('/admin/storage/create',
+  StorageController.createStorage)
 
 module.exports = router

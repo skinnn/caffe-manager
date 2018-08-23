@@ -43,7 +43,7 @@ module.exports = {
     }
   },
 
-  // Save Admin by id
+  // Update Admin by id
   async saveAdmin(req, res) {
     try {
       let query = {_id: req.params.adminId}
@@ -104,7 +104,7 @@ module.exports = {
     }
   },
 
-  // Save User by id
+  // Update User by id
   async saveUser(req, res) {
     try {
       let query = {_id: req.params.userId}
