@@ -24,6 +24,10 @@ router.use(function timeLog(req, res, next) {
 
 // TODO: Secure all routes only for admin and user
 
+// Get Storage by id
+router.get('/admin/storage/:storageId',
+  StorageController.getStorageById)
+
 // Get all Storages
 router.get('/admin/storages',
   StorageController.getAllStorages)
@@ -66,11 +70,11 @@ router.get('/admin/admins',
 router.get('/admin/:adminId',
   AdminController.getAdminById)
 
-// Save Admin
+// Update Admin
 router.put('/admin/:adminId',
   AdminController.saveAdmin)
 
-// Save User
+// Update User
 router.put('/admin/user/:userId',
   AdminController.saveUser)
 
@@ -81,5 +85,9 @@ router.get('/admin/user/:userId',
 // Create Storage
 router.post('/admin/storage/create',
   StorageController.createStorage)
+
+// Update Storage
+router.put('/storage/:storageId',
+  StorageController.saveStorage)
 
 module.exports = router

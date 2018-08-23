@@ -38,7 +38,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
-import AdminService from '@/services/AdminService'
+import StorageService from '@/services/StorageService'
 
 export default {
   components: {
@@ -55,10 +55,10 @@ export default {
     try {
       const storageId = this.$store.state.route.params.storageId
       const response = (await StorageService.getStorageById(storageId)).data
-      console.log(response)
-      // if (response.storage) {
-      //   this.storage = response.storage
-      // }
+
+      if (response.storage) {
+        this.storage = response.storage
+      }
     } catch (error) {
       this.success = null
       this.error = error.response.data.error
@@ -100,9 +100,10 @@ export default {
   }
 
   .logout-btn {
-    position: relative;
-    bottom: 20px;
-    left: 70%;
+    margin-right: 10px;
+    position: fixed;
+    top: 25px;
+    left: 91%;
     color: white;
   }
 

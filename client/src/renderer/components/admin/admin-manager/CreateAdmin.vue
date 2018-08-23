@@ -138,10 +138,11 @@ export default {
     font-size: 17px;
   }
 
-  .logout-btn {
-    position: relative;
-    bottom: 20px;
-    left: 70%;
+ .logout-btn {
+    margin-right: 10px;
+    position: fixed;
+    top: 25px;
+    left: 91%;
     color: white;
   }
 

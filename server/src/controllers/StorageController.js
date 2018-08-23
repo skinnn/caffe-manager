@@ -49,6 +49,47 @@ module.exports = {
         error: 'An error has occurred trying to get the list of storages.'
       })
     }
+  },
+
+  // Get Storage by id
+  async getStorageById(req, res) {
+    try {
+      let query = req.params.storageId
+      await Storage.getStorageById(query, function(err, storage) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.send({
+            storage: storage
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to get the storage data.'
+      })
+    }
+  },
+
+  // Update Storage by id
+  async saveStorage(req, res) {
+    try {
+      let query = {_id: req.params.storageId}
+
+      await Storage.update(query, req.body, function(err, storage) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.send({
+            storage: storage
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to update the storage data.'
+      })
+    }
   }
 
 } /* Module exports */

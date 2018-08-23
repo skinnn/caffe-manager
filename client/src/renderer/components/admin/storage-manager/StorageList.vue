@@ -63,7 +63,6 @@ export default {
   async mounted() {
     try {
       const response = (await StorageService.getAllStorages()).data
-      console.log(response)
 
       // Get User list
       if (response.storages) {
@@ -80,6 +79,9 @@ export default {
     }
   },
   methods: {
+    viewStorage(storageId) {
+      this.$router.push({name: 'admin-view-storage', params: {storageId}})
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -109,9 +111,10 @@ export default {
   }
 
   .logout-btn {
-    position: relative;
-    bottom: 20px;
-    left: 70%;
+    margin-right: 10px;
+    position: fixed;
+    top: 25px;
+    left: 91%;
     color: white;
   }
 
