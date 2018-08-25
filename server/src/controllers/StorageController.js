@@ -6,7 +6,6 @@ module.exports = {
   async createStorage(req, res) {
     try {
       let storage = new Storage()
-      console.log(req.body)
       storage.name = req.body.storageName
       // Check if the name is typed and create storage in the db
       if (storage.name !== '') {

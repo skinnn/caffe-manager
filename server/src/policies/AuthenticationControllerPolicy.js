@@ -1,5 +1,7 @@
 const Joi = require('joi')
 
+// TODO: Separate files with policies for articles, storages, etc.
+
 module.exports = {
   // User Policy
   registerUser(req, res, next) {

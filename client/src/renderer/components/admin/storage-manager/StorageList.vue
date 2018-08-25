@@ -20,14 +20,14 @@
 
           <!-- Should list the storages from the db -->
           <div class="list-of-storages">
-          <v-list two-line>
-            <v-list-tile
+            <v-list two-line>
+              <v-list-tile
                 v-for="storage in this.storages"
                 :key="storage._id"
                 @click="viewStorage(storage._id)"
-            >
+              >
 
-              <v-list-tile-action>
+                <v-list-tile-action>
                   <v-icon>gavel</v-icon>
                 </v-list-tile-action>
 
@@ -35,9 +35,9 @@
                   <v-list-tile-title>{{storage.name}}</v-list-tile-title>
                   <v-list-tile-sub-title>{{storage.articleNumber}}</v-list-tile-sub-title>
                 </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </div>
+              </v-list-tile>
+            </v-list>
+          </div>
 
         </v-flex>
       </v-layout>

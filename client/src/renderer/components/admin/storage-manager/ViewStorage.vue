@@ -3,11 +3,14 @@
     <div>
       <admin-side-menu />
     </div>
-    <v-layout column class="blue right-side">
+    <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">
               Storage: {{storage.name}}
+              <v-btn @click="getCreateArticlePage(storage._id)" class="green">
+                Add Article
+              </v-btn>
               <v-btn @click="editStorage(storage._id)" class="yellow">
                 Edit
               </v-btn>
@@ -23,13 +26,35 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <!-- Should list all the articles in the current storage -->
-        <div class="admin-articles-list">
-          <p>Article name: </p>
-          <p>Quantity: </p>
-          <p>Price: </p>
-        </div>
+        <!-- Storage data-->
+          <h3>Storage info:</h3>
+          <p>STORAGE ID: {{storage._id}} </p>
+          <hr>
+          <br>
 
+          <!-- Articles from the current storage -->
+          <div class="list-of-articles">
+            <v-list two-line>
+              <v-list-tile
+                class="single-article-tile"
+                v-for="article in this.articles"
+                :key="article._id"
+                @click="viewArticle(article._id)"
+              >
+
+                <v-list-tile-action>
+                  <v-icon class="act"></v-icon>
+                </v-list-tile-action>
+
+                <v-list-tile-content class="list-tile-text">
+                  <v-list-tile-title class="list-title">{{article.name}}</v-list-tile-title>
+                  <v-list-tile-sub-title class="list-subtitle">Quantity: {{article.quantity}}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title class="list-subtitle">Price: {{article.price}} RSD</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+
+          </div>
       </v-flex>
     </v-layout>
   </div>
@@ -39,6 +64,7 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
 import StorageService from '@/services/StorageService'
+import ArticleService from '@/services/ArticleService'
 
 export default {
   components: {
@@ -47,17 +73,24 @@ export default {
   data() {
     return {
       storage: {},
+      articles: [],
       error: null,
       success: null
     }
   },
   async mounted() {
     try {
+      // Get Storage data
       const storageId = this.$store.state.route.params.storageId
       const response = (await StorageService.getStorageById(storageId)).data
-
       if (response.storage) {
         this.storage = response.storage
+      }
+
+      // Get artilces from the current storage
+      const res = (await ArticleService.getArticlesByStorageId(storageId)).data
+      if (res.articles) {
+        this.articles = res.articles
       }
     } catch (error) {
       this.success = null
@@ -65,6 +98,9 @@ export default {
     }
   },
   methods: {
+    getCreateArticlePage(storageId) {
+      this.$router.push({name: 'admin-create-article', params: {storageId}})
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -91,12 +127,32 @@ export default {
 
 <style scoped lang="scss">
 
-  .admin-articles-list {
+  .list-of-articles {
     width: 100%;
-  }
+    padding: 5px;
 
-  .list-title {
-    font-size: 17px;
+    .act {
+      margin-left: 5px;
+      height: 70px;
+      width: 75px;
+      background-color: grey;
+      border: 1px solid black;
+      border-radius: 5px;
+    }
+    .single-article-tile {
+      min-height: 75px;
+      margin-bottom: 5px;
+    }
+    .list-tile-text {
+      padding: 4px;
+      margin-left: 10px;
+    }
+    .list-title {
+      font-size: 18px;
+    }
+    .list-subtitle {
+      font-size: 16px;
+    }
   }
 
   .logout-btn {

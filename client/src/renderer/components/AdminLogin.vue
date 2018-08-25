@@ -75,7 +75,7 @@ export default {
   },
   mounted() {
     // TODO: Fire this only if logout was clicked
-    if (!this.$store.state.isAdminLoggedIn && !this.$store.state.isAdminLoggedIn) {
+    if (!this.$store.state.isAdminLoggedIn) {
       this.success = 'Logged out.'
       setTimeout(() => {
         this.success = null
