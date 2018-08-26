@@ -33,26 +33,40 @@
           <br>
 
           <!-- Articles from the current storage -->
-          <div class="list-of-articles">
-            <v-list two-line>
-              <v-list-tile
-                class="single-article-tile"
-                v-for="article in this.articles"
-                :key="article._id"
-                @click="viewArticle(article._id)"
-              >
+          <div id="list-div">
 
-                <v-list-tile-action>
-                  <v-icon class="act"></v-icon>
-                </v-list-tile-action>
-
-                <v-list-tile-content class="list-tile-text">
-                  <v-list-tile-title class="list-title">{{article.name}}</v-list-tile-title>
-                  <v-list-tile-sub-title class="list-subtitle">Quantity: {{article.quantity}}</v-list-tile-sub-title>
-                  <v-list-tile-sub-title class="list-subtitle">Price: {{article.price}} RSD</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
+            <v-data-table
+              :headers="headers"
+              :items="articles"
+              hide-actions
+              class="elevation-1"
+              dark
+            >
+              <template slot="items" slot-scope="props">
+                <td class="td text-xs-left">{{ props.item.image }}</td>
+                <td class="td text-xs-left">
+                  <span class="article-name">
+                    {{ props.item.name }}
+                  </span>
+                </td>
+                <td class="td text-xs-left">
+                  <span class="article-quantity">
+                    {{ props.item.quantity }}
+                  </span>
+                </td>
+                <td class="td text-xs-left">
+                  <span class="article-price">
+                    {{ props.item.price }} <span class="currency">{{currency.serbianDinar}}</span>
+                  </span>
+                </td>
+                <td class="td text-xs-right edit-td">
+                  <v-btn @click="" class="edit-btn yellow">Edit</v-btn>
+                </td>
+                <td class="td text-xs-right delete-td">
+                  <v-btn @click="" class="delete-btn white">Delete</v-btn>
+                </td>
+              </template>
+            </v-data-table>
 
           </div>
       </v-flex>
@@ -74,6 +88,23 @@ export default {
     return {
       storage: {},
       articles: [],
+      currency: {
+        euro: '€',
+        serbianDinar: 'RSD',
+        dollar: '$',
+        pound: '£'
+      },
+      headers: [
+        {
+          text: 'Image',
+          align: 'left',
+          sortable: false,
+          value: 'image'
+        },
+        { text: 'Name', value: 'name' },
+        { text: 'Quantity', value: 'quantity' },
+        { text: 'Price', value: 'price' }
+      ],
       error: null,
       success: null
     }
@@ -127,31 +158,43 @@ export default {
 
 <style scoped lang="scss">
 
-  .list-of-articles {
+  #list-div {
     width: 100%;
     padding: 5px;
 
-    .act {
-      margin-left: 5px;
-      height: 70px;
-      width: 75px;
-      background-color: grey;
-      border: 1px solid black;
-      border-radius: 5px;
+    .td {
+      height: 75px;
+      cursor: pointer;
     }
-    .single-article-tile {
-      min-height: 75px;
-      margin-bottom: 5px;
-    }
-    .list-tile-text {
-      padding: 4px;
-      margin-left: 10px;
-    }
-    .list-title {
-      font-size: 18px;
-    }
-    .list-subtitle {
+    .article-name {
+      font-weight: 600;
       font-size: 16px;
+    }
+    .article-quantity {
+      font-size: 16px;
+    }
+    .article-price {
+      font-size: 16px;
+      color: white;
+    }
+    .currency {
+      font-size: 13px;
+      color: white;
+    }
+    .edit-td {
+      max-width: 80px;
+    }
+    .delete-td {
+      max-width: 80px;
+    }
+    .edit-btn {
+      color: black;
+      font-size: 15px;
+    }
+    .delete-btn {
+      color: red;
+      font-size: 15px;
+      border: 1px solid red;
     }
   }
 

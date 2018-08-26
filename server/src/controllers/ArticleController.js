@@ -57,6 +57,26 @@ module.exports = {
         error: 'An error has occurred trying to get the list of articles.'
       })
     }
+  },
+
+  // Get Article by id
+  async getArticleById(req, res) {
+    try {
+      let query = req.params.articleId
+      await Article.getArticleById(query, function(err, article) {
+        if (err) {
+          console.log(err)
+        } else {
+          res.send({
+            article: article
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to get the article data.'
+      })
+    }
   }
 
 } /* Module exports */
