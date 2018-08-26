@@ -99,4 +99,8 @@ router.post('/admin/storage/:storageId/article/create',
 router.get('/admin/storage/:storageId/articles',
   ArticleController.getArticlesByStorageId)
 
+// Delete Article
+router.delete('/article/:articleId',
+  ArticleController.deleteArticle)
+
 module.exports = router

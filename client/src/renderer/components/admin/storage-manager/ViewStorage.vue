@@ -63,7 +63,7 @@
                   <v-btn @click="" class="edit-btn yellow">Edit</v-btn>
                 </td>
                 <td class="td text-xs-right delete-td">
-                  <v-btn @click="" class="delete-btn white">Delete</v-btn>
+                  <v-btn @click="deleteArticle(props.item._id)" class="delete-btn white">Delete</v-btn>
                 </td>
               </template>
             </v-data-table>
@@ -87,6 +87,7 @@ export default {
   data() {
     return {
       storage: {},
+      storageId: this.$store.state.route.params.storageId,
       articles: [],
       currency: {
         euro: '€',
@@ -103,7 +104,8 @@ export default {
         },
         { text: 'Name', value: 'name' },
         { text: 'Quantity', value: 'quantity' },
-        { text: 'Price', value: 'price' }
+        { text: 'Price', value: 'price' },
+        { text: 'Options', value: 'option' }
       ],
       error: null,
       success: null
@@ -112,7 +114,7 @@ export default {
   async mounted() {
     try {
       // Get Storage data
-      const storageId = this.$store.state.route.params.storageId
+      let storageId = this.storageId
       const response = (await StorageService.getStorageById(storageId)).data
       if (response.storage) {
         this.storage = response.storage
@@ -132,6 +134,37 @@ export default {
     getCreateArticlePage(storageId) {
       this.$router.push({name: 'admin-create-article', params: {storageId}})
     },
+    editStorage(storageId) {
+      this.$router.push({name: 'admin-edit-storage', params: {storageId}})
+    },
+    async deleteArticle(articleId) {
+      let confirmation = confirm(
+        'Are you sure?'
+      )
+      if (confirmation) {
+        try {
+          const response = (await ArticleService.deleteArticle(articleId)).data
+          if (response.deleted) {
+            // Set success message and timeout
+            this.error = null
+            this.success = response.success
+            setTimeout(() => {
+              this.success = null
+            }, 3000)
+
+            // Reset article list after deleting
+            let storageId = this.storageId
+            const ress = (await ArticleService.getArticlesByStorageId(storageId)).data
+            if (ress.articles) {
+              this.articles = ress.articles
+            }
+          }
+        } catch (error) {
+          this.success = null
+          this.error = error.response.data.error
+        }
+      }
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -148,9 +181,6 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
-    },
-    editStorage(storageId) {
-      this.$router.push({name: 'admin-edit-storage', params: {storageId}})
     }
   }
 }

@@ -58,13 +58,13 @@
             </v-list>
           </v-menu>
 
-          <!-- Display messages -->
-          <div class="error-msg" v-if="error" v-html="error" />
-          <div class="success-msg" v-if="success" v-html="success" />
-
           <v-btn @click="createArticle()" class="yellow">
             Create
           </v-btn>
+
+          <!-- Display messages -->
+          <div class="error-msg" v-if="error" v-html="error" />
+          <div class="success-msg" v-if="success" v-html="success" />
 
       </v-flex>
     </v-layout>

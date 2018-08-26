@@ -77,6 +77,33 @@ module.exports = {
         error: 'An error has occurred trying to get the article data.'
       })
     }
+  },
+
+  // Delete Article
+  async deleteArticle(req, res) {
+    try {
+      let query = {_id: req.params.articleId}
+      // let img = req.body.imgPath
+      // let dirPath = process.cwd()
+      // let fullImgPath = dirPath + '\\' + img
+      // console.log(fullImgPath)
+
+      await Article.remove(query, function(err) {
+        if (err) {
+          console.log(err)
+        }
+        // TODO: Delete article image
+        console.log('Article deleted successfuly!')
+        res.send({
+          deleted: true,
+          success: 'Article deleted.'
+        })
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to delete the article.'
+      })
+    }
   }
 
 } /* Module exports */

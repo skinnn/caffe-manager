@@ -12,5 +12,8 @@ export default {
   },
   saveArticle(article) {
     return Api().put(`article/${article._id}`, article)
+  },
+  deleteArticle(articleId) {
+    return Api().delete(`article/${articleId}`)
   }
 }
