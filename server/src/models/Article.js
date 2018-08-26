@@ -32,4 +32,8 @@ const ArticleSchema = new Schema({
 
 }, { autoIndex: false })
 
-module.exports = mongoose.model('Article', ArticleSchema)
+let Article = module.exports = mongoose.model('Article', ArticleSchema)
+
+module.exports.getArticleById = function(id, callback) {
+  Article.findById(id, callback)
+}

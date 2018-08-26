@@ -20,15 +20,14 @@
 
           <!-- Should list the storages from the db -->
           <div class="list-of-storages">
-          <!--
-          <v-list two-line>
-            <v-list-tile
-                v-for="storage in this.storage"
+            <v-list two-line>
+              <v-list-tile
+                v-for="storage in this.storages"
                 :key="storage._id"
                 @click="viewStorage(storage._id)"
-            >
+              >
 
-              <v-list-tile-action>
+                <v-list-tile-action>
                   <v-icon>gavel</v-icon>
                 </v-list-tile-action>
 
@@ -36,10 +35,10 @@
                   <v-list-tile-title>{{storage.name}}</v-list-tile-title>
                   <v-list-tile-sub-title>{{storage.articleNumber}}</v-list-tile-sub-title>
                 </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-          -->
-        </div>
+              </v-list-tile>
+            </v-list>
+          </div>
+
         </v-flex>
       </v-layout>
   </div>
@@ -48,6 +47,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
+import StorageService from '@/services/StorageService'
 
 export default {
   components: {
@@ -55,11 +55,33 @@ export default {
   },
   data() {
     return {
+      storages: [],
       error: null,
       success: null
     }
   },
+  async mounted() {
+    try {
+      const response = (await StorageService.getAllStorages()).data
+
+      // Get User list
+      if (response.storages) {
+        const storages = this.storages
+        // Add user in the storages array
+        response.storages.forEach(function(user) {
+          storages.push(user)
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      this.success = ''
+      this.error = error.response.data.error
+    }
+  },
   methods: {
+    viewStorage(storageId) {
+      this.$router.push({name: 'admin-view-storage', params: {storageId}})
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -89,9 +111,10 @@ export default {
   }
 
   .logout-btn {
-    position: relative;
-    bottom: 20px;
-    left: 70%;
+    margin-right: 10px;
+    position: fixed;
+    top: 25px;
+    left: 91%;
     color: white;
   }
 

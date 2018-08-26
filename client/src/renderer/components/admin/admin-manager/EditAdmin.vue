@@ -26,11 +26,14 @@
         <div class="admin-edit">
           <!--TODO fix error where admin is defined as null -->
 
+          <label>Username:</label>
           <v-text-field
             type="text"
             v-model="admin.username"
             outline
           ></v-text-field>
+
+          <label>Full name:</label>
           <v-text-field
             type="text"
             v-model="admin.name"
@@ -75,8 +78,8 @@ export default {
   methods: {
     async saveAdmin(adminId) {
       try {
-        const saved = (await AdminService.saveAdmin(this.admin)).data
-        console.log(saved)
+        const response = (await AdminService.saveAdmin(this.admin)).data
+        console.log(response)
         this.$router.push({
           name: 'admin-view-admin',
           params: {adminId}
@@ -119,9 +122,10 @@ export default {
   }
 
   .logout-btn {
-    position: relative;
-    bottom: 20px;
-    left: 70%;
+    margin-right: 10px;
+    position: fixed;
+    top: 25px;
+    left: 91%;
     color: white;
   }
 

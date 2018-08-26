@@ -95,7 +95,6 @@ export default {
           })
         }
       } catch (error) {
-        console.log(error)
         this.success = null
         this.error = error.response.data.error
       }
@@ -118,9 +117,10 @@ export default {
   }
 
   .logout-btn {
-    position: relative;
-    bottom: 20px;
-    left: 70%;
+    margin-right: 10px;
+    position: fixed;
+    top: 25px;
+    left: 91%;
     color: white;
   }
 

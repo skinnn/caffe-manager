@@ -9,6 +9,8 @@ const path = require('path')
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
 const AdminController = require('../controllers/AdminController')
+const StorageController = require('../controllers/StorageController')
+const ArticleController = require('../controllers/ArticleController')
 const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
@@ -22,6 +24,15 @@ router.use(function timeLog(req, res, next) {
 })
 
 // TODO: Secure all routes only for admin and user
+
+// Get Storage by id
+router.get('/admin/storage/:storageId',
+  StorageController.getStorageById)
+
+// Get all Storages
+router.get('/admin/storages',
+  StorageController.getAllStorages)
+
 // Get all users
 router.get('/admin/users',
   AdminController.getAllUsers)
@@ -52,7 +63,7 @@ router.post('/admin/register',
   AuthenticationControllerPolicy.registerAdmin,
   AuthenticationController.registerAdmin)
 
-// Get all admins
+// Get all Admins
 router.get('/admin/admins',
   AdminController.getAllAdmins)
 
@@ -60,16 +71,36 @@ router.get('/admin/admins',
 router.get('/admin/:adminId',
   AdminController.getAdminById)
 
-// Save Admin
+// Update Admin
 router.put('/admin/:adminId',
   AdminController.saveAdmin)
 
-// Save User
+// Update User
 router.put('/admin/user/:userId',
   AdminController.saveUser)
 
 // Get User by id
 router.get('/admin/user/:userId',
   AdminController.getUserById)
+
+// Create Storage
+router.post('/admin/storage/create',
+  StorageController.createStorage)
+
+// Update Storage
+router.put('/storage/:storageId',
+  StorageController.saveStorage)
+
+// Create Article
+router.post('/admin/storage/:storageId/article/create',
+  ArticleController.createArticle)
+
+// Get all Articles
+router.get('/admin/storage/:storageId/articles',
+  ArticleController.getArticlesByStorageId)
+
+// Delete Article
+router.delete('/article/:articleId',
+  ArticleController.deleteArticle)
 
 module.exports = router

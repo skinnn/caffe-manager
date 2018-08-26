@@ -32,7 +32,6 @@ module.exports = {
           'route': '/user/home'
         }
       ]
-      console.log(userMenu)
 
       const newUser = new User({
         username: username,

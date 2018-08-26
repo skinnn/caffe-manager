@@ -14,8 +14,11 @@ const AdminTables = require('@/components/admin/AdminTables').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
 
 // Storage-Manager
+const AdminViewStorage = require('@/components/admin/storage-manager/ViewStorage').default
+const AdminEditStorage = require('@/components/admin/storage-manager/EditStorage').default
 const AdminStorageList = require('@/components/admin/storage-manager/StorageList').default
 const AdminCreateStorage = require('@/components/admin/storage-manager/CreateStorage').default
+const AdminCreateArticle = require('@/components/admin/storage-manager/CreateArticle').default
 // Admin-Manager
 const AdminCreateAdmin = require('@/components/admin/admin-manager/CreateAdmin').default
 const AdminViewAdmin = require('@/components/admin/admin-manager/ViewAdmin').default
@@ -125,6 +128,21 @@ export default new Router({
       path: '/admin/storage/create',
       name: 'admin-create-storage',
       component: AdminCreateStorage
+    },
+    {
+      path: '/admin/storage/:storageId',
+      name: 'admin-view-storage',
+      component: AdminViewStorage
+    },
+    {
+      path: '/admin/storage/:storageId/edit',
+      name: 'admin-edit-storage',
+      component: AdminEditStorage
+    },
+    {
+      path: '/admin/storage/:storageId/article/create',
+      name: 'admin-create-article',
+      component: AdminCreateArticle
     }
   ]
 })

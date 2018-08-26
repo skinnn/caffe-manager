@@ -1,15 +1,15 @@
 <template>
-  <div class="admin-view">
+  <div class="admin-edit-article">
     <div>
       <admin-side-menu />
     </div>
-    <v-layout column class="blue right-side">
+    <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">
-              User: {{user.name}}
-              <v-btn @click="editUser(user._id)" class="yellow">
-                Edit
+              Edit Article: {{article.name}}
+              <v-btn @click="saveArticle(article._id)" class="yellow">
+                Save
               </v-btn>
             </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
@@ -23,12 +23,38 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <div class="admin-info">
-          <p>Username: {{user.username}}</p>
-          <p>ID: {{user._id}}</p>
-          <p>Full name: {{user.name}}</p>
-        </div>
+        <div class="admin-edit-storage">
+          <!--TODO fix error where admin is defined as null -->
 
+          <label>Article name:</label>
+          <v-text-field
+            type="text"
+            v-model="article.name"
+            outline
+          ></v-text-field>
+
+          <label>Article quantity:</label>
+          <v-text-field
+            type="number"
+            v-model="article.quantity"
+            outline
+          ></v-text-field>
+
+          <label>Article price:</label>
+          <v-text-field
+            type="number"
+            v-model="article.price"
+            outline
+          ></v-text-field>
+
+          <label>Last time updated:</label>
+          <v-text-field
+            type="text"
+            v-model="article.updated_date"
+            outline
+          ></v-text-field>
+
+        </div>
       </v-flex>
     </v-layout>
   </div>
@@ -37,7 +63,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
-import AdminService from '@/services/AdminService'
+import ArticleService from '@/services/StorageService'
 
 export default {
   components: {
@@ -45,18 +71,18 @@ export default {
   },
   data() {
     return {
-      user: {},
+      article: {},
       error: null,
       success: null
     }
   },
   async mounted() {
     try {
-      const userId = this.$store.state.route.params.userId
-      const response = (await AdminService.getUserById(userId)).data
+      const articleId = this.$store.state.route.params.articleId
+      const response = (await ArticleService.getArticleById(articleId)).data
 
-      if (response.user) {
-        this.user = response.user
+      if (response.article) {
+        this.article = response.article
       }
     } catch (error) {
       this.success = null
@@ -64,6 +90,19 @@ export default {
     }
   },
   methods: {
+    async saveArticle(articleId) {
+      try {
+        // eslint-disable-next-line
+        const response = (await ArticleService.saveArticle(this.article)).data
+        this.$router.push({
+          name: 'admin-view-article',
+          params: {articleId}
+        })
+      } catch (error) {
+        this.success = null
+        this.error = error.response.data.error
+      }
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -80,9 +119,6 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
-    },
-    editUser(userId) {
-      this.$router.push({name: 'admin-edit-user', params: {userId}})
     }
   }
 }
@@ -90,7 +126,7 @@ export default {
 
 <style scoped lang="scss">
 
-  .admin-info {
+  .admin-edit-storage {
     width: 100%;
   }
 

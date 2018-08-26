@@ -17,3 +17,7 @@ const StorageSchema = new Schema({
 }, { autoIndex: false })
 
 let Storage = module.exports = mongoose.model('Storage', StorageSchema)
+
+module.exports.getStorageById = function(id, callback) {
+  Storage.findById(id, callback)
+}

@@ -44,8 +44,8 @@
 
   .admin-header {
     position: fixed;
-    min-height: 100px;
-    width: 100%;
+    height: 100px;
+    width: calc(100% - 260px); /* where 260px is width of admin side menu */
     color: white;
     background-color: #3d3d3d;
     border-bottom: 1px solid white;

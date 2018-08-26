@@ -91,9 +91,13 @@ export default {
             name: 'admin-register'
           })
 
+          // Set success message and timeout
           this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username}</span>
            registered successfully.`
           this.error = ''
+          setTimeout(() => {
+            this.success = null
+          }, 3000)
 
           // Set input values after registering to blank
           this.username = ''
@@ -134,10 +138,11 @@ export default {
     font-size: 17px;
   }
 
-  .logout-btn {
-    position: relative;
-    bottom: 20px;
-    left: 70%;
+ .logout-btn {
+    margin-right: 10px;
+    position: fixed;
+    top: 25px;
+    left: 91%;
     color: white;
   }
 
