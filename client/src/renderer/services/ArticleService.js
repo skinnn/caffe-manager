@@ -1,8 +1,9 @@
 import Api from '@/services/Api'
+// import axios from 'axios'
 
 export default {
-  createArticle(storageId, article) {
-    return Api().post(`admin/storage/${storageId}/article/create`, article)
+  createArticle(formData) {
+    return Api().post('admin/article/create', formData)
   },
   getArticlesByStorageId(storageId) {
     return Api().get(`admin/storage/${storageId}/articles`)
@@ -15,5 +16,9 @@ export default {
   },
   deleteArticle(articleId) {
     return Api().delete(`article/${articleId}`)
+  },
+  upload(body) {
+    // querystring for form-data
+    return Api().post('upload/image', body)
   }
 }

@@ -16,8 +16,18 @@
       </v-flex>
 
       <v-flex class="admin-container">
+        <v-form @submit.prevent="createArticle" enctype="multipart/form-data">
+          <!-- <v-text-field
+            type="text"
+            name="storageId"
+            v-model="storageId"
+            label="Storage Id"
+            outline
+          ></v-text-field>
+
           <v-text-field
             type="text"
+            name="name"
             v-model="name"
             label="Article Name:"
             outline
@@ -25,6 +35,7 @@
 
           <v-text-field
             type="text"
+            name="quantity"
             v-model="quantity"
             label="Quantity:"
             outline
@@ -32,6 +43,7 @@
 
           <v-text-field
             type="text"
+            name="price"
             v-model="price"
             label="Price:"
             outline
@@ -56,11 +68,22 @@
                 <v-list-tile-title>{{ currency.sign }}</v-list-tile-title>
               </v-list-tile>
             </v-list>
-          </v-menu>
+          </v-menu> -->
 
-          <v-btn @click="createArticle()" class="yellow">
+          <div class="upload-image">
+            <label>Add Image</label>
+            <input id="articleImage" type="file" name="imageUpload" />
+            <!-- <upload-btn name="articleImage" title="Upload image" accept="image/*" :fileChangedCallback="imagePreview">
+              <template slot="icon">
+                <v-icon>image</v-icon>
+              </template>
+            </upload-btn> -->
+          </div>
+
+          <button type="submit" class="yellow">
             Create
-          </v-btn>
+          </button>
+        </v-form>
 
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
@@ -73,12 +96,14 @@
 
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
+import UploadButton from 'vuetify-upload-button'
 import AuthenticationService from '@/services/AuthenticationService'
 import ArticleService from '@/services/ArticleService'
 
 export default {
   components: {
-    AdminSideMenu
+    AdminSideMenu,
+    'upload-btn': UploadButton
   },
   data() {
     return {
@@ -104,34 +129,69 @@ export default {
     }
   },
   methods: {
+    // imagePreview() {
+    //   let files = document.getElementById('uploadFile').files
+    //   console.log(files[0])
+    // },
+    // async upload() {
+    //   let files = document.getElementById('uploadFile').files
+    //   // let path = files[0].path
+    //   console.log(files[0].path)
+    //   try {
+    //     const res = (await ArticleService.upload({
+    //       img: this.img.files,
+    //       path: files[0].path
+    //     })).data
+    //     console.log(res)
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // },
     async createArticle() {
       try {
-        // Get id of storage where article is created
-        // const storageId = this.$store.state.route.params.storageId
+        var formData = new FormData()
+        var imagefile = document.querySelector('#articleImage')
+        var image = imagefile.files[0]
+        console.log(image)
+        formData.append('imageUpload', image)
 
-        const response = (await ArticleService.createArticle(this.storageId, {
-          name: this.name,
-          quantity: this.quantity,
-          price: this.price
-        })).data
+        // var artname = this.name
+        // var artprice = this.price
+        // var artquantity = this.quantity
+        // formData.append('imageUpload', image)
+        // formData.append('artname', artname)
+        // formData.append('quantity', artquantity)
+        // formData.append('price', artprice)
 
-        if (response.saved) {
-          // Success message
-          this.error = null
-          this.success = response.success
-          setTimeout(() => {
-            this.success = null
-          }, 3000)
+        const response = await ArticleService.createArticle(formData)
+        console.log(response)
+        // const response = (await ArticleService.createArticle({
+        //   storageId: this.storageId,
+        //   name: this.name,
+        //   quantity: this.quantity,
+        //   price: this.price
+        // })).data
 
-          // Reset input fields
-          this.name = ''
-          this.quantity = ''
-          this.price = ''
-        }
+        // if (response.uploaded) {
+        //   // Success message
+        //   this.error = null
+        //   this.success = response.success
+        //   setTimeout(() => {
+        //     this.success = null
+        //   }, 3000)
+        //   // Refresh page
+        //   this.$router.push({
+        //     name: 'admin-home'
+        //   })
+        //   // Reset input fields
+        //   this.name = ''
+        //   this.quantity = ''
+        //   this.price = ''
+        // }
       } catch (error) {
         console.log(error)
-        this.success = ''
-        this.error = error.response.data.error
+        // this.success = ''
+        // this.error = error.response.data.error
       }
     },
     async logoutAdmin() {

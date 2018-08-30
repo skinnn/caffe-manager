@@ -45,6 +45,9 @@ app.use(function(req, res, next) {
   next()
 })
 
+// Static image folder
+app.use('/images', express.static('./images'))
+console.log(path.join(__dirname, '../images'))
 // Routes
 app.use('/', index)
 

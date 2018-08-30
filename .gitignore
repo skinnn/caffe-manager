@@ -1,3 +1,14 @@
 client/node_modules
 server/node_modules
-TODO_LIST.txt
+server/images/*.jpg
+server/images*/.jpeg
+server/images/*.png
+server/images/*.gif
+*package-lock.json
+
+*/node_modules
+*.log
+*.jpg
+*.png
+*.gif
+*.txt

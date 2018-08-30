@@ -24,11 +24,14 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "jquery": "^3.3.1",
     "material-design-icons": "^3.0.1",
+    "querystring": "^0.2.0",
     "vue": "^2.5.17",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
     "vuetify": "^1.1.11",
+    "vuetify-upload-button": "^1.1.0",
     "vuex": "^2.5.0",
     "vuex-router-sync": "^5.0.0"
   },

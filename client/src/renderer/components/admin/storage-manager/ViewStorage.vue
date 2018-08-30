@@ -43,7 +43,9 @@
               dark
             >
               <template slot="items" slot-scope="props">
-                <td class="td text-xs-left">{{ props.item.image }}</td>
+                <td class="td text-xs-left">
+                  <img :src="props.item.image" /><p>{{props.item.image}}</p>
+                </td>
                 <td class="td text-xs-left">
                   <span class="article-name">
                     {{ props.item.name }}

@@ -4,32 +4,54 @@ const Article = require('../models/Article')
 module.exports = {
 
   // Create Article
-  async createArticle(req, res) {
+  async createArticle(req, res, next) {
     try {
-      let article = new Article()
-      article.name = req.body.name
-      article.quantity = req.body.quantity
-      article.inStorage = req.params.storageId
-      article.price = req.body.price
-      // Check if the name is typed and create article in the db
-      if (article.name !== '') {
-        await article.save(function(err) {
-          if (err) {
-            res.status(500).send({
-              error: 'A database error has occurred trying to save the article. Please try again.'
-            })
-          } else {
-            res.send({
-              saved: true,
-              success: 'Article created.'
-            })
-          }
-        })
-      } else {
-        res.status(400).send({
-          error: 'Article must have a name.'
-        })
-      }
+      console.log('FILE', req.file)
+      console.log('BODY', req.body)
+
+      return res.send({
+        uploaded: true
+      })
+      // console.log('upload hit')
+      // console.log('FILE: ', req.file)
+      //
+      // let article = new Article()
+      // article.name = req.body.name
+      // article.quantity = req.body.quantity
+      // article.inStorage = req.body.storageId
+      // article.price = req.body.price
+      //
+      // if (req.file !== undefined && req.file !== '') {
+      //   article.image = req.file.path
+      //   console.log('IMG', article.image)
+      //   console.log('IMG', article.image)
+      //   console.log('IMG', article.image)
+      //   console.log('IMG', article.image)
+      // } else {
+      //   article.image = ''
+      // }
+      // // Check if the name is typed and create article in the db
+      // if (article.name !== '') {
+      //   article.save(function(err) {
+      //     if (err) {
+      //       res.send({
+      //         error: err
+      //       })
+      //       // res.status(500).send({
+      //       //   error: 'A database error has occurred trying to save the article. Please try again.'
+      //       // })
+      //     } else {
+      //       res.send({
+      //         saved: true,
+      //         success: 'Article created.'
+      //       })
+      //     }
+      //   })
+      // } else {
+      //   res.status(400).send({
+      //     error: 'Article must have a name.'
+      //   })
+      // }
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to create the storage.'
