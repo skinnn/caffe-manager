@@ -73,11 +73,6 @@
           <div class="upload-image">
             <label>Add Image</label>
             <input id="articleImage" type="file" name="imageUpload" />
-            <!-- <upload-btn name="articleImage" title="Upload image" accept="image/*" :fileChangedCallback="imagePreview">
-              <template slot="icon">
-                <v-icon>image</v-icon>
-              </template>
-            </upload-btn> -->
           </div>
 
           <button type="submit" class="yellow">
@@ -96,14 +91,12 @@
 
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import UploadButton from 'vuetify-upload-button'
 import AuthenticationService from '@/services/AuthenticationService'
 import ArticleService from '@/services/ArticleService'
 
 export default {
   components: {
-    AdminSideMenu,
-    'upload-btn': UploadButton
+    AdminSideMenu
   },
   data() {
     return {
