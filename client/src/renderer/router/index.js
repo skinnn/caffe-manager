@@ -19,6 +19,7 @@ const AdminEditStorage = require('@/components/admin/storage-manager/EditStorage
 const AdminStorageList = require('@/components/admin/storage-manager/StorageList').default
 const AdminCreateStorage = require('@/components/admin/storage-manager/CreateStorage').default
 const AdminCreateArticle = require('@/components/admin/storage-manager/CreateArticle').default
+const AdminEditArticle = require('@/components/admin/storage-manager/EditArticle').default
 // Admin-Manager
 const AdminCreateAdmin = require('@/components/admin/admin-manager/CreateAdmin').default
 const AdminViewAdmin = require('@/components/admin/admin-manager/ViewAdmin').default
@@ -143,6 +144,11 @@ export default new Router({
       path: '/admin/storage/:storageId/article/create',
       name: 'admin-create-article',
       component: AdminCreateArticle
+    },
+    {
+      path: '/admin/article/:articleId/edit',
+      name: 'admin-edit-article',
+      component: AdminEditArticle
     }
   ]
 })

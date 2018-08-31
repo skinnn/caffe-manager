@@ -139,4 +139,12 @@ router.post('/admin/article/create',
   upload.single('imageUpload'),
   ArticleController.createArticle)
 
+// Get Article by id
+router.get('/admin/storage/:storageId/article/:articleId',
+  ArticleController.getArticleById)
+
+// Update Article
+router.put('/article/:articleId',
+  ArticleController.saveArticle)
+
 module.exports = router

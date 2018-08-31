@@ -1,5 +1,6 @@
 const passport = require('passport')
 const Article = require('../models/Article')
+const dateHandler = require('./getDate')
 
 module.exports = {
 
@@ -77,11 +78,13 @@ module.exports = {
   // Get Article by id
   async getArticleById(req, res) {
     try {
+      console.log('hit')
       let query = req.params.articleId
       await Article.getArticleById(query, function(err, article) {
         if (err) {
           console.log(err)
         } else {
+          console.log('article found')
           res.send({
             article: article
           })
@@ -90,6 +93,40 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to get the article data.'
+      })
+    }
+  },
+
+  // Update Article by id
+  async saveArticle(req, res) {
+    try {
+      let query = {_id: req.params.articleId}
+
+      let article = {}
+      article.name = req.body.name
+      article.quantity = req.body.quantity
+      article.price = req.body.price
+      article.updated_date = dateHandler.getCurrentTime()
+      if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
+        await Article.findOneAndUpdate(query, article, { upsert: true, new: true }, function(err, article) {
+          if (err) {
+            console.log(err)
+          } else {
+            res.send({
+              saved: true,
+              article: article,
+              success: 'Article saved successfully.'
+            })
+          }
+        })
+      } else {
+        res.status(500).send({
+          error: 'Please fill out all the fields with valid information.'
+        })
+      }
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to update the storage data.'
       })
     }
   },

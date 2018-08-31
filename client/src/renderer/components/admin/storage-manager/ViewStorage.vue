@@ -8,10 +8,10 @@
         <div class="admin-header">
             <h1 class="heading">
               Storage: {{storage.name}}
-              <v-btn @click="getCreateArticlePage(storage._id)" class="green">
+              <v-btn @click="createArticlePage(storage._id)" class="green">
                 Add Article
               </v-btn>
-              <v-btn @click="editStorage(storage._id)" class="yellow">
+              <v-btn @click="editStoragePage(storage._id)" class="yellow">
                 Edit
               </v-btn>
             </h1>
@@ -62,7 +62,7 @@
                   </span>
                 </td>
                 <td class="td text-xs-right">
-                  <v-btn @click="" class="edit-btn yellow">Edit</v-btn>
+                  <v-btn @click="editArticlePage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
                   <v-btn @click="deleteArticle(props.item._id)" class="delete-btn white">Delete</v-btn>
                 </td>
                 <!-- <td class="td text-xs-right delete-td">
@@ -116,8 +116,8 @@ export default {
   },
   async mounted() {
     try {
-      // Get Storage data
       let storageId = this.storageId
+      // Get Storage data
       const response = (await StorageService.getStorageById(storageId)).data
       if (response.storage) {
         this.storage = response.storage
@@ -134,11 +134,15 @@ export default {
     }
   },
   methods: {
-    getCreateArticlePage(storageId) {
+    createArticlePage(storageId) {
       this.$router.push({name: 'admin-create-article', params: {storageId}})
     },
     editStorage(storageId) {
       this.$router.push({name: 'admin-edit-storage', params: {storageId}})
+    },
+    editArticlePage(articleId) {
+      let storageId = this.storageId
+      this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
     },
     async deleteArticle(articleId) {
       let confirmation = confirm(

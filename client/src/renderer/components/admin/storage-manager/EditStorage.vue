@@ -71,12 +71,16 @@ export default {
   methods: {
     async saveStorage(storageId) {
       try {
-        // eslint-disable-next-line
+        // Save storage
         const response = (await StorageService.saveStorage(this.storage)).data
-        this.$router.push({
-          name: 'admin-view-storage',
-          params: {storageId}
-        })
+        console.log(response)
+        // If successfully saved
+        // if (response.saved) {
+        //   this.$router.push({
+        //     name: 'admin-view-storage',
+        //     params: {storageId}
+        //   })
+        // }
       } catch (error) {
         this.success = null
         this.error = error.response.data.error

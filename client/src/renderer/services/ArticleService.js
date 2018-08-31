@@ -1,5 +1,4 @@
 import Api from '@/services/Api'
-// import axios from 'axios'
 
 export default {
   createArticle(formData, article) {
@@ -8,8 +7,8 @@ export default {
   getArticlesByStorageId(storageId) {
     return Api().get(`admin/storage/${storageId}/articles`)
   },
-  getArticleById(articleId) {
-    return Api().get(`admin/storage/${articleId}`)
+  getArticleById(articleId, storageId) {
+    return Api().get(`admin/storage/${storageId}/article/${articleId}`)
   },
   saveArticle(article) {
     return Api().put(`article/${article._id}`, article)
