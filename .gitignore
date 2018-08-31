@@ -4,7 +4,9 @@ server/images/*.jpg
 server/images*/.jpeg
 server/images/*.png
 server/images/*.gif
-*package-lock.json
+package-lock.json
+client/package-lock.json
+server/package-lock.json
 
 */node_modules
 *.log
