@@ -49,6 +49,9 @@ const upload = multer({
   fileFilter: fileFilter
 })
 
+// router.use('/images', express.static(path.join(__dirname, '/../../images')))
+// console.log(path.join(__dirname, '/../../images'))
+
 // Time stamp
 router.use(function timeLog(req, res, next) {
   console.log('Route hit - Time: ', new Date().toJSON())
@@ -131,74 +134,9 @@ router.get('/admin/storage/:storageId/articles',
 router.delete('/article/:articleId',
   ArticleController.deleteArticle)
 
-const Article = require('../models/Article')
-// Upload image
-// router.post('/admin/article/create',
-//   upload.single('articleImage'),
-//   async function(req, res) {
-//     try {
-//       console.log('upload hit')
-//       console.log('FILE: ', req.file)
-//       console.log('FILES: ', req.files)
-//       console.log('BODY:', req.body)
-//       res.send({
-//         filePath: req.file.path,
-//         uploaded: true
-//       })
-//     } catch (err) {
-//       console.log(err)
-//       res.send({
-//         error: err
-//       })
-//     }
-//   })
-
-/* --------------------------------------------------------- */
-
-// let article = new Article()
-// article.name = req.body.name
-// article.quantity = req.body.quantity
-// article.inStorage = req.body.storageId
-// article.price = req.body.price
-//
-// if (req.file !== undefined && req.file !== '') {
-//   article.image = req.file.path
-//   console.log('IMG', article.image)
-//   console.log('IMG', article.image)
-//   console.log('IMG', article.image)
-//   console.log('IMG', article.image)
-// } else {
-//   article.image = ''
-// }
-//
-// // Check if the name is typed and create article in the db
-// if (article.name !== '') {
-//   article.save(function(err) {
-//     if (err) {
-//       console.log(err)
-//       // res.status(500).send({
-//       //   error: 'A database error has occurred trying to save the article. Please try again.'
-//       // })
-//     } else {
-//       res.send({
-//         saved: true,
-//         success: 'Article created.'
-//       })
-//     }
-//   })
-// } else {
-//   res.status(400).send({
-//     error: 'Article must have a name.'
-//   })
-// }
-
+// Create Article
 router.post('/admin/article/create',
   upload.single('imageUpload'),
-  ArticleController.createArticle)
-
-// Create Article
-router.post('/admin/storage/:storageId/article/create',
-  upload.single('articleImage'),
   ArticleController.createArticle)
 
 module.exports = router

@@ -44,7 +44,7 @@
             >
               <template slot="items" slot-scope="props">
                 <td class="td text-xs-left">
-                  <img :src="props.item.image" /><p>{{props.item.image}}</p>
+                  <img class="articleImage" :src="`http://localhost:8080/${props.item.image}`" />
                 </td>
                 <td class="td text-xs-left">
                   <span class="article-name">
@@ -61,12 +61,13 @@
                     {{ props.item.price }} <span class="currency">{{currency.serbianDinar}}</span>
                   </span>
                 </td>
-                <td class="td text-xs-right edit-td">
+                <td class="td text-xs-right">
                   <v-btn @click="" class="edit-btn yellow">Edit</v-btn>
-                </td>
-                <td class="td text-xs-right delete-td">
                   <v-btn @click="deleteArticle(props.item._id)" class="delete-btn white">Delete</v-btn>
                 </td>
+                <!-- <td class="td text-xs-right delete-td">
+
+                </td> -->
               </template>
             </v-data-table>
 
@@ -99,7 +100,7 @@ export default {
       },
       headers: [
         {
-          text: 'Image',
+          text: '',
           align: 'left',
           sortable: false,
           value: 'image'
@@ -107,7 +108,7 @@ export default {
         { text: 'Name', value: 'name' },
         { text: 'Quantity', value: 'quantity' },
         { text: 'Price', value: 'price' },
-        { text: 'Options', value: 'option' }
+        { text: 'Options', sortable: false, align: 'center', value: 'option' }
       ],
       error: null,
       success: null
@@ -198,6 +199,12 @@ export default {
       height: 75px;
       cursor: pointer;
     }
+    .articleImage {
+      max-width: 100px;
+      max-height: 90px;
+      padding-top: 4px;
+      margin-left: 5px;
+    }
     .article-name {
       font-weight: 600;
       font-size: 16px;
@@ -214,10 +221,10 @@ export default {
       color: white;
     }
     .edit-td {
-      max-width: 80px;
+      // max-width: 80px;
     }
     .delete-td {
-      max-width: 80px;
+      // max-width: 80px;
     }
     .edit-btn {
       color: black;

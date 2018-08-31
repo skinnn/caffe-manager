@@ -8,7 +8,4 @@ server/images/*.gif
 
 */node_modules
 *.log
-*.jpg
-*.png
-*.gif
 *.txt
