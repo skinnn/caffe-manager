@@ -17,7 +17,7 @@
 
       <v-flex class="admin-container">
         <v-form @submit.prevent="createArticle" enctype="multipart/form-data">
-          <!-- <v-text-field
+          <v-text-field
             type="text"
             name="storageId"
             v-model="storageId"
@@ -68,7 +68,7 @@
                 <v-list-tile-title>{{ currency.sign }}</v-list-tile-title>
               </v-list-tile>
             </v-list>
-          </v-menu> -->
+          </v-menu>
 
           <div class="upload-image">
             <label>Add Image</label>
@@ -107,10 +107,11 @@ export default {
   },
   data() {
     return {
+      storageId: this.$store.state.route.params.storageId,
       name: '',
       quantity: '',
       price: '',
-      // TODO: Create currency
+      // TODO: Create currency handler for admin options
       currencies: [
         {
           title: 'Serbian Dinar',
@@ -123,7 +124,6 @@ export default {
           sign: '€'
         }
       ],
-      storageId: this.$store.state.route.params.storageId,
       error: null,
       success: null
     }
@@ -149,49 +149,44 @@ export default {
     // },
     async createArticle() {
       try {
-        var formData = new FormData()
-        var imagefile = document.querySelector('#articleImage')
-        var image = imagefile.files[0]
-        console.log(image)
+        const formData = new FormData()
+        // Get image
+        const imagefile = document.querySelector('#articleImage')
+        const image = imagefile.files[0]
+        // Get and append text inputs to form data
+        const artName = this.name
+        const artPrice = this.price
+        const artQuantity = this.quantity
+        // Storage ID
+        const storageId = this.storageId
+        // Append everything to form data
         formData.append('imageUpload', image)
+        formData.append('storageId', storageId)
+        formData.append('articleName', artName)
+        formData.append('articlePrice', artPrice)
+        formData.append('articleQuantity', artQuantity)
 
-        // var artname = this.name
-        // var artprice = this.price
-        // var artquantity = this.quantity
-        // formData.append('imageUpload', image)
-        // formData.append('artname', artname)
-        // formData.append('quantity', artquantity)
-        // formData.append('price', artprice)
-
-        const response = await ArticleService.createArticle(formData)
+        // Create article
+        const response = (await ArticleService.createArticle(formData)).data
         console.log(response)
-        // const response = (await ArticleService.createArticle({
-        //   storageId: this.storageId,
-        //   name: this.name,
-        //   quantity: this.quantity,
-        //   price: this.price
-        // })).data
 
-        // if (response.uploaded) {
-        //   // Success message
-        //   this.error = null
-        //   this.success = response.success
-        //   setTimeout(() => {
-        //     this.success = null
-        //   }, 3000)
-        //   // Refresh page
-        //   this.$router.push({
-        //     name: 'admin-home'
-        //   })
-        //   // Reset input fields
-        //   this.name = ''
-        //   this.quantity = ''
-        //   this.price = ''
-        // }
+        // If successfully created
+        if (response.created) {
+          // Success message and timeout
+          this.error = null
+          this.success = response.success
+          setTimeout(() => {
+            this.success = null
+          }, 3000)
+          // Reset input fields
+          this.name = ''
+          this.quantity = ''
+          this.price = ''
+        }
       } catch (error) {
         console.log(error)
-        // this.success = ''
-        // this.error = error.response.data.error
+        this.success = ''
+        this.error = error.response.data.error
       }
     },
     async logoutAdmin() {

@@ -17,7 +17,7 @@ module.exports = {
               saved: true,
               success: 'Storage created.'
             })
-            console.log('Storage has been successfuly created.')
+            console.log('Storage has been successfully created.')
           }
         })
       } else {
@@ -37,7 +37,6 @@ module.exports = {
         if (err) {
           console.log(err)
         } else {
-          console.log(storages)
           res.send({
             storages: storages
           })

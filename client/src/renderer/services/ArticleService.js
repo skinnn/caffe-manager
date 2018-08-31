@@ -2,8 +2,8 @@ import Api from '@/services/Api'
 // import axios from 'axios'
 
 export default {
-  createArticle(formData) {
-    return Api().post('admin/article/create', formData)
+  createArticle(formData, article) {
+    return Api().post('admin/article/create', formData, article)
   },
   getArticlesByStorageId(storageId) {
     return Api().get(`admin/storage/${storageId}/articles`)
