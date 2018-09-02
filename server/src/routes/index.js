@@ -145,6 +145,7 @@ router.get('/admin/storage/:storageId/article/:articleId',
 
 // Update Article
 router.put('/article/:articleId',
+  upload.single('imageUpload'),
   ArticleController.saveArticle)
 
 module.exports = router

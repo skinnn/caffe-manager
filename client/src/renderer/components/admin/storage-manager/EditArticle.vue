@@ -16,12 +16,9 @@
       </v-flex>
 
       <v-flex class="admin-container">
-        <!-- Display messages -->
-        <div class="error-msg" v-if="error" v-html="error" />
-        <div class="success-msg" v-if="success" v-html="success" />
 
         <div class="admin-edit-storage">
-          <form>
+          <v-form @submit.prevent="saveArticle(article._id)" enctype="multipart/form-data">
             <label>Article name:</label>
             <v-text-field
               type="text"
@@ -51,11 +48,21 @@
               readonly
             ></v-text-field>
 
-            <v-btn @click="saveArticle(article._id)" class="yellow">
+            <div class="upload-image">
+              <label>Add Image</label>
+              <input id="articleImage" type="file" name="imageUpload" />
+            </div>
+            
+            <!-- Display messages -->
+            <div class="error-msg" v-if="error" v-html="error" />
+            <div class="success-msg" v-if="success" v-html="success" />
+
+            <v-btn type="submit" class="yellow">
               Save
             </v-btn>
-          </form>
+          </v-form>
         </div>
+
       </v-flex>
     </v-layout>
   </div>
@@ -95,8 +102,24 @@ export default {
   methods: {
     async saveArticle(articleId) {
       try {
+        const articleFormData = new FormData()
+        // Get Article id
+        const articleId = this.articleId
+        // Get image
+        const imagefile = document.querySelector('#articleImage')
+        const newImage = imagefile.files[0]
+        // Get and append text inputs to form data
+        const newArticleName = this.article.name
+        const newArticlePrice = this.article.price
+        const newArticleQuantity = this.article.quantity
+        // Append everything to form data
+        articleFormData.append('imageUpload', newImage)
+        articleFormData.append('articleName', newArticleName)
+        articleFormData.append('articlePrice', newArticlePrice)
+        articleFormData.append('articleQuantity', newArticleQuantity)
+
         // Save Article
-        const response = (await ArticleService.saveArticle(this.article)).data
+        const response = (await ArticleService.saveArticle(articleFormData, articleId)).data
         // If successfully saved
         if (response.saved) {
           // Success message

@@ -161,7 +161,6 @@ export default {
 
         // Create article
         const response = (await ArticleService.createArticle(formData)).data
-        console.log(response)
 
         // If successfully created
         if (response.created) {

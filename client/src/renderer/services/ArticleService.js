@@ -1,8 +1,8 @@
 import Api from '@/services/Api'
 
 export default {
-  createArticle(formData, article) {
-    return Api().post('admin/article/create', formData, article)
+  createArticle(formData) {
+    return Api().post('admin/article/create', formData)
   },
   getArticlesByStorageId(storageId) {
     return Api().get(`admin/storage/${storageId}/articles`)
@@ -10,8 +10,8 @@ export default {
   getArticleById(articleId, storageId) {
     return Api().get(`admin/storage/${storageId}/article/${articleId}`)
   },
-  saveArticle(article) {
-    return Api().put(`article/${article._id}`, article)
+  saveArticle(articleFormData, articleId) {
+    return Api().put(`article/${articleId}`, articleFormData)
   },
   deleteArticle(articleId) {
     return Api().delete(`article/${articleId}`)

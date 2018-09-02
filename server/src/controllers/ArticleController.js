@@ -15,12 +15,10 @@ module.exports = {
       article.quantity = req.body.articleQuantity
       article.price = req.body.articlePrice
 
+      // If image is added create image path
       if (req.file !== undefined && req.file !== '') {
         article.image = req.file.path
-        console.log('IMG', article.image)
-        console.log('IMG', article.image)
-        console.log('IMG', article.image)
-        console.log('IMG', article.image)
+        // console.log('IMG', article.image)
       } else {
         article.image = ''
       }
@@ -32,7 +30,7 @@ module.exports = {
               error: 'A database error has occurred trying to save the article. Please try again.'
             })
           } else {
-            return res.send({
+            res.send({
               created: true,
               success: 'Article was successfully createad.'
             })
@@ -97,14 +95,24 @@ module.exports = {
   // Update Article by id
   async saveArticle(req, res) {
     try {
+      // console.log('BODY:', req.body)
+      // console.log('FILE:', req.file)
       let query = {_id: req.params.articleId}
 
       let article = {}
-      article.name = req.body.name
-      article.quantity = req.body.quantity
-      article.price = req.body.price
+      article.name = req.body.articleName
+      article.price = req.body.articlePrice
+      article.quantity = req.body.articleQuantity
       article.updated_date = dateHandler.getCurrentTime()
-      if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
+
+      // If image is changed update the image path
+      if (req.file !== undefined && req.file !== '') {
+        // TODO: If there is previous article image delete it from the images folder
+        article.image = req.file.path
+      }
+
+      // If fields are not empty save article
+      if (article.name !== '' && article.quantity !== '' && article.price !== '') {
         await Article.findOneAndUpdate(query, article, { upsert: true, new: true }, function(err, article) {
           if (err) {
             console.log(err)
@@ -112,7 +120,7 @@ module.exports = {
             res.send({
               saved: true,
               article: article,
-              success: 'Article saved successfully.'
+              success: 'Article updated successfully.'
             })
           }
         })
