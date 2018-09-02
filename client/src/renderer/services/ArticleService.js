@@ -13,8 +13,8 @@ export default {
   saveArticle(articleFormData, articleId) {
     return Api().put(`article/${articleId}`, articleFormData)
   },
-  deleteArticle(articleId) {
-    return Api().delete(`article/${articleId}`)
+  deleteArticle(articleId, imgPath) {
+    return Api().delete(`article/${articleId}`, {data: { imgPath: imgPath }})
   },
   upload(body) {
     // querystring for form-data

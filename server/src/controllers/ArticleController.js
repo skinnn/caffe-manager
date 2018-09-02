@@ -1,6 +1,7 @@
 const passport = require('passport')
 const Article = require('../models/Article')
 const dateHandler = require('./getDate')
+const fs = require('fs')
 
 module.exports = {
 
@@ -140,17 +141,28 @@ module.exports = {
   async deleteArticle(req, res) {
     try {
       let query = {_id: req.params.articleId}
-      // let img = req.body.imgPath
-      // let dirPath = process.cwd()
-      // let fullImgPath = dirPath + '\\' + img
+      // Get image path
+      let img = req.body.imgPath
+      // Create full image path so it can be deleted with fs.unlink
+      let dirPath = process.cwd()
+      let fullImgPath = dirPath + '/' + img
       // console.log(fullImgPath)
 
       await Article.remove(query, function(err) {
         if (err) {
-          console.log(err)
+          res.status(500).send({
+            error: 'A database error has occurred trying to delete the article.'
+          })
         }
-        // TODO: Delete article image
-        console.log('Article deleted successfully!')
+        fs.unlink(fullImgPath, function(err) {
+          if (err) {
+            res.status(500).send({
+              error: 'An error has occurred trying to delete the image.'
+            })
+          }
+          // console.log('Deleted the: ' + fullImgPath)
+        })
+        // console.log('Article deleted successfully!')
         res.send({
           deleted: true,
           success: 'Article deleted.'

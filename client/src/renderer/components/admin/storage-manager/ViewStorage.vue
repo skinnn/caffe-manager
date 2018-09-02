@@ -32,6 +32,7 @@
           <hr>
           <br>
 
+          <!-- TODO: Add animation for fetching/displaying storages -->
           <!-- Articles from the current storage -->
           <div id="list-div">
 
@@ -63,7 +64,7 @@
                 </td>
                 <td class="td text-xs-right">
                   <v-btn @click="editArticlePage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
-                  <v-btn @click="deleteArticle(props.item._id)" class="delete-btn white">Delete</v-btn>
+                  <v-btn @click="deleteArticle(props.item._id, props.item)" class="delete-btn white">Delete</v-btn>
                 </td>
                 <!-- <td class="td text-xs-right delete-td">
 
@@ -144,13 +145,17 @@ export default {
       let storageId = this.storageId
       this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
     },
-    async deleteArticle(articleId) {
+    async deleteArticle(articleId, article) {
       let confirmation = confirm(
         'Are you sure?'
       )
       if (confirmation) {
         try {
-          const response = (await ArticleService.deleteArticle(articleId)).data
+          // Get path for the article image
+          const imgPath = article.image
+          // Delete article
+          const response = (await ArticleService.deleteArticle(articleId, imgPath)).data
+          // If Article is deleted successfully
           if (response.deleted) {
             // Set success message and timeout
             this.error = null
