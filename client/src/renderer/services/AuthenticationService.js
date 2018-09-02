@@ -4,8 +4,8 @@ export default {
   registerUser(credentials) {
     return Api().post('user/register', credentials)
   },
-  registerAdmin(credentials) {
-    return Api().post('admin/register', credentials)
+  registerAdmin(adminFormData) {
+    return Api().post('admin/register', adminFormData)
   },
   loginUser(credentials) {
     return Api().post('user/login', credentials)

@@ -30,6 +30,9 @@
           >
             <template slot="items" slot-scope="props">
               <td class="td text-xs-left">
+                <img class="admin-image" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
+              </td>
+              <td class="td text-xs-left">
                 <span class="admin-name">
                   {{ props.item.name }}
                 </span>
@@ -39,18 +42,10 @@
                   {{ props.item.username }}
                 </span>
               </td>
-              <!-- <td class="td text-xs-left">
-                <span class="article-price">
-                  {{ props.item.price }} <span class="currency">{{currency.serbianDinar}}</span>
-                </span>
-              </td> -->
               <td class="td text-xs-center">
                 <v-btn @click="editAdminPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
                 <v-btn @click="deleteAdmin(props.item._id)" class="delete-btn white">Delete</v-btn>
               </td>
-              <!-- <td class="td text-xs-right delete-td">
-
-              </td> -->
             </template>
           </v-data-table>
 
@@ -75,11 +70,13 @@ export default {
       admins: [],
       headers: [
         {
-          text: 'Name',
+          text: 'Image',
           align: 'left',
-          sortable: true,
-          value: 'name'
+          sortable: false,
+          value: 'image'
         },
+        {
+          text: 'Name', align: 'left', sortable: true, value: 'name'},
         { text: 'Username', sortable: true, value: 'username' },
         { text: 'Options', sortable: false, align: 'center', value: 'option' }
       ],
@@ -148,6 +145,12 @@ export default {
     .td {
       height: 70px;
       cursor: pointer;
+    }
+    .admin-image {
+      max-width: 100px;
+      max-height: 90px;
+      padding-top: 4px;
+      margin-left: 5px;
     }
     .admin-name {
       font-size: 18px;

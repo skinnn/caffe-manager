@@ -95,6 +95,7 @@ router.post('/user/register',
 
 // Register Admin
 router.post('/admin/register',
+  upload.single('imageUpload'),
   AuthenticationControllerPolicy.registerAdmin,
   AuthenticationController.registerAdmin)
 

@@ -16,6 +16,13 @@ const AdminSchema = new Schema({
     type: String,
     required: true
   },
+  image: {
+    type: String
+  },
+  createdBy: {
+    type: Object,
+    default: ''
+  },
   userType: {
     type: String,
     default: 'admin'

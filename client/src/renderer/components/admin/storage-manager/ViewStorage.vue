@@ -45,7 +45,7 @@
             >
               <template slot="items" slot-scope="props">
                 <td class="td text-xs-left">
-                  <img class="articleImage" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
+                  <img class="article-image" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
                 </td>
                 <td class="td text-xs-left">
                   <span class="article-name">
@@ -208,7 +208,7 @@ export default {
       height: 75px;
       cursor: pointer;
     }
-    .articleImage {
+    .article-image {
       max-width: 100px;
       max-height: 90px;
       padding-top: 4px;

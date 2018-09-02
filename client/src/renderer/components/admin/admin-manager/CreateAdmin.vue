@@ -16,7 +16,7 @@
       </v-flex>
 
       <v-flex class="admin-container">
-
+        <v-form @submit.prevent="registerAdmin" enctype="multipart/form-data">
           <v-text-field
             type="text"
             v-model="username"
@@ -42,15 +42,21 @@
             outline
           ></v-text-field>
 
+          <div class="upload-image">
+            <label>Add Image</label>
+            <input id="adminImage" type="file" name="imageUpload" />
+          </div>
+
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="success-msg" v-if="success" v-html="success" />
 
-          <v-btn @click="registerAdmin()" class="yellow">
+          <v-btn type="submit" class="yellow">
             Create
           </v-btn>
-
+        </v-form>
       </v-flex>
+
     </v-layout>
   </div>
 </template>
@@ -69,6 +75,11 @@ export default {
       name: '',
       password: '',
       password2: '',
+      createdBy: {
+        id: this.$store.state.admin._id,
+        name: this.$store.state.admin.name,
+        username: this.$store.state.admin.username
+      },
       error: null,
       success: null
     }
@@ -79,12 +90,27 @@ export default {
   methods: {
     async registerAdmin() {
       try {
-        const response = (await AuthenticationService.registerAdmin({
-          username: this.username,
-          password: this.password,
-          password2: this.password2,
-          name: this.name
-        })).data
+        const adminFormData = new FormData()
+        // Get image
+        const imagefile = document.querySelector('#adminImage')
+        const image = imagefile.files[0]
+        // Get and append text inputs to form data
+        const adminUsername = this.username
+        const adminName = this.name
+        const adminPassword = this.password
+        const adminPassword2 = this.password2
+        // Created By
+        const createdBy = this.createdBy
+        // Append everything to form data
+        adminFormData.append('imageUpload', image)
+        adminFormData.append('adminUsername', adminUsername)
+        adminFormData.append('adminName', adminName)
+        adminFormData.append('adminPassword', adminPassword)
+        adminFormData.append('adminPassword2', adminPassword2)
+        adminFormData.append('createdBy', createdBy)
+
+        // Register admin
+        const response = (await AuthenticationService.registerAdmin(adminFormData)).data
         // If registering was successful redirect to the admin list
         if (response.admin) {
           this.$router.push({

@@ -63,15 +63,30 @@ module.exports = {
   // Admin Register
   async registerAdmin(req, res) {
     try {
-      const username = req.body.username
-      const password = req.body.password
-      const password2 = req.body.password2
-      const name = req.body.name
+      // console.log('FILE', req.file)
+      // console.log('BODY', req.body)
+      const username = req.body.adminUsername
+      const name = req.body.adminName
+      const password = req.body.adminPassword
+      const password2 = req.body.adminPassword2
+      const createdBy = {
+        id: req.body.createdBy.id,
+        name: req.body.createdBy.name,
+        username: req.body.createdBy.username
+      }
+      let image = ''
+
+      // If image is added create image path
+      if (req.file !== undefined && req.file !== '') {
+        image = req.file.path
+      }
 
       const newAdmin = new Admin({
         username: username,
+        name: name,
         password: password,
-        name: name
+        createdBy: createdBy,
+        image: image
       })
       await Admin.createAdmin(newAdmin, function(err, admin) {
         if (err) {
@@ -87,8 +102,9 @@ module.exports = {
         }
       })
     } catch (err) {
+      console.log(err)
       res.status(500).send({
-        error: 'An error has occurred trying to register the admin.'
+        error: 'An error has occurred trying to register the admin. Please try again.'
       })
     }
   },

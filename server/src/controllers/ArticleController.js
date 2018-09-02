@@ -25,7 +25,7 @@ module.exports = {
       }
       // Check if the name is typed and create article in the db
       if (article.name !== '') {
-        article.save(function(err) {
+        await article.save(function(err) {
           if (err) {
             res.status(500).send({
               error: 'A database error has occurred trying to save the article. Please try again.'
