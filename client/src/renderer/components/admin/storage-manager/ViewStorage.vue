@@ -45,7 +45,7 @@
             >
               <template slot="items" slot-scope="props">
                 <td class="td text-xs-left">
-                  <img class="articleImage" :src="`http://localhost:8080/${props.item.image}`" />
+                  <img class="articleImage" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
                 </td>
                 <td class="td text-xs-left">
                   <span class="article-name">
