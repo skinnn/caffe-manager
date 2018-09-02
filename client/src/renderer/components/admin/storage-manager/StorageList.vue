@@ -80,7 +80,10 @@ export default {
   },
   methods: {
     viewStorage(storageId) {
-      this.$router.push({name: 'admin-view-storage', params: {storageId}})
+      this.$router.push({
+        name: 'admin-view-storage',
+        params: {storageId}
+      })
     },
     async logoutAdmin() {
       try {

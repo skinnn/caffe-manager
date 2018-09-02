@@ -8,9 +8,6 @@
         <div class="admin-header">
             <h1 class="heading">
               Edit User: {{user.name}}
-              <v-btn @click="saveUser(user._id)" class="yellow">
-                Save
-              </v-btn>
             </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
@@ -24,7 +21,6 @@
         <div class="success-msg" v-if="success" v-html="success" />
 
         <div class="admin-edit">
-          <!--TODO fix error where admin is defined as null -->
 
           <label>Username:</label>
           <v-text-field
@@ -39,6 +35,10 @@
             v-model="user.name"
             outline
           ></v-text-field>
+
+          <v-btn @click="saveUser(user._id)" class="yellow">
+            Save
+          </v-btn>
         </div>
 
       </v-flex>

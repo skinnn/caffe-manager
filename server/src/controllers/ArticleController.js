@@ -28,12 +28,9 @@ module.exports = {
       if (article.name !== '') {
         article.save(function(err) {
           if (err) {
-            res.send({
-              error: err
+            res.status(500).send({
+              error: 'A database error has occurred trying to save the article. Please try again.'
             })
-            // res.status(500).send({
-            //   error: 'A database error has occurred trying to save the article. Please try again.'
-            // })
           } else {
             return res.send({
               created: true,

@@ -3,7 +3,7 @@
     <div>
       <admin-side-menu />
     </div>
-    <v-layout column class="blue right-side">
+    <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">Admins</h1>
@@ -19,23 +19,40 @@
 
         <!-- List of all admins in the db -->
         <div class="list-of-admins">
-          <v-list two-line>
-            <v-list-tile
-                v-for="admin in this.admins"
-                :key="admin._id"
-                @click="viewAdmin(admin._id)"
-            >
 
-              <v-list-tile-action>
-                  <v-icon>gavel</v-icon>
-                </v-list-tile-action>
+          <v-data-table
+            :headers="headers"
+            :items="admins"
+            hide-actions
+            class="elevation-1"
+            dark
+          >
+            <template slot="items" slot-scope="props">
+              <td class="td text-xs-left">
+                <span class="admin-name">
+                  {{ props.item.name }}
+                </span>
+              </td>
+              <td class="td text-xs-left">
+                <span class="admin-username">
+                  {{ props.item.username }}
+                </span>
+              </td>
+              <!-- <td class="td text-xs-left">
+                <span class="article-price">
+                  {{ props.item.price }} <span class="currency">{{currency.serbianDinar}}</span>
+                </span>
+              </td> -->
+              <td class="td text-xs-center">
+                <v-btn @click="editAdminPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
+                <v-btn @click="deleteAdmin(props.item._id)" class="delete-btn white">Delete</v-btn>
+              </td>
+              <!-- <td class="td text-xs-right delete-td">
 
-                <v-list-tile-content>
-                  <v-list-tile-title>{{admin.username}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{admin.name}}</v-list-tile-sub-title>
-                </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
+              </td> -->
+            </template>
+          </v-data-table>
+
         </div>
 
       </v-flex>
@@ -55,6 +72,16 @@ export default {
   data() {
     return {
       admins: [],
+      headers: [
+        {
+          text: 'Name',
+          align: 'left',
+          sortable: true,
+          value: 'name'
+        },
+        { text: 'Username', sortable: true, value: 'username' },
+        { text: 'Options', sortable: false, align: 'center', value: 'option' }
+      ],
       error: null,
       success: null
     }
@@ -82,6 +109,12 @@ export default {
     }
   },
   methods: {
+    editAdminPage(adminId) {
+      this.$router.push({
+        name: 'admin-edit-admin',
+        params: {adminId}
+      })
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -110,6 +143,27 @@ export default {
 
   .list-of-admins {
     width: 100%;
+
+    .td {
+      height: 70px;
+      cursor: pointer;
+    }
+    .admin-name {
+      font-size: 18px;
+    }
+    .admin-username {
+      font-weight: 600;
+      font-size: 17px;
+    }
+    .edit-btn {
+      color: black;
+      font-size: 15px;
+    }
+    .delete-btn {
+      color: red;
+      font-size: 15px;
+      border: 1px solid red;
+    }
   }
 
   .list-title {

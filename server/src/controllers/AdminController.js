@@ -1,6 +1,7 @@
 const passport = require('passport')
 const Admin = require('../models/Admin')
 const User = require('../models/User')
+const dateHandler = require('./getDate')
 
 module.exports = {
 
@@ -48,15 +49,27 @@ module.exports = {
     try {
       let query = {_id: req.params.adminId}
 
-      await Admin.update(query, req.body, function(err, admin) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            admin: admin
-          })
-        }
-      })
+      let admin = {}
+      admin.name = req.body.name
+      admin.username = req.body.username
+      // TODO: Also edit admin password
+      // admin.password = req.body.password
+      admin.updated_date = dateHandler.getCurrentTime()
+
+      // Check if the name is typed and create article in the db
+      if (admin.name !== '' && admin.username !== '') {
+        await Admin.findOneAndUpdate(query, req.body, { upsert: true, new: true }, function(err, admin) {
+          if (err) {
+            console.log(err)
+          } else {
+            res.send({
+              saved: true,
+              admin: admin,
+              success: `Admin: ${admin.name} has been successfully saved.`
+            })
+          }
+        })
+      }
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to update the admin data.'
@@ -109,7 +122,7 @@ module.exports = {
     try {
       let query = {_id: req.params.userId}
 
-      await User.update(query, req.body, function(err, user) {
+      await User.findOneAndUpdate(query, req.body, function(err, user) {
         if (err) {
           console.log(err)
         } else {

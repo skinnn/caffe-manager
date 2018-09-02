@@ -8,9 +8,6 @@
         <div class="admin-header">
             <h1 class="heading">
               Edit Admin: {{admin.name}}
-              <v-btn @click="saveAdmin(admin._id)" class="yellow">
-                Save
-              </v-btn>
             </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
@@ -24,7 +21,6 @@
         <div class="success-msg" v-if="success" v-html="success" />
 
         <div class="admin-edit">
-          <!--TODO fix error where admin is defined as null -->
 
           <label>Username:</label>
           <v-text-field
@@ -39,6 +35,10 @@
             v-model="admin.name"
             outline
           ></v-text-field>
+
+          <v-btn @click="saveAdmin(admin._id)" class="yellow">
+            Save
+          </v-btn>
         </div>
 
       </v-flex>
@@ -78,12 +78,14 @@ export default {
   methods: {
     async saveAdmin(adminId) {
       try {
+        // Save Admin
         const response = (await AdminService.saveAdmin(this.admin)).data
-        console.log(response)
-        this.$router.push({
-          name: 'admin-view-admin',
-          params: {adminId}
-        })
+
+        // Set success message and timeout
+        this.success = response.success
+        setTimeout(() => {
+          this.success = null
+        }, 3000)
       } catch (error) {
         this.success = null
         this.error = error.response.data.error

@@ -74,7 +74,7 @@ module.exports = {
     try {
       let query = {_id: req.params.storageId}
 
-      await Storage.update(query, req.body, function(err, storage) {
+      await Storage.findOneAndUpdate(query, req.body, function(err, storage) {
         if (err) {
           console.log(err)
         } else {

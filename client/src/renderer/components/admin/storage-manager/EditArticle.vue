@@ -8,9 +8,6 @@
         <div class="admin-header">
             <h1 class="heading">
               Edit Article: {{article.name}}
-              <v-btn @click="saveArticle(article._id)" class="yellow">
-                Save
-              </v-btn>
             </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
@@ -53,6 +50,10 @@
               outline
               readonly
             ></v-text-field>
+
+            <v-btn @click="saveArticle(article._id)" class="yellow">
+              Save
+            </v-btn>
           </form>
         </div>
       </v-flex>

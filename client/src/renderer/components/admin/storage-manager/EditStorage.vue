@@ -24,7 +24,6 @@
         <div class="success-msg" v-if="success" v-html="success" />
 
         <div class="admin-edit-storage">
-          <!--TODO fix error where admin is defined as null -->
 
           <label>Storage name:</label>
           <v-text-field
