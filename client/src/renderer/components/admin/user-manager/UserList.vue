@@ -20,23 +20,34 @@
 
         <!-- List of all users in the db -->
         <div class="list-of-users">
-          <v-list two-line>
-            <v-list-tile
-                v-for="user in this.users"
-                :key="user._id"
-                @click="viewUser(user._id)"
-            >
 
-              <v-list-tile-action>
-                  <v-icon>people</v-icon>
-                </v-list-tile-action>
-
-                <v-list-tile-content>
-                  <v-list-tile-title>{{user.username}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{user.name}}</v-list-tile-sub-title>
-                </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
+          <v-data-table
+            :headers="headers"
+            :items="users"
+            hide-actions
+            class="elevation-1"
+            dark
+          >
+            <template slot="items" slot-scope="props">
+              <td class="td text-xs-left">
+                <img class="user-image" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
+              </td>
+              <td class="td text-xs-left">
+                <span class="user-name">
+                  {{ props.item.name }}
+                </span>
+              </td>
+              <td class="td text-xs-left">
+                <span class="user-username">
+                  {{ props.item.username }}
+                </span>
+              </td>
+              <td class="td text-xs-center">
+                <v-btn @click="editUserPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
+                <v-btn @click="deleteUser(props.item)" class="delete-btn white">Delete</v-btn>
+              </td>
+            </template>
+          </v-data-table>
         </div>
 
       </v-flex>
@@ -56,6 +67,18 @@ export default {
   data() {
     return {
       users: [],
+      headers: [
+        {
+          text: 'Image',
+          align: 'left',
+          sortable: false,
+          value: 'image'
+        },
+        {
+          text: 'Name', align: 'left', sortable: true, value: 'name'},
+        { text: 'Username', sortable: true, value: 'username' },
+        { text: 'Options', sortable: false, align: 'center', value: 'option' }
+      ],
       error: null,
       success: null
     }
@@ -106,12 +129,35 @@ export default {
 
 <style scoped lang="scss">
 
-  .list-title {
-    font-size: 17px;
-  }
-
   .list-of-users {
     width: 100%;
+
+    .td {
+      height: 70px;
+      cursor: pointer;
+    }
+    .user-image {
+      max-width: 100px;
+      max-height: 90px;
+      padding-top: 4px;
+      margin-left: 5px;
+    }
+    .user-name {
+      font-size: 18px;
+    }
+    .user-username {
+      font-weight: 600;
+      font-size: 17px;
+    }
+    .edit-btn {
+      color: black;
+      font-size: 15px;
+    }
+    .delete-btn {
+      color: red;
+      font-size: 15px;
+      border: 1px solid red;
+    }
   }
 
   .logout-btn {

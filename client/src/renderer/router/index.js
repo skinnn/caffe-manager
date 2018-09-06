@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // User Components
+// TODO: Delete User Register page after creating admin-create-user page
 const UserRegister = require('@/components/UserRegister').default
 const UserLogin = require('@/components/UserLogin').default
 const UserHome = require('@/components/user/UserHome').default
@@ -26,6 +27,7 @@ const AdminViewAdmin = require('@/components/admin/admin-manager/ViewAdmin').def
 const AdminEditAdmin = require('@/components/admin/admin-manager/EditAdmin').default
 const AdminAdminList = require('@/components/admin/admin-manager/AdminList').default
 // User-Manager
+const AdminCreateUser = require('@/components/admin/user-manager/CreateUser').default
 const AdminUserList = require('@/components/admin/user-manager/UserList').default
 const AdminEditUser = require('@/components/admin/user-manager/EditUser').default
 const AdminViewUser = require('@/components/admin/user-manager/ViewUser').default
@@ -48,6 +50,11 @@ export default new Router({
       path: '/user/register',
       name: 'user-register',
       component: UserRegister
+    },
+    {
+      path: '/admin/user/create',
+      name: 'admin-create-user',
+      component: AdminCreateUser
     },
     {
       path: '/user/warehouse',

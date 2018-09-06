@@ -89,7 +89,7 @@
                 <v-icon>format_list_bulleted</v-icon>
               </v-list-tile-action>
             </v-list-tile>
-            <v-list-tile @click="navigateTo({ name: 'admin-user-create' })">
+            <v-list-tile @click="navigateTo({ name: 'admin-create-user' })">
               <v-list-tile-title>Create Staff Member</v-list-tile-title>
               <v-list-tile-action>
                 <v-icon>add</v-icon>
