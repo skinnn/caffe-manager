@@ -94,6 +94,7 @@ router.get('/admin/logout',
 
 // Register User
 router.post('/user/register',
+  upload.single('imageUpload'),
   AuthenticationControllerPolicy.registerUser,
   AuthenticationController.registerUser)
 

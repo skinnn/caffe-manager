@@ -7,7 +7,7 @@
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">
-              Create Admin
+              Create Staff Member
             </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
@@ -115,7 +115,11 @@ export default {
         const userPassword = this.password
         const userPassword2 = this.password2
         // Permisions - user menu
-        const userMenu = this.userMenu
+        const userMenu = {
+          home: this.userMenu.home,
+          warehouse: this.userMenu.warehouse,
+          tables: this.userMenu.tables
+        }
         // Created By
         const createdBy = this.createdBy
         // Append everything to form data
@@ -126,34 +130,29 @@ export default {
         userFormData.append('userPassword2', userPassword2)
         userFormData.append('userMenu', userMenu)
         userFormData.append('createdBy', createdBy)
-        console.log(userFormData)
 
         // Register User
         const response = (await AuthenticationService.registerUser(userFormData)).data
-        console.log(response)
-        // // If registering was successful redirect to the user list
-        // if (response.user) {
-        //   this.$router.push({
-        //     name: 'admin-user-list'
-        //   })
-        //
-        //   // Set success message and timeout
-        //   this.success = `User with username <span style="color: blue; font-size:17px;">${this.username}</span>
-        //    registered successfully.`
-        //   this.error = ''
-        //   setTimeout(() => {
-        //     this.success = null
-        //   }, 3000)
-        //
-        //   // Set input values to default after registering
-        //   this.username = ''
-        //   this.password = ''
-        //   this.password2 = ''
-        //   this.name = ''
-        //   this.userMenu.home = true
-        //   this.userMenu.warehouse = false
-        //   this.userMenu.tables = false
-        // }
+
+        // If registering was successful
+        if (response.user) {
+          // Set success message and timeout
+          this.success = `User with username <span style="color: blue; font-size:17px;">${this.username}</span>
+           registered successfully.`
+          this.error = ''
+          setTimeout(() => {
+            this.success = null
+          }, 3000)
+
+          // Set input values to default after registering
+          this.username = ''
+          this.password = ''
+          this.password2 = ''
+          this.name = ''
+          this.userMenu.home = true
+          this.userMenu.warehouse = false
+          this.userMenu.tables = false
+        }
       } catch (error) {
         console.log(error)
         this.success = ''

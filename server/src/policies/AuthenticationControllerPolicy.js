@@ -7,36 +7,34 @@ module.exports = {
   registerUser(req, res, next) {
     const schema = {
       // TODO: Username must have between 3 and 15 characters
-      username: Joi.string().required(),
-      name: Joi.string().required(),
-      password: Joi.string().regex(
+      userUsername: Joi.string().required(),
+      userName: Joi.string().required(),
+      userPassword: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{6,32}$')
       ).required(),
-      password2: Joi.any().valid(Joi.ref('password')).options({ language: { any: { allowOnly: 'must match password' } } }).label('Password Confirmation'),
-      userMenu: Joi.object().keys({
-        home: Joi.boolean().required(),
-        warehouse: Joi.boolean().required(),
-        tables: Joi.boolean().required()
-      })
+      userPassword2: Joi.any().valid(Joi.ref('userPassword')).options({ language: { any: { allowOnly: 'must match password' } } }).label('Password Confirmation'),
+      userMenu: Joi.any(),
+      createdBy: Joi.any(),
+      imageUpload: Joi.any()
     }
 
     const { error, value } = Joi.validate(req.body, schema)
 
     if (error) {
       switch (error.details[0].context.key) {
-        case 'username':
+        case 'userUsername':
           res.status(400).send({
             error: 'You must provide a valid username.'
           })
           break
 
-        case 'name':
+        case 'userName':
           res.status(400).send({
             error: 'You must provide a name.'
           })
           break
 
-        case 'password':
+        case 'userPassword':
           res.status(400).send({
             error: `Password must be between 6 and 32 characters.
               <br>
@@ -44,7 +42,7 @@ module.exports = {
           })
           break
 
-        case 'password2':
+        case 'userPassword2':
           res.status(400).send({
             error: 'Passwords do not match.'
           })
@@ -53,6 +51,12 @@ module.exports = {
         case 'userMenu':
           res.status(400).send({
             error: `You must provide user with some permissions.`
+          })
+          break
+
+        case 'createdBy':
+          res.status(400).send({
+            error: 'Created by which admin must be specified.'
           })
           break
 

@@ -16,6 +16,13 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  image: {
+    type: String
+  },
+  createdBy: {
+    type: Object,
+    default: ''
+  },
   permissions: {
     type: String,
     default: ''

@@ -7,10 +7,22 @@ module.exports = {
   // User Register
   async registerUser(req, res) {
     try {
-      const username = req.body.username
-      const name = req.body.name
-      const password = req.body.password
-      const password2 = req.body.password2
+      // console.log('FILE', req.file)
+      // console.log('BODY', req.body)
+      const username = req.body.userUsername
+      const name = req.body.userName
+      const password = req.body.userPassword
+      const password2 = req.body.userPassword2
+      let image = ''
+      // If image is added create image path
+      if (req.file !== undefined && req.file !== '') {
+        image = req.file.path
+      }
+      const createdBy = {
+        id: req.body.createdBy.id,
+        name: req.body.createdBy.name,
+        username: req.body.createdBy.username
+      }
       // Create user menu
       const userMenu = [
         {
@@ -35,9 +47,11 @@ module.exports = {
 
       const newUser = new User({
         username: username,
-        password: password,
         name: name,
-        userMenu: userMenu
+        password: password,
+        userMenu: userMenu,
+        createdBy: createdBy,
+        image: image
       })
       await User.createUser(newUser, function(err, user) {
         if (err) {
@@ -46,10 +60,9 @@ module.exports = {
             error: 'This username is already in use.'
           })
         } else {
-          console.log(user)
           res.send({
             user: user,
-            success: `You have successfully registered. ${user.username}`
+            success: `User: ${user.username} is successfully registered.`
           })
         }
       })

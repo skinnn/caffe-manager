@@ -1,8 +1,8 @@
 import Api from '@/services/Api'
 
 export default {
-  registerUser(credentials) {
-    return Api().post('user/register', credentials)
+  registerUser(userFormData) {
+    return Api().post('user/register', userFormData)
   },
   registerAdmin(adminFormData) {
     return Api().post('admin/register', adminFormData)
