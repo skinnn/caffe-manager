@@ -44,7 +44,7 @@
               </td>
               <td class="td text-xs-center">
                 <v-btn @click="editAdminPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
-                <v-btn @click="deleteAdmin(props.item._id)" class="delete-btn white">Delete</v-btn>
+                <v-btn @click="deleteAdmin(props.item)" class="delete-btn white">Delete</v-btn>
               </td>
             </template>
           </v-data-table>
@@ -112,6 +112,46 @@ export default {
         name: 'admin-edit-admin',
         params: {adminId}
       })
+    },
+    async deleteAdmin(admin) {
+      let confirmation = confirm(
+        'Are you sure?'
+      )
+      if (confirmation) {
+        try {
+          const adminId = admin._id
+          const imgPath = admin.image
+          const response = (await AdminService.deleteAdmin(adminId, imgPath)).data
+          // If Admin is deleted successfully
+          if (response.deleted) {
+            // Set success message and timeout
+            this.error = null
+            this.success = response.success
+            setTimeout(() => {
+              this.success = null
+            }, 3000)
+
+            // Reset admin list after deleting
+            const ress = (await AdminService.getAllAdmins()).data
+            if (ress.admins) {
+              this.admins = []
+              const admins = this.admins
+              const currentLoggedInAdmin = this.$store.state.admin.username
+              ress.admins.forEach(function(admin) {
+                // Don't display the currently logged in admin
+                if (admin.username === currentLoggedInAdmin) {
+                  return false
+                } else {
+                  admins.push(admin)
+                }
+              })
+            }
+          }
+        } catch (error) {
+          this.success = null
+          this.error = error.response.data.error
+        }
+      }
     },
     async logoutAdmin() {
       try {

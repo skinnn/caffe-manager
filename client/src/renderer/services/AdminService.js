@@ -18,5 +18,8 @@ export default {
   },
   saveUser(user) {
     return Api().put(`admin/user/${user._id}`, user)
+  },
+  deleteAdmin(adminId, imgPath) {
+    return Api().delete(`admin/${adminId}`, {data: { imgPath: imgPath }})
   }
 }

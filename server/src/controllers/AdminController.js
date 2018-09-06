@@ -2,6 +2,7 @@ const passport = require('passport')
 const Admin = require('../models/Admin')
 const User = require('../models/User')
 const dateHandler = require('./getDate')
+const fs = require('fs')
 
 module.exports = {
 
@@ -134,6 +135,47 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to update the user data.'
+      })
+    }
+  },
+
+  // Delete Admin
+  async deleteAdmin(req, res) {
+    try {
+      let query = {_id: req.params.adminId}
+
+      // Get image path
+      let img = req.body.imgPath
+      // Create full image path so it can be deleted with fs.unlink
+      let fullImgPath = ''
+      if (img !== '') {
+        let dirPath = process.cwd()
+        fullImgPath = dirPath + '/' + img
+      }
+
+      await Admin.remove(query, function(err) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to delete the admin.'
+          })
+        }
+        if (fullImgPath !== '') {
+          fs.unlink(fullImgPath, function(err) {
+            if (err) {
+              res.status(500).send({
+                error: 'An error has occurred trying to delete the image.'
+              })
+            }
+          })
+        }
+        res.send({
+          deleted: true,
+          success: 'Admin deleted.'
+        })
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to delete the admin.'
       })
     }
   }

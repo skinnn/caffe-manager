@@ -60,6 +60,10 @@ router.use(function timeLog(req, res, next) {
 
 // TODO: Secure all routes only for admin and user
 
+// Delete Admin
+router.delete('/admin/:adminId',
+  AdminController.deleteAdmin)
+
 // Get Storage by id
 router.get('/admin/storage/:storageId',
   StorageController.getStorageById)
