@@ -131,7 +131,7 @@ export default {
               this.success = null
             }, 3000)
 
-            // Reset admin list after deleting
+            // Reset User list after deleting
             const ress = (await AdminService.getAllAdmins()).data
             if (ress.admins) {
               this.admins = []

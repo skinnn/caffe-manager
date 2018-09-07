@@ -64,6 +64,10 @@ router.use(function timeLog(req, res, next) {
 router.delete('/admin/:adminId',
   AdminController.deleteAdmin)
 
+// Delete User
+router.delete('/admin/user/:userId',
+  AdminController.deleteUser)
+
 // Get Storage by id
 router.get('/admin/storage/:storageId',
   StorageController.getStorageById)

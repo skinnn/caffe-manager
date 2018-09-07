@@ -21,5 +21,8 @@ export default {
   },
   deleteAdmin(adminId, imgPath) {
     return Api().delete(`admin/${adminId}`, {data: { imgPath: imgPath }})
+  },
+  deleteUser(userId, imgPath) {
+    return Api().delete(`admin/user/${userId}`, {data: { imgPath: imgPath }})
   }
 }

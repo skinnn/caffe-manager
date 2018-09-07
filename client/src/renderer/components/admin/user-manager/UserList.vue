@@ -98,10 +98,43 @@ export default {
     } catch (error) {
       this.success = null
       this.error = error.response.data.error
-      console.log(error)
     }
   },
   methods: {
+    viewUser(userId) {
+      this.$router.push({name: 'admin-view-user', params: {userId}})
+    },
+    async deleteUser(user) {
+      try {
+        const userId = user._id
+        const imgPath = user.image
+        // console.log('IMG: ', imgPath, 'USER ID: ', userId)
+        const response = (await AdminService.deleteUser(userId, imgPath)).data
+
+        // If User is deleted successfully
+        if (response.deleted) {
+          // Set success message and timeout
+          this.error = null
+          this.success = response.success
+          setTimeout(() => {
+            this.success = null
+          }, 3000)
+
+          // Reset User list after deleting
+          const ress = (await AdminService.getAllUsers()).data
+          if (ress.users) {
+            this.users = []
+            const users = this.users
+            ress.users.forEach(function(user) {
+              users.push(user)
+            })
+          }
+        }
+      } catch (error) {
+        this.success = null
+        this.error = error.response.data.error
+      }
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -119,9 +152,6 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
-    },
-    viewUser(userId) {
-      this.$router.push({name: 'admin-view-user', params: {userId}})
     }
   }
 }

@@ -178,6 +178,48 @@ module.exports = {
         error: 'An error has occurred trying to delete the admin.'
       })
     }
+  },
+
+  // Delete User
+  async deleteUser(req, res) {
+    try {
+      let query = {_id: req.params.userId}
+
+      // Get image path
+      let img = req.body.imgPath
+      // Create full image path so it can be deleted with fs.unlink
+      let fullImgPath = ''
+      if (img !== '') {
+        let dirPath = process.cwd()
+        fullImgPath = dirPath + '/' + img
+      }
+
+      await User.remove(query, function(err) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to delete the user.'
+          })
+        }
+        if (fullImgPath !== '') {
+          fs.unlink(fullImgPath, function(err) {
+            if (err) {
+              res.status(500).send({
+                error: 'An error has occurred trying to delete the image.'
+              })
+            }
+          })
+        }
+
+        res.send({
+          deleted: true,
+          success: 'User deleted.'
+        })
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to delete the user.'
+      })
+    }
   }
 
 } /* Module exports */

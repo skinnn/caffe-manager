@@ -3,7 +3,7 @@
     <v-flex xs6 offset-xs3>
       <div class="white elevation-5">
         <v-toolbar class="black toolbar" flat dense>
-          <v-toolbar-title class="toolbar-title">Register User</v-toolbar-title>
+          <v-toolbar-title class="toolbar-title">Register Admin</v-toolbar-title>
         </v-toolbar>
         <div class="register-page pl-4 pr-4 pb-3 pt-4">
           <router-link to="/admin/login"><v-btn color="blue">Admin Login</v-btn></router-link>
