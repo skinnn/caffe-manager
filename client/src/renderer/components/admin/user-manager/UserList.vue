@@ -3,7 +3,7 @@
     <div>
       <admin-side-menu />
     </div>
-    <v-layout column class="blue right-side">
+    <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">Staff Members</h1>
@@ -20,34 +20,23 @@
 
         <!-- List of all users in the db -->
         <div class="list-of-users">
+          <v-list two-line>
+            <v-list-tile
+                v-for="user in this.users"
+                :key="user._id"
+                @click="viewUser(user._id)"
+            >
 
-          <v-data-table
-            :headers="headers"
-            :items="users"
-            hide-actions
-            class="elevation-1"
-            dark
-          >
-            <template slot="items" slot-scope="props">
-              <td class="td text-xs-left">
-                <img class="user-image" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
-              </td>
-              <td class="td text-xs-left">
-                <span class="user-name">
-                  {{ props.item.name }}
-                </span>
-              </td>
-              <td class="td text-xs-left">
-                <span class="user-username">
-                  {{ props.item.username }}
-                </span>
-              </td>
-              <td class="td text-xs-center">
-                <v-btn @click="editUserPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
-                <v-btn @click="deleteUser(props.item)" class="delete-btn white">Delete</v-btn>
-              </td>
-            </template>
-          </v-data-table>
+              <v-list-tile-action>
+                  <v-icon>people</v-icon>
+                </v-list-tile-action>
+
+                <v-list-tile-content>
+                  <v-list-tile-title>{{user.username}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{user.name}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
         </div>
 
       </v-flex>
@@ -67,18 +56,6 @@ export default {
   data() {
     return {
       users: [],
-      headers: [
-        {
-          text: 'Image',
-          align: 'left',
-          sortable: false,
-          value: 'image'
-        },
-        {
-          text: 'Name', align: 'left', sortable: true, value: 'name'},
-        { text: 'Username', sortable: true, value: 'username' },
-        { text: 'Options', sortable: false, align: 'center', value: 'option' }
-      ],
       error: null,
       success: null
     }
@@ -98,43 +75,10 @@ export default {
     } catch (error) {
       this.success = null
       this.error = error.response.data.error
+      console.log(error)
     }
   },
   methods: {
-    viewUser(userId) {
-      this.$router.push({name: 'admin-view-user', params: {userId}})
-    },
-    async deleteUser(user) {
-      try {
-        const userId = user._id
-        const imgPath = user.image
-        // console.log('IMG: ', imgPath, 'USER ID: ', userId)
-        const response = (await AdminService.deleteUser(userId, imgPath)).data
-
-        // If User is deleted successfully
-        if (response.deleted) {
-          // Set success message and timeout
-          this.error = null
-          this.success = response.success
-          setTimeout(() => {
-            this.success = null
-          }, 3000)
-
-          // Reset User list after deleting
-          const ress = (await AdminService.getAllUsers()).data
-          if (ress.users) {
-            this.users = []
-            const users = this.users
-            ress.users.forEach(function(user) {
-              users.push(user)
-            })
-          }
-        }
-      } catch (error) {
-        this.success = null
-        this.error = error.response.data.error
-      }
-    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -152,6 +96,9 @@ export default {
         this.success = null
         this.error = error.response.data.error
       }
+    },
+    viewUser(userId) {
+      this.$router.push({name: 'admin-view-user', params: {userId}})
     }
   }
 }
@@ -159,35 +106,12 @@ export default {
 
 <style scoped lang="scss">
 
+  .list-title {
+    font-size: 17px;
+  }
+
   .list-of-users {
     width: 100%;
-
-    .td {
-      height: 70px;
-      cursor: pointer;
-    }
-    .user-image {
-      max-width: 100px;
-      max-height: 90px;
-      padding-top: 4px;
-      margin-left: 5px;
-    }
-    .user-name {
-      font-size: 18px;
-    }
-    .user-username {
-      font-weight: 600;
-      font-size: 17px;
-    }
-    .edit-btn {
-      color: black;
-      font-size: 15px;
-    }
-    .delete-btn {
-      color: red;
-      font-size: 15px;
-      border: 1px solid red;
-    }
   }
 
   .logout-btn {

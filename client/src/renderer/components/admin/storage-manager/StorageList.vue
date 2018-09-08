@@ -3,7 +3,7 @@
     <div>
       <admin-side-menu />
     </div>
-      <v-layout column class="blue right-side">
+      <v-layout column class="right-side">
         <v-flex>
           <div class="admin-header">
               <h1 class="heading">Storage List</h1>

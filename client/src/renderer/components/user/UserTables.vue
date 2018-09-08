@@ -3,7 +3,7 @@
     <div>
       <user-side-menu />
     </div>
-    <v-layout column class="blue right-side">
+    <v-layout column class="right-side">
       <v-flex>
         <div class="user-header">
             <h1 class="heading">Tables</h1>
