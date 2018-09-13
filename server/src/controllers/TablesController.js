@@ -12,7 +12,6 @@ module.exports = {
       table.number = req.body.number
       table.ownerId = req.body.ownerId
 
-      // console.log(req.body)
       await table.save(function(err) {
         if (err) {
           res.status(500).send({
@@ -36,7 +35,6 @@ module.exports = {
   // Get All Articles
   async getTablesByOwnerId(req, res) {
     try {
-    } catch (err) {
       let ownerIdQuery = { ownerId: req.params.ownerId }
       await Table.find(ownerIdQuery, function(err, tables) {
         if (err) {
@@ -49,6 +47,7 @@ module.exports = {
           })
         }
       })
+    } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to get the list of your tables.'
       })

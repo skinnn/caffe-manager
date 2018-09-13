@@ -27,13 +27,13 @@
             <hr>
             <a href="#"
             class="aSingleTable">
-            <!-- Single table -->
+            <!-- Create table -->
             <li @click="createTable()" id="singleTable" class="liSingleTable">
               <v-icon class="createTableIcon">add</v-icon>
               <!-- <p>Add table</p> -->
             </li>
 
-            <!-- List all tables from current user -->
+            <!-- List all tables from the current user -->
               <li v-for="table in this.tables"
                 :key="table._id"
                 @click="openTable(table._id)"
@@ -63,7 +63,7 @@ export default {
   },
   data() {
     return {
-      adminId: this.$store.state.admin._id,
+      ownerId: this.$store.state.admin._id,
       tables: [],
       newTable: {
         number: '',
@@ -76,8 +76,8 @@ export default {
   },
   async mounted() {
     try {
-      const response = (await TableService.getTablesByOwnerId()).data
-
+      const response = (await TableService.getTablesByOwnerId(this.ownerId)).data
+      console.log(response)
       // Get Table list
       if (response.tables) {
         const tables = this.tables
@@ -123,6 +123,16 @@ export default {
             setTimeout(() => {
               this.success = null
             }, 3000)
+
+            // Reset Table list after creating
+            const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
+            if (ress.tables) {
+              this.tables = []
+              const tables = this.tables
+              ress.tables.forEach(function(table) {
+                tables.push(table)
+              })
+            }
           }
         }
 
