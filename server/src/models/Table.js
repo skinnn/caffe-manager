@@ -8,7 +8,7 @@ const TableSchema = new Schema({
     required: true,
     unique: true
   },
-  owner: {
+  ownerId: {
     type: String,
     required: true
   },

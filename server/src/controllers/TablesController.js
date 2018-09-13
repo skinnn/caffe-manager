@@ -10,7 +10,7 @@ module.exports = {
     try {
       let table = new Table()
       table.number = req.body.number
-      table.owner = req.body.owner
+      table.ownerId = req.body.ownerId
 
       // console.log(req.body)
       await table.save(function(err) {
@@ -34,11 +34,23 @@ module.exports = {
   },
 
   // Get All Articles
-  async getTablesByAdminId(req, res) {
+  async getTablesByOwnerId(req, res) {
     try {
     } catch (err) {
+      let ownerIdQuery = { ownerId: req.params.ownerId }
+      await Table.find(ownerIdQuery, function(err, tables) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to find tables. Please try again.'
+          })
+        } else {
+          res.send({
+            tables: tables
+          })
+        }
+      })
       res.status(500).send({
-        error: 'An error has occurred trying to get the list of tables.'
+        error: 'An error has occurred trying to get the list of your tables.'
       })
     }
   },

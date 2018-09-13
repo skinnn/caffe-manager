@@ -4,8 +4,8 @@ export default {
   createTable(table) {
     return Api().post(`/admin/${table.owner}/table/create`, table)
   },
-  getTablesByUserId(userId) {
-    return Api().get(``)
+  getTablesByOwnerId(ownerId) {
+    return Api().get(`/admin/${ownerId}/tables`)
   },
   getTableById(articleId, storageId) {
     return Api().get(``)

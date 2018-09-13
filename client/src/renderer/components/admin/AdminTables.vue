@@ -68,10 +68,28 @@ export default {
       newTable: {
         number: '',
         // TODO: Add owner name and username
-        owner: ''
+        ownerId: ''
       },
       error: null,
       success: null
+    }
+  },
+  async mounted() {
+    try {
+      const response = (await TableService.getTablesByOwnerId()).data
+
+      // Get Table list
+      if (response.tables) {
+        const tables = this.tables
+        // Add table in the tables array
+        response.tables.forEach(function(table) {
+          tables.push(table)
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      this.success = ''
+      this.error = error.response.data.error
     }
   },
   methods: {
@@ -93,7 +111,7 @@ export default {
         })
         if (tablePrompt !== '' && tablePrompt !== null) {
           this.newTable.number = tablePrompt
-          this.newTable.owner = this.$store.state.admin._id
+          this.newTable.ownerId = this.$store.state.admin._id
           // Create Table
           const response = (await TableService.createTable(this.newTable)).data
           console.log(response)
