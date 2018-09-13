@@ -11,6 +11,7 @@ const AuthenticationController = require('../controllers/AuthenticationControlle
 const AdminController = require('../controllers/AdminController')
 const StorageController = require('../controllers/StorageController')
 const ArticleController = require('../controllers/ArticleController')
+const TablesController = require('../controllers/TablesController')
 const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
@@ -58,7 +59,7 @@ router.use(function timeLog(req, res, next) {
   next()
 })
 
-// TODO: Secure all routes only for admin and user
+// TODO: Secure all routes only for admin
 
 // Delete Admin
 router.delete('/admin/:adminId',
@@ -157,5 +158,8 @@ router.get('/admin/storage/:storageId/article/:articleId',
 router.put('/article/:articleId',
   upload.single('imageUpload'),
   ArticleController.saveArticle)
+
+router.post('/admin/:adminId/table/create',
+  TablesController.createTable)
 
 module.exports = router

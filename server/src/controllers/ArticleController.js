@@ -33,7 +33,7 @@ module.exports = {
           } else {
             res.send({
               created: true,
-              success: 'Article was successfully createad.'
+              success: 'Article was successfully created.'
             })
           }
         })

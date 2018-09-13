@@ -15,9 +15,5 @@ export default {
   },
   deleteArticle(articleId, imgPath) {
     return Api().delete(`article/${articleId}`, {data: { imgPath: imgPath }})
-  },
-  upload(body) {
-    // querystring for form-data
-    return Api().post('upload/image', body)
   }
 }

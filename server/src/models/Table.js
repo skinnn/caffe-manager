@@ -8,6 +8,10 @@ const TableSchema = new Schema({
     required: true,
     unique: true
   },
+  owner: {
+    type: String,
+    required: true
+  },
   active: {
     type: Boolean,
     default: false
