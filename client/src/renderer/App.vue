@@ -77,4 +77,13 @@
     font-size: 15px;
   }
 
+  .info-msg {
+    background-color: #add8e6;
+    color: blue;
+    border-radius: 5px;
+    padding: 7px;
+    text-align: center;
+    font-size: 15px;
+  }
+
 </style>

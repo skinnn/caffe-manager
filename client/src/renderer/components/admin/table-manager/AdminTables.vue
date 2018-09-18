@@ -23,11 +23,27 @@
         <!-- Display messages -->
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
+        <div class="info-msg" v-if="info" v-html="info" />
 
         <!-- Should list all the tables by their owners/users -->
-        <div class="list-of-tables">
+        <div class="container">
           <div v-if="currentTable" class="viewTable">
             <p>Number: {{currentTable.number}}</p>
+            <div>
+              <p>some data</p>
+            </div>
+            <div>
+              <p>some data</p>
+            </div>
+            <div>
+              <p>some data</p>
+            </div>
+            <div>
+              <p>some data</p>
+            </div>
+            <div>
+              <p>some data</p>
+            </div>
           </div>
           <!-- List of tables -->
           <ul id="listOfTables" class="listOfTables collection">
@@ -77,7 +93,8 @@ export default {
         ownerId: ''
       },
       error: null,
-      success: null
+      success: null,
+      info: null
     }
   },
   async mounted() {
@@ -137,6 +154,7 @@ export default {
           if (response.created) {
             // Success message and timeout
             this.error = null
+            this.info = null
             this.success = response.success
             setTimeout(() => {
               this.success = null
@@ -153,13 +171,22 @@ export default {
             }
           }
         }
-
-        // Success window
-        await swal(`Table ${tablePrompt.value} is created.`)
+        if (tablePrompt.value !== undefined) {
+          // Success window
+          await swal(`Table ${tablePrompt.value} is created.`)
+        }
       } catch (error) {
-        console.log(error)
-        this.success = ''
-        this.error = error.response.data.error
+        if (error.response.data.info) {
+          this.info = error.response.data.info
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
+        }
+        if (error.response.data.error) {
+          console.log(error)
+          this.success = ''
+          this.error = error.response.data.error
+        }
       }
     },
     async logoutAdmin() {
@@ -185,7 +212,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+  .container {
+    background-color: #f4f4f4;
+  }
   .circleDiv {
     display: inline-block;
     text-align: center;

@@ -11,20 +11,25 @@ module.exports = {
       let table = new Table()
       table.number = req.body.number
       table.ownerId = req.body.ownerId
-
-      await table.save(function(err) {
-        if (err) {
-          console.log(err)
-          res.status(500).send({
-            error: 'A database error has occurred trying to save the table. Please try again.'
-          })
-        } else {
-          res.send({
-            created: true,
-            success: 'Table was successfully created.'
-          })
-        }
-      })
+      if (table.number !== '' && table.number !== undefined) {
+        await table.save(function(err) {
+          if (err) {
+            console.log(err)
+            res.status(500).send({
+              error: 'A database error has occurred trying to save the table. Please try again.'
+            })
+          } else {
+            res.send({
+              created: true,
+              success: 'Table was successfully created.'
+            })
+          }
+        })
+      } else {
+        res.status(400).send({
+          info: 'Table not specified.'
+        })
+      }
     } catch (err) {
       console.log(err)
       res.status(500).send({
