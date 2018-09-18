@@ -6,10 +6,16 @@
     <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">Tables</h1>
-            <v-btn @click="logoutAdmin" class="logout-btn pink">
-              Logout
-            </v-btn>
+          <h1 v-if="!currentTable" class="heading">Tables</h1>
+          <h1 v-if="currentTable" class="heading">
+            Table
+            <div class="circleDiv">
+              <div class="tableNumber">{{currentTable.number}}</div>
+            </div>
+          </h1>
+          <v-btn @click="logoutAdmin" class="logout-btn pink">
+            Logout
+          </v-btn>
         </div>
       </v-flex>
 
@@ -20,7 +26,9 @@
 
         <!-- Should list all the tables by their owners/users -->
         <div class="list-of-tables">
-
+          <div v-if="currentTable" class="viewTable">
+            <p>Number: {{currentTable.number}}</p>
+          </div>
           <!-- List of tables -->
           <ul id="listOfTables" class="listOfTables collection">
             <p class="tablesListText center-align">List of tables</p>
@@ -30,7 +38,7 @@
             <li
               v-for="table in this.tables"
               :key="table._id"
-              @click="openTable(table._id)"
+              @click="viewTable(table._id)"
               class="liSingleTable"
             >
               <span class="singleTableNumber">{{table.number}}</span>
@@ -60,6 +68,7 @@ export default {
   },
   data() {
     return {
+      currentTable: null,
       ownerId: this.$store.state.admin._id,
       tables: [],
       newTable: {
@@ -89,6 +98,20 @@ export default {
     }
   },
   methods: {
+    async viewTable(tableId) {
+      // console.log(tableId)
+      try {
+        const response = (await TableService.viewTable(this.ownerId, tableId)).data
+        console.log(response)
+        if (response.table) {
+          this.currentTable = response.table
+        }
+      } catch (error) {
+        console.log(error)
+        this.success = ''
+        this.error = error.response.data.error
+      }
+    },
     async createTable() {
       try {
         const tablePrompt = await swal({
@@ -96,7 +119,7 @@ export default {
           input: 'text',
           inputPlaceholder: 'Table number',
           inputAttributes: {
-            maxlength: 3
+            maxlength: 2
           },
           // Automatically remove whitespaces from both ends of a result string
           inputAutoTrim: true,
@@ -162,6 +185,32 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  .circleDiv {
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    bottom: 7px;
+    margin-left: 2%;
+    background-color: inherit;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border: 2px solid yellow;
+    border-radius: 50%;
+
+    .tableNumber {
+      display: inline-block;
+      padding: 0;
+      margin: auto;
+      margin-top: 14%;
+      height: 40px;
+      width: 40px;
+      text-align: center;
+      vertical-align: middle;
+      // margin-top: 50%;
+    }
+  }
 
   .logout-btn {
     margin-right: 10px;

@@ -11,7 +11,6 @@ const UserWarehouse = require('@/components/user/UserWarehouse').default
 const AdminLandingRegister = require('@/components/AdminLandingRegister').default
 const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
-const AdminTables = require('@/components/admin/AdminTables').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
 
 // Storage-Manager
@@ -21,6 +20,9 @@ const AdminStorageList = require('@/components/admin/storage-manager/StorageList
 const AdminCreateStorage = require('@/components/admin/storage-manager/CreateStorage').default
 const AdminCreateArticle = require('@/components/admin/storage-manager/CreateArticle').default
 const AdminEditArticle = require('@/components/admin/storage-manager/EditArticle').default
+// Table-Manager
+const AdminTables = require('@/components/admin/table-manager/AdminTables').default
+// const AdminViewTable = require('@/components/admin/table-manager/AdminViewTable').default
 // Admin-Manager
 const AdminCreateAdmin = require('@/components/admin/admin-manager/CreateAdmin').default
 const AdminViewAdmin = require('@/components/admin/admin-manager/ViewAdmin').default

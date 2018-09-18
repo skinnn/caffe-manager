@@ -56,8 +56,21 @@ module.exports = {
   },
 
   // Get Article by id
-  async getTableById(req, res) {
+  async viewTable(req, res) {
     try {
+      let query = { _id: req.params.tableId }
+      // console.log(`OWNER: ${ownerId}, TABLE: ${tableIdQuery}`)
+      await Table.findOne(query, function(err, table) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to find the table. Please try again.'
+          })
+        } else {
+          res.send({
+            table: table
+          })
+        }
+      })
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to get the table data.'

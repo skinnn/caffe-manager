@@ -166,4 +166,8 @@ router.post('/admin/:ownerId/table/create',
 router.get('/admin/:ownerId/tables',
   TablesController.getTablesByOwnerId)
 
+// Get Table by id
+router.get('/admin/:ownerId/table/:tableId',
+  TablesController.viewTable)
+
 module.exports = router
