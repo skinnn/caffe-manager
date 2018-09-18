@@ -25,24 +25,21 @@
           <ul id="listOfTables" class="listOfTables collection">
             <p class="tablesListText center-align">List of tables</p>
             <hr>
-            <a href="#"
-            class="aSingleTable">
-            <!-- Create table -->
-            <li @click="createTable()" id="singleTable" class="liSingleTable">
-              <v-icon class="createTableIcon">add</v-icon>
-              <!-- <p>Add table</p> -->
-            </li>
 
             <!-- List all tables from the current user -->
-              <li v-for="table in this.tables"
-                :key="table._id"
-                @click="openTable(table._id)"
-                id="tableLi"
-                class="liSingleTable"
-              >
-                <span class="singleTableNumber">Number: {{table.number}}</span>
-              </li>
-            </a>
+            <li
+              v-for="table in this.tables"
+              :key="table._id"
+              @click="openTable(table._id)"
+              class="liSingleTable"
+            >
+              <span class="singleTableNumber">{{table.number}}</span>
+            </li>
+
+            <!-- Create table -->
+            <li @click="createTable()" class="liCreateTable">
+              <v-icon class="createTableIcon">add</v-icon>
+            </li>
           </ul>
         </div>
 
@@ -54,7 +51,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
-import swal from 'sweetalert'
+import swal from 'sweetalert2'
 import TableService from '@/services/TableService'
 
 export default {
@@ -77,7 +74,6 @@ export default {
   async mounted() {
     try {
       const response = (await TableService.getTablesByOwnerId(this.ownerId)).data
-      console.log(response)
       // Get Table list
       if (response.tables) {
         const tables = this.tables
@@ -97,20 +93,19 @@ export default {
       try {
         const tablePrompt = await swal({
           title: 'Table number',
-          buttons: ['Cancel', 'Submit'],
-          closeOnClickOutside: false,
+          input: 'text',
+          inputPlaceholder: 'Table number',
+          inputAttributes: {
+            maxlength: 3
+          },
+          // Automatically remove whitespaces from both ends of a result string
+          inputAutoTrim: true,
+          showCancelButton: true
           // Timer which if passed closes the window and returns value = null
           // timer: 3000,
-          content: {
-            element: 'input',
-            attributes: {
-              placeholder: '',
-              type: 'number'
-            }
-          }
         })
         if (tablePrompt !== '' && tablePrompt !== null) {
-          this.newTable.number = tablePrompt
+          this.newTable.number = tablePrompt.value
           this.newTable.ownerId = this.$store.state.admin._id
           // Create Table
           const response = (await TableService.createTable(this.newTable)).data
@@ -136,7 +131,8 @@ export default {
           }
         }
 
-        swal(`Table ${tablePrompt} is created.`)
+        // Success window
+        await swal(`Table ${tablePrompt.value} is created.`)
       } catch (error) {
         console.log(error)
         this.success = ''
@@ -177,48 +173,75 @@ export default {
 
   .listOfTables {
     position: fixed;
+    background-color: pink;
+    border: none;
     right: 5%;
     top: 24%;
     margin: 0;
-    padding: 0;
-    width: 250px;
+    padding: 5px 5px 5px 5px;
+    width: 288px;
 
-  .tablesListText {
-    font-size: 16px;
-    margin: 5px 0 0 0;
-    padding: 0;
-    color: black;
-    font-weight: 600;
-  }
-  .createTableIcon {
-    margin-top: 17%;
-  }
-  .aSingleTable {
-    text-align: center;
-  }
-  .liSingleTable {
-    border: 1px solid grey;
-    height: 60px;
-    width: 90px;
-    display: inline-block;
-    background-color: #f4f4f4;
-    margin: 2px 0 2px 3px;
-
-    &:hover {
-      background-color: #fff;
-      opacity: 0.7;
-
+    .tablesListText {
+      font-size: 16px;
+      margin: 5px 0 0 0;
+      padding: 0;
+      color: black;
+      font-weight: 600;
     }
-  }
-  .singleTableNumber {
-    position: relative;
-    top: 10%;
-    padding: 0;
-    margin:0;
-    color: black;
-    font-weight: bold;
-    font-size: 18px;
-  }
+    .liSingleTable {
+      text-align: center;
+      padding: 0;
+      margin: 2px 0 2px 2px;
+      border: 1px solid grey;
+      border-radius: 50%;
+      height: 60px;
+      width: 60px;
+      display: inline-block;
+      list-style: none;
+      background-color: #f4f4f4;
+
+      &:hover {
+        background-color: #fff;
+        opacity: 0.7;
+        cursor: pointer;
+      }
+    }
+    .liCreateTable {
+      text-align: center;
+      border: 1px solid grey;
+      border-radius: 50%;
+      height: 60px;
+      width: 60px;
+      display: inline-block;
+      list-style: none;
+      background-color: #f4f4f4;
+      margin: 2px 0 2px 0px;
+
+      &:hover {
+        background-color: #fff;
+        opacity: 0.7;
+        cursor: pointer;
+      }
+      .createTableIcon {
+        position: relative;
+        top: 18px;
+        left: 1px;
+        margin: 0px;
+        padding: 0px;
+        width: 22px;
+        height: 22px;
+      }
+    }
+    .singleTableNumber {
+      position: relative;
+      text-align: center;
+      top: 16px;
+      padding: 0;
+      margin:0;
+      color: black;
+      font-weight: bold;
+      font-size: 19px;
+    }
 }
 
 </style>

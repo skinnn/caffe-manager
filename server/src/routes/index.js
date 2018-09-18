@@ -159,7 +159,7 @@ router.put('/article/:articleId',
   upload.single('imageUpload'),
   ArticleController.saveArticle)
 
-router.post('/admin/:adminId/table/create',
+router.post('/admin/:ownerId/table/create',
   TablesController.createTable)
 
 // Get Tables by Owner id

@@ -14,6 +14,7 @@ module.exports = {
 
       await table.save(function(err) {
         if (err) {
+          console.log(err)
           res.status(500).send({
             error: 'A database error has occurred trying to save the table. Please try again.'
           })
