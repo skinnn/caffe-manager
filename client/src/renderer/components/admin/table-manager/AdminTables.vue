@@ -170,8 +170,13 @@ export default {
               })
             }
           }
-          // Success windows
+          // Success window
           await swal(`Table ${tablePrompt.value} is created.`)
+        } else {
+          this.info = 'Table not specified.'
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
         }
       } catch (error) {
         if (error.response.data.info) {
