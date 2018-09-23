@@ -144,7 +144,7 @@ export default {
           // Timer which if passed closes the window and returns value = null
           // timer: 3000,
         })
-        if (tablePrompt !== '' && tablePrompt !== null) {
+        if (tablePrompt.value !== '' && tablePrompt.value !== null) {
           this.newTable.number = tablePrompt.value
           this.newTable.ownerId = this.$store.state.admin._id
           // Create Table
@@ -170,9 +170,7 @@ export default {
               })
             }
           }
-        }
-        if (tablePrompt.value !== undefined) {
-          // Success window
+          // Success windows
           await swal(`Table ${tablePrompt.value} is created.`)
         }
       } catch (error) {
