@@ -96,6 +96,21 @@ module.exports = {
   // Delete Table
   async deleteTable(req, res) {
     try {
+      // console.log(`TABLE ID: ${req.params.tableId}`)
+      // console.log(`OWNER ID: ${req.params.ownerId}`)
+      const query = { _id: req.params.tableId }
+      const ownerId = req.params.ownerId
+      await Table.deleteOne(query, function(err) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to delete the table.'
+          })
+        }
+        res.send({
+          deleted: true,
+          success: 'Table deleted.'
+        })
+      })
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to delete the table.'

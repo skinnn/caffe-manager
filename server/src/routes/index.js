@@ -170,4 +170,8 @@ router.get('/admin/:ownerId/tables',
 router.get('/admin/:ownerId/table/:tableId',
   TablesController.viewTable)
 
+// Delete Table
+router.delete('/admin/:ownerId/table/:tableId',
+  TablesController.deleteTable)
+
 module.exports = router

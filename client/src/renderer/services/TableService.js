@@ -10,10 +10,10 @@ export default {
   viewTable(ownerId, tableId) {
     return Api().get(`/admin/${ownerId}/table/${tableId}`)
   },
-  saveTable(tableId) {
-    return Api().put(``)
-  },
-  deleteTable(tableId) {
-    return Api().delete(``)
+  // saveTable(tableId) {
+  //   return Api().put(``)
+  // },
+  deleteTable(ownerId, tableId) {
+    return Api().delete(`/admin/${ownerId}/table/${tableId}`)
   }
 }

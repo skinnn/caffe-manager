@@ -12,6 +12,9 @@
             <div class="circleDiv">
               <div class="tableNumber">{{currentTable.number}}</div>
             </div>
+            <v-btn @click="deleteTable(currentTable._id)" class="delete-btn pink">
+              Delete
+            </v-btn>
           </h1>
           <v-btn @click="logoutAdmin" class="logout-btn pink">
             Logout
@@ -203,6 +206,29 @@ export default {
           this.$router.push({
             name: 'admin-login'
           })
+        }
+      } catch (error) {
+        console.log(error)
+        this.success = null
+        this.error = error.response.data.error
+      }
+    },
+    async deleteTable(tableId) {
+      try {
+        const response = (await TableService.deleteTable(this.ownerId, tableId)).data
+        if (response.deleted) {
+          this.error = null
+          this.success = response.success
+          setTimeout(() => {
+            this.success = null
+          }, 3000)
+
+          // Reset Table list after deleting
+          const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
+          if (ress.tables) {
+            this.tables = []
+            this.tables = ress.tables
+          }
         }
       } catch (error) {
         console.log(error)

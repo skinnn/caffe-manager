@@ -164,7 +164,7 @@ export default {
               this.success = null
             }, 3000)
 
-            // Reset article list after deleting
+            // Reset Article list after deleting
             let storageId = this.storageId
             const ress = (await ArticleService.getArticlesByStorageId(storageId)).data
             if (ress.articles) {
