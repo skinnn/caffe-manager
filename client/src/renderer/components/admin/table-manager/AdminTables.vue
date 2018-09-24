@@ -30,11 +30,11 @@
         <div class="success-msg" v-if="success" v-html="success" />
         <div class="info-msg" v-if="info" v-html="info" />
 
-        <!-- TODO: Should list all the tables by their owners/users -->
+        <!-- TODO: Should also somewhere list all the tables by their owners/users -->
         <div class="container">
           <!-- Current Table Content -->
-          <div v-if="currentTable" class="viewTable">
-            <p>Number: {{currentTable.number}}</p>
+          <div v-if="currentTable" class="currentTable">
+            <p>Number: <span class="currentTableNumber">{{currentTable.number}}</span></p>
             <div class="createOrder">
               <v-text-field
                 type="text"
@@ -55,7 +55,10 @@
                 <li v-for="order in this.currentTableOrders"
                   :key="order._id"
                   @click=""
-                >Order name: {{order.name}}</li>
+                  class="singleOrder"
+                >
+                Order name: <span class="orderNumber">{{order.name}}</span>
+              </li>
               </ul>
             </div>
 
@@ -116,10 +119,30 @@ export default {
       info: null
     }
   },
+  watch: {
+    // Whenever current table changes, fetch the orders from that table
+    currentTable: async function() {
+      try {
+        const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+        console.log(ordersResponse)
+        const orders = this.currentTableOrders = [] // Reset each time new table is selected
+        // Add orders in the orders array
+        ordersResponse.orders.forEach(function(order) {
+          orders.push(order)
+        })
+      } catch (error) {
+        console.log(error)
+        this.success = ''
+        this.error = error.orders.data.error
+      }
+    }
+  },
   async mounted() {
     try {
-      const response = (await TableService.getTablesByOwnerId(this.ownerId)).data
       // Get Table list
+      const response = (await TableService.getTablesByOwnerId(this.ownerId)).data
+
+      // If Tables are fetched successfully
       if (response.tables) {
         const tables = this.tables
         // Add table in the tables array
@@ -135,10 +158,8 @@ export default {
   },
   methods: {
     async viewTable(tableId) {
-      // console.log(tableId)
       try {
         const response = (await TableService.viewTable(this.ownerId, tableId)).data
-        console.log(response)
         if (response.table) {
           this.currentTable = response.table
         }
@@ -179,7 +200,7 @@ export default {
               this.success = null
             }, 3000)
 
-            // Reset Table list after creating
+            // Reset Table list after creating new table
             const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
             if (ress.tables) {
               this.tables = []
@@ -213,8 +234,6 @@ export default {
     },
     async createOrder(currentTableId) {
       try {
-        // console.log(`Current Table Id: ${currentTableId}`)
-        // console.log(`Owner Id: ${this.ownerId}`)
         const orderName = this.newOrderName
         if (orderName !== '' && orderName !== undefined) {
           const response = (await OrderService.createOrder(this.ownerId, currentTableId, {
@@ -223,6 +242,14 @@ export default {
           console.log(response)
           // Reset input field
           this.newOrderName = ''
+
+          // Reset current table order list whenever new order is created
+          const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+          const orders = this.currentTableOrders = [] // Reset each time order is created
+          // Add orders in the orders array
+          ordersResponse.orders.forEach(function(order) {
+            orders.push(order)
+          })
         } else {
           this.info = 'Order must have a name.'
           setTimeout(() => {
@@ -294,7 +321,15 @@ export default {
 
     .createOrder {
       max-width: 70%;
-      background-color: yellow;
+    }
+    .currentTable {
+
+      .singleOrder {
+        .orderNumber {
+          font-size: 21px;
+          font-weight: bold;
+        }
+      }
     }
   }
   .circleDiv {

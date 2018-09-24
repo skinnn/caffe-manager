@@ -32,6 +32,29 @@ module.exports = {
         error: 'An error has occurred trying to create the order.'
       })
     }
+  },
+
+  async getOrdersByTableId(req, res) {
+    try {
+      // console.log('Body: ', req.body)
+      // console.log('Params: ', req.params)
+      let tableId = { inWhichTable: req.params.currentTableId }
+      await Order.find(tableId, function(err, orders) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to find orders. Please try again.'
+          })
+        } else {
+          res.send({
+            orders: orders
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to get the orders.'
+      })
+    }
   }
 
 } /* Module exports */
