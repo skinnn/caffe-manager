@@ -12,6 +12,7 @@ const AdminController = require('../controllers/AdminController')
 const StorageController = require('../controllers/StorageController')
 const ArticleController = require('../controllers/ArticleController')
 const TablesController = require('../controllers/TablesController')
+const OrderController = require('../controllers/OrderController')
 const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
@@ -173,5 +174,9 @@ router.get('/admin/:ownerId/table/:tableId',
 // Delete Table
 router.delete('/admin/:ownerId/table/:tableId',
   TablesController.deleteTable)
+
+// Create Order
+router.post('/admin/:ownerId/table/:currentTableId/order',
+  OrderController.createOrder)
 
 module.exports = router

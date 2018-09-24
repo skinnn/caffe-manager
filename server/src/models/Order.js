@@ -10,6 +10,10 @@ const OrderSchema = new Schema({
     type: String,
     required: true
   },
+  ownerId: {
+    type: String,
+    required: true
+  },
   updated_date: {
     type: String,
     default: ''

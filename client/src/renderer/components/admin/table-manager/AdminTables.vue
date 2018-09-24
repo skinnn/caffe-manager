@@ -7,6 +7,7 @@
       <v-flex>
         <div class="admin-header">
           <h1 v-if="!currentTable" class="heading">Tables</h1>
+          <!-- Current Table Heading -->
           <h1 v-if="currentTable" class="heading">
             Table
             <div class="circleDiv">
@@ -16,6 +17,7 @@
               Delete
             </v-btn>
           </h1>
+          <!-- ./ Current Table Heading -->
           <v-btn @click="logoutAdmin" class="logout-btn pink">
             Logout
           </v-btn>
@@ -28,26 +30,37 @@
         <div class="success-msg" v-if="success" v-html="success" />
         <div class="info-msg" v-if="info" v-html="info" />
 
-        <!-- Should list all the tables by their owners/users -->
+        <!-- TODO: Should list all the tables by their owners/users -->
         <div class="container">
+          <!-- Current Table Content -->
           <div v-if="currentTable" class="viewTable">
             <p>Number: {{currentTable.number}}</p>
-            <div>
-              <p>some data</p>
+            <div class="createOrder">
+              <v-text-field
+                type="text"
+                v-model="newOrderName"
+                label="Order:"
+                outline
+              ></v-text-field>
+              <v-btn
+                @click="createOrder(currentTable._id)"
+                >
+                  New Order
+                  <v-icon>add</v-icon>
+              </v-btn>
             </div>
-            <div>
-              <p>some data</p>
+
+            <div class="order-list">
+              <ul>
+                <li v-for="order in this.currentTableOrders"
+                  :key="order._id"
+                  @click=""
+                >Order name: {{order.name}}</li>
+              </ul>
             </div>
-            <div>
-              <p>some data</p>
-            </div>
-            <div>
-              <p>some data</p>
-            </div>
-            <div>
-              <p>some data</p>
-            </div>
-          </div>
+
+          </div> <!-- ./ Current Table Content -->
+
           <!-- List of tables -->
           <ul id="listOfTables" class="listOfTables collection">
             <p class="tablesListText center-align">List of tables</p>
@@ -78,6 +91,7 @@
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
+import OrderService from '@/services/OrderService'
 import swal from 'sweetalert2'
 import TableService from '@/services/TableService'
 
@@ -88,8 +102,10 @@ export default {
   data() {
     return {
       currentTable: null,
+      currentTableOrders: [],
       ownerId: this.$store.state.admin._id,
       tables: [],
+      newOrderName: '',
       newTable: {
         number: '',
         // TODO: Add owner name and username
@@ -195,6 +211,38 @@ export default {
         }
       }
     },
+    async createOrder(currentTableId) {
+      try {
+        // console.log(`Current Table Id: ${currentTableId}`)
+        // console.log(`Owner Id: ${this.ownerId}`)
+        const orderName = this.newOrderName
+        if (orderName !== '' && orderName !== undefined) {
+          const response = (await OrderService.createOrder(this.ownerId, currentTableId, {
+            newOrderName: this.newOrderName
+          })).data
+          console.log(response)
+          // Reset input field
+          this.newOrderName = ''
+        } else {
+          this.info = 'Order must have a name.'
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
+        }
+      } catch (error) {
+        if (error.response.data.info) {
+          this.info = error.response.data.info
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
+        }
+        if (error.response.data.error) {
+          console.log(error)
+          this.success = ''
+          this.error = error.response.data.error
+        }
+      }
+    },
     async logoutAdmin() {
       try {
         const response = (await AuthenticationService.logoutAdmin()).data
@@ -243,6 +291,11 @@ export default {
 <style scoped lang="scss">
   .container {
     background-color: #f4f4f4;
+
+    .createOrder {
+      max-width: 70%;
+      background-color: yellow;
+    }
   }
   .circleDiv {
     display: inline-block;
