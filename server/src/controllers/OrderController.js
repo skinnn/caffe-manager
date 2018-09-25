@@ -55,6 +55,29 @@ module.exports = {
         error: 'An error has occurred trying to get the orders.'
       })
     }
+  },
+
+  // Delete Article
+  async deleteOrder(req, res) {
+    try {
+      let query = {_id: req.params.orderId}
+
+      await Order.remove(query, function(err) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to delete the order.'
+          })
+        }
+        res.send({
+          deleted: true,
+          success: 'Order deleted.'
+        })
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to delete the order.'
+      })
+    }
   }
 
 } /* Module exports */

@@ -6,5 +6,8 @@ export default {
   },
   getOrdersByTableId(ownerId, currentTableId) {
     return Api().get(`/admin/${ownerId}/table/${currentTableId}/order`)
+  },
+  deleteOrder(ownerId, orderId, currentTableId) {
+    return Api().delete(`/admin/${ownerId}/table/${currentTableId}/order/${orderId}`)
   }
 }

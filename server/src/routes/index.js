@@ -183,4 +183,8 @@ router.post('/admin/:ownerId/table/:currentTableId/order',
 router.get('/admin/:ownerId/table/:currentTableId/order',
   OrderController.getOrdersByTableId)
 
+// Delete Order by id
+router.delete('/admin/:ownerId/table/:currentTableId/order/:orderId',
+  OrderController.deleteOrder)
+
 module.exports = router

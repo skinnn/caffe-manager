@@ -60,8 +60,8 @@
                 >
                 <div class="singleOrderDiv">
                   <div class="orderHeading">
-                    Order: <span class="orderName">{{order.name}}</span>
-                    <v-btn class="deleteOrderBtn" small fab>
+                    <span class="orderName">{{order.name}}</span>
+                    <v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
                       <v-icon>delete</v-icon>
                     </v-btn>
                   </div>
@@ -159,7 +159,7 @@ export default {
       }
     } catch (error) {
       console.log(error)
-      this.success = ''
+      this.success = null
       this.error = error.response.data.error
     }
   },
@@ -272,9 +272,49 @@ export default {
         }
         if (error.response.data.error) {
           console.log(error)
-          this.success = ''
+          this.success = null
           this.error = error.response.data.error
         }
+      }
+    },
+    async deleteOrder(orderId, currentTableId) {
+      try {
+        // Prompt the user witk Ok and Cancel
+        const deleteOrderPrompt = await swal({
+          title: 'Are you sure?',
+          showCancelButton: true
+        })
+        // If Prompt is Confirmed
+        if (deleteOrderPrompt.value) {
+          const response = (await OrderService.deleteOrder(this.ownerId, orderId, currentTableId)).data
+          console.log(response)
+
+          // If Order is deleted successfully
+          if (response.deleted) {
+            // Reset Order list
+            const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+            if (ordersResponse.orders) {
+              const orders = this.currentTableOrders = [] // Reset each time order is created
+              // Add orders in the orders array
+              ordersResponse.orders.forEach(function(order) {
+                orders.push(order)
+              })
+            }
+
+            // Success message
+            this.info = null
+            this.error = null
+            this.success = response.success
+            setTimeout(() => {
+              this.success = null
+            }, 3000)
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        this.success = null
+        this.info = null
+        this.error = error.response.data.error
       }
     },
     async logoutAdmin() {
@@ -336,8 +376,8 @@ export default {
 
         .singleOrderDiv {
           background-color: yellow;
-          border: 1px solid black;
-          border-radius: 5px;
+          border: 2px solid black;
+          border-radius: 3px;
           max-width: 740px;
           min-height: 50px;
           text-align: center;
