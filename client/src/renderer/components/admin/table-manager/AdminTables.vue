@@ -50,15 +50,23 @@
               </v-btn>
             </div>
 
-            <div class="order-list">
-              <ul>
-                <li v-for="order in this.currentTableOrders"
+            <div class="orders">
+              <ul class="order-list">
+                <li
+                  v-for="order in this.currentTableOrders"
                   :key="order._id"
                   @click=""
-                  class="singleOrder"
+                  class="singleOrderLi"
                 >
-                Order name: <span class="orderNumber">{{order.name}}</span>
-              </li>
+                <div class="singleOrderDiv">
+                  <div class="orderHeading">
+                    Order: <span class="orderName">{{order.name}}</span>
+                    <v-btn class="deleteOrderBtn" small fab>
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </div>
+                </div>
+                </li>
               </ul>
             </div>
 
@@ -66,10 +74,10 @@
 
           <!-- List of tables -->
           <ul id="listOfTables" class="listOfTables collection">
-            <p class="tablesListText center-align">List of tables</p>
+            <p class="tablesListText">List of Tables</p>
             <hr>
 
-            <!-- List all tables from the current user -->
+            <!-- List of tables from the current user -->
             <li
               v-for="table in this.tables"
               :key="table._id"
@@ -78,9 +86,8 @@
             >
               <span class="singleTableNumber">{{table.number}}</span>
             </li>
-
             <!-- Create table -->
-            <li @click="createTable()" class="liCreateTable">
+            <li @click="createTable" class="liCreateTable">
               <v-icon class="createTableIcon">add</v-icon>
             </li>
           </ul>
@@ -324,14 +331,39 @@ export default {
     }
     .currentTable {
 
-      .singleOrder {
-        .orderNumber {
-          font-size: 21px;
-          font-weight: bold;
-        }
-      }
-    }
-  }
+      .singleOrderLi {
+        list-style: none;
+
+        .singleOrderDiv {
+          background-color: yellow;
+          border: 1px solid black;
+          border-radius: 5px;
+          max-width: 740px;
+          min-height: 50px;
+          text-align: center;
+          margin-top: 5px;
+          margin-bottom: 5px;
+
+          .orderHeading {
+            background-color: #f4f4f4;
+            min-height: 50px;
+
+            .orderName {
+              font-size: 21px;
+              font-weight: bold;
+            }
+            .deleteOrderBtn {
+              float: right;
+            }
+            .deleteOrderBtn:hover {
+              background-color: #ff4c4c;
+            }
+          }
+        } // ./ singleOrderDiv
+      } // ./ singleOrderLi
+    } // ./ currentTable
+  } // ./ container
+
   .circleDiv {
     display: inline-block;
     text-align: center;
@@ -377,6 +409,7 @@ export default {
     width: 288px;
 
     .tablesListText {
+      text-align: center;
       font-size: 16px;
       margin: 5px 0 0 0;
       padding: 0;
