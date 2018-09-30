@@ -1,7 +1,7 @@
 <template>
   </div>
     <!-- mini-variant option instead of permanent can be used for tablet devices -->
-    <v-navigation-drawer stateless permanent fixed width="260">
+    <v-navigation-drawer stateless permanent value="true" fixed width="260">
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
@@ -137,7 +137,7 @@ export default {
   }
 
   .list-tile-title {
-    font-size: 15px;
+    font-size: 16px;
   }
 
 </style>

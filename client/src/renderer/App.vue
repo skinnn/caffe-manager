@@ -23,6 +23,22 @@
 
 <style lang="scss">
 
+  .v-list__group__header {
+    background-color: #f4f4f4;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  .v-list__tile--link {
+    background-color: #f4f4f4;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
   .admin-container {
     margin-top: 100px;
     margin-left: 0;
