@@ -104,7 +104,8 @@ export default {
       name: '',
       quantity: '',
       price: '',
-      // TODO: Create currency handler for admin options
+      // TODO: Create Admin Settings/Options and load currency
+      // for the whole application from there
       currencies: [
         {
           title: 'Serbian Dinar',

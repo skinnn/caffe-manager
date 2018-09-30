@@ -35,7 +35,7 @@
 
           <!-- Reserve Article Menu -->
           <div v-if="articleMenu" class="reserve-article-menu">
-            <h2 class="articleMenuHeading">Select articles for this order</h2>
+            <h2 class="articleMenuHeading">Select articles</h2>
             <ul class="articleMenuList">
               <li
                 v-for="article in this.articleList"
@@ -49,13 +49,13 @@
                   class="articleMenuImage"
                   alt="No image"
                 >
+                <!-- Placeholder if there is no article image -->
                 <div v-if="!article.image" class="articleMenuImage">
-                  <!-- TODO: Placeholder if there is no article image -->
                 </div>
                 <div class="singleArticleMenuInfo">
                   <p class="info-text info-name">{{article.name}}</p>
                   <p class="info-text">Quantity: {{article.quantity}}</p>
-                  <p class="info-text">Price: {{article.price}}</p>
+                  <p class="info-text">Price: {{article.price}} {{currency}}</p>
                 </div>
               </li>
             </ul>
@@ -149,7 +149,6 @@ import OrderService from '@/services/OrderService'
 import ArticleService from '@/services/ArticleService'
 import swal from 'sweetalert2'
 import TableService from '@/services/TableService'
-// import { remote } from 'electron'
 
 export default {
   components: {
@@ -157,6 +156,8 @@ export default {
   },
   data() {
     return {
+      // TODO: Get currency from the admin settings
+      currency: '$',
       articleList: [],
       articleMenu: false,
       currentTable: null,
@@ -213,13 +214,13 @@ export default {
   },
   methods: {
     finishReserving() {
+      // TODO: Select, display input for the amount and submit selected articles
       this.articleMenu = false
     },
     async openArticleMenu(orderId) {
       try {
         // Get all Articles
         const allArticles = (await ArticleService.getAllArticles()).data
-        console.log('ALL ARTICLES: ', allArticles)
         const articleList = this.articleList = [] // Reset each time menu is opened
         // Add articles in the article array
         allArticles.articles.forEach(function(article) {
