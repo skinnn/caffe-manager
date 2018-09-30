@@ -49,7 +49,7 @@ module.exports = {
     }
   },
 
-  // Get All Articles
+  // Get Articles by storage id
   async getArticlesByStorageId(req, res) {
     try {
       let storageId = { inStorage: req.params.storageId }
@@ -74,7 +74,6 @@ module.exports = {
   // Get Article by id
   async getArticleById(req, res) {
     try {
-      console.log('hit')
       let query = req.params.articleId
       await Article.getArticleById(query, function(err, article) {
         if (err) {
@@ -89,6 +88,27 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to get the article data.'
+      })
+    }
+  },
+
+  // Get all Articles
+  async getAllArticles(req, res) {
+    try {
+      await Article.find({}, function(err, articles) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to find all articles. Please try again.'
+          })
+        } else {
+          res.send({
+            articles: articles
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to get the list of all articles.'
       })
     }
   },

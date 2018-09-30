@@ -9,13 +9,13 @@
           <h1 v-if="!currentTable" class="heading">Tables</h1>
           <!-- Current Table Heading -->
           <h1 v-if="currentTable" class="heading">
+            <v-btn @click="deleteTable(currentTable._id)" class="delete-btn pink">
+              Delete
+            </v-btn>
             Table
             <div class="circleDiv">
               <div class="tableNumber">{{currentTable.number}}</div>
             </div>
-            <v-btn @click="deleteTable(currentTable._id)" class="delete-btn pink">
-              Delete
-            </v-btn>
           </h1>
           <!-- ./ Current Table Heading -->
           <v-btn @click="logoutAdmin" class="logout-btn pink">
@@ -32,8 +32,43 @@
 
         <!-- TODO: Should also somewhere list all the tables by their owners/users -->
         <div class="container">
+
+          <!-- Reserve Article Menu -->
+          <div v-if="articleMenu" class="reserve-article-menu">
+            <h2 class="articleMenuHeading">Select articles for this order</h2>
+            <ul class="articleMenuList">
+              <li
+                v-for="article in this.articleList"
+                :key="article._id"
+                @click=""
+                class="singleArticleMenuLi"
+              >
+                <img
+                  v-if="article.image"
+                  :src="`http://localhost:8080/${article.image}`"
+                  class="articleMenuImage"
+                  alt="No image"
+                >
+                <div v-if="!article.image" class="articleMenuImage">
+                  <!-- TODO: Placeholder if there is no article image -->
+                </div>
+                <div class="singleArticleMenuInfo">
+                  <p class="info-text info-name">{{article.name}}</p>
+                  <p class="info-text">Quantity: {{article.quantity}}</p>
+                  <p class="info-text">Price: {{article.price}}</p>
+                </div>
+              </li>
+            </ul>
+            <v-btn
+              class="articleMenuFinishBtn"
+              @click="finishReserving"
+            >
+              Finish
+            </v-btn>
+          </div>
+
           <!-- Current Table Content -->
-          <div v-if="currentTable" class="currentTable">
+          <div v-if="currentTable && !articleMenu" class="currentTable">
             <p>Number: <span class="currentTableNumber">{{currentTable.number}}</span></p>
             <div class="createOrder">
               <v-text-field
@@ -61,8 +96,17 @@
                 <div class="singleOrderDiv">
                   <div class="orderHeading">
                     <span class="orderName">{{order.name}}</span>
+                    <hr />
                     <v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
                       <v-icon>delete</v-icon>
+                    </v-btn>
+                  </div>
+                  <div>
+                    <v-btn
+                      class="addArticleBtn"
+                      @click="openArticleMenu(order._id)"
+                    >
+                      Add article
                     </v-btn>
                   </div>
                 </div>
@@ -73,7 +117,7 @@
           </div> <!-- ./ Current Table Content -->
 
           <!-- List of tables -->
-          <ul id="listOfTables" class="listOfTables collection">
+          <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
             <p class="tablesListText">List of Tables</p>
             <hr>
 
@@ -102,8 +146,10 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
 import OrderService from '@/services/OrderService'
+import ArticleService from '@/services/ArticleService'
 import swal from 'sweetalert2'
 import TableService from '@/services/TableService'
+// import { remote } from 'electron'
 
 export default {
   components: {
@@ -111,6 +157,8 @@ export default {
   },
   data() {
     return {
+      articleList: [],
+      articleMenu: false,
       currentTable: null,
       currentTableOrders: [],
       ownerId: this.$store.state.admin._id,
@@ -164,6 +212,39 @@ export default {
     }
   },
   methods: {
+    finishReserving() {
+      this.articleMenu = false
+    },
+    async openArticleMenu(orderId) {
+      try {
+        // Get all Articles
+        const allArticles = (await ArticleService.getAllArticles()).data
+        console.log('ALL ARTICLES: ', allArticles)
+        const articleList = this.articleList = [] // Reset each time menu is opened
+        // Add articles in the article array
+        allArticles.articles.forEach(function(article) {
+          articleList.push(article)
+        })
+        console.log(articleList)
+
+        // Open Article Menu
+        if (articleList.length >= 1) {
+          this.articleMenu = true
+        }
+      } catch (error) {
+        if (error.response.data.info) {
+          this.info = error.response.data.info
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
+        }
+        if (error.response.data.error) {
+          console.log(error)
+          this.success = null
+          this.error = error.response.data.error
+        }
+      }
+    },
     async viewTable(tableId) {
       try {
         const response = (await TableService.viewTable(this.ownerId, tableId)).data
@@ -247,16 +328,35 @@ export default {
             newOrderName: this.newOrderName
           })).data
           console.log(response)
-          // Reset input field
-          this.newOrderName = ''
+          // If order is saved successfully
+          if (response.saved) {
+            // Reset input field
+            this.newOrderName = ''
 
-          // Reset current table order list whenever new order is created
-          const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
-          const orders = this.currentTableOrders = [] // Reset each time order is created
-          // Add orders in the orders array
-          ordersResponse.orders.forEach(function(order) {
-            orders.push(order)
-          })
+            // Reset current table order list whenever new order is created
+            const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+            const orders = this.currentTableOrders = [] // Reset each time order is created
+            // Add orders in the orders array
+            ordersResponse.orders.forEach(function(order) {
+              orders.push(order)
+            })
+
+            // After order is saved open the Reserve Article menu
+            // Get all Articles
+            const allArticles = (await ArticleService.getAllArticles()).data
+            console.log('ALL ARTICLES: ', allArticles)
+            const articleList = this.articleList = [] // Reset each time menu is opened
+            // Add articles in the article array
+            allArticles.articles.forEach(function(article) {
+              articleList.push(article)
+            })
+            console.log(articleList)
+
+            // Open Article Menu
+            if (articleList.length >= 1) {
+              this.articleMenu = true
+            }
+          }
         } else {
           this.info = 'Order must have a name.'
           setTimeout(() => {
@@ -363,9 +463,76 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
   .container {
     background-color: #f4f4f4;
 
+    .reserve-article-menu {
+      height: 100%;
+      width: 100%;
+
+      .articleMenuHeading {
+        text-align: center;
+        margin-bottom: 5px;
+        font-size: 25px;
+      }
+
+      .articleMenuList {
+        background-color: #FFFFFF;
+        list-style: none;
+        padding: 10px;
+
+        .singleArticleMenuLi {
+          display: inline-block;
+          border: 2px solid grey;
+          border-radius: 20px;
+          width: 200px;
+          height: 180px;
+          margin-left: 10px;
+          margin-bottom: 5px;
+          background-color: #f4f4f4;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.8;
+            background-color: #F8F8FF;
+          }
+
+          .articleMenuImage {
+            display: block;
+            margin: 5px auto 7px auto;
+            border: 1px solid orange;
+            border-radius: 20px;
+            width: 100px;
+            height: 100px;
+          }
+
+          .singleArticleMenuInfo {
+            text-align: center;
+
+            .info-text {
+              margin: 0;
+              position: relative;
+              bottom: 5px;
+              font-size: 15px;
+              background-color: inherit;
+            }
+            .info-name {
+              font-size: 17px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+      .articleMenuFinishBtn {
+        background-color: green;
+        position: fixed;
+        bottom: 10px;
+        width: 77%;
+        &:hover {
+          background-color: #00FF00;
+        }
+      }
+    }
     .createOrder {
       max-width: 70%;
     }
@@ -421,7 +588,6 @@ export default {
       display: inline-block;
       padding: 0;
       margin: auto;
-      margin-top: 14%;
       height: 40px;
       width: 40px;
       text-align: center;

@@ -62,6 +62,10 @@ router.use(function timeLog(req, res, next) {
 
 // TODO: Secure all routes only for admin
 
+// Get all Articles
+router.get('/admin/articles',
+  ArticleController.getAllArticles)
+
 // Delete Admin
 router.delete('/admin/:adminId',
   AdminController.deleteAdmin)

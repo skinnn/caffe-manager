@@ -4,6 +4,9 @@ export default {
   createArticle(formData) {
     return Api().post('admin/article/create', formData)
   },
+  getAllArticles() {
+    return Api().get('admin/articles')
+  },
   getArticlesByStorageId(storageId) {
     return Api().get(`admin/storage/${storageId}/articles`)
   },
