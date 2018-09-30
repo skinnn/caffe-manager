@@ -480,20 +480,20 @@ export default {
       .articleMenuList {
         background-color: #FFFFFF;
         list-style: none;
-        padding: 10px;
+        padding: 10px 0 10px 35px;
 
         .singleArticleMenuLi {
           display: inline-block;
           border: 2px solid grey;
           border-radius: 20px;
-          width: 200px;
+          width: 180px;
           height: 180px;
-          margin-left: 10px;
+          margin-left: 20px;
           margin-bottom: 5px;
           background-color: #f4f4f4;
           cursor: pointer;
           &:hover {
-            opacity: 0.8;
+            opacity: 0.7;
             background-color: #F8F8FF;
           }
 
