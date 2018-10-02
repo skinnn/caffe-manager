@@ -87,35 +87,42 @@ module.exports = {
   // Reserve Articles
   async reserveArticles(req, res) {
     try {
-      // console.log('PARAMS: ', req.params)
-      // console.log('BODY: ', req.body)
-      for (let i = 0; i <= req.body.selectedArticles.length - 1; i++) {
-        // console.log('RESERVED: ', req.body.selectedArticles[i])
-        let reservedArticle = new ReservedArticle()
-        reservedArticle.name = req.body.selectedArticles[i].name
-        reservedArticle.quantity = req.body.selectedArticles[i].quantity
-        reservedArticle.image = req.body.selectedArticles[i].image
-        reservedArticle.updated_date = dateHandler.getCurrentTime()
-        reservedArticle.inWhichOrder = req.body.orderId
-        reservedArticle.reservedBy = req.body.ownerId
-        reservedArticle.inWhichTable = req.body.currentTableId
-        // Check for name and quantity and save reserved articles in the db
-        if (reservedArticle.name !== '' && reservedArticle.quantity !== '') {
-          await reservedArticle.save(function(err) {
-            if (err) {
-              return console.log(err)
-            }
-          })
-        } else {
-          return res.status(400).send({
-            error: 'Invalid article information.'
-          })
+      // If there are reserved articles in the array
+
+      if (req.body.selectedArticles.length > 0) {
+        for (let i = 0; i <= req.body.selectedArticles.length - 1; i++) {
+          // console.log('RESERVED: ', req.body.selectedArticles[i])
+          let reservedArticle = new ReservedArticle()
+          reservedArticle.name = req.body.selectedArticles[i].name
+          reservedArticle.quantity = req.body.selectedArticles[i].quantity
+          reservedArticle.image = req.body.selectedArticles[i].image
+          reservedArticle.updated_date = dateHandler.getCurrentTime()
+          reservedArticle.inWhichOrder = req.body.orderId
+          reservedArticle.reservedBy = req.body.ownerId
+          reservedArticle.inWhichTable = req.body.currentTableId
+          // Check for name and quantity and save reserved articles in the db
+          if (reservedArticle.name !== '' && reservedArticle.quantity !== '') {
+            await reservedArticle.save(function(err) {
+              if (err) {
+                return console.log(err)
+              }
+            })
+          } else {
+            return res.status(400).send({
+              error: 'Invalid article information.'
+            })
+          }
         }
+        res.send({
+          saved: true,
+          success: 'Articles reserved.'
+        })
+      // If array is empty
+      } else {
+        res.send({
+          info: 'No articles have been selected.'
+        })
       }
-      res.send({
-        saved: true,
-        success: 'Articles reserved.'
-      })
     } catch (err) {
       console.log(err)
       res.status(500).send({

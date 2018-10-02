@@ -295,6 +295,7 @@ export default {
         // Reserve Selected Articles
         const response = (await OrderService.reserveArticles(orderData)).data
         console.log(response)
+        // If articles are successfully reserved
         if (response.saved) {
           // Reset Selected Article list
           this.selectedArticles = []
@@ -305,6 +306,15 @@ export default {
           this.success = response.success
           setTimeout(() => {
             this.success = null
+          }, 2000)
+        }
+        // If no articles has been selected
+        if (response.info) {
+          this.error = null
+          this.success = null
+          this.info = response.info
+          setTimeout(() => {
+            this.info = null
           }, 2000)
         }
         // Close Select Article menu
