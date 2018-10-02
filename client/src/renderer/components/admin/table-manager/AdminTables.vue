@@ -35,8 +35,26 @@
 
           <!-- Reserve Article Menu -->
           <div v-if="articleMenu" class="reserve-article-menu">
-            <h2 class="articleMenuHeading">Select articles</h2>
+            <div v-if="selectedArticles != 0" class="selectedArticles">
+              <h3>Selected articles</h3>
+              <ul class="selectedArticleList">
+                <li
+                  v-for="article in this.selectedArticles"
+                  :key="article._id"
+                  class="selectedArticleLi"
+                >
+                  <span class="reservedArticleInfo">
+                    {{article.name}} -
+                  </span>
+                  <div class="articleQuantity">{{article.quantity}}</div>
+                  <button class="removeSelectedArticleBtn">
+                    <v-icon>close</v-icon>
+                  </button>
+                </li>
+              </ul>
+            </div>
             <ul class="articleMenuList">
+              <h2 class="articleMenuHeading">Select articles</h2>
               <li
                 v-for="article in this.articleList"
                 :key="article._id"
@@ -501,7 +519,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
   .container {
     background-color: #f4f4f4;
 
@@ -509,8 +526,63 @@ export default {
       height: 100%;
       width: 100%;
 
+      .selectedArticles {
+        display: table;
+        margin-bottom: 10px;
+        min-height: 65px;
+
+        .selectedArticleList {
+          list-style: none;
+          max-height: 72px;
+          width: 100%;
+          border: 1px solid grey;
+          background-color: lighten(yellow, 45);
+          padding: 0;
+
+          .selectedArticleLi {
+            display: inline-block;
+            margin: 3px 6px 0 0;
+            background-color: lighten(green, 55);
+            border: 1px solid grey;
+            float: left;
+
+            .reservedArticleInfo {
+              margin-left: 5px;
+            }
+
+            .articleQuantity {
+              text-align: center;
+              display: inline-block;
+              height: 30px;
+              width: 30px;
+              border: 1px solid grey;
+              border-radius: 50%;
+              padding: 3px;
+              margin-top: 2px;
+            }
+
+            .removeSelectedArticleBtn {
+              float: right;
+              height: 34px;
+              width: 32px;
+              position: relative;
+              background-color: pink;
+              top: 0;
+              margin-left: 15px;
+              border-left: 1px solid grey;
+              padding-left: 4px;
+              padding-right: 3px;
+              &:hover {
+                background-color: lighten(red, 30);
+              }
+            }
+          }
+        }
+      }
+
       .articleMenuHeading {
-        text-align: center;
+        width: 100%;
+        // text-align: center;
         margin-bottom: 5px;
         font-size: 25px;
       }
@@ -518,7 +590,7 @@ export default {
       .articleMenuList {
         background-color: #FFFFFF;
         list-style: none;
-        padding: 10px 0 10px 35px;
+        padding: 10px 35px 10px 35px;
 
         .singleArticleMenuLi {
           display: inline-block;
