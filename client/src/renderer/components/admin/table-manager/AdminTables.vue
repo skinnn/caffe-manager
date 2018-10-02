@@ -40,7 +40,7 @@
               <li
                 v-for="article in this.articleList"
                 :key="article._id"
-                @click=""
+                @click="selectArticle(article.name)"
                 class="singleArticleMenuLi"
               >
                 <img
@@ -50,8 +50,7 @@
                   alt="No image"
                 >
                 <!-- Placeholder if there is no article image -->
-                <div v-if="!article.image" class="articleMenuImage">
-                </div>
+                <div v-if="!article.image" class="articleMenuImage"></div>
                 <div class="singleArticleMenuInfo">
                   <p class="info-text info-name">{{article.name}}</p>
                   <p class="info-text">Quantity: {{article.quantity}}</p>
@@ -156,6 +155,7 @@ export default {
   },
   data() {
     return {
+      selectedArticles: [],
       // TODO: Get currency from the admin settings
       currency: '$',
       articleList: [],
@@ -213,6 +213,43 @@ export default {
     }
   },
   methods: {
+    async selectArticle(articleName, articleId) {
+      try {
+        const selectedArticlePrompt = await swal({
+          title: `How much of ${articleName} would you like to reserve?`,
+          input: 'text',
+          inputPlaceholder: 'Quantity',
+          inputAttributes: {
+            maxlength: 2
+          },
+          // Automatically remove whitespaces from both ends of a result string
+          inputAutoTrim: true,
+          confirmButtonText: 'Accept',
+          showCancelButton: true
+          // Timer which if passed closes the window and returns value = null
+          // timer: 3000
+        })
+        // If input field is not empty
+        if (selectedArticlePrompt.value !== '' && selectedArticlePrompt.value !== undefined) {
+          // Create selectedArticle
+          let selectedArticle = {
+            id: articleId,
+            name: articleName,
+            quantity: selectedArticlePrompt.value
+          }
+          // Push selectedArticle to the selectedArticles array
+          this.selectedArticles.push(selectedArticle)
+          console.log(this.selectedArticles)
+        } else {
+          this.info = 'Article\'s quantity is not selected.'
+          setTimeout(() => {
+            this.info = null
+          }, 2000)
+        }
+      } catch (error) {
+
+      }
+    },
     finishReserving() {
       // TODO: Select, display input for the amount and submit selected articles
       this.articleMenu = false
@@ -510,6 +547,10 @@ export default {
           .singleArticleMenuInfo {
             text-align: center;
 
+            .articleCheckbox {
+              height: 100%;
+              width: 100%;
+            }
             .info-text {
               margin: 0;
               position: relative;
