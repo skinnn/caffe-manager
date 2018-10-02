@@ -11,8 +11,12 @@ const reservedArticleSchema = new Schema({
     required: true
   },
   inWhichOrder: {
-    type: String
-    // required: true
+    type: String,
+    required: true
+  },
+  reservedBy: {
+    type: String,
+    required: true
   },
   image: {
     type: String

@@ -200,11 +200,15 @@ export default {
       try {
         const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
         console.log(ordersResponse)
-        const orders = this.currentTableOrders = [] // Reset each time new table is selected
+        // Reset Order list each time new table is selected
+        const orders = this.currentTableOrders = []
         // Add orders in the orders array
         ordersResponse.orders.forEach(function(order) {
           orders.push(order)
         })
+
+        // Reset Selected Article list
+        this.selectedArticles = []
       } catch (error) {
         console.log(error)
         this.success = ''
@@ -250,8 +254,8 @@ export default {
         })
         // If input field is not empty
         if (selectedArticlePrompt.value !== '' && selectedArticlePrompt.value !== undefined) {
-          // Create selectedArticle
           let selectedArticle = {
+            // Create a temporary timestamp based id for selected article using uuidv1
             selectedId: uuidv1(),
             id: articleId,
             name: articleName,
@@ -278,9 +282,22 @@ export default {
         }
       }
     },
-    finishReserving() {
-      // TODO: Select, display input for the amount and submit selected articles
-      this.articleMenu = false
+    async finishReserving() {
+      try {
+        this.articleMenu = false
+      } catch (error) {
+        if (error.response.data.info) {
+          this.info = error.response.data.info
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
+        }
+        if (error.response.data.error) {
+          console.log(error)
+          this.success = null
+          this.error = error.response.data.error
+        }
+      }
     },
     async openArticleMenu(orderId) {
       try {
