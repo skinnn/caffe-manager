@@ -14,6 +14,10 @@ const reservedArticleSchema = new Schema({
     type: String,
     required: true
   },
+  inWhichTable: {
+    type: String,
+    required: true
+  },
   reservedBy: {
     type: String,
     required: true

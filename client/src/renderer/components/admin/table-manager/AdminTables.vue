@@ -78,7 +78,7 @@
               </li>
               <v-btn
                 class="articleMenuFinishBtn"
-                @click="finishReserving"
+                @click="reserveArticles()"
               >
                 Finish
               </v-btn>
@@ -174,6 +174,7 @@ export default {
   },
   data() {
     return {
+      currentOrderId: null,
       selectedArticles: [],
       // TODO: Get currency from the admin settings
       currency: '$',
@@ -282,9 +283,32 @@ export default {
         }
       }
     },
-    async finishReserving() {
+    async reserveArticles() {
       try {
-        this.articleMenu = false
+        // console.log(this.currentOrderId)
+        const orderData = {
+          selectedArticles: this.selectedArticles,
+          ownerId: this.ownerId,
+          currentTableId: this.currentTable._id,
+          orderId: this.currentOrderId
+        }
+        // Reserve Selected Articles
+        const response = (await OrderService.reserveArticles(orderData)).data
+        console.log(response)
+        if (response.saved) {
+          // Reset Selected Article list
+          this.selectedArticles = []
+
+          // Success message and timeout
+          this.error = null
+          this.info = null
+          this.success = response.success
+          setTimeout(() => {
+            this.success = null
+          }, 2000)
+        }
+        // Close Select Article menu
+        // this.articleMenu = false
       } catch (error) {
         if (error.response.data.info) {
           this.info = error.response.data.info
@@ -303,12 +327,15 @@ export default {
       try {
         // Get all Articles
         const allArticles = (await ArticleService.getAllArticles()).data
-        const articleList = this.articleList = [] // Reset each time menu is opened
+        // Reset Article List each time menu is opened
+        const articleList = this.articleList = []
         // Add articles in the article array
         allArticles.articles.forEach(function(article) {
           articleList.push(article)
         })
-        console.log(articleList)
+
+        // Set Current Order Id
+        this.currentOrderId = orderId
 
         // Open Article Menu
         if (articleList.length >= 1) {

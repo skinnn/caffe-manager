@@ -9,5 +9,8 @@ export default {
   },
   deleteOrder(ownerId, orderId, currentTableId) {
     return Api().delete(`/admin/${ownerId}/table/${currentTableId}/order/${orderId}`)
+  },
+  reserveArticles(orderData) {
+    return Api().post(`/admin/${orderData.ownerId}/table/${orderData.currentTableId}/order/${orderData.orderId}/reserve`, orderData)
   }
 }

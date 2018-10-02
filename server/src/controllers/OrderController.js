@@ -1,5 +1,7 @@
 const passport = require('passport')
 const Order = require('../models/Order')
+const ReservedArticle = require('../models/ReservedArticle')
+const dateHandler = require('./getDate')
 module.exports = {
 
   // Create Order
@@ -25,7 +27,9 @@ module.exports = {
           }
         })
       } else {
-        return console.log('Error: Order must have a name.')
+        return res.status(400).send({
+          error: 'Order must have a name.'
+        })
       }
     } catch (err) {
       res.status(500).send({
@@ -76,6 +80,46 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to delete the order.'
+      })
+    }
+  },
+
+  // Reserve Articles
+  async reserveArticles(req, res) {
+    try {
+      // console.log('PARAMS: ', req.params)
+      // console.log('BODY: ', req.body)
+      for (let i = 0; i <= req.body.selectedArticles.length - 1; i++) {
+        // console.log('RESERVED: ', req.body.selectedArticles[i])
+        let reservedArticle = new ReservedArticle()
+        reservedArticle.name = req.body.selectedArticles[i].name
+        reservedArticle.quantity = req.body.selectedArticles[i].quantity
+        reservedArticle.image = req.body.selectedArticles[i].image
+        reservedArticle.updated_date = dateHandler.getCurrentTime()
+        reservedArticle.inWhichOrder = req.body.orderId
+        reservedArticle.reservedBy = req.body.ownerId
+        reservedArticle.inWhichTable = req.body.currentTableId
+        // Check for name and quantity and save reserved articles in the db
+        if (reservedArticle.name !== '' && reservedArticle.quantity !== '') {
+          await reservedArticle.save(function(err) {
+            if (err) {
+              return console.log(err)
+            }
+          })
+        } else {
+          return res.status(400).send({
+            error: 'Invalid article information.'
+          })
+        }
+      }
+      res.send({
+        saved: true,
+        success: 'Articles reserved.'
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occurred trying to reserve the articles.'
       })
     }
   }
