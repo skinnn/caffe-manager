@@ -43,12 +43,12 @@
                   :key="article._id"
                   class="selectedArticleLi"
                 >
-                  <span class="reservedArticleInfo">
-                    {{article.name}} -
+                  <span class="reservedArticleName">
+                    {{article.name}}
                   </span>
                   <div class="articleQuantity">{{article.quantity}}</div>
                   <button class="removeSelectedArticleBtn">
-                    <v-icon>close</v-icon>
+                    <v-icon class="closeIcon">close</v-icon>
                   </button>
                 </li>
               </ul>
@@ -75,13 +75,13 @@
                   <p class="info-text">Price: {{article.price}} {{currency}}</p>
                 </div>
               </li>
+              <v-btn
+                class="articleMenuFinishBtn"
+                @click="finishReserving"
+              >
+                Finish
+              </v-btn>
             </ul>
-            <v-btn
-              class="articleMenuFinishBtn"
-              @click="finishReserving"
-            >
-              Finish
-            </v-btn>
           </div>
 
           <!-- Current Table Content -->
@@ -532,48 +532,64 @@ export default {
         min-height: 65px;
 
         .selectedArticleList {
+          display: table;
           list-style: none;
-          max-height: 72px;
           width: 100%;
           border: 1px solid grey;
-          background-color: lighten(yellow, 45);
-          padding: 0;
+          background-color: white;
+          padding: 4px 4px 0 4px;
 
           .selectedArticleLi {
             display: inline-block;
-            margin: 3px 6px 0 0;
-            background-color: lighten(green, 55);
+            height: 36px;
+            margin: 0 6px 4px 0;
+            background-color: inherit;
             border: 1px solid grey;
             float: left;
+            background-color: grey;
 
-            .reservedArticleInfo {
-              margin-left: 5px;
+            .reservedArticleName {
+              color: white;
+              vertical-align: middle;
+              font-weight: 600;
+              font-size: 15px;
+              margin: 0 5px 0 5px;
             }
 
             .articleQuantity {
-              text-align: center;
               display: inline-block;
               height: 30px;
               width: 30px;
-              border: 1px solid grey;
-              border-radius: 50%;
-              padding: 3px;
+              padding: 2px;
               margin-top: 2px;
+              color: yellow;
+              font-weight: 600;
+              font-size: 15px;
+              border: 2px solid lighten(grey, 20);
+              border-radius: 50%;
+              vertical-align: middle;
+              text-align: center;
             }
 
             .removeSelectedArticleBtn {
               float: right;
-              height: 34px;
-              width: 32px;
+              min-height: 34px;
+              min-width: 34px;
               position: relative;
               background-color: pink;
               top: 0;
-              margin-left: 15px;
+              margin-left: 10px;
               border-left: 1px solid grey;
-              padding-left: 4px;
-              padding-right: 3px;
+              padding: 2px 0 0 0;
               &:hover {
                 background-color: lighten(red, 30);
+
+                .closeIcon {
+                  color: red;
+                }
+              }
+              .closeIcon {
+                color: lighten(red, 20);
               }
             }
           }
@@ -588,6 +604,9 @@ export default {
       }
 
       .articleMenuList {
+        align-content: center;
+        align-items: center;
+        justify-content: center;
         background-color: #FFFFFF;
         list-style: none;
         padding: 10px 35px 10px 35px;
@@ -600,7 +619,7 @@ export default {
           height: 180px;
           margin-left: 20px;
           margin-bottom: 5px;
-          background-color: #f4f4f4;
+          background-color: white;
           cursor: pointer;
           &:hover {
             opacity: 0.7;
@@ -640,8 +659,9 @@ export default {
       .articleMenuFinishBtn {
         background-color: green;
         position: fixed;
+        left: 20%;
         bottom: 10px;
-        width: 77%;
+        width: 75.3%;
         &:hover {
           background-color: #00FF00;
         }
