@@ -35,6 +35,7 @@
 
           <!-- Reserve Article Menu -->
           <div v-if="articleMenu" class="reserve-article-menu">
+            <!-- Selected Articles -->
             <div v-if="selectedArticles != 0" class="selectedArticles">
               <h3>Selected articles</h3>
               <ul class="selectedArticleList">
@@ -43,11 +44,11 @@
                   :key="article._id"
                   class="selectedArticleLi"
                 >
-                  <span class="reservedArticleName">
+                  <span class="selectedArticleName">
                     {{article.name}}
                   </span>
                   <div class="articleQuantity">{{article.quantity}}</div>
-                  <button class="removeSelectedArticleBtn">
+                  <button @click="removeSelectedArticle(article.selectedId)" class="removeSelectedArticleBtn">
                     <v-icon class="closeIcon">close</v-icon>
                   </button>
                 </li>
@@ -58,7 +59,7 @@
               <li
                 v-for="article in this.articleList"
                 :key="article._id"
-                @click="selectArticle(article.name)"
+                @click="selectArticle(article.name, article._id)"
                 class="singleArticleMenuLi"
               >
                 <img
@@ -130,7 +131,6 @@
                 </li>
               </ul>
             </div>
-
           </div> <!-- ./ Current Table Content -->
 
           <!-- List of tables -->
@@ -166,6 +166,7 @@ import OrderService from '@/services/OrderService'
 import ArticleService from '@/services/ArticleService'
 import swal from 'sweetalert2'
 import TableService from '@/services/TableService'
+import uuidv1 from 'uuid/v1'
 
 export default {
   components: {
@@ -251,6 +252,7 @@ export default {
         if (selectedArticlePrompt.value !== '' && selectedArticlePrompt.value !== undefined) {
           // Create selectedArticle
           let selectedArticle = {
+            selectedId: uuidv1(),
             id: articleId,
             name: articleName,
             quantity: selectedArticlePrompt.value
@@ -266,6 +268,14 @@ export default {
         }
       } catch (error) {
 
+      }
+    },
+    removeSelectedArticle(articleId) {
+      for (var i = this.selectedArticles.length - 1; i >= 0; i--) {
+        if (this.selectedArticles[i].selectedId === articleId) {
+          this.selectedArticles.splice(i, 1)
+          console.log(this.selectedArticles)
+        }
       }
     },
     finishReserving() {
@@ -548,7 +558,7 @@ export default {
             float: left;
             background-color: grey;
 
-            .reservedArticleName {
+            .selectedArticleName {
               color: white;
               vertical-align: middle;
               font-weight: 600;

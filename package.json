@@ -1,7 +1,7 @@
 {
   "name": "vue-caffe",
   "version": "1.0.0",
-  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com>",
+  "author": "Nikola Jovanovic",
   "description": "App for managing a cafe or a store.",
   "license": "MIT",
   "scripts": {
@@ -16,8 +16,6 @@
     "type": "git",
     "url": "git+https://github.com/skinnn/vue-caffe.git"
   },
-  "author": "Nikola Jovanovic",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/skinnn/vue-caffe/issues"
   },
