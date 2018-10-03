@@ -22,7 +22,7 @@
         <!-- TODO: Should also somewhere list all the tables by their owners/users -->
         <div class="container">
           <div class="admin-table-list">
-            <!-- TODO: Make the list bigger and apply some styles -->
+            <!-- TODO: Apply some styles to the list -->
             <!-- List of Tables -->
             <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
               <p class="tablesListText">List of Tables</p>
@@ -228,7 +228,7 @@ export default {
     top: 24%;
     margin: 0;
     padding: 5px 5px 5px 5px;
-    width: 288px;
+    width: 74%;
 
     .tablesListText {
       text-align: center;
@@ -244,8 +244,8 @@ export default {
       margin: 2px 0 2px 2px;
       border: 1px solid grey;
       border-radius: 50%;
-      height: 60px;
-      width: 60px;
+      height: 72px;
+      width: 72px;
       display: inline-block;
       list-style: none;
       background-color: #f4f4f4;
@@ -260,8 +260,8 @@ export default {
       text-align: center;
       border: 1px solid grey;
       border-radius: 50%;
-      height: 60px;
-      width: 60px;
+      height: 72px;
+      width: 72px;
       display: inline-block;
       list-style: none;
       background-color: #f4f4f4;
@@ -274,7 +274,7 @@ export default {
       }
       .createTableIcon {
         position: relative;
-        top: 18px;
+        top: 23px;
         left: 1px;
         margin: 0px;
         padding: 0px;
@@ -285,9 +285,10 @@ export default {
     .singleTableNumber {
       position: relative;
       text-align: center;
-      top: 16px;
+      vertical-align: middle;
+      top: 20px;
       padding: 0;
-      margin:0;
+      margin: auto;
       color: black;
       font-weight: bold;
       font-size: 19px;
