@@ -6,7 +6,6 @@
     <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
-          <!-- Default Heading -->
           <h1 class="heading">Tables</h1>
           <v-btn @click="logoutAdmin" class="logout-btn pink">
             Logout

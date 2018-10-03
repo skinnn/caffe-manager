@@ -116,31 +116,32 @@
               </v-btn>
             </div>
 
+            <!-- List of Orders -->
             <div class="orders">
               <ul class="order-list">
                 <li
                   v-for="order in this.currentTableOrders"
                   :key="order._id"
-                  @click=""
                   class="singleOrderLi"
                 >
-                <div class="singleOrderDiv">
-                  <div class="orderHeading">
-                    <span class="orderName">{{order.name}}</span>
-                    <hr />
-                    <v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
-                      <v-icon>delete</v-icon>
-                    </v-btn>
+                  <div class="singleOrderDiv">
+                    <div class="orderHeading">
+                      <span class="orderName">{{order.name}}</span>
+                      <hr />
+                      <v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
+                        <v-icon>delete</v-icon>
+                      </v-btn>
+                      <v-btn
+                        class="addArticleBtn"
+                        @click="openArticleMenu(order._id, order.name)"
+                      >
+                        Add article
+                      </v-btn>
+                    </div>
+                    <div class="orderContent">
+                      <!-- TODO: Get the reserved articles by order ids -->
+                    </div>
                   </div>
-                  <div>
-                    <v-btn
-                      class="addArticleBtn"
-                      @click="openArticleMenu(order._id, order.name)"
-                    >
-                      Add article
-                    </v-btn>
-                  </div>
-                </div>
                 </li>
               </ul>
             </div>
@@ -373,8 +374,7 @@ export default {
             // Reset Table list after creating new table
             const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
             if (ress.tables) {
-              this.tables = []
-              const tables = this.tables
+              let tables = this.tableList = []
               ress.tables.forEach(function(table) {
                 tables.push(table)
               })
@@ -620,8 +620,15 @@ export default {
           // Reset Table list after deleting
           const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
           if (ress.tables) {
-            this.tables = []
-            this.tables = ress.tables
+            let tables = this.tableList = []
+            ress.tables.forEach(function(table) {
+              tables.push(table)
+            })
+
+            // Redirect to the Table List page
+            this.$router.push({
+              name: 'admin-table-list'
+            })
           }
         }
       } catch (error) {
