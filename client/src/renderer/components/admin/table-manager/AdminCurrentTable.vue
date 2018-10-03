@@ -1,3 +1,4 @@
+<!-- TODO: Separate Table list and current table pages -->
 <template>
   <div class="admin-tables">
     <div>
@@ -6,9 +7,11 @@
     <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
-          <h1 v-if="!currentTable" class="heading">Tables</h1>
           <!-- Current Table Heading -->
           <h1 v-if="currentTable" class="heading">
+            <v-btn @click="goBack" class="goBackBtn blue" fab>
+              <v-icon>view_carousel</v-icon>
+            </v-btn>
             <v-btn @click="deleteTable(currentTable._id)" class="delete-btn pink">
               Delete
             </v-btn>
@@ -37,6 +40,7 @@
           <div v-if="articleMenu" class="reserve-article-menu">
             <!-- Selected Articles -->
             <div v-if="selectedArticles != 0" class="selectedArticles">
+              <!-- TODO: Implement Search -->
               <h3>Selected articles</h3>
               <ul class="selectedArticleList">
                 <li
@@ -55,7 +59,10 @@
               </ul>
             </div>
             <ul class="articleMenuList">
-              <h2 class="articleMenuHeading">Select articles</h2>
+              <h2 class="articleMenuHeading">
+                Select articles for order:
+                <span class="currentOrderName">{{this.currentOrderName}}</span>
+              </h2>
               <li
                 v-for="article in this.articleList"
                 :key="article._id"
@@ -77,10 +84,16 @@
                 </div>
               </li>
               <v-btn
-                class="articleMenuFinishBtn"
-                @click="reserveArticles()"
+                class="articleMenuReserveBtn"
+                @click="reserveArticles"
               >
-                Finish
+                Reserve
+              </v-btn>
+              <v-btn
+                class="articleMenuCancelBtn"
+                @click="cancelReserving"
+              >
+                Cancel
               </v-btn>
             </ul>
           </div>
@@ -122,7 +135,7 @@
                   <div>
                     <v-btn
                       class="addArticleBtn"
-                      @click="openArticleMenu(order._id)"
+                      @click="openArticleMenu(order._id, order.name)"
                     >
                       Add article
                     </v-btn>
@@ -133,27 +146,29 @@
             </div>
           </div> <!-- ./ Current Table Content -->
 
-          <!-- List of tables -->
-          <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
-            <p class="tablesListText">List of Tables</p>
-            <hr>
+          <div class="admin-table-list">
+            <!-- List of Tables -->
+            <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
+              <p class="tablesListText">List of Tables</p>
+              <hr>
 
-            <!-- List of tables from the current user -->
-            <li
-              v-for="table in this.tables"
-              :key="table._id"
-              @click="viewTable(table._id)"
-              class="liSingleTable"
-            >
-              <span class="singleTableNumber">{{table.number}}</span>
-            </li>
-            <!-- Create table -->
-            <li @click="createTable" class="liCreateTable">
-              <v-icon class="createTableIcon">add</v-icon>
-            </li>
-          </ul>
-        </div>
+              <!-- List of Tables from the current logged in user -->
+              <li
+                v-for="table in this.tableList"
+                :key="table._id"
+                @click="viewTable(table._id)"
+                class="liSingleTable"
+              >
+                <span class="singleTableNumber">{{table.number}}</span>
+              </li>
+              <!-- Create table -->
+              <li @click="createTable" class="liCreateTable">
+                <v-icon class="createTableIcon">add</v-icon>
+              </li>
+            </ul>
+          </div>
 
+        </div> <!-- ./ Container -->
       </v-flex>
     </v-layout>
   </div>
@@ -174,16 +189,17 @@ export default {
   },
   data() {
     return {
+      articleMenu: false,
       currentOrderId: null,
+      currentOrderName: null,
       selectedArticles: [],
       // TODO: Get currency from the admin settings
       currency: '$',
       articleList: [],
-      articleMenu: false,
       currentTable: null,
       currentTableOrders: [],
+      tableList: [],
       ownerId: this.$store.state.admin._id,
-      tables: [],
       newOrderName: '',
       newTable: {
         number: '',
@@ -193,6 +209,39 @@ export default {
       error: null,
       success: null,
       info: null
+    }
+  },
+  async mounted() {
+    try {
+      // Get Current Table id
+      const currentTableId = this.$store.state.route.params.tableId
+      // console.log(currentTableId)
+      var currentTable = (await TableService.viewTable(this.ownerId, currentTableId)).data
+      // If Table is fetched successfully
+      if (currentTable.table) {
+        this.currentTable = currentTable.table
+      }
+
+      // Get Table list
+      var allTables = (await TableService.getTablesByOwnerId(this.ownerId)).data
+      // If Tables are fetched successfully
+      if (allTables.tables) {
+        const tableList = this.tableList
+        // Add table in the tables array
+        allTables.tables.forEach(function(table) {
+          tableList.push(table)
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      if (currentTable.error) {
+        this.success = null
+        this.error = error.currentTable.data.error
+      }
+      if (allTables.error) {
+        this.success = null
+        this.error = error.allTables.data.error
+      }
     }
   },
   watch: {
@@ -217,30 +266,25 @@ export default {
       }
     }
   },
-  async mounted() {
-    try {
-      // Get Table list
-      const response = (await TableService.getTablesByOwnerId(this.ownerId)).data
-
-      // If Tables are fetched successfully
-      if (response.tables) {
-        const tables = this.tables
-        // Add table in the tables array
-        response.tables.forEach(function(table) {
-          tables.push(table)
-        })
-      }
-    } catch (error) {
-      console.log(error)
-      this.success = null
-      this.error = error.response.data.error
-    }
-  },
   methods: {
+    goBack() {
+      // console.log(this.$store.state.route.from)
+      this.$router.push({
+        name: 'admin-table-list'
+      })
+    },
+    cancelReserving() {
+      // Reset Selected Article list
+      this.selectedArticles = []
+      // Reset currentOrderId to null
+      this.currentOrderId = null
+      // Close Select Article menu
+      this.articleMenu = false
+    },
     async selectArticle(articleName, articleId) {
       try {
         const selectedArticlePrompt = await swal({
-          title: `How much of ${articleName} would you like to reserve?`,
+          title: `Quantity for article: ${articleName}`,
           input: 'text',
           inputPlaceholder: 'Quantity',
           inputAttributes: {
@@ -275,96 +319,6 @@ export default {
 
       }
     },
-    removeSelectedArticle(articleId) {
-      for (var i = this.selectedArticles.length - 1; i >= 0; i--) {
-        if (this.selectedArticles[i].selectedId === articleId) {
-          this.selectedArticles.splice(i, 1)
-          console.log(this.selectedArticles)
-        }
-      }
-    },
-    async reserveArticles() {
-      try {
-        // console.log(this.currentOrderId)
-        const orderData = {
-          selectedArticles: this.selectedArticles,
-          ownerId: this.ownerId,
-          currentTableId: this.currentTable._id,
-          orderId: this.currentOrderId
-        }
-        // Reserve Selected Articles
-        const response = (await OrderService.reserveArticles(orderData)).data
-        console.log(response)
-        // If articles are successfully reserved
-        if (response.saved) {
-          // Reset Selected Article list
-          this.selectedArticles = []
-
-          // Success message and timeout
-          this.error = null
-          this.info = null
-          this.success = response.success
-          setTimeout(() => {
-            this.success = null
-          }, 2000)
-        }
-        // If no articles has been selected
-        if (response.info) {
-          this.error = null
-          this.success = null
-          this.info = response.info
-          setTimeout(() => {
-            this.info = null
-          }, 2000)
-        }
-        // Close Select Article menu
-        // this.articleMenu = false
-      } catch (error) {
-        if (error.response.data.info) {
-          this.info = error.response.data.info
-          setTimeout(() => {
-            this.info = null
-          }, 3000)
-        }
-        if (error.response.data.error) {
-          console.log(error)
-          this.success = null
-          this.error = error.response.data.error
-        }
-      }
-    },
-    async openArticleMenu(orderId) {
-      try {
-        // Get all Articles
-        const allArticles = (await ArticleService.getAllArticles()).data
-        // Reset Article List each time menu is opened
-        const articleList = this.articleList = []
-        // Add articles in the article array
-        allArticles.articles.forEach(function(article) {
-          articleList.push(article)
-        })
-
-        // Set Current Order Id
-        this.currentOrderId = orderId
-
-        // Open Article Menu
-        if (articleList.length >= 1) {
-          this.articleMenu = true
-        }
-      } catch (error) {
-        if (error.response.data.info) {
-          this.info = error.response.data.info
-          setTimeout(() => {
-            this.info = null
-          }, 3000)
-        }
-        if (error.response.data.error) {
-          console.log(error)
-          this.success = null
-          this.error = error.response.data.error
-        }
-      }
-    },
     async viewTable(tableId) {
       try {
         const response = (await TableService.viewTable(this.ownerId, tableId)).data
@@ -375,6 +329,14 @@ export default {
         console.log(error)
         this.success = ''
         this.error = error.response.data.error
+      }
+    },
+    removeSelectedArticle(articleId) {
+      for (var i = this.selectedArticles.length - 1; i >= 0; i--) {
+        if (this.selectedArticles[i].selectedId === articleId) {
+          this.selectedArticles.splice(i, 1)
+          console.log(this.selectedArticles)
+        }
       }
     },
     async createTable() {
@@ -436,6 +398,96 @@ export default {
         if (error.response.data.error) {
           console.log(error)
           this.success = ''
+          this.error = error.response.data.error
+        }
+      }
+    },
+    async reserveArticles() {
+      try {
+        // If there are articles in the selectedArticles array
+        if (this.selectedArticles.length > 0) {
+          const orderData = {
+            selectedArticles: this.selectedArticles,
+            ownerId: this.ownerId,
+            currentTableId: this.currentTable._id,
+            orderId: this.currentOrderId
+          }
+          // Reserve Selected Articles
+          const response = (await OrderService.reserveArticles(orderData)).data
+          console.log(response)
+          // If articles are successfully reserved
+          if (response.saved) {
+            // Reset Selected Article list
+            this.selectedArticles = []
+
+            // Success message and timeout
+            this.error = null
+            this.info = null
+            this.success = response.success
+            setTimeout(() => {
+              this.success = null
+            }, 2000)
+          }
+
+          // Reset currentOrderId to null
+          this.currentOrderId = null
+
+          // Close Select Article menu
+          this.articleMenu = false
+
+        // If no articles has been selected
+        } else {
+          this.error = null
+          this.success = null
+          this.info = 'No articles have been selected.'
+          setTimeout(() => {
+            this.info = null
+          }, 2000)
+        }
+      } catch (error) {
+        if (error.response.data.info) {
+          this.info = error.response.data.info
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
+        }
+        if (error.response.data.error) {
+          console.log(error)
+          this.success = null
+          this.error = error.response.data.error
+        }
+      }
+    },
+    async openArticleMenu(orderId, currentOrderName) {
+      try {
+        // Get all Articles
+        const allArticles = (await ArticleService.getAllArticles()).data
+        // Reset Article List each time menu is opened
+        const articleList = this.articleList = []
+        // Add articles in the article array
+        allArticles.articles.forEach(function(article) {
+          articleList.push(article)
+        })
+
+        // Set Current Order Id and Name
+        this.currentOrderId = orderId
+        this.currentOrderName = currentOrderName
+        console.log(this.currentOrderName)
+
+        // Open Article Menu
+        if (articleList.length >= 1) {
+          this.articleMenu = true
+        }
+      } catch (error) {
+        if (error.response.data.info) {
+          this.info = error.response.data.info
+          setTimeout(() => {
+            this.info = null
+          }, 3000)
+        }
+        if (error.response.data.error) {
+          console.log(error)
+          this.success = null
           this.error = error.response.data.error
         }
       }
@@ -586,6 +638,80 @@ export default {
   .container {
     background-color: #f4f4f4;
 
+    .listOfTables {
+      position: fixed;
+      background-color: pink;
+      border: none;
+      right: 5%;
+      top: 24%;
+      margin: 0;
+      padding: 5px 5px 5px 5px;
+      width: 288px;
+
+      .tablesListText {
+        text-align: center;
+        font-size: 16px;
+        margin: 5px 0 0 0;
+        padding: 0;
+        color: black;
+        font-weight: 600;
+      }
+      .liSingleTable {
+        text-align: center;
+        padding: 0;
+        margin: 2px 0 2px 2px;
+        border: 1px solid grey;
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+        display: inline-block;
+        list-style: none;
+        background-color: #f4f4f4;
+
+        &:hover {
+          background-color: #fff;
+          opacity: 0.7;
+          cursor: pointer;
+        }
+      }
+      .liCreateTable {
+        text-align: center;
+        border: 1px solid grey;
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+        display: inline-block;
+        list-style: none;
+        background-color: #f4f4f4;
+        margin: 2px 0 2px 0px;
+        &:hover {
+          background-color: #fff;
+          opacity: 0.7;
+          cursor: pointer;
+        }
+
+        .createTableIcon {
+          position: relative;
+          top: 18px;
+          left: 1px;
+          margin: 0px;
+          padding: 0px;
+          width: 22px;
+          height: 22px;
+        }
+      }
+      .singleTableNumber {
+        position: relative;
+        text-align: center;
+        top: 16px;
+        padding: 0;
+        margin:0;
+        color: black;
+        font-weight: bold;
+        font-size: 19px;
+      }
+    }
+
     .reserve-article-menu {
       height: 100%;
       width: 100%;
@@ -662,9 +788,12 @@ export default {
 
       .articleMenuHeading {
         width: 100%;
-        // text-align: center;
         margin-bottom: 5px;
         font-size: 25px;
+
+        .currentOrderName {
+          color: orange;
+        }
       }
 
       .articleMenuList {
@@ -720,17 +849,36 @@ export default {
           }
         }
       }
-      .articleMenuFinishBtn {
-        background-color: green;
+
+      .articleMenuReserveBtn {
+        background-color: lighten(green, 50);
+        // font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 1px;
         position: fixed;
         left: 20%;
-        bottom: 10px;
-        width: 75.3%;
+        bottom: 0;
+        width: 49.5%;
         &:hover {
           background-color: #00FF00;
         }
       }
+
+      .articleMenuCancelBtn {
+        background-color: pink;
+        // font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 1px;
+        position: fixed;
+        left: 70%;
+        bottom: 0;
+        width: 25.4%;
+        &:hover {
+          background-color: red;
+        }
+      }
     }
+
     .createOrder {
       max-width: 70%;
     }
@@ -801,79 +949,5 @@ export default {
     left: 91%;
     color: white;
   }
-
-  .listOfTables {
-    position: fixed;
-    background-color: pink;
-    border: none;
-    right: 5%;
-    top: 24%;
-    margin: 0;
-    padding: 5px 5px 5px 5px;
-    width: 288px;
-
-    .tablesListText {
-      text-align: center;
-      font-size: 16px;
-      margin: 5px 0 0 0;
-      padding: 0;
-      color: black;
-      font-weight: 600;
-    }
-    .liSingleTable {
-      text-align: center;
-      padding: 0;
-      margin: 2px 0 2px 2px;
-      border: 1px solid grey;
-      border-radius: 50%;
-      height: 60px;
-      width: 60px;
-      display: inline-block;
-      list-style: none;
-      background-color: #f4f4f4;
-
-      &:hover {
-        background-color: #fff;
-        opacity: 0.7;
-        cursor: pointer;
-      }
-    }
-    .liCreateTable {
-      text-align: center;
-      border: 1px solid grey;
-      border-radius: 50%;
-      height: 60px;
-      width: 60px;
-      display: inline-block;
-      list-style: none;
-      background-color: #f4f4f4;
-      margin: 2px 0 2px 0px;
-
-      &:hover {
-        background-color: #fff;
-        opacity: 0.7;
-        cursor: pointer;
-      }
-      .createTableIcon {
-        position: relative;
-        top: 18px;
-        left: 1px;
-        margin: 0px;
-        padding: 0px;
-        width: 22px;
-        height: 22px;
-      }
-    }
-    .singleTableNumber {
-      position: relative;
-      text-align: center;
-      top: 16px;
-      padding: 0;
-      margin:0;
-      color: black;
-      font-weight: bold;
-      font-size: 19px;
-    }
-}
 
 </style>

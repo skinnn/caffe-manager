@@ -49,7 +49,7 @@
         </v-list-group>
 
         <!-- Tables -->
-        <v-list-tile @click="navigateTo({ name: 'admin-tables' })">
+        <v-list-tile @click="navigateTo({ name: 'admin-table-list' })">
           <v-list-tile-action>
             <v-icon>view_carousel</v-icon>
           </v-list-tile-action>

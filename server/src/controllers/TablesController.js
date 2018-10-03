@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  // Get All Articles
+  // Get Tables by owner id
   async getTablesByOwnerId(req, res) {
     try {
       let ownerIdQuery = { ownerId: req.params.ownerId }
@@ -60,7 +60,7 @@ module.exports = {
     }
   },
 
-  // Get Article by id
+  // Get Table by id
   async viewTable(req, res) {
     try {
       let query = { _id: req.params.tableId }

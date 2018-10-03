@@ -12,7 +12,6 @@ const AdminLandingRegister = require('@/components/AdminLandingRegister').defaul
 const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
-
 // Storage-Manager
 const AdminViewStorage = require('@/components/admin/storage-manager/ViewStorage').default
 const AdminEditStorage = require('@/components/admin/storage-manager/EditStorage').default
@@ -21,8 +20,8 @@ const AdminCreateStorage = require('@/components/admin/storage-manager/CreateSto
 const AdminCreateArticle = require('@/components/admin/storage-manager/CreateArticle').default
 const AdminEditArticle = require('@/components/admin/storage-manager/EditArticle').default
 // Table-Manager
-const AdminTables = require('@/components/admin/table-manager/AdminTables').default
-// const AdminViewTable = require('@/components/admin/table-manager/AdminViewTable').default
+const AdminCurrentTable = require('@/components/admin/table-manager/AdminCurrentTable').default
+const AdminTableList = require('@/components/admin/table-manager/AdminTableList').default
 // Admin-Manager
 const AdminCreateAdmin = require('@/components/admin/admin-manager/CreateAdmin').default
 const AdminViewAdmin = require('@/components/admin/admin-manager/ViewAdmin').default
@@ -91,8 +90,13 @@ export default new Router({
     },
     {
       path: '/admin/tables',
-      name: 'admin-tables',
-      component: AdminTables
+      name: 'admin-table-list',
+      component: AdminTableList
+    },
+    {
+      path: '/admin/table/:tableId',
+      name: 'admin-current-table',
+      component: AdminCurrentTable
     },
     {
       path: '/admin/admin-list',
