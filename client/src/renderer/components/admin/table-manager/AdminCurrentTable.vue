@@ -159,6 +159,7 @@
                 :key="table._id"
                 @click="viewTable(table._id)"
                 class="liSingleTable"
+                v-bind:class="{ 'orange' : currentTable._id === table._id }"
               >
                 <span class="singleTableNumber">{{table.number}}</span>
               </li>
@@ -214,9 +215,8 @@ export default {
   },
   async mounted() {
     try {
-      // Get Current Table id
+      // Get Current Table
       const currentTableId = this.$store.state.route.params.tableId
-      // console.log(currentTableId)
       var currentTable = (await TableService.viewTable(this.ownerId, currentTableId)).data
       // If Table is fetched successfully
       if (currentTable.table) {
@@ -642,6 +642,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
   .container {
     background-color: #f4f4f4;
 
@@ -955,6 +956,11 @@ export default {
     top: 25px;
     left: 91%;
     color: white;
+  }
+
+  .activeTable {
+    color: red;
+    background-color: blue;
   }
 
 </style>

@@ -221,14 +221,14 @@ export default {
 <style scoped lang="scss">
 
   .listOfTables {
-    position: fixed;
-    background-color: pink;
+    // position: fixed;
+    width: 100%;
+    background-color: lighten(orange, 30);
     border: none;
     right: 5%;
     top: 24%;
     margin: 0;
     padding: 5px 5px 5px 5px;
-    width: 74%;
 
     .tablesListText {
       text-align: center;
@@ -241,7 +241,7 @@ export default {
     .liSingleTable {
       text-align: center;
       padding: 0;
-      margin: 2px 0 2px 2px;
+      margin: 2px 0 2px 4px;
       border: 1px solid grey;
       border-radius: 50%;
       height: 72px;
@@ -251,7 +251,7 @@ export default {
       background-color: #f4f4f4;
 
       &:hover {
-        background-color: #fff;
+        background-color: lighten(grey, 30);
         opacity: 0.7;
         cursor: pointer;
       }
