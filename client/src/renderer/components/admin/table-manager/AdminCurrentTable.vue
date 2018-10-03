@@ -140,6 +140,13 @@
                     </div>
                     <div class="orderContent">
                       <!-- TODO: Get the reserved articles by order ids -->
+                      <ul>
+                        <li
+                          v-for="reservedArticle in this.reservedArticles"
+                        >
+                          name: {{reservedArticle.name}}
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </li>
