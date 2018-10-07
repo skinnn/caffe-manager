@@ -7,9 +7,6 @@ module.exports = {
   // Create Order
   async createOrder(req, res) {
     try {
-      // console.log(`OWNER: ${req.params.ownerId}`)
-      // console.log(`CURRENT TABLE: ${req.params.currentTableId}`)
-      // console.log(req.body)
       let order = new Order()
       order.name = req.body.newOrderName
       order.inWhichTable = req.params.currentTableId
@@ -21,6 +18,7 @@ module.exports = {
             return console.log(err)
           } else {
             res.send({
+              orderId: order._id,
               saved: true,
               success: 'Order created.'
             })

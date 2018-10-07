@@ -446,6 +446,11 @@ export default {
     },
     async reserveArticles() {
       try {
+        // console.log('SELECTED ARTS: ', this.selectedArticles)
+        // console.log('OWNER ID: ', this.ownerId)
+        // console.log('CURRENT TABLE ID: ', this.currentTable._id)
+        // console.log('CURRENT ORDER ID: ', this.currentOrderId)
+
         // If there are articles in the selectedArticles array
         if (this.selectedArticles.length > 0) {
           const orderData = {
@@ -542,11 +547,9 @@ export default {
             newOrderName: this.newOrderName
           })).data
           console.log(response)
+
           // If order is saved successfully
           if (response.saved) {
-            // Reset input field
-            this.newOrderName = ''
-
             // Reset current table order list whenever new order is created
             const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
             const orders = this.currentTableOrders = [] // Reset each time order is created
@@ -566,11 +569,14 @@ export default {
             })
             console.log(articleList)
 
-            // Open Article Menu
+            // Open Article Menu and set Current Order Id to this created order
             if (articleList.length >= 1) {
               this.articleMenu = true
+              this.currentOrderId = response.orderId
             }
           }
+          // Reset input field
+          this.newOrderName = ''
         } else {
           this.info = 'Order must have a name.'
           setTimeout(() => {
