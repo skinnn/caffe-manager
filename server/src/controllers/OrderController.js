@@ -38,6 +38,7 @@ module.exports = {
     }
   },
 
+  // Get Orders by Table id
   async getOrdersByTableId(req, res) {
     try {
       // console.log('Body: ', req.body)
@@ -57,6 +58,30 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to get the orders.'
+      })
+    }
+  },
+
+  // Get Reserved Articles by Table id
+  async getReservedArticles(req, res) {
+    try {
+      // console.log('Body: ', req.body)
+      // console.log('Params: ', req.params)
+      let tableId = { inWhichTable: req.params.currentTableId }
+      await ReservedArticle.find(tableId, function(err, reservedArticles) {
+        if (err) {
+          res.status(500).send({
+            error: 'A database error has occurred trying to find the reservedArticles. Please try again.'
+          })
+        } else {
+          res.send({
+            reservedArticles: reservedArticles
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to get the reservedArticles.'
       })
     }
   },

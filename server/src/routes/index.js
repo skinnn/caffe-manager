@@ -195,4 +195,8 @@ router.delete('/admin/:ownerId/table/:currentTableId/order/:orderId',
 router.post('/admin/:ownerId/table/:currentTableId/order/:orderId/reserve',
   OrderController.reserveArticles)
 
+// Get Reserved Articles by Table id
+router.get('/admin/:ownerId/table/:currentTableId/reserved-articles',
+  OrderController.getReservedArticles)
+
 module.exports = router

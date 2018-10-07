@@ -139,12 +139,15 @@
                       </v-btn>
                     </div>
                     <div class="orderContent">
-                      <!-- TODO: Get the reserved articles by order ids -->
-                      <ul>
+                      <!-- Reserved Articles by Table id -->
+                      <ul class="reservedArticleList">
                         <li
-                          v-for="reservedArticle in this.reservedArticles"
+                          v-for="reservedArticle in reservedArticles"
+                          v-if="order._id === reservedArticle.inWhichOrder"
+                          class="reservedArticleLi"
                         >
                           name: {{reservedArticle.name}}
+                          quantity: {{reservedArticle.quantity}}
                         </li>
                       </ul>
                     </div>
@@ -155,12 +158,12 @@
           </div> <!-- ./ Current Table Content -->
 
           <div class="admin-table-list">
-            <!-- List of Tables -->
+            <!-- List of Tables from the current logged in user -->
             <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
               <p class="tablesListText">List of Tables</p>
               <hr>
 
-              <!-- List of Tables from the current logged in user -->
+              <!-- Single Table Li -->
               <li
                 v-for="table in this.tableList"
                 :key="table._id"
@@ -184,6 +187,8 @@
 </template>
 
 <script>
+// TODO: Delete Reserved Articles when Order is deleted
+// TODO: Delete Reserved Articles when Orders are finished (bill is printed)
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import AuthenticationService from '@/services/AuthenticationService'
 import OrderService from '@/services/OrderService'
@@ -199,6 +204,7 @@ export default {
   data() {
     return {
       articleMenu: false,
+      reservedArticles: [],
       currentOrderId: null,
       currentOrderName: null,
       selectedArticles: [],
@@ -225,7 +231,7 @@ export default {
       // Get Current Table
       const currentTableId = this.$store.state.route.params.tableId
       var currentTable = (await TableService.viewTable(this.ownerId, currentTableId)).data
-      // If Table is fetched successfully
+      // If Current Table is fetched successfully
       if (currentTable.table) {
         this.currentTable = currentTable.table
       }
@@ -238,6 +244,21 @@ export default {
         // Add table in the tables array
         allTables.tables.forEach(function(table) {
           tableList.push(table)
+        })
+      }
+
+      // Get Reserved Articles by Current Table id
+      let sendData = {
+        currentTableId: this.currentTable._id,
+        ownerId: this.ownerId
+      }
+      var resArticles = (await OrderService.getReservedArticles(sendData)).data
+      // If Reserved Articles are fetched successfully
+      if (resArticles.reservedArticles) {
+        let reservedArticleList = this.reservedArticles
+        reservedArticleList = []
+        resArticles.reservedArticles.forEach(function(reservedArticle) {
+          reservedArticleList.push(reservedArticle)
         })
       }
     } catch (error) {
@@ -253,7 +274,7 @@ export default {
     }
   },
   watch: {
-    // Whenever current table changes, fetch the orders from that table
+    // Whenever current table changes, fetch the data
     currentTable: async function() {
       try {
         const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
@@ -264,13 +285,27 @@ export default {
         ordersResponse.orders.forEach(function(order) {
           orders.push(order)
         })
-
         // Reset Selected Article list
         this.selectedArticles = []
       } catch (error) {
         console.log(error)
         this.success = ''
         this.error = error.orders.data.error
+      }
+
+      // Reset Reserved Articles by Current Table id
+      let sendData = {
+        currentTableId: this.currentTable._id,
+        ownerId: this.ownerId
+      }
+      var resArticles = (await OrderService.getReservedArticles(sendData)).data
+      // If Reserved Articles are fetched successfully
+      if (resArticles.reservedArticles) {
+        let reservedArticleList = this.reservedArticles
+        reservedArticleList = []
+        resArticles.reservedArticles.forEach(function(reservedArticle) {
+          reservedArticleList.push(reservedArticle)
+        })
       }
     }
   },
@@ -308,7 +343,7 @@ export default {
         // If input field is not empty
         if (selectedArticlePrompt.value !== '' && selectedArticlePrompt.value !== undefined) {
           let selectedArticle = {
-            // Create a temporary timestamp based id for selected article using uuidv1
+            // Create a temporary timestamp based ID for selected article
             selectedId: uuidv1(),
             id: articleId,
             name: articleName,
@@ -324,7 +359,7 @@ export default {
           }, 2000)
         }
       } catch (error) {
-
+        return false
       }
     },
     async viewTable(tableId) {
@@ -424,9 +459,6 @@ export default {
           console.log(response)
           // If articles are successfully reserved
           if (response.saved) {
-            // Reset Selected Article list
-            this.selectedArticles = []
-
             // Success message and timeout
             this.error = null
             this.info = null
@@ -435,6 +467,9 @@ export default {
               this.success = null
             }, 2000)
           }
+
+          // Reset Selected Article list
+          this.selectedArticles = []
 
           // Reset currentOrderId to null
           this.currentOrderId = null
