@@ -127,6 +127,7 @@
                   <div class="singleOrderDiv">
                     <div class="orderHeading">
                       <span class="orderName">{{order.name}}</span>
+                      {{order._id}}
                       <hr />
                       <v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
                         <v-icon>delete</v-icon>
@@ -255,8 +256,8 @@ export default {
       var resArticles = (await OrderService.getReservedArticles(sendData)).data
       // If Reserved Articles are fetched successfully
       if (resArticles.reservedArticles) {
-        let reservedArticleList = this.reservedArticles
-        reservedArticleList = []
+        let reservedArticleList = this.reservedArticles = []
+        // reservedArticleList = []
         resArticles.reservedArticles.forEach(function(reservedArticle) {
           reservedArticleList.push(reservedArticle)
         })
@@ -306,6 +307,7 @@ export default {
         resArticles.reservedArticles.forEach(function(reservedArticle) {
           reservedArticleList.push(reservedArticle)
         })
+        console.log(reservedArticleList[0])
       }
     }
   },
@@ -471,6 +473,21 @@ export default {
             setTimeout(() => {
               this.success = null
             }, 2000)
+          }
+
+          // Reset Reserved Articles by Current Table id
+          let sendData = {
+            currentTableId: this.currentTable._id,
+            ownerId: this.ownerId
+          }
+          var resArticles = (await OrderService.getReservedArticles(sendData)).data
+          // If Reserved Articles are fetched successfully
+          if (resArticles.reservedArticles) {
+            let reservedArticleList = this.reservedArticles = []
+            // reservedArticleList = []
+            resArticles.reservedArticles.forEach(function(reservedArticle) {
+              reservedArticleList.push(reservedArticle)
+            })
           }
 
           // Reset Selected Article list
