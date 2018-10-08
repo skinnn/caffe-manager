@@ -15,8 +15,10 @@
 
       <v-flex class="admin-container">
         <!-- Display messages -->
+        <!-- TODO: Create separate Message component and add v-alert to all components for styling messages -->
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
+        <div class="info-msg" v-if="info" v-html="info" />
 
         <p>Name: {{this.$store.state.admin.name}}</p>
         <p>Username: {{this.$store.state.admin.username}}</p>
@@ -41,8 +43,10 @@ export default {
   },
   data() {
     return {
+      // Messages
       error: null,
-      success: null
+      success: null,
+      info: null
     }
   },
   mixins: [

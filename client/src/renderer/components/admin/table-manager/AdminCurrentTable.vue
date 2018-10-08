@@ -100,7 +100,7 @@
           <!-- Current Table Content -->
           <div v-if="currentTable && !articleMenu" class="currentTable">
             <p>Number: <span class="currentTableNumber">{{currentTable.number}}</span></p>
-            <div class="createOrder">
+            <div class="createOrderDiv">
               <v-text-field
                 type="text"
                 v-model="newOrderName"
@@ -140,14 +140,23 @@
                     </div>
                     <div class="orderContent">
                       <!-- Reserved Articles by Table id -->
-                      <ul class="reservedArticleList">
+                      <ul class="reservedArticleUl">
+                        <div class="resArtHeaders" style="text-align: left; width: 100%;">
+                          <p style="position:relative; left: 0px; display: inline; margin:0 0 0 25px; font-size: 20px;">Article:</p>
+                          <p style="position:relative; left: 0px; display: inline; margin:0 0 0 215px; font-size: 20px;">Quantity:</p>
+                          <p style="position:relative; left: 0px; display: inline; margin:0 0 0 220px; font-size: 20px;">Price:</p>
+                        </div>
                         <li
                           v-for="reservedArticle in reservedArticles"
                           v-if="order._id === reservedArticle.inWhichOrder"
                           class="reservedArticleLi"
                         >
-                          name: {{reservedArticle.name}}
-                          quantity: {{reservedArticle.quantity}}
+                          <span class="reservedArticleName">
+                            {{reservedArticle.name}}
+                          </span>
+                          <v-badge class="reservedArticleQuantity">
+                            <span slot="badge">{{reservedArticle.quantity}}</span>
+                          </v-badge>
                         </li>
                       </ul>
                     </div>
@@ -481,7 +490,7 @@ export default {
               resArticles.reservedArticles.forEach(function(reservedArticle) {
                 reservedArticleList.push(reservedArticle)
               })
-              console.log('RES ART LIST: ', reservedArticleList)
+              // console.log('RES ART LIST: ', reservedArticleList)
             }
 
             // Success message and timeout
@@ -559,6 +568,7 @@ export default {
         }
       }
     },
+    // TODO: Create Order with prompt for name, same like reserving article quantity
     async createOrder(currentTableId) {
       try {
         const orderName = this.newOrderName
@@ -962,7 +972,7 @@ export default {
       }
     }
 
-    .createOrder {
+    .createOrderDiv {
       max-width: 70%;
     }
     .currentTable {
@@ -971,7 +981,7 @@ export default {
         list-style: none;
 
         .singleOrderDiv {
-          background-color: yellow;
+          background-color: inherit;
           border: 2px solid black;
           border-radius: 3px;
           max-width: 740px;
@@ -983,7 +993,6 @@ export default {
           .orderHeading {
             background-color: #f4f4f4;
             min-height: 50px;
-
             .orderName {
               font-size: 21px;
               font-weight: bold;
@@ -993,6 +1002,45 @@ export default {
             }
             .deleteOrderBtn:hover {
               background-color: #ff4c4c;
+            }
+          }
+
+          .orderContent {
+
+            .reservedArticleUl {
+              list-style: none;
+              padding: 0;
+              margin: 0;
+
+              .reservedArticleLi {
+                padding: 5px 0 5px 0;
+                background-color: yellow;
+                font-size: 16px;
+                border-top: 1px solid black;
+                min-height: 45px;
+
+                .reservedArticleName {
+                  position: relative;
+                  top: 5px;
+                  float: left;
+                  text-align: left;
+                  max-width: 300px;
+                  margin-left: 25px;
+                }
+
+                .reservedArticleQuantity {
+                  position: relative;
+                  top: 17px;
+                  float:right;
+                  margin-left: 20px;
+                  right: 55%;
+                }
+              }
+              // All elements except of last one
+              .reservedArticleLi:not(:last-child) {
+                margin: 0 0 0 0;
+                border-bottom: 1px solid black;
+              }
             }
           }
         } // ./ singleOrderDiv
