@@ -8,6 +8,7 @@ const multer = require('multer')
 
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
+const SettingsController = require('../controllers/SettingsController')
 const AdminController = require('../controllers/AdminController')
 const StorageController = require('../controllers/StorageController')
 const ArticleController = require('../controllers/ArticleController')
@@ -61,6 +62,10 @@ router.use(function timeLog(req, res, next) {
 })
 
 // TODO: Secure all routes only for admin
+
+// Get Admin Settings
+router.get('/admin/:adminId/settings',
+  SettingsController.getOrCreateAdminSettings)
 
 // Get all Articles
 router.get('/admin/articles',

@@ -22,7 +22,7 @@
 
         <p>Name: {{this.$store.state.admin.name}}</p>
         <p>Username: {{this.$store.state.admin.username}}</p>
-        <p>Store name: </p>
+        <p>Store name: {{adminSettings.store}}</p>
         <p>Telephone: </p>
         <p>Address: </p>
         <p>Create date: {{this.$store.state.admin.date}}</p>
@@ -43,6 +43,10 @@ export default {
   },
   data() {
     return {
+      adminSettings: {
+        store: 'Shambhala store',
+        currency: '$'
+      },
       // Messages
       error: null,
       success: null,

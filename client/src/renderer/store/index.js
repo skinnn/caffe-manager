@@ -14,7 +14,14 @@ export default new Vuex.Store({
     user: null,
     admin: null,
     isUserLoggedIn: false,
-    isAdminLoggedIn: false
+    isAdminLoggedIn: false,
+    adminSettings: {
+      store: {
+        name: null,
+        location: null
+      },
+      currency: null
+    }
   },
   mutations: {
     setUser(state, user) {
@@ -29,6 +36,9 @@ export default new Vuex.Store({
       state.admin = admin
       if (admin) {
         state.isAdminLoggedIn = true
+        state.adminSettings.store.name = 'Shambhala Store'
+        state.adminSettings.store.location = 'Main St 24'
+        state.adminSettings.currency = '$'
       } else {
         state.isAdminLoggedIn = false
       }

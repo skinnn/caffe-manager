@@ -40,6 +40,7 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
+import SettingsService from '@/services/SettingsService'
 
 export default {
   data() {
@@ -61,8 +62,12 @@ export default {
           this.$router.push({
             name: 'admin-home'
           })
-          // Set admin in the vuex store
+          // Set admin in the Vuex Store
           this.$store.dispatch('setAdmin', response.admin)
+
+          // Get Admin Settings
+          const res = (await SettingsService.getOrCreateAdminSettings(response.admin._id)).data
+          console.log('Settings Response: ', res)
         }
 
         // console.log('Login successfull: ', response.admin.username)
