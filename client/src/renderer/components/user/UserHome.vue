@@ -30,8 +30,10 @@
 </template>
 
 <script>
+// Components
 import UserSideMenu from '@/components/user/UserSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
+// Global Mixins
+import UserLogout from '@/mixins/UserLogout'
 
 export default {
   components: {
@@ -43,26 +45,9 @@ export default {
       success: null
     }
   },
-  methods: {
-    async logoutUser() {
-      try {
-        const response = (await AuthenticationService.logoutUser()).data
-
-        if (response.user === false) {
-          // Set user and isLoggedIn states to false
-          this.$store.dispatch('setUser', null)
-          // Redirect to user login page
-          this.$router.push({
-            name: 'user-login'
-          })
-        }
-      } catch (error) {
-        console.log(error)
-        this.success = null
-        this.error = error.response.data.error
-      }
-    }
-  }
+  mixins: [
+    UserLogout
+  ]
 }
 </script>
 
