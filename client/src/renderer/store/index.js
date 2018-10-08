@@ -15,13 +15,7 @@ export default new Vuex.Store({
     admin: null,
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
-    adminSettings: {
-      store: {
-        name: null,
-        location: null
-      },
-      currency: null
-    }
+    settings: null
   },
   mutations: {
     setUser(state, user) {
@@ -36,12 +30,15 @@ export default new Vuex.Store({
       state.admin = admin
       if (admin) {
         state.isAdminLoggedIn = true
-        state.adminSettings.store.name = 'Shambhala Store'
-        state.adminSettings.store.location = 'Main St 24'
-        state.adminSettings.currency = '$'
       } else {
         state.isAdminLoggedIn = false
       }
+    },
+    setSettings(state, settings) {
+      state.settings = settings
+      // state.settings.store.name = 'Shambhala Store'
+      // state.settings.store.location = 'Main St 24'
+      // state.settings.currency = '$'
     }
   },
   actions: {
@@ -50,6 +47,9 @@ export default new Vuex.Store({
     },
     setAdmin({commit}, admin) {
       commit('setAdmin', admin)
+    },
+    setSettings({commit}, settings) {
+      commit('setSettings', settings)
     }
   }
 })

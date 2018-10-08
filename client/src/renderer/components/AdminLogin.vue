@@ -54,20 +54,26 @@ export default {
   methods: {
     async loginAdmin() {
       try {
+        // Admin Login
         const response = (await AuthenticationService.loginAdmin({
           username: this.username,
           password: this.password
         })).data
+        // If Admin login is successfull
         if (response.admin) {
           this.$router.push({
             name: 'admin-home'
           })
-          // Set admin in the Vuex Store
-          this.$store.dispatch('setAdmin', response.admin)
+          // Set Admin in the Vuex Store
+          await this.$store.dispatch('setAdmin', response.admin)
 
-          // Get Admin Settings
+          // Get or Create Settings
           const res = (await SettingsService.getOrCreateAdminSettings(response.admin._id)).data
           console.log('Settings Response: ', res)
+          if (res.settings) {
+            // Set Settings in the Vuex Store
+            await this.$store.dispatch('setSettings', res.settings)
+          }
         }
 
         // console.log('Login successfull: ', response.admin.username)
