@@ -79,7 +79,7 @@
                 <div class="singleArticleMenuInfo">
                   <p class="info-text info-name">{{article.name}}</p>
                   <p class="info-text">Quantity: {{article.quantity}}</p>
-                  <p class="info-text">Price: {{article.price}} {{currency}}</p>
+                  <p class="info-text">Price: {{article.price}} {{adminSettings.currency}}</p>
                 </div>
               </li>
               <v-btn
@@ -99,7 +99,6 @@
 
           <!-- Current Table Content -->
           <div v-if="currentTable && !articleMenu" class="currentTable">
-            <p>Number: <span class="currentTableNumber">{{currentTable.number}}</span></p>
             <div class="createOrderDiv">
               <v-text-field
                 type="text"
@@ -158,6 +157,7 @@
                           </v-badge>
                           <span class="reservedArticlePrice">
                             {{reservedArticle.total_price}}
+                            <span>{{adminSettings.currency}}</span>
                           </span>
                         </li>
                       </ul>
@@ -223,8 +223,10 @@ export default {
       currentOrderId: null,
       currentOrderName: null,
       selectedArticles: [],
-      // TODO: Get currency from the admin settings
-      currency: '$',
+      // TODO: Get currency from the Admin Settings - state
+      adminSettings: {
+        currency: '$'
+      },
       articleList: [],
       currentTable: null,
       currentTableOrders: [],
@@ -1030,10 +1032,11 @@ export default {
 
                 .reservedArticlePrice {
                   position: relative;
-                  top: 15px;
+                  top: 5px;
                   float:right;
-                  margin-left: 20px;
-                  right: 12.5%;
+                  margin-right: 40px;
+                  text-align: left;
+                  max-width: 100px;
                 }
               }
               // All elements except of last one
