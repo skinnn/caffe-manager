@@ -65,18 +65,16 @@ export default {
             name: 'admin-home'
           })
           // Set Admin in the Vuex Store
-          await this.$store.dispatch('setAdmin', response.admin)
+          this.$store.dispatch('setAdmin', response.admin)
 
           // Get or Create Settings
           const res = (await SettingsService.getOrCreateAdminSettings(response.admin._id)).data
-          console.log('Settings Response: ', res)
           if (res.settings) {
             // Set Settings in the Vuex Store
-            await this.$store.dispatch('setSettings', res.settings)
+            this.$store.dispatch('setSettings', res.settings)
+            console.log('Settings State: ', this.$store.state.settings)
           }
         }
-
-        // console.log('Login successfull: ', response.admin.username)
       } catch (error) {
         console.log(error)
         this.success = null
