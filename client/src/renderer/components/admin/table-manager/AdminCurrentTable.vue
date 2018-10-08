@@ -302,12 +302,10 @@ export default {
       var resArticles = (await OrderService.getReservedArticles(sendData)).data
       // If Reserved Articles are fetched successfully
       if (resArticles.reservedArticles) {
-        let reservedArticleList = this.reservedArticles
-        reservedArticleList = []
+        let reservedArticleList = this.reservedArticles = []
         resArticles.reservedArticles.forEach(function(reservedArticle) {
           reservedArticleList.push(reservedArticle)
         })
-        console.log(reservedArticleList[0])
       }
     }
   },
@@ -464,8 +462,24 @@ export default {
           // Reserve Selected Articles
           const response = (await OrderService.reserveArticles(orderData)).data
           console.log(response)
+
           // If articles are successfully reserved
           if (response.saved) {
+            // Reset Reserved Articles by Current Table id
+            let sendData = {
+              currentTableId: this.currentTable._id,
+              ownerId: this.ownerId
+            }
+            var resArticles = (await OrderService.getReservedArticles(sendData)).data
+            // If Reserved Articles are fetched successfully
+            let reservedArticleList = this.reservedArticles = []
+            if (resArticles.reservedArticles) {
+              resArticles.reservedArticles.forEach(function(reservedArticle) {
+                reservedArticleList.push(reservedArticle)
+              })
+              console.log('RES ART LIST: ', reservedArticleList)
+            }
+
             // Success message and timeout
             this.error = null
             this.info = null
@@ -473,21 +487,6 @@ export default {
             setTimeout(() => {
               this.success = null
             }, 2000)
-          }
-
-          // Reset Reserved Articles by Current Table id
-          let sendData = {
-            currentTableId: this.currentTable._id,
-            ownerId: this.ownerId
-          }
-          var resArticles = (await OrderService.getReservedArticles(sendData)).data
-          // If Reserved Articles are fetched successfully
-          if (resArticles.reservedArticles) {
-            let reservedArticleList = this.reservedArticles = []
-            // reservedArticleList = []
-            resArticles.reservedArticles.forEach(function(reservedArticle) {
-              reservedArticleList.push(reservedArticle)
-            })
           }
 
           // Reset Selected Article list

@@ -32,7 +32,7 @@
           <hr>
           <br>
 
-          <!-- TODO: Add animation for fetching/displaying storages -->
+          <!-- TODO: Add animation for fetching/displaying storages possibly with Scroll Reveal -->
           <!-- Articles from the current storage -->
           <div id="list-div">
 

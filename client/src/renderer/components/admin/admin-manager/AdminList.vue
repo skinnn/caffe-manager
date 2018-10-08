@@ -17,7 +17,7 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <!-- TODO: Add animation for fetching/displaying admins -->
+        <!-- TODO: Add animation for fetching/displaying admins possibly with Scroll Reveal -->
         <!-- List of all admins in the db -->
         <div class="list-of-admins">
 
