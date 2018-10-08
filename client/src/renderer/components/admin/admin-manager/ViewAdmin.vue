@@ -36,8 +36,9 @@
 
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
 import AdminService from '@/services/AdminService'
+// Global Mixins
+import AdminLogout from '@/mixins/AdminLogout'
 
 export default {
   components: {
@@ -64,27 +65,13 @@ export default {
     }
   },
   methods: {
-    async logoutAdmin() {
-      try {
-        const response = (await AuthenticationService.logoutAdmin()).data
-
-        if (response.loggedOutMessage) {
-          // Set admin and isLoggedIn states to false
-          this.$store.dispatch('setAdmin', null)
-          // Redirect to admin login page
-          this.$router.push({
-            name: 'admin-login'
-          })
-        }
-      } catch (error) {
-        this.success = null
-        this.error = error.response.data.error
-      }
-    },
     editAdmin(adminId) {
       this.$router.push({name: 'admin-edit-admin', params: {adminId}})
     }
-  }
+  },
+  mixins: [
+    AdminLogout
+  ]
 }
 </script>
 

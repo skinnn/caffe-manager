@@ -46,8 +46,9 @@
 
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
 import StorageService from '@/services/StorageService'
+// Global Mixins
+import AdminLogout from '@/mixins/AdminLogout'
 
 export default {
   components: {
@@ -84,26 +85,11 @@ export default {
         name: 'admin-view-storage',
         params: {storageId}
       })
-    },
-    async logoutAdmin() {
-      try {
-        const response = (await AuthenticationService.logoutAdmin()).data
-
-        if (response.loggedOutMessage) {
-          // Set admin and isLoggedIn state to false
-          this.$store.dispatch('setAdmin', null)
-          // Redirect to admin login page
-          this.$router.push({
-            name: 'admin-login'
-          })
-        }
-      } catch (error) {
-        console.log(error)
-        this.success = null
-        this.error = error.response.data.error
-      }
     }
-  }
+  },
+  mixins: [
+    AdminLogout
+  ]
 }
 </script>
 

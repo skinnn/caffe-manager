@@ -18,7 +18,9 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <!-- List of all users in the db -->
+        <!-- TODO: Replace User List with v-data-table, same like Admin List -->
+        <!-- TODO: Add animation for fetching/displaying Users possibly with Scroll Reveal -->
+        <!-- List of all Users/Staff in the db -->
         <div class="list-of-users">
           <v-list two-line>
             <v-list-tile
@@ -45,9 +47,12 @@
 </template>
 
 <script>
+// Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
+// Services
 import AdminService from '@/services/AdminService'
+// Global Mixins
+import AdminLogout from '@/mixins/AdminLogout'
 
 export default {
   components: {
@@ -79,28 +84,13 @@ export default {
     }
   },
   methods: {
-    async logoutAdmin() {
-      try {
-        const response = (await AuthenticationService.logoutAdmin()).data
-
-        if (response.loggedOutMessage) {
-          // Set admin and isLoggedIn states to false
-          this.$store.dispatch('setAdmin', null)
-          // Redirect to admin login page
-          this.$router.push({
-            name: 'admin-login'
-          })
-        }
-      } catch (error) {
-        console.log(error)
-        this.success = null
-        this.error = error.response.data.error
-      }
-    },
     viewUser(userId) {
       this.$router.push({name: 'admin-view-user', params: {userId}})
     }
-  }
+  },
+  mixins: [
+    AdminLogout
+  ]
 }
 </script>
 

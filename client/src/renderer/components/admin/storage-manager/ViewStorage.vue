@@ -32,7 +32,8 @@
           <hr>
           <br>
 
-          <!-- TODO: Add animation for fetching/displaying storages possibly with Scroll Reveal -->
+          <!-- TODO: Add animation for fetching/displaying Articles possibly with Scroll Reveal -->
+          <!-- TODO: Create pagination and limit fetching Articles with ~20 per page -->
           <!-- Articles from the current storage -->
           <div id="list-div">
 
@@ -80,9 +81,10 @@
 
 <script>
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
 import StorageService from '@/services/StorageService'
 import ArticleService from '@/services/ArticleService'
+// Global Mixins
+import AdminLogout from '@/mixins/AdminLogout'
 
 export default {
   components: {
@@ -176,25 +178,11 @@ export default {
           this.error = error.response.data.error
         }
       }
-    },
-    async logoutAdmin() {
-      try {
-        const response = (await AuthenticationService.logoutAdmin()).data
-
-        if (response.loggedOutMessage) {
-          // Set admin and isLoggedIn states to false
-          this.$store.dispatch('setAdmin', null)
-          // Redirect to admin login page
-          this.$router.push({
-            name: 'admin-login'
-          })
-        }
-      } catch (error) {
-        this.success = null
-        this.error = error.response.data.error
-      }
     }
-  }
+  },
+  mixins: [
+    AdminLogout
+  ]
 }
 </script>
 

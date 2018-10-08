@@ -50,11 +50,15 @@
 </template>
 
 <script>
-import swal from 'sweetalert2'
-import TableService from '@/services/TableService'
+// Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
+// Services
+import TableService from '@/services/TableService'
 import OrderService from '@/services/OrderService'
+// Global Mixins
+import AdminLogout from '@/mixins/AdminLogout'
+// Modules
+import swal from 'sweetalert2'
 
 export default {
   components: {
@@ -195,26 +199,11 @@ export default {
           this.error = error.response.data.error
         }
       }
-    },
-    async logoutAdmin() {
-      try {
-        const response = (await AuthenticationService.logoutAdmin()).data
-
-        if (response.loggedOutMessage) {
-          // Set admin and isLoggedIn states to false
-          this.$store.dispatch('setAdmin', null)
-          // Redirect to admin login page
-          this.$router.push({
-            name: 'admin-login'
-          })
-        }
-      } catch (error) {
-        console.log(error)
-        this.success = null
-        this.error = error.response.data.error
-      }
     }
-  }
+  },
+  mixins: [
+    AdminLogout
+  ]
 }
 </script>
 
