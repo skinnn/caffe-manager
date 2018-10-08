@@ -33,7 +33,6 @@
         <div class="success-msg" v-if="success" v-html="success" />
         <div class="info-msg" v-if="info" v-html="info" />
 
-        <!-- TODO: Should also somewhere list all the tables by their owners/users -->
         <div class="container">
 
           <!-- Reserve Article Menu -->
@@ -128,7 +127,7 @@
                     <div class="orderHeading">
                       <span class="orderName">{{order.name}}</span>
                       {{order._id}}
-                      <hr />
+                      <hr >
                       <v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
                         <v-icon>delete</v-icon>
                       </v-btn>
@@ -162,7 +161,7 @@
             <!-- List of Tables from the current logged in user -->
             <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
               <p class="tablesListText">List of Tables</p>
-              <hr>
+              <hr class="tableListDivider">
 
               <!-- Single Table Li -->
               <li
@@ -170,12 +169,12 @@
                 :key="table._id"
                 @click="viewTable(table._id)"
                 class="liSingleTable"
-                v-bind:class="{ 'orange' : currentTable._id === table._id }"
+                v-bind:class="{ 'activeTable' : currentTable._id === table._id }"
               >
                 <span class="singleTableNumber">{{table.number}}</span>
               </li>
               <!-- Create table -->
-              <li @click="createTable" class="liCreateTable">
+              <li @click="createTable" class="liCreateTable" title="Add table">
                 <v-icon class="createTableIcon">add</v-icon>
               </li>
             </ul>
@@ -226,6 +225,7 @@ export default {
         // TODO: Add owner name and username
         ownerId: ''
       },
+      // Messages
       error: null,
       success: null,
       info: null
@@ -701,8 +701,9 @@ export default {
 
     .listOfTables {
       position: fixed;
-      background-color: pink;
-      border: none;
+      background-color: lighten(black, 85);
+      border: 2px solid grey;
+      border-radius: 10px;
       right: 5%;
       top: 24%;
       margin: 0;
@@ -711,13 +712,20 @@ export default {
 
       .tablesListText {
         text-align: center;
-        font-size: 16px;
-        margin: 5px 0 0 0;
+        font-size: 18px;
+        margin: 0 0 4px 0;
         padding: 0;
         color: black;
         font-weight: 600;
       }
+
+      .tableListDivider {
+        margin: 0 0 4px 0;
+      }
+
       .liSingleTable {
+        list-style: none;
+        vertical-align: middle;
         text-align: center;
         padding: 0;
         margin: 2px 0 2px 2px;
@@ -726,45 +734,59 @@ export default {
         height: 60px;
         width: 60px;
         display: inline-block;
-        list-style: none;
         background-color: #f4f4f4;
 
         &:hover {
-          background-color: #fff;
-          opacity: 0.7;
+          border: 3px solid lighten(orange, 20);
           cursor: pointer;
+          .singleTableNumber {
+            position: relative;
+            top: 13px;
+            padding: 0;
+            margin: 0;
+            color: black;
+          }
         }
       }
+
+      .activeTable {
+        background-color: lighten(orange, 10);
+      }
+
       .liCreateTable {
+        vertical-align: middle;
         text-align: center;
-        border: 1px solid grey;
+        background-color: lighten(green, 65);
+        border: 2px solid green;
         border-radius: 50%;
         height: 60px;
         width: 60px;
         display: inline-block;
         list-style: none;
-        background-color: #f4f4f4;
         margin: 2px 0 2px 0px;
         &:hover {
           background-color: #fff;
-          opacity: 0.7;
           cursor: pointer;
+          .createTableIcon {
+            color: black;
+          }
         }
 
         .createTableIcon {
           position: relative;
-          top: 18px;
+          top: 15px;
           left: 1px;
+          font-size: 28px;
           margin: 0px;
           padding: 0px;
-          width: 22px;
-          height: 22px;
+          color: green;
         }
       }
       .singleTableNumber {
         position: relative;
         text-align: center;
-        top: 16px;
+        top: 15px;
+        left: 1px;
         padding: 0;
         margin:0;
         color: black;
@@ -1009,11 +1031,6 @@ export default {
     top: 25px;
     left: 91%;
     color: white;
-  }
-
-  .activeTable {
-    color: red;
-    background-color: blue;
   }
 
 </style>

@@ -19,26 +19,21 @@
         <div class="success-msg" v-if="success" v-html="success" />
         <div class="info-msg" v-if="info" v-html="info" />
 
-        <!-- TODO: Should also somewhere list all the tables by their owners/users -->
         <div class="container">
           <div class="admin-table-list">
-            <!-- TODO: Apply some styles to the list -->
+            <h3 class="tablesListText">List of Tables</h3>
             <!-- List of Tables -->
             <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
-              <p class="tablesListText">List of Tables</p>
-              <hr>
-
-              <!-- List of tables from the current user -->
               <li
                 v-for="table in this.tables"
                 :key="table._id"
                 @click="viewTable(table._id)"
                 class="liSingleTable"
               >
-                <span class="singleTableNumber">{{table.number}}</span>
+                <div class="singleTableNumber">{{table.number}}</div>
               </li>
               <!-- Create table -->
-              <li @click="createTable" class="liCreateTable">
+              <li @click="createTable" class="liCreateTable" title="Add table">
                 <v-icon class="createTableIcon">add</v-icon>
               </li>
             </ul>
@@ -67,6 +62,14 @@ export default {
   data() {
     return {
       articleMenu: false,
+      currentTable: null,
+      reservedArticles: [],
+      currentOrderId: null,
+      currentOrderName: null,
+      selectedArticles: [],
+      articleList: [],
+      currentTableOrders: [],
+      tableList: [],
       tables: [],
       newTable: {
         number: '',
@@ -74,6 +77,7 @@ export default {
         ownerId: ''
       },
       ownerId: this.$store.state.admin._id,
+      // Messages
       error: null,
       success: null,
       info: null
@@ -208,81 +212,93 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
-  .listOfTables {
-    // position: fixed;
-    width: 100%;
-    background-color: lighten(orange, 30);
-    border: none;
-    right: 5%;
-    top: 24%;
-    margin: 0;
-    padding: 5px 5px 5px 5px;
+  .admin-table-list {
+    text-align: center;
 
     .tablesListText {
+      font-family: sans-serif;
       text-align: center;
-      font-size: 16px;
-      margin: 5px 0 0 0;
+      font-size: 25px;
+      letter-spacing: 1.5px;
+      margin: 5px 0 10px 0;
       padding: 0;
       color: black;
-      font-weight: 600;
+      // background-color: grey;
     }
-    .liSingleTable {
-      text-align: center;
-      padding: 0;
-      margin: 2px 0 2px 4px;
-      border: 1px solid grey;
-      border-radius: 50%;
-      height: 72px;
-      width: 72px;
-      display: inline-block;
-      list-style: none;
-      background-color: #f4f4f4;
 
-      &:hover {
-        background-color: lighten(grey, 30);
-        opacity: 0.7;
-        cursor: pointer;
-      }
-    }
-    .liCreateTable {
-      text-align: center;
-      border: 1px solid grey;
-      border-radius: 50%;
-      height: 72px;
-      width: 72px;
-      display: inline-block;
-      list-style: none;
-      background-color: #f4f4f4;
-      margin: 2px 0 2px 0px;
+    .listOfTables {
+      width: 100%;
+      background-color: lighten(black, 85);
+      border: 2px solid grey;
+      border-radius: 10px;
+      right: 5%;
+      top: 24%;
+      margin: 0;
+      padding: 10px 3px 10px 0;
 
-      &:hover {
-        background-color: #fff;
-        opacity: 0.7;
-        cursor: pointer;
+      .liSingleTable {
+        vertical-align: middle;
+        text-align: center;
+        padding: 0;
+        margin: 2px 0 2px 4px;
+        border: 1px solid grey;
+        border-radius: 50%;
+        height: 72px;
+        width: 72px;
+        display: inline-block;
+        list-style: none;
+        background-color: #f4f4f4;
+
+        &:hover {
+          border: 3px solid lighten(orange, 20);
+          cursor: pointer;
+          .singleTableNumber {
+            position: relative;
+            top: 10px;
+            padding: 0;
+            margin: 0;
+            color: black;
+            font-size: 30px;
+          }
+        }
       }
-      .createTableIcon {
+      .liCreateTable {
+        vertical-align: middle;
+        text-align: center;
+        background-color: lighten(green, 65);
+        border: 2px solid green;
+        border-radius: 50%;
+        height: 72px;
+        width: 72px;
+        display: inline-block;
+        list-style: none;
+        &:hover {
+          cursor: pointer;
+          background-color: #fff;
+          .createTableIcon {
+            color: black;
+          }
+        }
+        .createTableIcon {
+          font-size: 38px;
+          position: relative;
+          top: 16px;
+          left: 1px;
+          margin: 0;
+          padding: 0;
+          color: green;
+        }
+      }
+      .singleTableNumber {
         position: relative;
-        top: 23px;
-        left: 1px;
-        margin: 0px;
-        padding: 0px;
-        width: 22px;
-        height: 22px;
+        top: 15px;
+        padding: 0;
+        margin: 0;
+        color: black;
+        font-size: 25px;
       }
     }
-    .singleTableNumber {
-      position: relative;
-      text-align: center;
-      vertical-align: middle;
-      top: 20px;
-      padding: 0;
-      margin: auto;
-      color: black;
-      font-weight: bold;
-      font-size: 19px;
-    }
-  }
+}
 
   .logout-btn {
     margin-right: 10px;

@@ -23,10 +23,14 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
 
-        <div class="admin-info">
+        <div class="user-info">
           <p>Username: {{user.username}}</p>
           <p>ID: {{user._id}}</p>
           <p>Full name: {{user.name}}</p>
+
+          <!-- TODO: Should list all the Tables from this user -->
+          <!-- TODO: Should list all current opened Orders from this user -->
+
         </div>
 
       </v-flex>
@@ -79,7 +83,7 @@ export default {
 
 <style scoped lang="scss">
 
-  .admin-info {
+  .user-info {
     width: 100%;
   }
 
