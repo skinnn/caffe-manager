@@ -65,7 +65,7 @@
               <li
                 v-for="article in this.articleList"
                 :key="article._id"
-                @click="selectArticle(article.name, article._id)"
+                @click="selectArticle(article.name, article._id, article.price)"
                 class="singleArticleMenuLi"
               >
                 <img
@@ -126,7 +126,6 @@
                   <div class="singleOrderDiv">
                     <div class="orderHeading">
                       <span class="orderName">{{order.name}}</span>
-                      {{order._id}}
                       <hr >
                       <v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
                         <v-icon>delete</v-icon>
@@ -157,6 +156,9 @@
                           <v-badge class="reservedArticleQuantity">
                             <span slot="badge">{{reservedArticle.quantity}}</span>
                           </v-badge>
+                          <span class="reservedArticlePrice">
+                            {{reservedArticle.total_price}}
+                          </span>
                         </li>
                       </ul>
                     </div>
@@ -337,7 +339,7 @@ export default {
       // Close Select Article menu
       this.articleMenu = false
     },
-    async selectArticle(articleName, articleId) {
+    async selectArticle(articleName, articleId, articlePrice) {
       try {
         const selectedArticlePrompt = await swal({
           title: `Quantity for article: ${articleName}`,
@@ -360,7 +362,8 @@ export default {
             selectedId: uuidv1(),
             id: articleId,
             name: articleName,
-            quantity: selectedArticlePrompt.value
+            quantity: selectedArticlePrompt.value,
+            price: articlePrice
           }
           // Push selectedArticle to the selectedArticles array
           this.selectedArticles.push(selectedArticle)
@@ -391,7 +394,7 @@ export default {
       for (var i = this.selectedArticles.length - 1; i >= 0; i--) {
         if (this.selectedArticles[i].selectedId === articleId) {
           this.selectedArticles.splice(i, 1)
-          console.log(this.selectedArticles)
+          // console.log(this.selectedArticles)
         }
       }
     },
@@ -415,7 +418,6 @@ export default {
           this.newTable.ownerId = this.$store.state.admin._id
           // Create Table
           const response = (await TableService.createTable(this.newTable)).data
-          console.log(response)
           // If table is successfully created
           if (response.created) {
             // Success message and timeout
@@ -459,11 +461,6 @@ export default {
     },
     async reserveArticles() {
       try {
-        // console.log('SELECTED ARTS: ', this.selectedArticles)
-        // console.log('OWNER ID: ', this.ownerId)
-        // console.log('CURRENT TABLE ID: ', this.currentTable._id)
-        // console.log('CURRENT ORDER ID: ', this.currentOrderId)
-
         // If there are articles in the selectedArticles array
         if (this.selectedArticles.length > 0) {
           const orderData = {
@@ -478,21 +475,6 @@ export default {
 
           // If articles are successfully reserved
           if (response.saved) {
-            // Reset Reserved Articles by Current Table id
-            let sendData = {
-              currentTableId: this.currentTable._id,
-              ownerId: this.ownerId
-            }
-            var resArticles = (await OrderService.getReservedArticles(sendData)).data
-            // If Reserved Articles are fetched successfully
-            let reservedArticleList = this.reservedArticles = []
-            if (resArticles.reservedArticles) {
-              resArticles.reservedArticles.forEach(function(reservedArticle) {
-                reservedArticleList.push(reservedArticle)
-              })
-              // console.log('RES ART LIST: ', reservedArticleList)
-            }
-
             // Success message and timeout
             this.error = null
             this.info = null
@@ -504,10 +486,8 @@ export default {
 
           // Reset Selected Article list
           this.selectedArticles = []
-
           // Reset currentOrderId to null
           this.currentOrderId = null
-
           // Close Select Article menu
           this.articleMenu = false
 
@@ -532,6 +512,19 @@ export default {
           this.success = null
           this.error = error.response.data.error
         }
+      }
+      // Reset Reserved Articles by Current Table id
+      let sendData = {
+        currentTableId: this.currentTable._id,
+        ownerId: this.ownerId
+      }
+      var resArticles = (await OrderService.getReservedArticles(sendData)).data
+      // If Reserved Articles are fetched successfully
+      if (resArticles.reservedArticles) {
+        let reservedArticleList = this.reservedArticles = []
+        resArticles.reservedArticles.forEach(function(reservedArticle) {
+          reservedArticleList.push(reservedArticle)
+        })
       }
     },
     async openArticleMenu(orderId, currentOrderName) {
@@ -584,20 +577,18 @@ export default {
             const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
             const orders = this.currentTableOrders = [] // Reset each time order is created
             // Add orders in the orders array
-            ordersResponse.orders.forEach(function(order) {
+            await ordersResponse.orders.forEach(function(order) {
               orders.push(order)
             })
 
             // After order is saved open the Reserve Article menu
             // Get all Articles
             const allArticles = (await ArticleService.getAllArticles()).data
-            console.log('ALL ARTICLES: ', allArticles)
             const articleList = this.articleList = [] // Reset each time menu is opened
             // Add articles in the article array
-            allArticles.articles.forEach(function(article) {
+            await allArticles.articles.forEach(function(article) {
               articleList.push(article)
             })
-            console.log(articleList)
 
             // Open Article Menu and set Current Order Id to this created order
             if (articleList.length >= 1) {
@@ -646,7 +637,7 @@ export default {
             if (ordersResponse.orders) {
               const orders = this.currentTableOrders = [] // Reset each time order is created
               // Add orders in the orders array
-              ordersResponse.orders.forEach(function(order) {
+              await ordersResponse.orders.forEach(function(order) {
                 orders.push(order)
               })
             }
@@ -979,6 +970,7 @@ export default {
 
       .singleOrderLi {
         list-style: none;
+        margin-bottom: 50px;
 
         .singleOrderDiv {
           background-color: inherit;
@@ -994,7 +986,7 @@ export default {
             background-color: #f4f4f4;
             min-height: 50px;
             .orderName {
-              font-size: 21px;
+              font-size: 23px;
               font-weight: bold;
             }
             .deleteOrderBtn {
@@ -1014,7 +1006,7 @@ export default {
 
               .reservedArticleLi {
                 padding: 5px 0 5px 0;
-                background-color: yellow;
+                background-color: lighten(yellow, 30);
                 font-size: 16px;
                 border-top: 1px solid black;
                 min-height: 45px;
@@ -1034,6 +1026,14 @@ export default {
                   float:right;
                   margin-left: 20px;
                   right: 55%;
+                }
+
+                .reservedArticlePrice {
+                  position: relative;
+                  top: 15px;
+                  float:right;
+                  margin-left: 20px;
+                  right: 12.5%;
                 }
               }
               // All elements except of last one

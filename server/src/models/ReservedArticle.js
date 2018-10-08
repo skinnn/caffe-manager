@@ -10,6 +10,14 @@ const reservedArticleSchema = new Schema({
     type: Number,
     required: true
   },
+  price: {
+    type: String,
+    required: true
+  },
+  total_price: {
+    type: String,
+    required: true
+  },
   inWhichOrder: {
     type: String,
     required: true

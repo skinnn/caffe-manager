@@ -67,13 +67,15 @@ module.exports = {
       for (let i = 0; i <= req.body.selectedArticles.length - 1; i++) {
         // console.log('RESERVED: ', req.body.selectedArticles[i])
         let reservedArticle = new ReservedArticle()
-        reservedArticle.name = req.body.selectedArticles[i].name
-        reservedArticle.quantity = req.body.selectedArticles[i].quantity
-        reservedArticle.image = req.body.selectedArticles[i].image
-        reservedArticle.updated_date = dateHandler.getCurrentTime()
-        reservedArticle.inWhichOrder = req.body.orderId
-        reservedArticle.reservedBy = req.body.ownerId
-        reservedArticle.inWhichTable = req.body.currentTableId
+        reservedArticle.name = await req.body.selectedArticles[i].name
+        reservedArticle.quantity = await req.body.selectedArticles[i].quantity
+        reservedArticle.image = await req.body.selectedArticles[i].image
+        reservedArticle.updated_date = await dateHandler.getCurrentTime()
+        reservedArticle.inWhichOrder = await req.body.orderId
+        reservedArticle.reservedBy = await req.body.ownerId
+        reservedArticle.inWhichTable = await req.body.currentTableId
+        reservedArticle.price = await req.body.selectedArticles[i].price
+        reservedArticle.total_price = await reservedArticle.price * reservedArticle.quantity
         // Check for name and quantity and save reserved articles in the db
         if (reservedArticle.name !== '' && reservedArticle.quantity !== '') {
           await reservedArticle.save(function(err) {
@@ -87,7 +89,7 @@ module.exports = {
           })
         }
       }
-      res.send({
+      return res.send({
         saved: true,
         success: 'Articles reserved.'
       })
@@ -104,20 +106,20 @@ module.exports = {
     try {
       // console.log('Body: ', req.body)
       // console.log('Params: ', req.params)
-      let tableId = { inWhichTable: req.params.currentTableId }
+      let tableId = { inWhichTable: await req.params.currentTableId }
       await ReservedArticle.find(tableId, function(err, reservedArticles) {
         if (err) {
-          res.status(500).send({
+          return res.status(500).send({
             error: 'A database error has occurred trying to find the reservedArticles. Please try again.'
           })
         } else {
-          res.send({
+          return res.send({
             reservedArticles: reservedArticles
           })
         }
       })
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to get the reservedArticles.'
       })
     }
