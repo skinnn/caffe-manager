@@ -6,10 +6,15 @@
     <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">Edit Settings</h1>
-            <v-btn @click="logoutAdmin" class="logout-btn pink">
-              Logout
+          <h1 class="heading">
+            <v-btn @click="cancelEditing" class="goBackBtn blue" fab>
+              <v-icon>arrow_back</v-icon>
             </v-btn>
+            Edit Store Settings
+          </h1>
+          <v-btn @click="logoutAdmin" class="logout-btn pink">
+            Logout
+          </v-btn>
         </div>
       </v-flex>
 
@@ -21,8 +26,6 @@
         <div class="info-msg" v-if="info" v-html="info" />
 
         <div class="admin-update-settings">
-          <h2 class="adminSettingsHeading">Update Settings</h2>
-
           <!-- Update Settings Form -->
           <v-form
             @submit.prevent="updateSettings"
@@ -206,11 +209,6 @@ export default {
 
     .admin-settings {
       background-color: lighten(grey, 40);
-
-      .adminSettingsHeading {
-        text-align: center;
-        margin: 0 0 15px 0;
-      }
 
       .settings-form {
         margin-left: 50px;

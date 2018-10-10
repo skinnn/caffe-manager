@@ -20,6 +20,8 @@
         <div class="success-msg" v-if="success" v-html="success" />
         <div class="info-msg" v-if="info" v-html="info" />
         <v-btn @click="getSettingsPage" class="blue" title="Open settings">
+          Store Settings
+          <br>
           <v-icon>settings</v-icon>
         </v-btn>
         <p>Name: {{$store.state.admin.name}}</p>

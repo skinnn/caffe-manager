@@ -6,15 +6,18 @@
     <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">
-              Settings
-              <v-btn @click="editSettings" class="yellow">
-                Edit
-              </v-btn>
-            </h1>
-            <v-btn @click="logoutAdmin" class="logout-btn pink">
-              Logout
+          <h1 class="heading">
+            <v-btn @click="goBack" class="goBackBtn blue" fab>
+              <v-icon>arrow_back</v-icon>
             </v-btn>
+            Store Settings
+            <v-btn @click="editSettings" class="yellow">
+              Edit
+            </v-btn>
+          </h1>
+          <v-btn @click="logoutAdmin" class="logout-btn pink">
+            Logout
+          </v-btn>
         </div>
       </v-flex>
 
@@ -99,6 +102,12 @@ export default {
     editSettings() {
       this.$router.push({
         name: 'admin-edit-settings'
+      })
+    },
+    goBack() {
+      // Redirect to Admin Home page
+      this.$router.push({
+        name: 'admin-home'
       })
     }
   },
