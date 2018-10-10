@@ -11,12 +11,27 @@
 <script>
   import AdminSideMenu from '@/components/admin/AdminSideMenu'
   import UserSideMenu from '@/components/user/UserSideMenu'
+  import AdminService from '@/services/AdminService'
 
   export default {
     name: 'client',
     components: {
       AdminSideMenu,
       UserSideMenu
+    },
+    async mounted() {
+      try {
+        // Get or Create Root Admin if it doesn't exist
+        const response = (await AdminService.getOrCreateRootAdmin()).data
+        // console.log(response)
+        if (response.rootExist) {
+          console.log(response.message)
+        } else if (response.rootCreated) {
+          return console.log(response.message)
+        }
+      } catch (error) {
+        return console.log(error)
+      }
     }
   }
 </script>

@@ -56,18 +56,18 @@ module.exports = {
       await User.createUser(newUser, function(err, user) {
         if (err) {
           console.log(err)
-          res.status(400).send({
+          return res.status(400).send({
             error: 'This username is already in use.'
           })
         } else {
-          res.send({
+          return res.send({
             user: user,
             success: `User: ${user.username} is successfully registered.`
           })
         }
       })
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to register the user.'
       })
     }
@@ -104,11 +104,11 @@ module.exports = {
       await Admin.createAdmin(newAdmin, function(err, admin) {
         if (err) {
           console.log(err)
-          res.status(400).send({
+          return res.status(400).send({
             error: 'This username is already in use.'
           })
         } else {
-          res.send({
+          return res.send({
             admin: admin,
             success: `You have successfully registered. ${admin.username}`
           })
@@ -116,7 +116,7 @@ module.exports = {
       })
     } catch (err) {
       console.log(err)
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to register the admin. Please try again.'
       })
     }
@@ -144,7 +144,7 @@ module.exports = {
         })
       })(req, res, next)
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to log in.'
       })
     }
@@ -173,7 +173,7 @@ module.exports = {
         })
       })(req, res, next)
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to log in.'
       })
     }
@@ -184,12 +184,12 @@ module.exports = {
     try {
       await req.logout()
 
-      res.send({
+      return res.send({
         user: false,
         loggedOutMessage: 'Logged out.'
       })
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to logout.'
       })
     }
@@ -200,12 +200,12 @@ module.exports = {
     try {
       await req.logout()
 
-      res.send({
+      return res.send({
         admin: false,
         loggedOutMessage: 'Logged out.'
       })
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to logout.'
       })
     }

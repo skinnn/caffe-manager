@@ -5,24 +5,27 @@ const bcrypt = require('bcryptjs')
 const AdminSchema = new Schema({
   userType: {
     type: String,
-    default: 'admin'
+    required: true
+    // default: 'admin'
   },
-  admin: {
+  root_user: {
     type: Boolean,
-    default: true
+    required: true
+    // default: true
   },
   username: {
     type: String,
     required: true,
     unique: true
-  },
-  name: {
-    type: String,
-    required: true
+    // default: 'admin'
   },
   password: {
     type: String,
     required: true
+  },
+  name: {
+    type: String,
+    default: ''
   },
   image: {
     type: String,

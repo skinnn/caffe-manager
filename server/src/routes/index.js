@@ -63,6 +63,9 @@ router.use(function timeLog(req, res, next) {
 
 // TODO: Secure all routes only for admin
 
+router.get('/find/root',
+  AdminController.getOrCreateRootAdmin)
+
 // Get or Create Admin Settings
 router.get('/admin/:adminId/settings',
   SettingsController.getOrCreateAdminSettings)

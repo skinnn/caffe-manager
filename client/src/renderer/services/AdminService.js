@@ -1,6 +1,9 @@
 import Api from '@/services/Api'
 
 export default {
+  getOrCreateRootAdmin() {
+    return Api().get('find/root')
+  },
   getAllAdmins() {
     return Api().get('admin/admins')
   },
