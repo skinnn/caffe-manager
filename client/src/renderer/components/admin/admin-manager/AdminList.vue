@@ -92,11 +92,11 @@ export default {
       if (response.admins) {
         const admins = this.admins
         const currentLoggedInAdmin = this.$store.state.admin.username
-        // const rootUser = this.$store.state.admin.root_user
+        const rootUser = this.$store.state.admin.root_user
         // Add admin in the admins array
         response.admins.forEach(function(admin) {
           // Don't display the currently logged in admin
-          if (admin.username === currentLoggedInAdmin) {
+          if (admin.username === currentLoggedInAdmin || admin.root_user === rootUser) {
             return false
           } else {
             admins.push(admin)
