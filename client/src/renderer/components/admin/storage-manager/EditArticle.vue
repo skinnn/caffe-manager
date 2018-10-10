@@ -18,7 +18,10 @@
       <v-flex class="admin-container">
 
         <div class="admin-edit-storage">
-          <v-form @submit.prevent="saveArticle(article._id)" enctype="multipart/form-data">
+          <v-form
+            @submit.prevent="saveArticle(article._id)"
+            enctype="multipart/form-data"
+          >
             <label>Article name:</label>
             <v-text-field
               type="text"
@@ -83,7 +86,9 @@ export default {
       articleId: this.$store.state.route.params.articleId,
       storageId: this.$store.state.route.params.storageId,
       article: {},
+      // Messages
       error: null,
+      info: null,
       success: null
     }
   },
@@ -97,6 +102,7 @@ export default {
       }
     } catch (error) {
       this.success = null
+      this.info = null
       this.error = error.response.data.error
     }
   },
@@ -119,12 +125,13 @@ export default {
         articleFormData.append('articlePrice', newArticlePrice)
         articleFormData.append('articleQuantity', newArticleQuantity)
 
-        // Save Article
+        // Update Article
         const response = (await ArticleService.saveArticle(articleFormData, articleId)).data
-        // If successfully saved
+        // If successfully updated the article
         if (response.saved) {
           // Success message
           this.error = null
+          this.info = null
           this.success = response.success
           setTimeout(() => {
             this.success = null
@@ -132,6 +139,7 @@ export default {
         }
       } catch (error) {
         this.success = null
+        this.info = null
         this.error = error.response.data.error
       }
     }

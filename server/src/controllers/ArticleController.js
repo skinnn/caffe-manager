@@ -116,15 +116,13 @@ module.exports = {
   // Update Article by id
   async saveArticle(req, res) {
     try {
-      // console.log('BODY:', req.body)
-      // console.log('FILE:', req.file)
       let query = {_id: req.params.articleId}
 
       let article = {}
       article.name = req.body.articleName
       article.price = req.body.articlePrice
       article.quantity = req.body.articleQuantity
-      article.updated_date = dateHandler.getCurrentTime()
+      article.updated_date = await dateHandler.getCurrentTime()
 
       // If image is changed update the image path
       if (req.file !== undefined && req.file !== '') {
@@ -136,7 +134,9 @@ module.exports = {
       if (article.name !== '' && article.quantity !== '' && article.price !== '') {
         await Article.findOneAndUpdate(query, article, { upsert: true, new: true }, function(err, article) {
           if (err) {
-            console.log(err)
+            res.status(500).send({
+              error: 'A database error has occurred trying to update the article. Please try again.'
+            })
           } else {
             res.send({
               saved: true,

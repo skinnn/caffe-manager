@@ -8,11 +8,19 @@ const SettingsSchema = new Schema({
   },
   store_name: {
     type: String,
-    default: ''
+    default: 'Sezame Store'
   },
-  store_location: {
+  store_address: {
     type: String,
-    default: ''
+    default: 'Main St 24'
+  },
+  store_phone1: {
+    type: String,
+    default: '+341 111 111'
+  },
+  store_phone2: {
+    type: String,
+    default: '+341 222 222'
   },
   store_image: {
     type: String,
@@ -20,7 +28,7 @@ const SettingsSchema = new Schema({
   },
   currency: {
     type: String,
-    default: ''
+    default: 'RSD'
   },
   updated_date: {
     type: String,

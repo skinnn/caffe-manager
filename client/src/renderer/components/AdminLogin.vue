@@ -61,9 +61,6 @@ export default {
         })).data
         // If Admin login is successfull
         if (response.admin) {
-          this.$router.push({
-            name: 'admin-home'
-          })
           // Set Admin in the Vuex Store
           this.$store.dispatch('setAdmin', response.admin)
 
@@ -74,6 +71,11 @@ export default {
             this.$store.dispatch('setSettings', res.settings)
             console.log('Settings State: ', this.$store.state.settings)
           }
+
+          // Redirect to the Admin Home page
+          this.$router.push({
+            name: 'admin-home'
+          })
         }
       } catch (error) {
         console.log(error)

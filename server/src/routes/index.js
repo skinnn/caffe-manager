@@ -63,9 +63,14 @@ router.use(function timeLog(req, res, next) {
 
 // TODO: Secure all routes only for admin
 
-// Get Admin Settings
+// Get or Create Admin Settings
 router.get('/admin/:adminId/settings',
   SettingsController.getOrCreateAdminSettings)
+
+// Update Admin Settings
+router.put('/admin/:adminId/settings',
+  upload.single('imageUpload'),
+  SettingsController.updateAdminSettings)
 
 // Get all Articles
 router.get('/admin/articles',

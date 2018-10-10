@@ -36,9 +36,6 @@ export default new Vuex.Store({
     },
     setSettings(state, settings) {
       state.settings = settings
-      // state.settings.store.name = 'Shambhala Store'
-      // state.settings.store.location = 'Main St 24'
-      // state.settings.currency = '$'
     }
   },
   actions: {

@@ -6,7 +6,12 @@
     <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">Home</h1>
+            <h1 class="heading">
+              Settings
+              <v-btn @click="editSettings" class="yellow">
+                Edit
+              </v-btn>
+            </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
             </v-btn>
@@ -19,16 +24,16 @@
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
         <div class="info-msg" v-if="info" v-html="info" />
-        <v-btn @click="getSettingsPage" class="blue" title="Open settings">
-          <v-icon>settings</v-icon>
-        </v-btn>
-        <p>Name: {{this.$store.state.admin.name}}</p>
-        <p>Username: {{this.$store.state.admin.username}}</p>
-        <p>Store name: {{this.$store.state.settings.store_name}}</p>
-        <p>Telephone: </p>
-        <p>Address: </p>
-        <p>Create date: {{this.$store.state.admin.date}}</p>
-        <p>Last time updated: {{this.$store.state.admin.updatedDate}}</p>
+
+        <div class="admin-settings">
+          <p>Store name: {{this.settings.store_name}}</p>
+          <p>Address: {{this.settings.store_address}}</p>
+          <p>Currency: {{this.settings.currency}}</p>
+          <p>Telephone 1: {{this.settings.store_phone1}}</p>
+          <p>Telephone 2: {{this.settings.store_phone2}}</p>
+          <p>Last time updated: {{this.settings.updated_date}}</p>
+          <img src="" alt="No store image">
+        </div>
 
       </v-flex>
     </v-layout>
@@ -38,6 +43,8 @@
 <script>
 // Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
+// Services
+// import SettingsService from '@/services/SettingsService'
 // Global Mixins
 import AdminLogout from '@/mixins/AdminLogout'
 
@@ -47,16 +54,24 @@ export default {
   },
   data() {
     return {
-      ownerId: this.$store.state.admin._id,
+      settings: {
+        store_name: this.$store.state.settings.store_name,
+        store_address: this.$store.state.settings.store_address,
+        store_phone1: this.$store.state.settings.store_phone1,
+        store_phone2: this.$store.state.settings.store_phone2,
+        store_image: this.$store.state.settings.store_image,
+        currency: this.$store.state.settings.currency,
+        updated_date: this.$store.state.settings.updated_date
+      },
       error: null,
       success: null,
       info: null
     }
   },
   methods: {
-    getSettingsPage() {
+    editSettings() {
       this.$router.push({
-        name: 'admin-settings'
+        name: 'admin-edit-settings'
       })
     }
   },

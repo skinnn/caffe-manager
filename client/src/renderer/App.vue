@@ -69,6 +69,7 @@
   }
 
   .heading {
+    display: table;
     position: relative;
     top: 25px;
     left: 6%;

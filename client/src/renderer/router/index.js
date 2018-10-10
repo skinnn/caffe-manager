@@ -12,6 +12,9 @@ const AdminLandingRegister = require('@/components/AdminLandingRegister').defaul
 const AdminLogin = require('@/components/AdminLogin').default
 const AdminHome = require('@/components/admin/AdminHome').default
 const AdminTaxes = require('@/components/admin/AdminTaxes').default
+// Settings
+const Settings = require('@/components/admin/settings/Settings').default
+const EditSettings = require('@/components/admin/settings/EditSettings').default
 // Storage-Manager
 const AdminViewStorage = require('@/components/admin/storage-manager/ViewStorage').default
 const AdminEditStorage = require('@/components/admin/storage-manager/EditStorage').default
@@ -87,6 +90,16 @@ export default new Router({
       path: '/admin/home',
       name: 'admin-home',
       component: AdminHome
+    },
+    {
+      path: '/admin/settings',
+      name: 'admin-settings',
+      component: Settings
+    },
+    {
+      path: '/admin/settings/edit',
+      name: 'admin-edit-settings',
+      component: EditSettings
     },
     {
       path: '/admin/tables',

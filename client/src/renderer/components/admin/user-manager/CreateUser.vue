@@ -17,30 +17,41 @@
 
       <v-flex class="admin-container">
         <v-form @submit.prevent="registerUser" enctype="multipart/form-data">
-          <v-text-field
-            type="text"
-            v-model="username"
-            label="Username:"
-            outline
-          ></v-text-field>
-          <v-text-field
-            type="password"
-            v-model="password"
-            label="Password:"
-            outline
-          ></v-text-field>
-          <v-text-field
-            type="password"
-            v-model="password2"
-            label="Confirm Password:"
-            outline
-          ></v-text-field>
-          <v-text-field
-            type="text"
-            v-model="name"
-            label="Full name:"
-            outline
-          ></v-text-field>
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              type="text"
+              v-model="username"
+              label="Username:"
+              outline
+            ></v-text-field>
+          </v-flex>
+
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              type="password"
+              v-model="password"
+              label="Password:"
+              outline
+            ></v-text-field>
+          </v-flex>
+
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              type="password"
+              v-model="password2"
+              label="Confirm Password:"
+              outline
+            ></v-text-field>
+          </v-flex>
+
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              type="text"
+              v-model="name"
+              label="Full name:"
+              outline
+            ></v-text-field>
+          </v-flex>
 
           <h3 class="mt-4">Permissions</h3>
           <v-checkbox
