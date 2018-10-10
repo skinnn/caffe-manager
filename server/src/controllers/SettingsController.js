@@ -31,8 +31,6 @@ module.exports = {
   // Update Admin Settings
   async updateAdminSettings(req, res) {
     try {
-      // console.log('BODY:', req.body)
-      // console.log('FILE:', req.file)
       let query = { type: 'settings' }
       let settings = {}
 
@@ -66,7 +64,7 @@ module.exports = {
         }
       })
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'An error has occurred trying to update the settings data.'
       })
     }

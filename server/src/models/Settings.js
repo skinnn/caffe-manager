@@ -8,7 +8,7 @@ const SettingsSchema = new Schema({
   },
   store_name: {
     type: String,
-    default: 'Sezame Store'
+    default: 'Ses Store'
   },
   store_address: {
     type: String,

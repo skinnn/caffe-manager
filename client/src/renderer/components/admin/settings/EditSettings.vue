@@ -80,6 +80,7 @@
               <v-text-field
                 readonly
                 type="text"
+                :value="this.$store.state.settings.updated_date"
                 solo
               ></v-text-field>
             </v-flex>
@@ -169,10 +170,10 @@ export default {
 
         // Update Settings
         const response = (await SettingsService.updateAdminSettings(adminId, settingsFormData)).data
-        console.log('update settings reponse: ', response)
         // If successfully updated the settings
         if (response.saved) {
-          // TODO: Change the store state of settings
+          // Update Settings in the Vuex Store
+          this.$store.dispatch('setSettings', response.settings)
           // Success message
           this.error = null
           this.info = null
