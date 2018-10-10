@@ -9,8 +9,8 @@ const dateHandler = require('./getDate')
 
 module.exports = {
 
-  // Get or Create Admin Root if it doesn't exist
-  async getOrCreateRootAdmin(req, res) {
+  // Create Admin Root if it doesn't exist
+  async createRootAdmin(req, res) {
     try {
       // Create or Update
       let query = { root_user: true, username: 'admin' }
