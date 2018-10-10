@@ -340,6 +340,8 @@ export default {
       this.currentOrderId = null
       // Close Select Article menu
       this.articleMenu = false
+      // Reset Order name
+      this.currentOrderName = null
     },
     async selectArticle(articleName, articleId, articlePrice) {
       try {
@@ -569,7 +571,7 @@ export default {
         const orderName = this.newOrderName
         if (orderName !== '' && orderName !== undefined) {
           const response = (await OrderService.createOrder(this.ownerId, currentTableId, {
-            newOrderName: this.newOrderName
+            newOrderName: orderName
           })).data
           console.log(response)
 
@@ -592,15 +594,27 @@ export default {
               articleList.push(article)
             })
 
-            // Open Article Menu and set Current Order Id to this created order
+            // If there is one or more articles in the list
             if (articleList.length >= 1) {
+              // Open Article Menu
               this.articleMenu = true
+              // Set Current Order Id
               this.currentOrderId = response.orderId
+              // Set Order Name
+              this.currentOrderName = response.name
+            // If there is no articles in the list just print the message
+            } else {
+              this.error = null
+              this.success = null
+              this.info = 'There are no articles.'
+              setTimeout(() => {
+                this.info = null
+              }, 3000)
             }
           }
-          // Reset input field
-          this.newOrderName = ''
         } else {
+          this.error = null
+          this.success = null
           this.info = 'Order must have a name.'
           setTimeout(() => {
             this.info = null

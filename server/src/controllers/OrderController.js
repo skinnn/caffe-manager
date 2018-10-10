@@ -19,6 +19,7 @@ module.exports = {
           } else {
             res.send({
               orderId: order._id,
+              name: order.name,
               saved: true,
               success: 'Order created.'
             })
