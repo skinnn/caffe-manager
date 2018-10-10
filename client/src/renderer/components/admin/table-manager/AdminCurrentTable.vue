@@ -60,7 +60,7 @@
             <ul class="articleMenuList">
               <h2 class="articleMenuHeading">
                 Select articles for order:
-                <span class="currentOrderName">{{this.currentOrderName}}</span>
+                <span class="currentOrderName">{{currentOrderName}}</span>
               </h2>
               <li
                 v-for="article in this.articleList"

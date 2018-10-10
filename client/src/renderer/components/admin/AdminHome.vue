@@ -22,13 +22,13 @@
         <v-btn @click="getSettingsPage" class="blue" title="Open settings">
           <v-icon>settings</v-icon>
         </v-btn>
-        <p>Name: {{this.$store.state.admin.name}}</p>
-        <p>Username: {{this.$store.state.admin.username}}</p>
-        <p>Store name: {{this.$store.state.settings.store_name}}</p>
+        <p>Name: {{$store.state.admin.name}}</p>
+        <p>Username: {{$store.state.admin.username}}</p>
+        <p>Store name: {{$store.state.settings.store_name}}</p>
         <p>Telephone: </p>
         <p>Address: </p>
-        <p>Create date: {{this.$store.state.admin.date}}</p>
-        <p>Last time updated: {{this.$store.state.admin.updatedDate}}</p>
+        <p>Create date: {{$store.state.admin.date}}</p>
+        <p>Last time updated: {{$store.state.admin.updatedDate}}</p>
 
       </v-flex>
     </v-layout>

@@ -26,13 +26,20 @@
         <div class="info-msg" v-if="info" v-html="info" />
 
         <div class="admin-settings">
-          <p>Store name: {{this.settings.store_name}}</p>
-          <p>Address: {{this.settings.store_address}}</p>
-          <p>Currency: {{this.settings.currency}}</p>
-          <p>Telephone 1: {{this.settings.store_phone1}}</p>
-          <p>Telephone 2: {{this.settings.store_phone2}}</p>
-          <p>Last time updated: {{this.settings.updated_date}}</p>
-          <img src="" alt="No store image">
+          <p>Store name: {{settings.store_name}}</p>
+          <p>Address: {{settings.store_address}}</p>
+          <p>Currency: {{settings.currency}}</p>
+          <p>Telephone 1: {{settings.store_phone1}}</p>
+          <p>Telephone 2: {{settings.store_phone2}}</p>
+          <p>Last time updated: {{settings.updated_date}}</p>
+          <img
+            v-if="settings.store_image"
+            :src="`http://localhost:8080/${settings.store_image}`"
+            class="articleMenuImage"
+            alt="No image"
+          >
+          <!-- Placeholder if there is no article image -->
+          <div v-if="!settings.store_image" class="articleMenuImage"></div>
         </div>
 
       </v-flex>
