@@ -3,6 +3,14 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
 const AdminSchema = new Schema({
+  userType: {
+    type: String,
+    default: 'admin'
+  },
+  admin: {
+    type: Boolean,
+    default: true
+  },
   username: {
     type: String,
     required: true,
@@ -17,19 +25,28 @@ const AdminSchema = new Schema({
     required: true
   },
   image: {
-    type: String
+    type: String,
+    default: ''
+  },
+  telephone1: {
+    type: String,
+    default: ''
+  },
+  telephone2: {
+    type: String,
+    default: ''
+  },
+  address: {
+    type: String,
+    default: ''
+  },
+  note: {
+    type: String,
+    default: ''
   },
   createdBy: {
     type: Object,
     default: ''
-  },
-  userType: {
-    type: String,
-    default: 'admin'
-  },
-  admin: {
-    type: Boolean,
-    default: true
   },
   date: {
     type: Date,

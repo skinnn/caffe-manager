@@ -3,6 +3,10 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
 const UserSchema = new Schema({
+  userType: {
+    type: String,
+    default: 'user'
+  },
   username: {
     type: String,
     required: true,
@@ -19,6 +23,22 @@ const UserSchema = new Schema({
   image: {
     type: String
   },
+  telephone1: {
+    type: String,
+    default: ''
+  },
+  telephone2: {
+    type: String,
+    default: ''
+  },
+  address: {
+    type: String,
+    default: ''
+  },
+  note: {
+    type: String,
+    default: ''
+  },
   createdBy: {
     type: Object,
     default: ''
@@ -30,10 +50,6 @@ const UserSchema = new Schema({
   userMenu: {
     type: Array,
     required: true
-  },
-  userType: {
-    type: String,
-    default: 'user'
   },
   date: {
     type: Date,
