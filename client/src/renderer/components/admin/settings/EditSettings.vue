@@ -189,6 +189,9 @@ export default {
       }
     },
     cancelEditing() {
+      this.$router.push({
+        name: 'admin-settings'
+      })
     }
   },
   mixins: [
