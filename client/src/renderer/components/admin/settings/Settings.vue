@@ -36,7 +36,9 @@
             alt="No image"
           >
           <!-- Placeholder if there is no article image -->
-          <div v-if="!settings.store_image" class="storeImage"></div>
+          <div v-if="!settings.store_image" class="noStoreImage">
+            <p class="noStoreImageInfo">Store image not set</p>
+          </div>
           <div class="settings-info">
             <h1>
               <span class="info-left">Store name: </span>
@@ -124,6 +126,7 @@ export default {
     .admin-settings {
       background-color: lighten(grey, 40);
       padding: 3%;
+      width: 100%;
 
       .storeImage {
         vertical-align: top;
@@ -135,12 +138,32 @@ export default {
         border-radius: 5px;
       }
 
-      .settings-info {
+      .noStoreImage {
+        vertical-align: top;
+        width: 300px;
+        height: 200px;
+        max-width: 300px;
+        max-height: 200px;
+        display: inline-block;
+        border: 1px solid grey;
+        border-radius: 5px;
         background-color: #f4f4f4;
+
+        .noStoreImageInfo {
+          text-align: center;
+          position: relative;
+          top: 6%;
+          margin: 0;
+        }
+      }
+
+      .settings-info {
+        display: inline-block;
+        background-color: #f4f4f4;
+        max-width: 706px;
+        margin-left: 40px;
         padding: 5px 15px 5px 15px;
         border-radius: 5px;
-        display: inline-block;
-        margin-left: 40px;
       }
 
       .info-left {
