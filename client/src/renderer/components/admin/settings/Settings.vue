@@ -26,20 +26,40 @@
         <div class="info-msg" v-if="info" v-html="info" />
 
         <div class="admin-settings">
-          <p>Store name: {{settings.store_name}}</p>
-          <p>Address: {{settings.store_address}}</p>
-          <p>Currency: {{settings.currency}}</p>
-          <p>Telephone 1: {{settings.store_phone1}}</p>
-          <p>Telephone 2: {{settings.store_phone2}}</p>
-          <p>Last time updated: {{settings.updated_date}}</p>
           <img
             v-if="settings.store_image"
             :src="`http://localhost:8080/${settings.store_image}`"
-            class="articleMenuImage"
+            class="storeImage"
             alt="No image"
           >
           <!-- Placeholder if there is no article image -->
-          <div v-if="!settings.store_image" class="articleMenuImage"></div>
+          <div v-if="!settings.store_image" class="storeImage"></div>
+          <div class="settings-info">
+            <h1>
+              <span class="info-left">Store name: </span>
+              <span class="info-right">{{settings.store_name}}</span>
+            </h1>
+            <h2>
+              <span class="info-left">Address: </span>
+              <span class="info-right">{{settings.store_address}}</span>
+            </h2>
+            <h2>
+              <span class="info-left">Currency: </span>
+              <span class="info-right">{{settings.currency}}</span>
+            </h2>
+            <h2>
+              <span class="info-left">Telephone 1: </span>
+              <span class="info-right">{{settings.store_phone1}}</span>
+            </h2>
+            <h2>
+              <span class="info-left">Telephone 2: </span>
+              <span class="info-right">{{settings.store_phone2}}</span>
+            </h2>
+            <h2>
+              <span class="info-left">Last time updated: </span>
+              <span class="info-right">{{settings.updated_date}}</span>
+            </h2>
+          </div>
         </div>
 
       </v-flex>
@@ -94,14 +114,36 @@ export default {
 
     .admin-settings {
       background-color: lighten(grey, 40);
+      padding: 3%;
 
-      .adminSettingsHeading {
-        text-align: center;
-        margin: 0 0 15px 0;
+      .storeImage {
+        vertical-align: top;
+        max-width: 300px;
+        max-height: 200px;
+        min-width: 270px;
+        display: inline-block;
+        border: 1px solid grey;
+        border-radius: 5px;
       }
 
-      .settings-form {
-        margin-left: 50px;
+      .settings-info {
+        background-color: #f4f4f4;
+        padding: 5px 15px 5px 15px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-left: 40px;
+      }
+
+      .info-left {
+        color: grey;
+        font-size: 18px;
+        font-weight: 400;
+      }
+
+      .info-right {
+        color: black;
+        font-size: 21px;
+        font-weight: 400;
       }
     }
   }
