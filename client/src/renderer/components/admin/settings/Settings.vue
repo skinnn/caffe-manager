@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-home">
+  <div>
     <div>
       <admin-side-menu />
     </div>

@@ -28,6 +28,16 @@
           </v-list-tile-content>
         </v-list-tile>
 
+        <!-- Store Settings -->
+        <v-list-tile @click="navigateTo({ name: 'admin-settings' })">
+          <v-list-tile-action>
+            <v-icon>settings</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="list-tile-title">Settings</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
         <!-- Warehouse -->
         <v-list-group prepend-icon="storage" value="true">
           <v-list-tile slot="activator">

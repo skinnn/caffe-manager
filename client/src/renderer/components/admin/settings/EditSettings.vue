@@ -19,11 +19,6 @@
       </v-flex>
 
       <v-flex class="admin-container">
-        <!-- Display messages -->
-        <!-- TODO: Create separate Message component and add v-alert to all components for styling messages -->
-        <div class="error-msg" v-if="error" v-html="error" />
-        <div class="success-msg" v-if="success" v-html="success" />
-        <div class="info-msg" v-if="info" v-html="info" />
 
         <div class="admin-update-settings">
           <!-- Update Settings Form -->
@@ -95,6 +90,12 @@
               <input id="storeImage" type="file" name="imageUpload" />
             </div>
             <br>
+
+            <!-- Display messages -->
+            <!-- TODO: Create separate Message component and add v-alert to all components for styling messages -->
+            <div class="error-msg" v-if="error" v-html="error" />
+            <div class="success-msg" v-if="success" v-html="success" />
+            <div class="info-msg" v-if="info" v-html="info" />
 
             <v-btn type="submit" class="success">Submit</v-btn>
             <v-btn @click="cancelEditing" class="error">Cancel</v-btn>
