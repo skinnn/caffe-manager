@@ -8,11 +8,17 @@ module.exports = {
   async registerUser(req, res) {
     try {
       // console.log('FILE', req.file)
-      // console.log('BODY', req.body)
+      console.log('BODY', req.body.userMenu.tables)
       const username = req.body.userUsername
       const password = req.body.userPassword
       const password2 = req.body.userPassword2
       const name = req.body.userName
+      const telephone1 = req.body.userTelephone1
+      const telephone2 = req.body.userTelephone2
+      const address = req.body.userAddress
+      const note = req.body.userNote
+
+      const isTable = req.body.isTables
 
       let image = ''
       // If image is added create image path
@@ -24,6 +30,8 @@ module.exports = {
         name: req.body.createdBy.name,
         username: req.body.createdBy.username
       }
+
+      // TODO: Fix User privileges
       // Create user menu
       const userMenu = [
         {
@@ -48,8 +56,12 @@ module.exports = {
 
       const newUser = new User({
         username: username,
-        name: name,
         password: password,
+        name: name,
+        telephone1: telephone1,
+        telephone2: telephone2,
+        address: address,
+        note: note,
         userMenu: userMenu,
         createdBy: createdBy,
         image: image
@@ -61,6 +73,7 @@ module.exports = {
             error: 'This username is already in use.'
           })
         } else {
+          console.log('USER: ', user)
           return res.send({
             user: user,
             success: `User: ${user.username} is successfully registered.`

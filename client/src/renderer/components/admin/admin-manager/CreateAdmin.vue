@@ -95,7 +95,7 @@
               maxlength="250"
               type="text"
               v-model="note"
-              placeholder="Write..."
+              placeholder="Write a note..."
               outline
             ></v-textarea>
           </v-flex>
@@ -186,7 +186,6 @@ export default {
           await adminFormData.append('telephone2', telephone2)
           await adminFormData.append('address', address)
           await adminFormData.append('note', note)
-
           await adminFormData.append('createdBy', createdBy)
 
           // Register admin
@@ -216,7 +215,7 @@ export default {
             this.telephone2 = ''
             this.address = ''
             this.note = ''
-            image = null
+            image = ''
           }
         // If someone is trying to register the account with 'admin' or 'root' usernames
         } else {

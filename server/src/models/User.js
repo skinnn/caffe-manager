@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
+// TODO: Modify user model similar to updated admin model, add regexes, move errors to the fields
+// TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
 const UserSchema = new Schema({
   userType: {
     type: String,

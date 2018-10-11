@@ -7,7 +7,7 @@
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">
-              Create Staff Member
+              Create Staff Member Account
             </h1>
             <v-btn @click="logoutAdmin" class="logout-btn pink">
               Logout
@@ -17,40 +17,86 @@
 
       <v-flex class="admin-container">
         <v-form @submit.prevent="registerUser" enctype="multipart/form-data">
+
+          <h3>Username:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              maxlength="20"
               type="text"
               v-model="username"
-              label="Username:"
-              outline
+              solo
             ></v-text-field>
           </v-flex>
 
+          <h3>Password:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
-              type="password"
+              maxlength="32"
+              type="text"
               v-model="password"
-              label="Password:"
-              outline
+              solo
             ></v-text-field>
           </v-flex>
 
+          <h3>Confirm password:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
-              type="password"
+              maxlength="32"
+              type="text"
               v-model="password2"
-              label="Confirm Password:"
-              outline
+              solo
             ></v-text-field>
           </v-flex>
 
+          <h3>Full name:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              maxlength="32"
               type="text"
               v-model="name"
-              label="Full name:"
-              outline
+              solo
             ></v-text-field>
+          </v-flex>
+
+          <h3>Telephone 1:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              maxlength="20"
+              type="text"
+              v-model="telephone1"
+              solo
+            ></v-text-field>
+          </v-flex>
+
+          <h3>Telephone 2:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              maxlength="20"
+              type="text"
+              v-model="telephone2"
+              solo
+            ></v-text-field>
+          </v-flex>
+
+          <h3>Address:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              maxlength="40"
+              type="text"
+              v-model="address"
+              solo
+            ></v-text-field>
+          </v-flex>
+
+          <h3>Note:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-textarea
+              maxlength="250"
+              type="text"
+              v-model="note"
+              placeholder="Write a note..."
+              outline
+            ></v-textarea>
           </v-flex>
 
           <h3 class="mt-4">Permissions</h3>
@@ -63,10 +109,12 @@
             v-model="userMenu.tables"
           ></v-checkbox>
 
+          <h3>Add image</h3>
+          <br>
           <div class="upload-image">
-            <label>Add Image</label>
             <input id="userImage" type="file" name="imageUpload" />
           </div>
+          <br>
 
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
@@ -96,9 +144,13 @@ export default {
   data() {
     return {
       username: '',
-      name: '',
       password: '',
       password2: '',
+      name: '',
+      telephone1: '',
+      telephone2: '',
+      address: '',
+      note: '',
       userMenu: {
         home: true, // Default is that all users have home page
         warehouse: false,
@@ -113,21 +165,24 @@ export default {
       success: null
     }
   },
-  mounted() {
-
-  },
   methods: {
     async registerUser() {
       try {
         const userFormData = new FormData()
         // Get image
         const imagefile = document.querySelector('#userImage')
-        const image = imagefile.files[0]
+        let image = imagefile.files[0]
         // Get and append text inputs to form data
-        const userUsername = this.username
-        const userName = this.name
-        const userPassword = this.password
-        const userPassword2 = this.password2
+        const username = this.username
+        const password = this.password
+        const password2 = this.password2
+        const fullName = this.name
+
+        const telephone1 = this.telephone1
+        const telephone2 = this.telephone2
+        const address = this.address
+        const note = this.note
+
         // Permisions - user menu
         const userMenu = {
           home: this.userMenu.home,
@@ -137,13 +192,17 @@ export default {
         // Created By
         const createdBy = this.createdBy
         // Append everything to form data
-        userFormData.append('imageUpload', image)
-        userFormData.append('userUsername', userUsername)
-        userFormData.append('userName', userName)
-        userFormData.append('userPassword', userPassword)
-        userFormData.append('userPassword2', userPassword2)
-        userFormData.append('userMenu', userMenu)
-        userFormData.append('createdBy', createdBy)
+        await userFormData.append('imageUpload', image)
+        await userFormData.append('userUsername', username)
+        await userFormData.append('userName', fullName)
+        await userFormData.append('userPassword', password)
+        await userFormData.append('userPassword2', password2)
+        await userFormData.append('userTelephone1', telephone1)
+        await userFormData.append('userTelephone2', telephone2)
+        await userFormData.append('userAddress', address)
+        await userFormData.append('userNote', note)
+        await userFormData.append('userMenu', userMenu)
+        await userFormData.append('createdBy', createdBy)
 
         // Register User
         const response = (await AuthenticationService.registerUser(userFormData)).data
@@ -163,6 +222,11 @@ export default {
           this.password = ''
           this.password2 = ''
           this.name = ''
+          this.telephone1 = ''
+          this.telephone2 = ''
+          this.address = ''
+          this.note = ''
+          image = ''
           this.userMenu.home = true
           this.userMenu.warehouse = false
           this.userMenu.tables = false
