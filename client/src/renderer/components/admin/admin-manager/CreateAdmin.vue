@@ -17,46 +17,95 @@
 
       <v-flex class="admin-container">
         <v-form @submit.prevent="registerAdmin" enctype="multipart/form-data">
+          <!-- TODO: Show required fields -->
+          <!-- TODO: Show errors next by their error fields -->
+          <h3>Username:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              maxlength="20"
               type="text"
               v-model="username"
-              label="Username:"
-              outline
+              solo
             ></v-text-field>
           </v-flex>
 
+          <h3>Password:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              maxlength="32"
               type="password"
               v-model="password"
-              label="Password:"
-              outline
+              solo
             ></v-text-field>
           </v-flex>
 
+          <h3>Confirm password:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              maxlength="32"
               type="password"
               v-model="password2"
-              label="Confirm Password:"
-              outline
+              solo
             ></v-text-field>
           </v-flex>
 
+          <h3>Full name:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              maxlength="30"
               type="text"
               v-model="name"
-              label="Full name:"
-              outline
+              solo
             ></v-text-field>
           </v-flex>
 
+          <h3>Telephone 1:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              maxlength="20"
+              type="text"
+              v-model="telephone1"
+              solo
+            ></v-text-field>
+          </v-flex>
+
+          <h3>Telephone 2:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              maxlength="20"
+              type="text"
+              v-model="telephone2"
+              solo
+            ></v-text-field>
+          </v-flex>
+
+          <h3>Address:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-text-field
+              maxlength="40"
+              type="text"
+              v-model="address"
+              solo
+            ></v-text-field>
+          </v-flex>
+
+          <h3>Note:</h3>
+          <v-flex xs12 sm6 d-flex>
+            <v-textarea
+              maxlength="250"
+              type="text"
+              v-model="note"
+              placeholder="Write..."
+              outline
+            ></v-textarea>
+          </v-flex>
+
+          <h3>Add image</h3>
+          <br>
           <div class="upload-image">
-            <label>Add Image</label>
             <input id="adminImage" type="file" name="imageUpload" />
           </div>
+          <br>
 
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
@@ -86,9 +135,13 @@ export default {
   data() {
     return {
       username: '',
-      name: '',
       password: '',
       password2: '',
+      name: '',
+      telephone1: '',
+      telephone2: '',
+      address: '',
+      note: '',
       createdBy: {
         id: this.$store.state.admin._id,
         name: this.$store.state.admin.name,
@@ -110,29 +163,40 @@ export default {
           const adminFormData = new FormData()
           // Get image
           const imagefile = document.querySelector('#adminImage')
-          const image = imagefile.files[0]
+          let image = imagefile.files[0]
           // Get and append text inputs to form data
           const adminUsername = this.username
-          const adminName = this.name
           const adminPassword = this.password
           const adminPassword2 = this.password2
-          // Admin which created this admin account
+          const adminName = this.name
+          const telephone1 = this.telephone1
+          const telephone2 = this.telephone2
+          const address = this.address
+          const note = this.note
+          // TODO: Only root_user can create admins
+          // Admin who created this admin account
           const createdBy = this.createdBy
           // Append everything to form data
-          adminFormData.append('imageUpload', image)
-          adminFormData.append('adminUsername', adminUsername)
-          adminFormData.append('adminName', adminName)
-          adminFormData.append('adminPassword', adminPassword)
-          adminFormData.append('adminPassword2', adminPassword2)
-          adminFormData.append('createdBy', createdBy)
+          await adminFormData.append('imageUpload', image)
+          await adminFormData.append('adminUsername', adminUsername)
+          await adminFormData.append('adminPassword', adminPassword)
+          await adminFormData.append('adminPassword2', adminPassword2)
+          await adminFormData.append('adminName', adminName)
+          await adminFormData.append('telephone1', telephone1)
+          await adminFormData.append('telephone2', telephone2)
+          await adminFormData.append('address', address)
+          await adminFormData.append('note', note)
+
+          await adminFormData.append('createdBy', createdBy)
 
           // Register admin
           const response = (await AuthenticationService.registerAdmin(adminFormData)).data
           // If registering was successful redirect to the admin list
           if (response.admin) {
-            this.$router.push({
-              name: 'admin-register'
-            })
+            console.log(response)
+            // this.$router.push({
+            //   name: 'admin-register'
+            // })
 
             // Set success message and timeout
             this.error = null
@@ -148,6 +212,11 @@ export default {
             this.password = ''
             this.password2 = ''
             this.name = ''
+            this.telephone1 = ''
+            this.telephone2 = ''
+            this.address = ''
+            this.note = ''
+            image = null
           }
         // If someone is trying to register the account with 'admin' or 'root' usernames
         } else {

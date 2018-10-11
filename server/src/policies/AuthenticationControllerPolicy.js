@@ -6,7 +6,7 @@ module.exports = {
   // User Policy
   registerUser(req, res, next) {
     const schema = {
-      // TODO: Username must have between 3 and 15 characters
+      // TODO: Username must have between 5 and 20 characters
       userUsername: Joi.string().required(),
       userName: Joi.string().required(),
       userPassword: Joi.string().regex(
@@ -73,15 +73,18 @@ module.exports = {
   // Admin Policy
   registerAdmin(req, res, next) {
     const schema = {
-      // TODO: Username must have between 3 and 15 characters
-      adminUsername: Joi.string().required(),
-      adminName: Joi.string().required(),
+      adminUsername: Joi.string().regex(new RegExp('^[a-zA-Z0-9]{5,15}$')).required(),
       adminPassword: Joi.string().regex(
         new RegExp('^[a-zA-Z0-9]{6,32}$')
       ).required(),
       adminPassword2: Joi.any().valid(Joi.ref('adminPassword'))
         .options({ language: { any: { allowOnly: 'must match password' } } })
         .label('Password Confirmation'),
+      adminName: Joi.string().regex(new RegExp('^[a-zA-Z_]+( [a-zA-Z_]+)*$')).required(),
+      telephone1: Joi.string().allow('').regex(new RegExp('^[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
+      telephone2: Joi.string().allow('').regex(new RegExp('^[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
+      address: Joi.string().allow('').regex(new RegExp('^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$')),
+      note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9_.]+( [a-zA-Z0-9_.]+)*$')),
       createdBy: Joi.any(),
       imageUpload: Joi.any()
     }
@@ -92,13 +95,9 @@ module.exports = {
       switch (error.details[0].context.key) {
         case 'adminUsername':
           res.status(400).send({
-            error: 'You must provide a valid username. It must contain between 3 and 15 characters.'
-          })
-          break
-
-        case 'adminName':
-          res.status(400).send({
-            error: 'You must provide a name.'
+            error: `Username must contain between 5 and 15 characters.
+            <br>
+            It can contain ONLY letters and numbers.`
           })
           break
 
@@ -113,6 +112,38 @@ module.exports = {
         case 'adminPassword2':
           res.status(400).send({
             error: 'Passwords do not match.'
+          })
+          break
+
+        case 'adminName':
+          res.status(400).send({
+            error: `You must provide a name.
+            <br>
+            It can contain ONLY letters.`
+          })
+          break
+
+        case 'telephone1':
+          res.status(400).send({
+            error: `Telephone 1 can contain ONLY letters, numbers and plus sign.`
+          })
+          break
+
+        case 'telephone2':
+          res.status(400).send({
+            error: `Telephone 2 can contain ONLY letters, numbers and plus sign.`
+          })
+          break
+
+        case 'address':
+          res.status(400).send({
+            error: `Address can contain ONLY letters and numbers.`
+          })
+          break
+
+        case 'note':
+          res.status(400).send({
+            error: `Note can contain ONLY letters, numbers and dots.`
           })
           break
 

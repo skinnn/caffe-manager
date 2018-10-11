@@ -10,6 +10,8 @@
           <router-link to="/admin/login"><v-btn color="blue">Admin Login</v-btn></router-link>
           <router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link>
           <router-link to="/" event=""><v-btn color="blue">User Login</v-btn></router-link>
+          
+          <!-- TODO: List all user accounts on the side and fill username by clicking on it -->
           <v-text-field
             type="text"
             v-model="username"
@@ -22,6 +24,7 @@
             label="Password:"
             outline
             ></v-text-field>
+
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="success-msg" v-if="success" v-html="success" />

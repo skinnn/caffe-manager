@@ -10,9 +10,10 @@ module.exports = {
       // console.log('FILE', req.file)
       // console.log('BODY', req.body)
       const username = req.body.userUsername
-      const name = req.body.userName
       const password = req.body.userPassword
       const password2 = req.body.userPassword2
+      const name = req.body.userName
+
       let image = ''
       // If image is added create image path
       if (req.file !== undefined && req.file !== '') {
@@ -79,27 +80,38 @@ module.exports = {
       // console.log('FILE', req.file)
       // console.log('BODY', req.body)
       const username = req.body.adminUsername
-      const name = req.body.adminName
       const password = req.body.adminPassword
       const password2 = req.body.adminPassword2
+      const name = req.body.adminName
+      const telephone1 = req.body.telephone1
+      const telephone2 = req.body.telephone2
+      const address = req.body.address
+      const note = req.body.userName
       const createdBy = {
         id: req.body.createdBy.id,
         name: req.body.createdBy.name,
         username: req.body.createdBy.username
       }
-      let image = ''
 
+      let image = ''
       // If image is added create image path
       if (req.file !== undefined && req.file !== '') {
         image = req.file.path
       }
 
+      // Create new admin object
       const newAdmin = new Admin({
+        userType: 'admin',
+        root_user: false,
         username: username,
-        name: name,
         password: password,
-        createdBy: createdBy,
-        image: image
+        name: name,
+        telephone1: telephone1,
+        telephone2: telephone2,
+        address: address,
+        note: note,
+        image: image,
+        createdBy: createdBy
       })
       await Admin.createAdmin(newAdmin, function(err, admin) {
         if (err) {
