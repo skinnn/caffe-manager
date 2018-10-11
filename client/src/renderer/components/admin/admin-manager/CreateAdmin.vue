@@ -29,7 +29,19 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>Password:</h3>
+          <h3>
+            Password:
+            <div
+              class="passwordStrength"
+              v-if="!hideMessage"
+              v-html="passwordStrengthText"
+              v-bind:class="{
+                strong : passwordStrength === 'strong',
+                weak : passwordStrength === 'weak',
+                medium: passwordStrength === 'medium'
+              }"
+              ></div>
+          </h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
               @input="analyzePasswordStrength(password), isPasswordConfirmed(password2)"
@@ -38,18 +50,21 @@
               v-model="password"
               solo
             ></v-text-field>
-            <div
-              class="passwordStrength"
-              v-html="passwordStrengthText"
-              v-bind:class="{
-                strong : passwordStrength === 'strong',
-                weak : passwordStrength === 'weak',
-                medium: passwordStrength === 'medium'
-              }"
-              ></div>
           </v-flex>
 
-          <h3>Confirm password:</h3>
+          <h3>
+            Confirm password:
+            <div
+              class="confirmPasswordInfo"
+              v-if="!hideMessage"
+              v-html="isPasswordConfirmedText"
+              v-bind:class="{
+                passwordMatched : confirmPasswordMatched === true,
+                passwordWrong : confirmPasswordMatched === false
+              }"
+            ></div>
+            <!-- TODO: Add icons for match/fail <v-icon>check_box</v-icon> -->
+          </h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
               @input="isPasswordConfirmed(password2)"
@@ -58,14 +73,6 @@
               v-model="password2"
               solo
             ></v-text-field>
-            <div
-              class="confirmPasswordInfo"
-              v-html="isPasswordConfirmedText"
-              v-bind:class="{
-                passwordMatched : confirmPasswordMatched === true,
-                passwordWrong : confirmPasswordMatched === false
-              }"
-            ></div>
           </v-flex>
 
           <h3>Full name:</h3>
@@ -166,6 +173,7 @@ export default {
         name: this.$store.state.admin.name,
         username: this.$store.state.admin.username
       },
+      hideMessage: true,
       // Password Strength - default
       passwordStrength: 'weak',
       passwordStrengthText: '',
@@ -186,20 +194,24 @@ export default {
       if (this.strongRegex.test(password)) {
         this.passwordStrength = 'strong'
         this.passwordStrengthText = 'Strong password.'
+        this.hideMessage = false
       } else if (this.mediumRegex.test(password)) {
         this.passwordStrength = 'medium'
-        this.passwordStrengthText = 'Medium password.'
+        this.passwordStrengthText = 'Medium strength.'
+        this.hideMessage = false
       } else if (password === '') {
         this.passwordStrength = 'weak'
         this.passwordStrengthText = ''
+        this.hideMessage = true
       } else {
         this.passwordStrength = 'weak'
         this.passwordStrengthText = 'Weak password.'
+        this.hideMessage = false
       }
     },
     isPasswordConfirmed(password) {
-      if (password === '' && this.password === '') {
-        this.confirmPasswordMatched = false
+      if (password === '') {
+        this.confirmPasswordMatched = null
         this.isPasswordConfirmedText = ''
       } else if (password === this.password) {
         this.confirmPasswordMatched = true
@@ -246,9 +258,9 @@ export default {
           // If registering was successful redirect to the admin list
           if (response.admin) {
             console.log(response)
-            // this.$router.push({
-            //   name: 'admin-register'
-            // })
+            this.$router.push({
+              name: 'admin-register'
+            })
 
             // Set success message and timeout
             this.error = null
@@ -295,12 +307,21 @@ export default {
 
 <style scoped lang="scss">
 
+  h3 {
+    height: 45px;
+    display: inline-block;
+    vertical-align: text-bottom;
+  }
+
   .passwordStrength {
-    width: 75px;
+    float: right;
+    width: 220px;
     height: 30px;
-    margin: 10px 0 0 10px;
-    padding: 3px 0 0 37px;
-    font-size: 16px;
+    padding-top: 3px;
+    margin-left: 85px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 400;
   }
   .strong {
     background-color: lighten(green, 35);
@@ -313,17 +334,20 @@ export default {
   }
 
   .confirmPasswordInfo {
+    float: right;
+    width: 220px;
     height: 30px;
-    width: 75px;
-    margin: 10px 0 0 10px;
-    font-size: 16px;
+    padding-top: 3px;
+    margin-left: 20px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 400;
   }
   .passwordWrong {
-    padding: 3px 0 0 20px;
     background-color: lighten(red, 25);
   }
   .passwordMatched {
-    padding: 3px 0 0 37px;
+    text-align: center;
     background-color: lighten(green, 35);
   }
 
