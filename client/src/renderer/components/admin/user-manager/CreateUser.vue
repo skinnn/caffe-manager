@@ -29,8 +29,17 @@
           </v-flex>
 
           <h3>Password:</h3>
+          <div
+            class="pwStrength"
+            v-bind:class="{
+              strong : passwordStrength === 'strong',
+              weak : passwordStrength === 'weak',
+              medium: passwordStrength === 'medium'
+            }"
+            ></div>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              @input="analyzePasswordStrength(password)"
               maxlength="32"
               type="text"
               v-model="password"
@@ -161,11 +170,31 @@ export default {
         name: this.$store.state.admin.name,
         username: this.$store.state.admin.username
       },
+      passwordStrength: 'weak',
+      // Password Regexes
+      // eslint-disable-next-line
+      strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
+      mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'),
+      // Messages
+      info: null,
       error: null,
       success: null
     }
   },
   methods: {
+    analyzePasswordStrength(password) {
+      // console.log(this.password)
+      // eslint-disable-next-line
+      // const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})')
+      // const mediumRegex = new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})')
+      if (this.strongRegex.test(password)) {
+        this.passwordStrength = 'strong'
+      } else if (this.mediumRegex.test(password)) {
+        this.passwordStrength = 'medium'
+      } else {
+        this.passwordStrength = 'weak'
+      }
+    },
     async registerUser() {
       try {
         const userFormData = new FormData()
@@ -245,6 +274,24 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  .strong {
+    background-color: green;
+  }
+
+  .medium {
+    background-color: orange;
+  }
+
+  .weak {
+    background-color: red;
+  }
+
+  .pwStrength {
+    width: 100px;
+    height: 25px;
+    margin: 5px 10px 5px 10px;
+  }
 
   .list-title {
     font-size: 17px;
