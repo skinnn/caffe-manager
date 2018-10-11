@@ -189,8 +189,12 @@ export default {
       } else if (this.mediumRegex.test(password)) {
         this.passwordStrength = 'medium'
         this.passwordStrengthText = 'Medium password.'
+      } else if (password === '') {
+        this.passwordStrength = 'weak'
+        this.passwordStrengthText = ''
       } else {
         this.passwordStrength = 'weak'
+        this.passwordStrengthText = 'Weak password.'
       }
     },
     isPasswordConfirmed(password) {
