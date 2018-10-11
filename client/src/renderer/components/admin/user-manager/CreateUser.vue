@@ -41,7 +41,7 @@
             <v-text-field
               @input="analyzePasswordStrength(password)"
               maxlength="32"
-              type="text"
+              type="password"
               v-model="password"
               solo
             ></v-text-field>
@@ -170,9 +170,9 @@ export default {
         name: this.$store.state.admin.name,
         username: this.$store.state.admin.username
       },
+      // Default password strength
       passwordStrength: 'weak',
-      // Password Regexes
-      // eslint-disable-next-line
+      // Password Regexes ( Password Strength )
       strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
       mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'),
       // Messages
@@ -183,10 +183,6 @@ export default {
   },
   methods: {
     analyzePasswordStrength(password) {
-      // console.log(this.password)
-      // eslint-disable-next-line
-      // const strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})')
-      // const mediumRegex = new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})')
       if (this.strongRegex.test(password)) {
         this.passwordStrength = 'strong'
       } else if (this.mediumRegex.test(password)) {

@@ -32,21 +32,40 @@
           <h3>Password:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              @input="analyzePasswordStrength(password), isPasswordConfirmed(password2)"
               maxlength="32"
               type="password"
               v-model="password"
               solo
             ></v-text-field>
+            <div
+              class="passwordStrength"
+              v-html="passwordStrengthText"
+              v-bind:class="{
+                strong : passwordStrength === 'strong',
+                weak : passwordStrength === 'weak',
+                medium: passwordStrength === 'medium'
+              }"
+              ></div>
           </v-flex>
 
           <h3>Confirm password:</h3>
           <v-flex xs12 sm6 d-flex>
             <v-text-field
+              @input="isPasswordConfirmed(password2)"
               maxlength="32"
               type="password"
               v-model="password2"
               solo
             ></v-text-field>
+            <div
+              class="confirmPasswordInfo"
+              v-html="isPasswordConfirmedText"
+              v-bind:class="{
+                passwordMatched : confirmPasswordMatched === true,
+                passwordWrong : confirmPasswordMatched === false
+              }"
+            ></div>
           </v-flex>
 
           <h3>Full name:</h3>
@@ -147,15 +166,45 @@ export default {
         name: this.$store.state.admin.name,
         username: this.$store.state.admin.username
       },
+      // Password Strength - default
+      passwordStrength: 'weak',
+      passwordStrengthText: '',
+      // Is Password Confirmed - default
+      confirmPasswordMatched: false,
+      isPasswordConfirmedText: '',
+      // Password Regexes ( Password Strength )
+      strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
+      mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'),
+      // Messages
       error: null,
       info: null,
       success: null
     }
   },
-  mounted() {
-
-  },
   methods: {
+    analyzePasswordStrength(password) {
+      if (this.strongRegex.test(password)) {
+        this.passwordStrength = 'strong'
+        this.passwordStrengthText = 'Strong password.'
+      } else if (this.mediumRegex.test(password)) {
+        this.passwordStrength = 'medium'
+        this.passwordStrengthText = 'Medium password.'
+      } else {
+        this.passwordStrength = 'weak'
+      }
+    },
+    isPasswordConfirmed(password) {
+      if (password === '' && this.password === '') {
+        this.confirmPasswordMatched = false
+        this.isPasswordConfirmedText = ''
+      } else if (password === this.password) {
+        this.confirmPasswordMatched = true
+        this.isPasswordConfirmedText = 'Passwords match.'
+      } else {
+        this.confirmPasswordMatched = false
+        this.isPasswordConfirmedText = 'Passwords don\'t match.'
+      }
+    },
     async registerAdmin() {
       try {
         // Check if someone is trying to create account with 'admin' or 'root' usernames
@@ -241,6 +290,38 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  .passwordStrength {
+    width: 75px;
+    height: 30px;
+    margin: 10px 0 0 10px;
+    padding: 3px 0 0 37px;
+    font-size: 16px;
+  }
+  .strong {
+    background-color: lighten(green, 35);
+  }
+  .medium {
+    background-color: lighten(orange, 20);
+  }
+  .weak {
+    background-color: lighten(red, 25);
+  }
+
+  .confirmPasswordInfo {
+    height: 30px;
+    width: 75px;
+    margin: 10px 0 0 10px;
+    font-size: 16px;
+  }
+  .passwordWrong {
+    padding: 3px 0 0 20px;
+    background-color: lighten(red, 25);
+  }
+  .passwordMatched {
+    padding: 3px 0 0 37px;
+    background-color: lighten(green, 35);
+  }
 
   .list-title {
     font-size: 17px;
