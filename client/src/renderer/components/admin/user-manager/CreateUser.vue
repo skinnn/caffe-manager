@@ -26,9 +26,11 @@
           <h3>Username:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="username.success_messages"
+              :error-messages="username.error_messages"
               maxlength="15"
               type="text"
-              v-model="username"
+              v-model="username.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -50,9 +52,11 @@
           <v-flex xs12 sm8 d-flex>
             <v-text-field
               @input="analyzePasswordStrength(password), isPasswordConfirmed(password2)"
+              :success-messages="password.success_messages"
+              :error-messages="password.error_messages"
               maxlength="32"
               type="password"
-              v-model="password"
+              v-model="password.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -74,9 +78,11 @@
           <v-flex xs12 sm8 d-flex>
             <v-text-field
               @input="isPasswordConfirmed(password2)"
+              :success-messages="password2.success_messages"
+              :error-messages="password2.error_messages"
               maxlength="32"
               type="password"
-              v-model="password2"
+              v-model="password2.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -84,9 +90,11 @@
           <h3>Full name:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="name.success_messages"
+              :error-messages="name.error_messages"
               maxlength="32"
               type="text"
-              v-model="name"
+              v-model="name.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -94,9 +102,11 @@
           <h3>Telephone 1:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="telephone1.success_messages"
+              :error-messages="telephone1.error_messages"
               maxlength="20"
               type="text"
-              v-model="telephone1"
+              v-model="telephone1.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -104,9 +114,11 @@
           <h3>Telephone 2:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="telephone2.success_messages"
+              :error-messages="telephone2.error_messages"
               maxlength="20"
               type="text"
-              v-model="telephone2"
+              v-model="telephone2.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -114,9 +126,11 @@
           <h3>Address:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="address.success_messages"
+              :error-messages="address.error_messages"
               maxlength="35"
               type="text"
-              v-model="address"
+              v-model="address.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -124,9 +138,11 @@
           <h3>Note:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-textarea
+              :success-messages="note.success_messages"
+              :error-messages="note.error_messages"
               maxlength="250"
               type="text"
-              v-model="note"
+              v-model="note.value"
               placeholder="Write a short note about the user.."
               outline
             ></v-textarea>
@@ -152,6 +168,7 @@
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="success-msg" v-if="success" v-html="success" />
+          <div class="info-msg" v-if="info" v-html="info" />
 
           <v-btn type="submit" class="yellow">
             Create
@@ -176,14 +193,45 @@ export default {
   },
   data() {
     return {
-      username: '',
-      password: '',
-      password2: '',
-      name: '',
-      telephone1: '',
-      telephone2: '',
-      address: '',
-      note: '',
+      username: {
+        value: '',
+        success_messages: ['Success username test'],
+        error_messsages: ['Error username test']
+      },
+      password: {
+        value: '',
+        success_messages: ['Success password test'],
+        error_messsages: ['Error password test']
+      },
+      password2: {
+        success_messages: ['Success confirm password test'],
+        error_messsages: ['Error confirm password test']
+      },
+      name: {
+        value: '',
+        success_messages: ['Success name test'],
+        error_messsages: ['Error name test']
+      },
+      telephone1: {
+        value: '',
+        success_messages: ['Success telephone 1 test'],
+        error_messsages: ['Error telephone 1 test']
+      },
+      telephone2: {
+        value: '',
+        success_messages: ['Success telephone 2 test'],
+        error_messsages: ['Error telephone 2 test']
+      },
+      address: {
+        value: '',
+        success_messages: ['Success address test'],
+        error_messsages: ['Error address test']
+      },
+      note: {
+        value: '',
+        success_messages: ['Success note test'],
+        error_messsages: ['Error note test']
+      },
       userMenu: {
         home: true, // Default is that all users have home page
         warehouse: false,
@@ -249,14 +297,14 @@ export default {
         let imagefile = document.querySelector('#userImage')
         let image = imagefile.files[0]
         // Get and append text inputs to form data
-        const username = this.username
-        const password = this.password
-        const password2 = this.password2
-        const fullName = this.name
-        const telephone1 = this.telephone1
-        const telephone2 = this.telephone2
-        const address = this.address
-        const note = this.note
+        const username = this.username.value
+        const password = this.password.value
+        const password2 = this.password2.value
+        const fullName = this.name.value
+        const telephone1 = this.telephone1.value
+        const telephone2 = this.telephone2.value
+        const address = this.address.value
+        const note = this.note.value
 
         // Permisions - user menu
         const userMenu = {
@@ -293,14 +341,14 @@ export default {
           }, 3000)
 
           // Set input values to default after registering
-          this.username = ''
-          this.password = ''
-          this.password2 = ''
-          this.name = ''
-          this.telephone1 = ''
-          this.telephone2 = ''
-          this.address = ''
-          this.note = ''
+          this.username.value = ''
+          this.password.value = ''
+          this.password2.value = ''
+          this.name.value = ''
+          this.telephone1.value = ''
+          this.telephone2.value = ''
+          this.address.value = ''
+          this.note.value = ''
           this.userMenu.home = true
           this.userMenu.warehouse = false
           this.userMenu.tables = false
@@ -328,7 +376,7 @@ export default {
     padding: 20px;
 
     h3 {
-      height: 35px;
+      height: 40px;
       display: inline-block;
       width: 370px;
     }
@@ -337,14 +385,14 @@ export default {
       float: right;
       width: 170px;
       height: 30px;
-      padding-top: 3px;
+      // padding-top: 3px;
       text-align: center;
       font-size: 13px;
       border-radius: 15px;
 
       .pwMessageText {
         display: table;
-        margin: 3px auto;
+        margin: 6px auto;
         text-align: center;
         font-weight: 600;
       }
@@ -363,15 +411,13 @@ export default {
       float: right;
       width: 170px;
       height: 30px;
-      padding-top: 3px;
-      // margin-left: 200px;
       text-align: center;
       font-size: 13px;
       border-radius: 15px;
 
       .pwMessageText {
         display: table;
-        margin: 3px auto;
+        margin: 6px auto;
         text-align: center;
         position: relative;
         font-weight: 600;
