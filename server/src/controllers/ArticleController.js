@@ -15,6 +15,7 @@ module.exports = {
       article.name = req.body.articleName
       article.quantity = req.body.articleQuantity
       article.price = req.body.articlePrice
+      article.retail_price = req.body.articleRetailPrice
 
       // If image is added create image path
       if (req.file !== undefined && req.file !== '') {
@@ -24,9 +25,10 @@ module.exports = {
         article.image = ''
       }
       // Check if the name is typed and create article in the db
-      if (article.name !== '') {
+      if (article.name !== '' && article.quantity !== '' && article.quantity !== 0) {
         await article.save(function(err) {
           if (err) {
+            console.log(err)
             res.status(500).send({
               error: 'A database error has occurred trying to save the article. Please try again.'
             })
@@ -39,7 +41,7 @@ module.exports = {
         })
       } else {
         res.status(400).send({
-          error: 'Article must have a name.'
+          error: 'Article must have a name, quantity and price.'
         })
       }
     } catch (err) {
@@ -120,8 +122,9 @@ module.exports = {
 
       let article = {}
       article.name = req.body.articleName
-      article.price = req.body.articlePrice
       article.quantity = req.body.articleQuantity
+      article.price = req.body.articlePrice
+      article.retail_price = req.body.articleRetailPrice
       article.updated_date = await dateHandler.getCurrentTime()
 
       // If image is changed update the image path
@@ -131,7 +134,7 @@ module.exports = {
       }
 
       // If fields are not empty save article
-      if (article.name !== '' && article.quantity !== '' && article.price !== '') {
+      if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
         await Article.findOneAndUpdate(query, article, { upsert: true, new: true }, function(err, article) {
           if (err) {
             res.status(500).send({
@@ -147,7 +150,7 @@ module.exports = {
         })
       } else {
         res.status(500).send({
-          error: 'Please fill out all the fields with valid information.'
+          error: 'Article must have a name, quantity and price.'
         })
       }
     } catch (err) {

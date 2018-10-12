@@ -29,12 +29,12 @@
             type="text"
             name="name"
             v-model="name"
-            label="Article Name:"
+            label="Article name:"
             outline
           ></v-text-field>
 
           <v-text-field
-            type="text"
+            type="number"
             name="quantity"
             v-model="quantity"
             label="Quantity:"
@@ -49,26 +49,13 @@
             outline
           ></v-text-field>
 
-          <v-menu
-            origin="center center"
-            transition="scale-transition">
-            <v-btn
-              slot="activator"
-              color="primary"
-              dark
-            > Currency
-            </v-btn>
-
-            <v-list>
-              <v-list-tile
-                v-for="currency in currencies"
-                :key="currency.name"
-                @click=""
-              >
-                <v-list-tile-title>{{ currency.sign }}</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
+          <v-text-field
+            type="text"
+            name="price"
+            v-model="retail_price"
+            label="Retail price:"
+            outline
+          ></v-text-field>
 
           <div class="upload-image">
             <label>Add Image</label>
@@ -103,27 +90,17 @@ export default {
     return {
       storageId: this.$store.state.route.params.storageId,
       name: '',
-      quantity: '',
-      price: '',
+      quantity: 0,
+      price: 0,
+      retail_price: 0,
       // TODO: Create Admin Settings/Options and load currency
       // for the whole application from there
-      currencies: [
-        {
-          title: 'Serbian Dinar',
-          code: 'RSD',
-          sign: 'din'
-        },
-        {
-          title: 'Euro',
-          code: 'EUR',
-          sign: '€'
-        }
-      ],
       error: null,
       success: null
     }
   },
   methods: {
+    // TODO: Add image preview
     // imagePreview() {
     //   let files = document.getElementById('uploadFile').files
     //   console.log(files[0])
@@ -144,6 +121,7 @@ export default {
     // },
     async createArticle() {
       try {
+        // TODO: Don't make a req to the server if quantity or name fields are not filled
         const formData = new FormData()
         // Get image
         const imagefile = document.querySelector('#articleImage')
@@ -151,35 +129,61 @@ export default {
         // Get and append text inputs to form data
         const artName = this.name
         const artPrice = this.price
+        const artRetailPrice = this.retail_price
         const artQuantity = this.quantity
         // Storage ID
         const storageId = this.storageId
-        // Append everything to form data
-        formData.append('imageUpload', image)
-        formData.append('storageId', storageId)
-        formData.append('articleName', artName)
-        formData.append('articlePrice', artPrice)
-        formData.append('articleQuantity', artQuantity)
 
-        // Create article
-        const response = (await ArticleService.createArticle(formData)).data
+        // Validation
+        if (artName !== '' && artName !== undefined) {
+          if (artPrice !== 0 && artPrice !== '' && artPrice !== null && artPrice !== undefined) {
+            if (artQuantity !== 0 && artQuantity !== '' && artQuantity !== null && artQuantity !== undefined) {
+              // Append everything to form data
+              formData.append('imageUpload', image)
+              formData.append('storageId', storageId)
+              formData.append('articleName', artName)
+              formData.append('articlePrice', artPrice)
+              formData.append('articleRetailPrice', artRetailPrice)
+              formData.append('articleQuantity', artQuantity)
 
-        // If successfully created
-        if (response.created) {
-          // Success message and timeout
-          this.error = null
-          this.success = response.success
-          setTimeout(() => {
+              // Create article
+              const response = (await ArticleService.createArticle(formData)).data
+
+              // If successfully created
+              if (response.created) {
+                // Success message and timeout
+                this.error = null
+                this.success = response.success
+                setTimeout(() => {
+                  this.success = null
+                }, 3000)
+                // Reset input fields
+                this.name = ''
+                this.quantity = 0
+                this.price = 0
+                this.retail_price = 0
+              }
+            } else {
+              this.success = null
+              this.info = null
+              this.error = 'Article must have a quantity.'
+              return
+            }
+          } else {
             this.success = null
-          }, 3000)
-          // Reset input fields
-          this.name = ''
-          this.quantity = ''
-          this.price = ''
+            this.info = null
+            this.error = 'Article must have a price.'
+            return
+          }
+        } else {
+          this.success = null
+          this.info = null
+          this.error = 'Article must have a name.'
+          return
         }
       } catch (error) {
-        console.log(error)
-        this.success = ''
+        this.success = null
+        this.info = null
         this.error = error.response.data.error
       }
     }

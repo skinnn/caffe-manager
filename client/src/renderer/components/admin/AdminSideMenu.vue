@@ -39,6 +39,7 @@
         </v-list-tile>
 
         <!-- Warehouse -->
+        <!-- TODO: Create Article list where all articles from the store are listed -->
         <v-list-group prepend-icon="storage" value="true">
           <v-list-tile slot="activator">
             <v-list-tile-title class="list-tile-title">Warehouse</v-list-tile-title>

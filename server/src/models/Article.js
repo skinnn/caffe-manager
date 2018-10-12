@@ -14,8 +14,10 @@ const ArticleSchema = new Schema({
     type: Number,
     required: true
   },
-  // TODO: Add article retail price so profits can be calculated based on
-  // how many articles are sold per day/month/year
+  retail_price: {
+    type: Number
+  },
+  // TODO: Profits can be calculated based on how many articles are sold per day||month||year
   // TODO: Add some kind of measurement for drinks - ml, dcl, cup, bottle
   image: {
     type: String

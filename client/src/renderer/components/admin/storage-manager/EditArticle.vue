@@ -22,24 +22,31 @@
             @submit.prevent="saveArticle(article._id)"
             enctype="multipart/form-data"
           >
-            <label>Article name:</label>
+            <label>Name:</label>
             <v-text-field
               type="text"
               v-model="article.name"
               outline
             ></v-text-field>
 
-            <label>Article quantity:</label>
+            <label>Quantity:</label>
             <v-text-field
               type="number"
               v-model="article.quantity"
               outline
             ></v-text-field>
 
-            <label>Article price:</label>
+            <label>Price:</label>
             <v-text-field
               type="number"
               v-model="article.price"
+              outline
+            ></v-text-field>
+
+            <label>Retail price:</label>
+            <v-text-field
+              type="number"
+              v-model="article.retail_price"
               outline
             ></v-text-field>
 
@@ -118,24 +125,49 @@ export default {
         // Get and append text inputs to form data
         const newArticleName = this.article.name
         const newArticlePrice = this.article.price
+        const newArticleRetailPrice = this.article.retail_price
         const newArticleQuantity = this.article.quantity
-        // Append everything to form data
-        articleFormData.append('imageUpload', newImage)
-        articleFormData.append('articleName', newArticleName)
-        articleFormData.append('articlePrice', newArticlePrice)
-        articleFormData.append('articleQuantity', newArticleQuantity)
 
-        // Update Article
-        const response = (await ArticleService.saveArticle(articleFormData, articleId)).data
-        // If successfully updated the article
-        if (response.saved) {
-          // Success message
-          this.error = null
-          this.info = null
-          this.success = response.success
-          setTimeout(() => {
+        // Validation
+        if (newArticleName !== '' && newArticleName !== undefined) {
+          if (newArticlePrice !== 0 && newArticlePrice !== '' && newArticlePrice !== null && newArticlePrice !== undefined) {
+            if (newArticleQuantity !== 0 && newArticleQuantity !== '' && newArticleQuantity !== null && newArticleQuantity !== undefined) {
+              // Append everything to form data
+              articleFormData.append('imageUpload', newImage)
+              articleFormData.append('articleName', newArticleName)
+              articleFormData.append('articlePrice', newArticlePrice)
+              articleFormData.append('articleRetailPrice', newArticleRetailPrice)
+              articleFormData.append('articleQuantity', newArticleQuantity)
+
+              // Update Article
+              const response = (await ArticleService.saveArticle(articleFormData, articleId)).data
+              // If successfully updated the article
+              if (response.saved) {
+                // Success message
+                this.error = null
+                this.info = null
+                this.success = response.success
+                setTimeout(() => {
+                  this.success = null
+                }, 3000)
+              }
+            } else {
+              this.success = null
+              this.info = null
+              this.error = 'Article must have a quantity.'
+              return
+            }
+          } else {
             this.success = null
-          }, 3000)
+            this.info = null
+            this.error = 'Article must have a price.'
+            return
+          }
+        } else {
+          this.success = null
+          this.info = null
+          this.error = 'Article must have a name.'
+          return
         }
       } catch (error) {
         this.success = null
