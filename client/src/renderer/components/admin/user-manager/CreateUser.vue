@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-edit">
+  <div class="admin-create-user">
     <div>
       <admin-side-menu />
     </div>
@@ -16,10 +16,15 @@
       </v-flex>
 
       <v-flex class="admin-container">
-        <v-form @submit.prevent="registerUser" enctype="multipart/form-data">
-
+        <v-form
+          @submit.prevent="registerUser"
+          enctype="multipart/form-data"
+          class="register-user-form"
+        >
+        <!-- TODO: Show required fields -->
+        <!-- TODO: Show errors next by their error fields -->
           <h3>Username:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="20"
               type="text"
@@ -28,18 +33,23 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>Password:</h3>
-          <div
-            class="pwStrength"
-            v-bind:class="{
-              strong : passwordStrength === 'strong',
-              weak : passwordStrength === 'weak',
-              medium: passwordStrength === 'medium'
-            }"
-            ></div>
-          <v-flex xs12 sm6 d-flex>
+          <h3>
+            Password:
+            <div
+              class="passwordStrengthMessage"
+              v-if="showMessage"
+              v-bind:class="{
+                strong : passwordStrength === 'strong',
+                weak : passwordStrength === 'weak',
+                medium: passwordStrength === 'medium'
+              }"
+              >
+              <p class="pwMessageText">{{passwordStrengthText}}</p>
+              </div>
+          </h3>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
-              @input="analyzePasswordStrength(password)"
+              @input="analyzePasswordStrength(password), isPasswordConfirmed(password2)"
               maxlength="32"
               type="password"
               v-model="password"
@@ -47,18 +57,32 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>Confirm password:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <h3>
+            Confirm password:
+            <div
+              class="confirmPasswordMessage"
+              v-if="showMessage"
+              v-bind:class="{
+                passwordMatched : confirmPasswordMatched === true,
+                passwordWrong : confirmPasswordMatched === false
+              }"
+            >
+              <p class="pwMessageText">{{isPasswordConfirmedText}}</p>
+              <!-- TODO: Add icons for match/fail <v-icon>check_box</v-icon> -->
+            </div>
+          </h3>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
+              @input="isPasswordConfirmed(password2)"
               maxlength="32"
-              type="text"
+              type="password"
               v-model="password2"
               solo
             ></v-text-field>
           </v-flex>
 
           <h3>Full name:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="32"
               type="text"
@@ -68,7 +92,7 @@
           </v-flex>
 
           <h3>Telephone 1:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="20"
               type="text"
@@ -78,7 +102,7 @@
           </v-flex>
 
           <h3>Telephone 2:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="20"
               type="text"
@@ -88,7 +112,7 @@
           </v-flex>
 
           <h3>Address:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="40"
               type="text"
@@ -98,7 +122,7 @@
           </v-flex>
 
           <h3>Note:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-textarea
               maxlength="250"
               type="text"
@@ -170,8 +194,13 @@ export default {
         name: this.$store.state.admin.name,
         username: this.$store.state.admin.username
       },
-      // Default password strength
+      showMessage: false,
+      // Password Strength - default
       passwordStrength: 'weak',
+      passwordStrengthText: '',
+      // Is Password Confirmed - default
+      confirmPasswordMatched: false,
+      isPasswordConfirmedText: '',
       // Password Regexes ( Password Strength )
       strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
       mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'),
@@ -185,10 +214,32 @@ export default {
     analyzePasswordStrength(password) {
       if (this.strongRegex.test(password)) {
         this.passwordStrength = 'strong'
+        this.passwordStrengthText = 'Strong password'
+        this.showMessage = true
       } else if (this.mediumRegex.test(password)) {
         this.passwordStrength = 'medium'
+        this.passwordStrengthText = 'Medium strength'
+        this.showMessage = true
+      } else if (password === '') {
+        this.passwordStrength = 'weak'
+        this.passwordStrengthText = ''
+        this.showMessage = false
       } else {
         this.passwordStrength = 'weak'
+        this.passwordStrengthText = 'Weak password'
+        this.showMessage = true
+      }
+    },
+    isPasswordConfirmed(password) {
+      if (password === '') {
+        this.confirmPasswordMatched = null
+        this.isPasswordConfirmedText = ''
+      } else if (password === this.password) {
+        this.confirmPasswordMatched = true
+        this.isPasswordConfirmedText = 'Passwords match'
+      } else {
+        this.confirmPasswordMatched = false
+        this.isPasswordConfirmedText = 'Passwords don\'t match'
       }
     },
     async registerUser() {
@@ -202,7 +253,6 @@ export default {
         const password = this.password
         const password2 = this.password2
         const fullName = this.name
-
         const telephone1 = this.telephone1
         const telephone2 = this.telephone2
         const address = this.address
@@ -271,22 +321,68 @@ export default {
 
 <style scoped lang="scss">
 
-  .strong {
-    background-color: green;
-  }
+  .register-user-form {
+    width: 600px;
+    max-width: 600px;
+    padding: 20px;
 
-  .medium {
-    background-color: orange;
-  }
+    h3 {
+      height: 35px;
+      display: inline-block;
+      width: 370px;
+    }
 
-  .weak {
-    background-color: red;
-  }
+    .passwordStrengthMessage {
+      float: right;
+      width: 170px;
+      height: 30px;
+      padding-top: 3px;
+      text-align: center;
+      font-size: 13px;
+      border-radius: 15px;
 
-  .pwStrength {
-    width: 100px;
-    height: 25px;
-    margin: 5px 10px 5px 10px;
+      .pwMessageText {
+        display: table;
+        margin: 3px auto;
+        text-align: center;
+        font-weight: 600;
+      }
+    }
+    .strong {
+      background-color: lighten(green, 35);
+    }
+    .medium {
+      background-color: lighten(orange, 20);
+    }
+    .weak {
+      background-color: lighten(red, 25);
+    }
+
+    .confirmPasswordMessage {
+      float: right;
+      width: 170px;
+      height: 30px;
+      padding-top: 3px;
+      // margin-left: 200px;
+      text-align: center;
+      font-size: 13px;
+      border-radius: 15px;
+
+      .pwMessageText {
+        display: table;
+        margin: 3px auto;
+        text-align: center;
+        position: relative;
+        font-weight: 600;
+      }
+    }
+    .passwordWrong {
+      background-color: lighten(red, 25);
+    }
+    .passwordMatched {
+      text-align: center;
+      background-color: lighten(green, 35);
+    }
   }
 
   .list-title {

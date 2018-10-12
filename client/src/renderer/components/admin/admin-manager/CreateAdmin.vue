@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-edit">
+  <div class="admin-create-admin">
     <div>
       <admin-side-menu />
     </div>
@@ -68,8 +68,8 @@
               }"
             >
               <p class="pwMessageText">{{isPasswordConfirmedText}}</p>
+              <!-- TODO: Add icons for match/fail <v-icon>check_box</v-icon> -->
             </div>
-            <!-- TODO: Add icons for match/fail <v-icon>check_box</v-icon> -->
           </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
@@ -317,67 +317,65 @@ export default {
     width: 600px;
     max-width: 600px;
     padding: 20px;
-  }
 
-  h3 {
-    height: 45px;
-    display: inline-block;
-    width: 370px;
-    vertical-align: text-bottom;
-  }
-
-  .passwordStrengthMessage {
-    float: right;
-    width: 170px;
-    height: 30px;
-    padding-top: 3px;
-    text-align: center;
-    font-size: 13px;
-    border-radius: 15px;
-
-    .pwMessageText {
-      display: table;
-      margin: 3px auto;
-      text-align: center;
-      font-weight: 600;
+    h3 {
+      height: 35px;
+      display: inline-block;
+      width: 370px;
     }
-  }
-  .strong {
-    background-color: lighten(green, 35);
-  }
-  .medium {
-    background-color: lighten(orange, 20);
-  }
-  .weak {
-    background-color: lighten(red, 25);
-  }
 
-  .confirmPasswordMessage {
-    float: right;
-    width: 170px;
-    height: 30px;
-    padding-top: 3px;
-    // margin-left: 200px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 400;
-    border-radius: 15px;
-
-    .pwMessageText {
-      display: table;
-      margin: 3px auto;
+    .passwordStrengthMessage {
+      float: right;
+      width: 170px;
+      height: 30px;
+      padding-top: 3px;
       text-align: center;
-      position: relative;
-      font-weight: 600;
+      font-size: 13px;
+      border-radius: 15px;
+
+      .pwMessageText {
+        display: table;
+        margin: 3px auto;
+        text-align: center;
+        font-weight: 600;
+      }
     }
-  }
-  .passwordWrong {
-    background-color: lighten(red, 25);
-  }
-  .passwordMatched {
-    text-align: center;
-    background-color: lighten(green, 35);
-  }
+    .strong {
+      background-color: lighten(green, 35);
+    }
+    .medium {
+      background-color: lighten(orange, 20);
+    }
+    .weak {
+      background-color: lighten(red, 25);
+    }
+
+    .confirmPasswordMessage {
+      float: right;
+      width: 170px;
+      height: 30px;
+      padding-top: 3px;
+      text-align: center;
+      font-size: 13px;
+      border-radius: 15px;
+
+      .pwMessageText {
+        display: table;
+        margin: 3px auto;
+        text-align: center;
+        position: relative;
+        font-weight: 600;
+      }
+    }
+    .passwordWrong {
+      background-color: lighten(red, 25);
+    }
+    .passwordMatched {
+      text-align: center;
+      background-color: lighten(green, 35);
+    }
+  } // Register Admin Form
+
 
   .list-title {
     font-size: 17px;
