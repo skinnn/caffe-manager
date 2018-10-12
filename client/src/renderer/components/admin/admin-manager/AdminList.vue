@@ -16,6 +16,7 @@
         <!-- Display messages -->
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
+        <div class="info-msg" v-if="info" v-html="info" />
 
         <!-- TODO: Add animation for fetching/displaying admins possibly with Scroll Reveal -->
         <!-- List of all admins in the db -->
@@ -82,7 +83,8 @@ export default {
         { text: 'Options', sortable: false, align: 'center', value: 'option' }
       ],
       error: null,
-      success: null
+      success: null,
+      info: null
     }
   },
   async mounted() {

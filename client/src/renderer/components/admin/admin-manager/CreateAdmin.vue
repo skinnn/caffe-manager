@@ -26,7 +26,7 @@
           <h3>Username:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              maxlength="20"
+              maxlength="15"
               type="text"
               v-model="username"
               solo
@@ -84,7 +84,7 @@
           <h3>Full name:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              maxlength="30"
+              maxlength="32"
               type="text"
               v-model="name"
               solo
@@ -114,7 +114,7 @@
           <h3>Address:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              maxlength="40"
+              maxlength="35"
               type="text"
               v-model="address"
               solo
@@ -127,7 +127,7 @@
               maxlength="250"
               type="text"
               v-model="note"
-              placeholder="Write a note..."
+              placeholder="Write a short note about the admin.."
               outline
             ></v-textarea>
           </v-flex>
@@ -287,6 +287,7 @@ export default {
             this.address = ''
             this.note = ''
             image = ''
+            imagefile.value = ''
           }
         // If someone is trying to register the account with 'admin' or 'root' usernames
         } else {

@@ -84,7 +84,7 @@ router.delete('/admin/:adminId',
   AdminController.deleteAdmin)
 
 // Delete User
-router.delete('/admin/user/:userId',
+router.delete('/admin/:adminId/user/:userId',
   AdminController.deleteUser)
 
 // Get Storage by id

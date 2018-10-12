@@ -275,7 +275,7 @@ module.exports = {
           })
         }
 
-        res.send({
+        return res.send({
           deleted: true,
           success: 'User deleted.'
         })

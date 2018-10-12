@@ -5,24 +5,22 @@ const Joi = require('joi')
 module.exports = {
   // User Policy
   registerUser(req, res, next) {
-    const pwStart = new RegExp('[a-zA-Z0-9]')
-    const pwEnd = new RegExp('[a-zA-Z0-9 ]*$')
-    const pwLength = new RegExp('(?=.{6,32})')
-    const pwNumberAndLowercase = new RegExp('(?=.*[a-z])(?=.*[0-9])')
     const schema = {
       // TODO: Username must have between 5 and 20 characters
-      userUsername: Joi.string().regex(new RegExp('[a-zA-Z0-9]{5,20}$')).required(),
-      userPassword: Joi.string().regex(new RegExp('[a-zA-Z0-9](?=.{6,32})(?=.*[a-z])(?=.*[0-9])[a-zA-Z0-9 ]*$')).required(),
+      userUsername: Joi.string().min(5).max(15).regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$')).required(),
+      userPassword: Joi.string()
+        .regex(new RegExp('^(?=.*[0-9]+.*)[a-zA-Z0-9]{6,32}$'))
+        .required(),
       userPassword2: Joi.any()
         .valid(Joi.ref('userPassword'))
         .options({ language: { any: { allowOnly: 'must match password' } } })
         .label('Password Confirmation'),
-      userName: Joi.string().regex(new RegExp('[a-zA-Z0-9](?=.{5,32})(?=.*[a-z])[a-zA-Z0-9 ]*$')).required(),
+      userName: Joi.string().min(5).max(32).regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$')).required(),
 
-      userTelephone1: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
-      userTelephone2: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
-      userAddress: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$')),
-      userNote: Joi.string().max(250).allow('').regex(new RegExp('[a-zA-Z0-9_.]+( [a-zA-Z0-9_.]+)*$')),
+      userTelephone1: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      userTelephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      userAddress: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
+      userNote: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
       userMenu: Joi.any(),
       createdBy: Joi.any(),
       imageUpload: Joi.any()
@@ -34,19 +32,19 @@ module.exports = {
       switch (error.details[0].context.key) {
         case 'userUsername':
           res.status(400).send({
-            error: `Username must have between 5 and 20 characters.
+            error: `Username must have more than 5 characters.
               <br>
-              It must be ONE WORD and can contain ONLY letters and numbers.`
+              It can contain ONLY letters and numbers.`
           })
           break
 
         case 'userPassword':
           res.status(400).send({
-            error: `Password must have more than 6 and less 32 characters.
+            error: `Password must have more than 6 characters.
               <br>
-              It can contain only letters, numbers and spaces.
+              It can contain ONLY letters and numbers.
               <br>
-              It must contain AT LEAST one lowercase letter AND one number.`
+              It MUST contain at least one number.`
           })
           break
 
@@ -58,39 +56,41 @@ module.exports = {
 
         case 'userName':
           res.status(400).send({
-            error: 'Name must have more than 5 and less than 32 characters.'
+            error: `You must provide a name.
+            <br>
+            It can contain ONLY letters.
+            <br>
+            It MUST have more than 5 characters.`
           })
           break
 
-        case 'telephone1':
+        case 'userTelephone1':
           res.status(400).send({
-            error: `Telephone 1 can contain ONLY letters, numbers and plus sign.`
+            error: `Telephone 1 can contain ONLY letters, numbers, dashes/hyphens and plus signs.`
           })
           break
 
-        case 'telephone2':
+        case 'userTelephone2':
           res.status(400).send({
-            error: `Telephone 2 can contain ONLY letters, numbers and plus sign.`
+            error: `Telephone 1 can contain ONLY letters, numbers, dashes/hyphens and plus signs.`
           })
           break
 
-        case 'address':
+        case 'userAddress':
           res.status(400).send({
             error: `Address can contain ONLY letters and numbers.`
-          })
-          break
-
-        case 'note':
-          res.status(400).send({
-            error: `Note can contain ONLY letters, numbers and dots.
-            <br>
-            Maximum is 250 characters.`
           })
           break
 
         case 'userMenu':
           res.status(400).send({
             error: `You must provide user with some permissions.`
+          })
+          break
+
+        case 'userNote':
+          res.status(400).send({
+            error: `Note can contain ONLY letters, numbers and dots.`
           })
           break
 
@@ -101,6 +101,7 @@ module.exports = {
           break
 
         default:
+          console.log(error)
           res.status(400).send({
             error: 'Invalid registration information.'
           })
@@ -113,20 +114,20 @@ module.exports = {
   // Admin Policy
   registerAdmin(req, res, next) {
     const schema = {
-      adminUsername: Joi.string().regex(new RegExp('[a-zA-Z0-9]{5,15}$')).required(),
+      adminUsername: Joi.string().min(5).max(15).regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$')).required(),
       adminPassword: Joi.string()
-        .regex(new RegExp('[a-zA-Z0-9]{6,32}$'))
+        .regex(new RegExp('^(?=.*[0-9]+.*)[a-zA-Z0-9]{6,32}$'))
         .required(),
       adminPassword2: Joi.any()
         .valid(Joi.ref('adminPassword'))
         .options({ language: { any: { allowOnly: 'must match password' } } })
         .label('Password Confirmation'),
-      adminName: Joi.string().regex(new RegExp('[a-zA-Z_]+( [a-zA-Z_]+)*$')).required(),
+      adminName: Joi.string().min(5).max(32).regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$')).required(),
 
-      telephone1: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
-      telephone2: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
-      address: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$')),
-      note: Joi.string().max(250).allow('').regex(new RegExp('[a-zA-Z0-9_.]+( [a-zA-Z0-9_.]+)*$')),
+      telephone1: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      telephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      address: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
+      note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
       createdBy: Joi.any(),
       imageUpload: Joi.any()
     }
@@ -137,17 +138,19 @@ module.exports = {
       switch (error.details[0].context.key) {
         case 'adminUsername':
           res.status(400).send({
-            error: `Username must contain between 5 and 15 characters.
-            <br>
-            It can contain ONLY letters and numbers.`
+            error: `Username must have more than 5 characters.
+              <br>
+              It can contain ONLY letters and numbers.`
           })
           break
 
         case 'adminPassword':
           res.status(400).send({
-            error: `Password must be between 6 and 32 characters.
+            error: `Password must have more than 6 characters.
               <br>
-              It can contain ONLY letters and numbers.`
+              It can contain ONLY letters and numbers.
+              <br>
+              It MUST contain at least one number.`
           })
           break
 
@@ -161,19 +164,21 @@ module.exports = {
           res.status(400).send({
             error: `You must provide a name.
             <br>
-            It can contain ONLY letters.`
+            It can contain ONLY letters.
+            <br>
+            It MUST have more than 5 characters.`
           })
           break
 
         case 'telephone1':
           res.status(400).send({
-            error: `Telephone 1 can contain ONLY letters, numbers and plus sign.`
+            error: `Telephone 1 can contain ONLY letters, numbers, dashes/hyphens and plus signs.`
           })
           break
 
         case 'telephone2':
           res.status(400).send({
-            error: `Telephone 2 can contain ONLY letters, numbers and plus sign.`
+            error: `Telephone 1 can contain ONLY letters, numbers, dashes/hyphens and plus signs.`
           })
           break
 
@@ -185,9 +190,7 @@ module.exports = {
 
         case 'note':
           res.status(400).send({
-            error: `Note can contain ONLY letters, numbers and dots.
-            <br>
-            Maximum is 250 characters.`
+            error: `Note can contain ONLY letters, numbers and dots.`
           })
           break
 

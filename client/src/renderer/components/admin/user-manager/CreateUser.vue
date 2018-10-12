@@ -26,7 +26,7 @@
           <h3>Username:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              maxlength="20"
+              maxlength="15"
               type="text"
               v-model="username"
               solo
@@ -114,7 +114,7 @@
           <h3>Address:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              maxlength="40"
+              maxlength="35"
               type="text"
               v-model="address"
               solo
@@ -127,7 +127,7 @@
               maxlength="250"
               type="text"
               v-model="note"
-              placeholder="Write a note..."
+              placeholder="Write a short note about the user.."
               outline
             ></v-textarea>
           </v-flex>
@@ -246,7 +246,7 @@ export default {
       try {
         const userFormData = new FormData()
         // Get image
-        const imagefile = document.querySelector('#userImage')
+        let imagefile = document.querySelector('#userImage')
         let image = imagefile.files[0]
         // Get and append text inputs to form data
         const username = this.username
@@ -301,10 +301,11 @@ export default {
           this.telephone2 = ''
           this.address = ''
           this.note = ''
-          image = ''
           this.userMenu.home = true
           this.userMenu.warehouse = false
           this.userMenu.tables = false
+          image = ''
+          imagefile.value = ''
         }
       } catch (error) {
         console.log(error)
