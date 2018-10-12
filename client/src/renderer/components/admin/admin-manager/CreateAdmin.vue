@@ -16,11 +16,15 @@
       </v-flex>
 
       <v-flex class="admin-container">
-        <v-form @submit.prevent="registerAdmin" enctype="multipart/form-data">
+        <v-form
+          @submit.prevent="registerAdmin"
+          enctype="multipart/form-data"
+          class="register-admin-form"
+        >
           <!-- TODO: Show required fields -->
           <!-- TODO: Show errors next by their error fields -->
           <h3>Username:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="20"
               type="text"
@@ -32,17 +36,18 @@
           <h3>
             Password:
             <div
-              class="passwordStrength"
-              v-if="!hideMessage"
-              v-html="passwordStrengthText"
+              class="passwordStrengthMessage"
+              v-if="showMessage"
               v-bind:class="{
                 strong : passwordStrength === 'strong',
                 weak : passwordStrength === 'weak',
                 medium: passwordStrength === 'medium'
               }"
-              ></div>
+              >
+                <p class="pwMessageText">{{passwordStrengthText}}</p>
+              </div>
           </h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               @input="analyzePasswordStrength(password), isPasswordConfirmed(password2)"
               maxlength="32"
@@ -55,17 +60,18 @@
           <h3>
             Confirm password:
             <div
-              class="confirmPasswordInfo"
-              v-if="!hideMessage"
-              v-html="isPasswordConfirmedText"
+              class="confirmPasswordMessage"
+              v-if="showMessage"
               v-bind:class="{
                 passwordMatched : confirmPasswordMatched === true,
                 passwordWrong : confirmPasswordMatched === false
               }"
-            ></div>
+            >
+              <p class="pwMessageText">{{isPasswordConfirmedText}}</p>
+            </div>
             <!-- TODO: Add icons for match/fail <v-icon>check_box</v-icon> -->
           </h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               @input="isPasswordConfirmed(password2)"
               maxlength="32"
@@ -76,7 +82,7 @@
           </v-flex>
 
           <h3>Full name:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="30"
               type="text"
@@ -86,7 +92,7 @@
           </v-flex>
 
           <h3>Telephone 1:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="20"
               type="text"
@@ -96,7 +102,7 @@
           </v-flex>
 
           <h3>Telephone 2:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="20"
               type="text"
@@ -106,7 +112,7 @@
           </v-flex>
 
           <h3>Address:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-text-field
               maxlength="40"
               type="text"
@@ -116,7 +122,7 @@
           </v-flex>
 
           <h3>Note:</h3>
-          <v-flex xs12 sm6 d-flex>
+          <v-flex xs12 sm8 d-flex>
             <v-textarea
               maxlength="250"
               type="text"
@@ -173,7 +179,7 @@ export default {
         name: this.$store.state.admin.name,
         username: this.$store.state.admin.username
       },
-      hideMessage: true,
+      showMessage: false,
       // Password Strength - default
       passwordStrength: 'weak',
       passwordStrengthText: '',
@@ -193,20 +199,20 @@ export default {
     analyzePasswordStrength(password) {
       if (this.strongRegex.test(password)) {
         this.passwordStrength = 'strong'
-        this.passwordStrengthText = 'Strong password.'
-        this.hideMessage = false
+        this.passwordStrengthText = 'Strong password'
+        this.showMessage = true
       } else if (this.mediumRegex.test(password)) {
         this.passwordStrength = 'medium'
-        this.passwordStrengthText = 'Medium strength.'
-        this.hideMessage = false
+        this.passwordStrengthText = 'Medium strength'
+        this.showMessage = true
       } else if (password === '') {
         this.passwordStrength = 'weak'
         this.passwordStrengthText = ''
-        this.hideMessage = true
+        this.showMessage = false
       } else {
         this.passwordStrength = 'weak'
-        this.passwordStrengthText = 'Weak password.'
-        this.hideMessage = false
+        this.passwordStrengthText = 'Weak password'
+        this.showMessage = true
       }
     },
     isPasswordConfirmed(password) {
@@ -215,10 +221,10 @@ export default {
         this.isPasswordConfirmedText = ''
       } else if (password === this.password) {
         this.confirmPasswordMatched = true
-        this.isPasswordConfirmedText = 'Passwords match.'
+        this.isPasswordConfirmedText = 'Passwords match'
       } else {
         this.confirmPasswordMatched = false
-        this.isPasswordConfirmedText = 'Passwords don\'t match.'
+        this.isPasswordConfirmedText = 'Passwords don\'t match'
       }
     },
     async registerAdmin() {
@@ -307,21 +313,34 @@ export default {
 
 <style scoped lang="scss">
 
+  .register-admin-form {
+    width: 600px;
+    max-width: 600px;
+    padding: 20px;
+  }
+
   h3 {
     height: 45px;
     display: inline-block;
+    width: 370px;
     vertical-align: text-bottom;
   }
 
-  .passwordStrength {
+  .passwordStrengthMessage {
     float: right;
-    width: 220px;
+    width: 170px;
     height: 30px;
     padding-top: 3px;
-    margin-left: 85px;
     text-align: center;
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 13px;
+    border-radius: 15px;
+
+    .pwMessageText {
+      display: table;
+      margin: 3px auto;
+      text-align: center;
+      font-weight: 600;
+    }
   }
   .strong {
     background-color: lighten(green, 35);
@@ -333,15 +352,24 @@ export default {
     background-color: lighten(red, 25);
   }
 
-  .confirmPasswordInfo {
+  .confirmPasswordMessage {
     float: right;
-    width: 220px;
+    width: 170px;
     height: 30px;
     padding-top: 3px;
-    margin-left: 20px;
+    // margin-left: 200px;
     text-align: center;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 400;
+    border-radius: 15px;
+
+    .pwMessageText {
+      display: table;
+      margin: 3px auto;
+      text-align: center;
+      position: relative;
+      font-weight: 600;
+    }
   }
   .passwordWrong {
     background-color: lighten(red, 25);
