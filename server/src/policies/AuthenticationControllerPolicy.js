@@ -113,20 +113,20 @@ module.exports = {
   // Admin Policy
   registerAdmin(req, res, next) {
     const schema = {
-      adminUsername: Joi.string().regex(new RegExp('^[a-zA-Z0-9]{5,15}$')).required(),
+      adminUsername: Joi.string().regex(new RegExp('[a-zA-Z0-9]{5,15}$')).required(),
       adminPassword: Joi.string()
-        .regex(new RegExp('^[a-zA-Z0-9]{6,32}$'))
+        .regex(new RegExp('[a-zA-Z0-9]{6,32}$'))
         .required(),
       adminPassword2: Joi.any()
         .valid(Joi.ref('adminPassword'))
         .options({ language: { any: { allowOnly: 'must match password' } } })
         .label('Password Confirmation'),
-      adminName: Joi.string().regex(new RegExp('^[a-zA-Z_]+( [a-zA-Z_]+)*$')).required(),
+      adminName: Joi.string().regex(new RegExp('[a-zA-Z_]+( [a-zA-Z_]+)*$')).required(),
 
-      telephone1: Joi.string().allow('').regex(new RegExp('^[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
-      telephone2: Joi.string().allow('').regex(new RegExp('^[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
-      address: Joi.string().allow('').regex(new RegExp('^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$')),
-      note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9_.]+( [a-zA-Z0-9_.]+)*$')),
+      telephone1: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
+      telephone2: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9+_]+( [a-zA-Z0-9_]+)*$')),
+      address: Joi.string().allow('').regex(new RegExp('[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$')),
+      note: Joi.string().max(250).allow('').regex(new RegExp('[a-zA-Z0-9_.]+( [a-zA-Z0-9_.]+)*$')),
       createdBy: Joi.any(),
       imageUpload: Joi.any()
     }
