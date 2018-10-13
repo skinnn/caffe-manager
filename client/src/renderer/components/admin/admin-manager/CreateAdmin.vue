@@ -180,6 +180,7 @@ export default {
   },
   data() {
     return {
+      isRootUser: this.$store.state.admin.root_user,
       username: {
         value: '',
         success_message: '',
@@ -220,11 +221,7 @@ export default {
         success_message: '',
         error_message: ''
       },
-      createdBy: {
-        id: this.$store.state.admin._id,
-        name: this.$store.state.admin.name,
-        username: this.$store.state.admin.username
-      },
+      createdBy: this.$store.state.admin._id,
       showMessage: false,
       // Password Strength - default
       passwordStrength: 'weak',
@@ -277,66 +274,68 @@ export default {
       try {
         // Check if someone is trying to create account with 'admin' or 'root' usernames
         if (this.username.value !== 'admin' && this.username.value !== 'root') {
-          const adminFormData = new FormData()
-          // Get image
-          const imagefile = document.querySelector('#adminImage')
-          let image = imagefile.files[0]
-          // Get and append text inputs to form data
-          const adminUsername = this.username.value
-          const adminPassword = this.password.value
-          const adminPassword2 = this.password2.value
-          const adminName = this.name.value
-          const telephone1 = this.telephone1.value
-          const telephone2 = this.telephone2.value
-          const address = this.address.value
-          const note = this.note.value
-          // TODO: Only root_user can create admins
-          // Admin who created this admin account
-          const createdBy = this.createdBy
-          // Append everything to form data
-          await adminFormData.append('imageUpload', image)
-          await adminFormData.append('adminUsername', adminUsername)
-          await adminFormData.append('adminPassword', adminPassword)
-          await adminFormData.append('adminPassword2', adminPassword2)
-          await adminFormData.append('adminName', adminName)
-          await adminFormData.append('telephone1', telephone1)
-          await adminFormData.append('telephone2', telephone2)
-          await adminFormData.append('address', address)
-          await adminFormData.append('note', note)
-          await adminFormData.append('createdBy', createdBy)
+          // Make sure the user is root
+          if (this.isRootUser === true) {
+            const adminFormData = new FormData()
+            // Get image
+            const imagefile = document.querySelector('#adminImage')
+            let image = imagefile.files[0]
+            // Get and append text inputs to form data
+            const adminUsername = this.username.value
+            const adminPassword = this.password.value
+            const adminPassword2 = this.password2.value
+            const adminName = this.name.value
+            const telephone1 = this.telephone1.value
+            const telephone2 = this.telephone2.value
+            const address = this.address.value
+            const note = this.note.value
+            // Admin who created this admin account - should always be root user
+            const createdBy = this.createdBy
+            // Append everything to form data
+            await adminFormData.append('imageUpload', image)
+            await adminFormData.append('adminUsername', adminUsername)
+            await adminFormData.append('adminPassword', adminPassword)
+            await adminFormData.append('adminPassword2', adminPassword2)
+            await adminFormData.append('adminName', adminName)
+            await adminFormData.append('telephone1', telephone1)
+            await adminFormData.append('telephone2', telephone2)
+            await adminFormData.append('address', address)
+            await adminFormData.append('note', note)
+            await adminFormData.append('createdBy', createdBy)
 
-          // Register admin
-          const response = (await AuthenticationService.registerAdmin(adminFormData)).data
-          // If registering was successful redirect to the admin list
-          if (response.admin) {
-            console.log(response)
-            this.$router.push({
-              name: 'admin-register'
-            })
+            // Register admin
+            const response = (await AuthenticationService.registerAdmin(adminFormData)).data
+            // If registering was successful redirect to the admin list
+            if (response.admin) {
+              console.log(response)
+              this.$router.push({
+                name: 'admin-register'
+              })
 
-            // Set success message and timeout
-            this.error = null
-            this.info = null
-            this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
-             registered successfully.`
-            setTimeout(() => {
-              this.success = null
-            }, 4000)
+              // Set success message and timeout
+              this.error = null
+              this.info = null
+              this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
+               registered successfully.`
+              setTimeout(() => {
+                this.success = null
+              }, 4000)
 
-            // Set input values after registering to blank
-            this.username.value = ''
-            this.password.value = ''
-            this.password2.value = ''
-            this.name.value = ''
-            this.telephone1.value = ''
-            this.telephone2.value = ''
-            this.address.value = ''
-            this.note.value = ''
-            image = ''
-            imagefile.value = ''
-            // Hide password messages
-            this.showMessage = false
-            this.confirmPasswordMatched = null
+              // Set input values after registering to blank
+              this.username.value = ''
+              this.password.value = ''
+              this.password2.value = ''
+              this.name.value = ''
+              this.telephone1.value = ''
+              this.telephone2.value = ''
+              this.address.value = ''
+              this.note.value = ''
+              image = ''
+              imagefile.value = ''
+              // Hide password messages
+              this.showMessage = false
+              this.confirmPasswordMatched = null
+            }
           }
         // If someone is trying to register the account with 'admin' or 'root' usernames
         } else {

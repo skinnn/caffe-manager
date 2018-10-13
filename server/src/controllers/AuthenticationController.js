@@ -99,11 +99,7 @@ module.exports = {
       const telephone2 = req.body.telephone2
       const address = req.body.address
       const note = req.body.userName
-      const createdBy = {
-        id: req.body.createdBy.id,
-        name: req.body.createdBy.name,
-        username: req.body.createdBy.username
-      }
+      const createdBy = req.body.createdBy
 
       let image = ''
       // If image is added create image path

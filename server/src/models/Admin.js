@@ -48,7 +48,7 @@ const AdminSchema = new Schema({
     default: ''
   },
   createdBy: {
-    type: Object,
+    type: String,
     default: ''
   },
   date: {
