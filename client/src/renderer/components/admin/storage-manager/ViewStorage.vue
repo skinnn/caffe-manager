@@ -60,7 +60,7 @@
                 </td>
                 <td class="td text-xs-left">
                   <span class="article-price">
-                    {{ props.item.price }} <span class="currency">{{currency.serbianDinar}}</span>
+                    {{ props.item.price }} <span class="currency">{{settings.currency}}</span>
                   </span>
                 </td>
                 <td class="td text-xs-right">
@@ -95,11 +95,8 @@ export default {
       storage: {},
       storageId: this.$store.state.route.params.storageId,
       articles: [],
-      currency: {
-        euro: '€',
-        serbianDinar: 'RSD',
-        dollar: '$',
-        pound: '£'
+      settings: {
+        currency: this.$store.state.settings.currency
       },
       headers: [
         {

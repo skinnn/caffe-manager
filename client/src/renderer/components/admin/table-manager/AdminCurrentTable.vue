@@ -59,9 +59,10 @@
             </div>
             <ul class="articleMenuList">
               <h2 class="articleMenuHeading">
-                Select articles for order:
+                Select articles for:
                 <span class="currentOrderName">{{currentOrderName}}</span>
               </h2>
+              <!-- TODO: Display article sub groups/storages instead of all articles -->
               <li
                 v-for="article in this.articleList"
                 :key="article._id"
@@ -79,7 +80,7 @@
                 <div class="singleArticleMenuInfo">
                   <p class="info-text info-name">{{article.name}}</p>
                   <p class="info-text">Quantity: {{article.quantity}}</p>
-                  <p class="info-text">Price: {{article.price}} {{adminSettings.currency}}</p>
+                  <p class="info-text">Price: {{article.price}} {{settings.currency}}</p>
                 </div>
               </li>
               <v-btn
@@ -157,7 +158,7 @@
                           </v-badge>
                           <span class="reservedArticlePrice">
                             {{reservedArticle.total_price}}
-                            <span>{{adminSettings.currency}}</span>
+                            <span>{{settings.currency}}</span>
                           </span>
                         </li>
                       </ul>
@@ -224,8 +225,8 @@ export default {
       currentOrderName: null,
       selectedArticles: [],
       // TODO: Get currency from the Admin Settings - state
-      adminSettings: {
-        currency: '$'
+      settings: {
+        currency: this.$store.state.settings.currency
       },
       articleList: [],
       currentTable: null,

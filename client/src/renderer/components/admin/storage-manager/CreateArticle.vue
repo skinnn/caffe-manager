@@ -93,8 +93,6 @@ export default {
       quantity: 0,
       price: 0,
       retail_price: 0,
-      // TODO: Create Admin Settings/Options and load currency
-      // for the whole application from there
       error: null,
       success: null
     }
