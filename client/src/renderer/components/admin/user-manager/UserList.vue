@@ -22,24 +22,6 @@
         <!-- TODO: Add animation for fetching/displaying Users possibly with Scroll Reveal -->
         <!-- List of all Users/Staff in the db -->
         <div class="list-of-users">
-          <!-- <v-list two-line>
-            <v-list-tile
-                v-for="user in this.users"
-                :key="user._id"
-                @click="viewUser(user._id)"
-            >
-
-              <v-list-tile-action>
-                  <v-icon>people</v-icon>
-                </v-list-tile-action>
-
-                <v-list-tile-content>
-                  <v-list-tile-title>{{user.username}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{user.name}}</v-list-tile-sub-title>
-                </v-list-tile-content>
-            </v-list-tile>
-          </v-list> -->
-
           <v-data-table
             :headers="headers"
             :items="users"
@@ -188,14 +170,15 @@ export default {
     width: 100%;
 
     .td {
-      height: 70px;
+      height: 92px;
       cursor: pointer;
     }
     .admin-image {
-      max-width: 100px;
-      max-height: 90px;
-      padding-top: 4px;
+      max-width: 80px;
+      max-height: 80px;
+      margin-top: 5px;
       margin-left: 5px;
+      border-radius: 5px;
     }
     .admin-name {
       font-size: 18px;

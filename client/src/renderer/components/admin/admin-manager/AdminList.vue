@@ -173,17 +173,18 @@ export default {
     width: 100%;
 
     .td {
-      height: 70px;
+      height: 92px;
       cursor: pointer;
     }
     .admin-image {
-      max-width: 100px;
-      max-height: 90px;
-      padding-top: 4px;
+      max-width: 80px;
+      max-height: 80px;
+      margin-top: 5px;
       margin-left: 5px;
+      border-radius: 5px;
     }
     .admin-name {
-      font-size: 18px;
+      font-size: 16px;
     }
     .admin-username {
       font-weight: 600;
