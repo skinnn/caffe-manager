@@ -19,11 +19,13 @@
           enctype="multipart/form-data"
           class="register-user-form"
         >
-        <!-- TODO: Show required fields -->
-        <!-- TODO: Show errors next by their error fields -->
-          <h3>Username:</h3>
+          <h3 title="Required field">
+            Username: <span class="required-field">*</span>
+          </h3>
           <v-flex xs12 sm8 d-flex>
+            <!-- :rules="['Required field']" -->
             <v-text-field
+              title="Required field"
               :success-messages="username.success_message"
               :error-messages="username.error_message"
               maxlength="15"
@@ -33,8 +35,8 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>
-            Password:
+          <h3 title="Required field">
+            Password: <span class="required-field">*</span>
             <div
               class="passwordStrengthMessage"
               v-if="showMessage"
@@ -43,7 +45,7 @@
                 weak : passwordStrength === 'weak',
                 medium: passwordStrength === 'medium'
               }"
-              >
+            >
               <p class="pwMessageText">{{passwordStrengthText}}</p>
               </div>
           </h3>
@@ -59,8 +61,8 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>
-            Confirm password:
+          <h3 title="Required field">
+            Confirm password: <span class="required-field">*</span>
             <div
               class="confirmPasswordMessage"
               v-if="showMessage"
@@ -85,7 +87,9 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>Full name:</h3>
+          <h3 title="Required field">
+            Full name: <span class="required-field">*</span>
+          </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
               :success-messages="name.success_message"
@@ -452,6 +456,10 @@ export default {
 
 <style scoped lang="scss">
 
+  $light-green: lighten(green, 45);
+  $light-orange: lighten(orange, 25);
+  $light-red: lighten(red, 30);
+
   .register-user-form {
     width: 600px;
     max-width: 600px;
@@ -463,11 +471,14 @@ export default {
       width: 370px;
     }
 
+    .required-field {
+      color: red;
+    }
+
     .passwordStrengthMessage {
       float: right;
       width: 170px;
       height: 30px;
-      // padding-top: 3px;
       text-align: center;
       font-size: 13px;
       border-radius: 15px;
@@ -476,17 +487,17 @@ export default {
         display: table;
         margin: 6px auto;
         text-align: center;
-        font-weight: 600;
+        font-weight: 400;
       }
     }
     .strong {
-      background-color: lighten(green, 35);
+      background-color: $light-green;
     }
     .medium {
-      background-color: lighten(orange, 20);
+      background-color: $light-orange;
     }
     .weak {
-      background-color: lighten(red, 25);
+      background-color: $light-red;
     }
 
     .confirmPasswordMessage {
@@ -502,15 +513,14 @@ export default {
         margin: 6px auto;
         text-align: center;
         position: relative;
-        font-weight: 600;
+        font-weight: 400;
       }
     }
     .passwordWrong {
-      background-color: lighten(red, 25);
+      background-color: lighten(red, 30);
     }
     .passwordMatched {
-      text-align: center;
-      background-color: lighten(green, 35);
+      background-color: lighten(green, 45);
     }
   }
 

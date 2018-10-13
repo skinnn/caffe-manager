@@ -19,8 +19,9 @@
           enctype="multipart/form-data"
           class="register-admin-form"
         >
-          <!-- TODO: Show required fields -->
-          <h3>Username:</h3>
+          <h3 title="Required field">
+            Username: <span class="required-field">*</span>
+          </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
               :success-messages="username.success_message"
@@ -32,8 +33,8 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>
-            Password:
+          <h3 title="Required field">
+            Password: <span class="required-field">*</span>
             <div
               class="passwordStrengthMessage"
               v-if="showMessage"
@@ -58,8 +59,8 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>
-            Confirm password:
+          <h3 title="Required field">
+            Confirm password: <span class="required-field">*</span>
             <div
               class="confirmPasswordMessage"
               v-if="showMessage"
@@ -84,7 +85,9 @@
             ></v-text-field>
           </v-flex>
 
-          <h3>Full name:</h3>
+          <h3 title="Required field">
+            Full name: <span class="required-field">*</span>
+          </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
               :success-messages="name.success_message"
@@ -467,6 +470,10 @@ export default {
       height: 35px;
       display: inline-block;
       width: 370px;
+    }
+
+    .required-field {
+      color: red;
     }
 
     .passwordStrengthMessage {
