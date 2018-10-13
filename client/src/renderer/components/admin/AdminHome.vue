@@ -18,13 +18,15 @@
         <div class="success-msg" v-if="success" v-html="success" />
         <div class="info-msg" v-if="info" v-html="info" />
 
-        <p>Name: {{$store.state.admin.name}}</p>
-        <p>Username: {{$store.state.admin.username}}</p>
-        <p>Store name: {{$store.state.settings.store_name}}</p>
-        <p>Telephone: </p>
-        <p>Address: </p>
-        <p>Create date: {{$store.state.admin.date}}</p>
-        <p>Last time updated: {{$store.state.admin.updatedDate}}</p>
+        <div class="admin-info">
+          <!-- TODO: Create admin profile page and option to edit profile -->
+          <p>Name: <span class="info-data">{{admin_info.name}}</span></p>
+          <p>Username: <span class="info-data">{{admin_info.username}}</span></p>
+          <p>Telephone 1: <span class="info-data">{{admin_info.telephone1}}</span></p>
+          <p>Telephone 2: <span class="info-data">{{admin_info.telephone2}}</span></p>
+          <p>Address: <span class="info-data">{{admin_info.address}}</span></p>
+          <p>Last time updated: <span class="info-data">{{admin_info.updated_date}}</span></p>
+        </div>
 
       </v-flex>
     </v-layout>
@@ -41,6 +43,14 @@ export default {
   },
   data() {
     return {
+      admin_info: {
+        name: this.$store.state.admin.name,
+        username: this.$store.state.admin.username,
+        telephone1: this.$store.state.admin.telephone1,
+        telephone2: this.$store.state.admin.telephone2,
+        address: this.$store.state.admin.address,
+        updated_date: this.$store.state.admin.updated_date
+      },
       ownerId: this.$store.state.admin._id,
       error: null,
       success: null,
@@ -56,16 +66,15 @@ export default {
     }
   .admin-container {
 
-    .admin-settings {
-      background-color: lighten(grey, 40);
-
-      .adminSettingsHeading {
-        text-align: center;
-        margin: 0 0 15px 0;
+    .admin-info {
+      p {
+        font-size: 17px;
+        color: darken(grey, 10);
       }
 
-      .settings-form {
-        margin-left: 50px;
+      .info-data {
+        font-weight: 600;
+        color: black;
       }
     }
   }
