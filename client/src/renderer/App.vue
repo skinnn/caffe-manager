@@ -39,11 +39,10 @@
 <style lang="scss">
 
   .v-list__group__header {
-    // background-color: #f4f4f4;
+    background-color: #f4f4f4;
 
     &:hover {
-      opacity: 0.7;
-      // color: grey;
+      color: grey;
     }
   }
 
@@ -51,8 +50,7 @@
     // background-color: #f4f4f4;
 
     &:hover {
-      opacity: 0.7;
-      // color: grey;
+      color: grey;
     }
   }
 

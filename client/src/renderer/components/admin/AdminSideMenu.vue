@@ -1,7 +1,7 @@
 <template>
   </div>
     <!-- mini-variant option instead of permanent can be used for tablet devices -->
-    <v-navigation-drawer value="true" permanent fixed width="260">
+    <v-navigation-drawer class="navigationDrawer" value="true" permanent fixed width="260">
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
@@ -24,7 +24,7 @@
           @click="navigateTo({ name: 'admin-home' }), setActivePage('home')"
         >
           <v-list-tile-action>
-            <v-icon>home</v-icon>
+            <v-icon class="list-icon">home</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title class="list-tile-title">Home</v-list-tile-title>
@@ -37,10 +37,23 @@
           @click="navigateTo({ name: 'admin-settings' }), setActivePage('settings')"
         >
           <v-list-tile-action>
-            <v-icon>settings</v-icon>
+            <v-icon class="list-icon">settings</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title class="list-tile-title">Settings</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <!-- Tables -->
+        <v-list-tile
+          v-bind:class="{ activePage : isActivePage === 'table list' }"
+          @click="navigateTo({ name: 'admin-table-list' }), setActivePage('table list')"
+        >
+          <v-list-tile-action>
+            <v-icon class="list-icon">view_carousel</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="list-tile-title">Tables</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
 
@@ -56,7 +69,7 @@
             >
               <v-list-tile-title>Storage List</v-list-tile-title>
               <v-list-tile-action>
-                <v-icon>format_list_numbered</v-icon>
+                <v-icon class="list-icon">format_list_numbered</v-icon>
               </v-list-tile-action>
             </v-list-tile>
           </v-list-tile>
@@ -66,23 +79,10 @@
             >
               <v-list-tile-title>Create Storage</v-list-tile-title>
               <v-list-tile-action>
-                <v-icon>add</v-icon>
+                <v-icon class="list-icon">add</v-icon>
               </v-list-tile-action>
             </v-list-tile>
         </v-list-group>
-
-        <!-- Tables -->
-        <v-list-tile
-          v-bind:class="{ activePage : isActivePage === 'table list' }"
-          @click="navigateTo({ name: 'admin-table-list' }), setActivePage('table list')"
-        >
-          <v-list-tile-action>
-            <v-icon>view_carousel</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title class="list-tile-title">Tables</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
 
         <!-- Admin Manager -->
         <v-list-group prepend-icon="gavel">
@@ -95,7 +95,7 @@
             >
               <v-list-tile-title>Admin List</v-list-tile-title>
               <v-list-tile-action>
-                <v-icon>format_list_numbered</v-icon>
+                <v-icon class="list-icon">format_list_numbered</v-icon>
               </v-list-tile-action>
             </v-list-tile>
           </v-list-tile>
@@ -105,7 +105,7 @@
             >
               <v-list-tile-title>Create Admin</v-list-tile-title>
               <v-list-tile-action>
-                <v-icon>person_add</v-icon>
+                <v-icon class="list-icon">person_add</v-icon>
               </v-list-tile-action>
             </v-list-tile>
         </v-list-group>
@@ -130,7 +130,7 @@
             >
               <v-list-tile-title>Create Staff Member</v-list-tile-title>
               <v-list-tile-action>
-                <v-icon>add</v-icon>
+                <v-icon class="list-icon">add</v-icon>
               </v-list-tile-action>
             </v-list-tile>
         </v-list-group>
@@ -146,7 +146,7 @@
             >
               <v-list-tile-title>Taxes</v-list-tile-title>
               <v-list-tile-action>
-                <v-icon>gavel</v-icon>
+                <v-icon class="list-icon">gavel</v-icon>
               </v-list-tile-action>
             </v-list-tile>
         </v-list-group>
@@ -208,8 +208,17 @@ export default {
 
 <style scoped lang="scss">
 
+  .navigationDrawer {
+    border-right: 1px solid #3d3d3d;
+  }
+
   .activePage {
-    background-color: grey;
+    background-color: #404040;
+    color: white;
+
+    .list-icon {
+      color: white;
+    }
   }
 
   .dashboard-title {
@@ -222,6 +231,7 @@ export default {
 
   .list-tile-title {
     font-size: 16px;
+    font-weight: 600;
   }
 
 </style>
