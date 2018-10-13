@@ -61,7 +61,7 @@ router.use(function timeLog(req, res, next) {
   next()
 })
 
-// TODO: Secure all routes only for admin
+// TODO: Secure all endpoints so only logged in admin can access it
 
 router.get('/find/root',
   AdminController.createRootAdmin)

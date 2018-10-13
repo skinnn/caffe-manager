@@ -16,60 +16,73 @@
       </v-flex>
 
       <v-flex class="admin-container">
-        <v-form @submit.prevent="createArticle" enctype="multipart/form-data">
-          <v-text-field
+        <v-form
+          @submit.prevent="createArticle"
+          enctype="multipart/form-data"
+          class="create-article-form"
+        >
+          <!-- <v-text-field
             type="text"
             name="storageId"
             v-model="storageId"
-            label="Storage Id"
-            outline
-          ></v-text-field>
+            solo
+          ></v-text-field> -->
 
-          <v-text-field
-            type="text"
-            name="name"
-            v-model="name"
-            label="Article name:"
-            outline
-          ></v-text-field>
+          <h3>Name:</h3>
+          <v-flex xs12 sm8 d-flex>
+            <v-text-field
+              type="text"
+              name="name"
+              v-model="name"
+              solo
+            ></v-text-field>
+          </v-flex>
 
-          <v-text-field
-            type="number"
-            name="quantity"
-            v-model="quantity"
-            label="Quantity:"
-            outline
-          ></v-text-field>
+          <h3>Quantity:</h3>
+          <v-flex xs12 sm8 d-flex>
+            <v-text-field
+              type="number"
+              name="quantity"
+              v-model="quantity"
+              solo
+            ></v-text-field>
+          </v-flex>
 
-          <v-text-field
-            type="text"
-            name="price"
-            v-model="price"
-            label="Price:"
-            outline
-          ></v-text-field>
+          <h3>Price:</h3>
+          <v-flex xs12 sm8 d-flex>
+            <v-text-field
+              type="text"
+              name="price"
+              v-model="price"
+              solo
+            ></v-text-field>
+          </v-flex>
 
-          <v-text-field
-            type="text"
-            name="price"
-            v-model="retail_price"
-            label="Retail price:"
-            outline
-          ></v-text-field>
+          <h3>Retail price:</h3>
+          <v-flex xs12 sm8 d-flex>
+            <v-text-field
+              type="text"
+              name="price"
+              v-model="retail_price"
+              solo
+            ></v-text-field>
+          </v-flex>
 
+          <h3>Add Image</h3>
           <div class="upload-image">
-            <label>Add Image</label>
-            <input id="articleImage" type="file" name="imageUpload" />
+            <input @change="imagePreview(this)" id="articleImage" class="previewImgInput" type="file" name="imageUpload" />
+            <img id="previewImg" class="previewImg" src="" alt="">
           </div>
 
-          <button type="submit" class="yellow">
+          <v-btn class="createArticleBtn green" type="submit">
             Create
-          </button>
+          </v-btn>
         </v-form>
 
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="success-msg" v-if="success" v-html="success" />
+          <div class="info-msg" v-if="info" v-html="info" />
 
       </v-flex>
     </v-layout>
@@ -93,37 +106,30 @@ export default {
       quantity: 0,
       price: 0,
       retail_price: 0,
+      selectedImage: null,
+      // Messages
       error: null,
-      success: null
+      success: null,
+      info: null
     }
   },
   methods: {
     // TODO: Add image preview
-    // imagePreview() {
-    //   let files = document.getElementById('uploadFile').files
-    //   console.log(files[0])
-    // },
-    // async upload() {
-    //   let files = document.getElementById('uploadFile').files
-    //   // let path = files[0].path
-    //   console.log(files[0].path)
-    //   try {
-    //     const res = (await ArticleService.upload({
-    //       img: this.img.files,
-    //       path: files[0].path
-    //     })).data
-    //     console.log(res)
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // },
+    imagePreview() {
+      const img = document.getElementById('articleImage').files
+      const previewImg = document.getElementById('previewImg')
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        previewImg.src = e.target.result
+      }
+      reader.readAsDataURL(img[0])
+    },
     async createArticle() {
       try {
-        // TODO: Don't make a req to the server if quantity or name fields are not filled
         const formData = new FormData()
         // Get image
-        const imagefile = document.querySelector('#articleImage')
-        const image = imagefile.files[0]
+        let imagefile = document.querySelector('#articleImage')
+        let image = imagefile.files[0]
         // Get and append text inputs to form data
         const artName = this.name
         const artPrice = this.price
@@ -132,7 +138,7 @@ export default {
         // Storage ID
         const storageId = this.storageId
 
-        // Validation
+        // Some Validation
         if (artName !== '' && artName !== undefined) {
           if (artPrice !== 0 && artPrice !== '' && artPrice !== null && artPrice !== undefined) {
             if (artQuantity !== 0 && artQuantity !== '' && artQuantity !== null && artQuantity !== undefined) {
@@ -160,6 +166,8 @@ export default {
                 this.quantity = 0
                 this.price = 0
                 this.retail_price = 0
+                image = null
+                imagefile = null
               }
             } else {
               this.success = null
@@ -193,6 +201,32 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  .create-article-form {
+    width: 600px;
+    max-width: 600px;
+    padding: 20px;
+
+    .previewImg {
+      width: 130px;
+      height: 130px;
+      max-width: 130px;
+      max-height: 130px;
+      border: 1px solid orange;
+      border-radius: 3px;
+      margin: 10px 0 0 10px;
+      display: block;
+    }
+
+    .previewImgInput {
+      margin: 5px 0 0 10px;
+    }
+
+    .createArticleBtn {
+      display: block;
+      width: 25%;
+    }
+  }
 
   .list-title {
     font-size: 17px;
