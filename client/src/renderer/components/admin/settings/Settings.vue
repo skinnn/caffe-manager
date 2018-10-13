@@ -7,7 +7,7 @@
       <v-flex>
         <div class="admin-header">
           <h1 class="heading">
-            Store Settings
+            Settings
             <v-btn @click="editSettings" class="yellow">
               Edit
             </v-btn>

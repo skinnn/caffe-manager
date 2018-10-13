@@ -66,7 +66,7 @@ module.exports = {
     } catch (err) {
       console.log(err)
       return res.status(500).send({
-        error: 'An error has occurred trying to fetch/create the root.'
+        error: 'An error has occurred trying to fetch/create the root user.'
       })
     }
   },

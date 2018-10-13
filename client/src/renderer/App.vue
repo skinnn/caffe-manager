@@ -30,7 +30,8 @@
           return console.log(response.message)
         }
       } catch (error) {
-        return console.log(error)
+        console.log(error.response.data.error)
+        console.log(error)
       }
     }
   }
@@ -40,6 +41,11 @@
 
   .v-list__group__header {
     background-color: #f4f4f4;
+
+    .v-list__group__header__append-icon {
+      padding-left: 0;
+      padding-right: 10px;
+    }
 
     &:hover {
       color: grey;
