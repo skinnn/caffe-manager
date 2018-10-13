@@ -15,7 +15,9 @@ export default new Vuex.Store({
     admin: null,
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
-    settings: null
+    settings: null,
+    // State for Actve Pages
+    activePage: 'home'
   },
   mutations: {
     setUser(state, user) {
@@ -36,6 +38,9 @@ export default new Vuex.Store({
     },
     setSettings(state, settings) {
       state.settings = settings
+    },
+    setActivePage(state, activePage) {
+      state.activePage = activePage
     }
   },
   actions: {
@@ -47,6 +52,9 @@ export default new Vuex.Store({
     },
     setSettings({commit}, settings) {
       commit('setSettings', settings)
+    },
+    setActivePage({commit}, activePage) {
+      commit('setActivePage', activePage)
     }
   }
 })

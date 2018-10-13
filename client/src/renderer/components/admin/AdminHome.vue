@@ -58,7 +58,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+    .activeHome {
+      background-color: red
+    }
   .admin-container {
 
     .admin-settings {

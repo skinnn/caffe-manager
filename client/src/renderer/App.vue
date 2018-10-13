@@ -25,7 +25,7 @@
         const response = (await AdminService.createRootAdmin()).data
         // console.log(response)
         if (response.rootExist) {
-          console.log(response.message)
+          return console.log(response.message)
         } else if (response.rootCreated) {
           return console.log(response.message)
         }
@@ -39,18 +39,20 @@
 <style lang="scss">
 
   .v-list__group__header {
-    background-color: #f4f4f4;
+    // background-color: #f4f4f4;
 
     &:hover {
       opacity: 0.7;
+      // color: grey;
     }
   }
 
   .v-list__tile--link {
-    background-color: #f4f4f4;
+    // background-color: #f4f4f4;
 
     &:hover {
       opacity: 0.7;
+      // color: grey;
     }
   }
 
