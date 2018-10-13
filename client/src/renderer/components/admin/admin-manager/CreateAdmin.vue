@@ -22,13 +22,14 @@
           class="register-admin-form"
         >
           <!-- TODO: Show required fields -->
-          <!-- TODO: Show errors next by their error fields -->
           <h3>Username:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="username.success_message"
+              :error-messages="username.error_message"
               maxlength="15"
               type="text"
-              v-model="username"
+              v-model="username.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -49,10 +50,12 @@
           </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              @input="analyzePasswordStrength(password), isPasswordConfirmed(password2)"
+              :success-messages="password.success_message"
+              :error-messages="password.error_message"
+              @input="analyzePasswordStrength(password.value), isPasswordConfirmed(password2.value)"
               maxlength="32"
               type="password"
-              v-model="password"
+              v-model="password.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -73,10 +76,12 @@
           </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              @input="isPasswordConfirmed(password2)"
+              :success-messages="password2.success_message"
+              :error-messages="password2.error_message"
+              @input="isPasswordConfirmed(password2.value)"
               maxlength="32"
               type="password"
-              v-model="password2"
+              v-model="password2.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -84,9 +89,11 @@
           <h3>Full name:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="name.success_message"
+              :error-messages="name.error_message"
               maxlength="32"
               type="text"
-              v-model="name"
+              v-model="name.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -94,9 +101,11 @@
           <h3>Telephone 1:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="telephone1.success_message"
+              :error-messages="telephone1.error_message"
               maxlength="20"
               type="text"
-              v-model="telephone1"
+              v-model="telephone1.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -104,9 +113,11 @@
           <h3>Telephone 2:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="telephone2.success_message"
+              :error-messages="telephone2.error_message"
               maxlength="20"
               type="text"
-              v-model="telephone2"
+              v-model="telephone2.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -114,9 +125,11 @@
           <h3>Address:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
+              :success-messages="address.success_message"
+              :error-messages="address.error_message"
               maxlength="35"
               type="text"
-              v-model="address"
+              v-model="address.value"
               solo
             ></v-text-field>
           </v-flex>
@@ -124,9 +137,11 @@
           <h3>Note:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-textarea
+              :success-messages="note.success_message"
+              :error-messages="note.error_message"
               maxlength="250"
               type="text"
-              v-model="note"
+              v-model="note.value"
               placeholder="Write a short note about the admin.."
               outline
             ></v-textarea>
@@ -166,14 +181,46 @@ export default {
   },
   data() {
     return {
-      username: '',
-      password: '',
-      password2: '',
-      name: '',
-      telephone1: '',
-      telephone2: '',
-      address: '',
-      note: '',
+      username: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
+      password: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
+      password2: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
+      name: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
+      telephone1: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
+      telephone2: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
+      address: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
+      note: {
+        value: '',
+        success_message: '',
+        error_message: ''
+      },
       createdBy: {
         id: this.$store.state.admin._id,
         name: this.$store.state.admin.name,
@@ -219,7 +266,7 @@ export default {
       if (password === '') {
         this.confirmPasswordMatched = null
         this.isPasswordConfirmedText = ''
-      } else if (password === this.password) {
+      } else if (password === this.password.value) {
         this.confirmPasswordMatched = true
         this.isPasswordConfirmedText = 'Passwords match'
       } else {
@@ -230,20 +277,20 @@ export default {
     async registerAdmin() {
       try {
         // Check if someone is trying to create account with 'admin' or 'root' usernames
-        if (this.username !== 'admin' && this.username !== 'root') {
+        if (this.username.value !== 'admin' && this.username.value !== 'root') {
           const adminFormData = new FormData()
           // Get image
           const imagefile = document.querySelector('#adminImage')
           let image = imagefile.files[0]
           // Get and append text inputs to form data
-          const adminUsername = this.username
-          const adminPassword = this.password
-          const adminPassword2 = this.password2
-          const adminName = this.name
-          const telephone1 = this.telephone1
-          const telephone2 = this.telephone2
-          const address = this.address
-          const note = this.note
+          const adminUsername = this.username.value
+          const adminPassword = this.password.value
+          const adminPassword2 = this.password2.value
+          const adminName = this.name.value
+          const telephone1 = this.telephone1.value
+          const telephone2 = this.telephone2.value
+          const address = this.address.value
+          const note = this.note.value
           // TODO: Only root_user can create admins
           // Admin who created this admin account
           const createdBy = this.createdBy
@@ -271,27 +318,30 @@ export default {
             // Set success message and timeout
             this.error = null
             this.info = null
-            this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username}</span>
+            this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
              registered successfully.`
             setTimeout(() => {
               this.success = null
-            }, 3000)
+            }, 4000)
 
             // Set input values after registering to blank
-            this.username = ''
-            this.password = ''
-            this.password2 = ''
-            this.name = ''
-            this.telephone1 = ''
-            this.telephone2 = ''
-            this.address = ''
-            this.note = ''
+            this.username.value = ''
+            this.password.value = ''
+            this.password2.value = ''
+            this.name.value = ''
+            this.telephone1.value = ''
+            this.telephone2.value = ''
+            this.address.value = ''
+            this.note.value = ''
             image = ''
             imagefile.value = ''
+            // Hide password messages
+            this.showMessage = false
+            this.confirmPasswordMatched = null
           }
         // If someone is trying to register the account with 'admin' or 'root' usernames
         } else {
-          this.error = `Can't create account with admin or root usernames.`
+          this.error = `Can't create account with 'admin' or 'root' usernames.`
           this.info = null
           this.success = null
           setTimeout(() => {
@@ -300,9 +350,110 @@ export default {
         }
       } catch (error) {
         console.log(error)
-        this.success = null
-        this.info = null
-        this.error = error.response.data.error
+
+        // Form Messages - Error/Success
+        // Username
+        if (error.response.data.username_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.username_error
+          this.username.error_message = error.response.data.username_error
+          setTimeout(() => {
+            this.error = null
+          }, 3000)
+        } else {
+          this.username.error_message = ''
+        }
+        // Password
+        if (error.response.data.password_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.password_error
+          this.password.error_message = error.response.data.password_error
+          setTimeout(() => {
+            this.error = null
+          }, 4000)
+        } else {
+          this.password.error_message = ''
+        }
+        // Confirm Password
+        if (error.response.data.password2_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.password2_error
+          this.password2.error_message = error.response.data.password2_error
+          setTimeout(() => {
+            this.error = null
+          }, 3000)
+        } else {
+          this.password2.error_message = ''
+        }
+        // Full Name
+        if (error.response.data.name_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.name_error
+          this.name.error_message = error.response.data.name_error
+          setTimeout(() => {
+            this.error = null
+          }, 3000)
+        } else {
+          this.name.error_message = ''
+        }
+        // Telephone 1
+        if (error.response.data.telephone1_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.telephone1_error
+          this.telephone1.error_message = error.response.data.telephone1_error
+          setTimeout(() => {
+            this.error = null
+          }, 3000)
+        } else {
+          this.telephone1.error_message = ''
+        }
+        // Telephone 2
+        if (error.response.data.telephone2_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.telephone2_error
+          this.telephone2.error_message = error.response.data.telephone2_error
+          setTimeout(() => {
+            this.error = null
+          }, 3000)
+        } else {
+          this.telephone2.error_message = ''
+        }
+        // Address
+        if (error.response.data.address_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.address_error
+          this.address.error_message = error.response.data.address_error
+          setTimeout(() => {
+            this.error = null
+          }, 3000)
+        } else {
+          this.address.error_message = ''
+        }
+        // Note
+        if (error.response.data.note_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.note_error
+          this.note.error_message = error.response.data.note_error
+          setTimeout(() => {
+            this.error = null
+          }, 3000)
+        } else {
+          this.note.error_message = ''
+        }
+        // Created By
+        if (error.response.data.created_by_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.created_by_error
+        }
       }
     }
   },

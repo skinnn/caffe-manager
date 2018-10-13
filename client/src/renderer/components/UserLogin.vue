@@ -10,8 +10,8 @@
           <router-link to="/admin/login"><v-btn color="blue">Admin Login</v-btn></router-link>
           <router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link>
           <router-link to="/" event=""><v-btn color="blue">User Login</v-btn></router-link>
-          
-          <!-- TODO: List all user accounts on the side and fill username by clicking on it -->
+
+          <!-- TODO: List all User accounts on the side and fill username by clicking on it -->
           <v-text-field
             type="text"
             v-model="username"

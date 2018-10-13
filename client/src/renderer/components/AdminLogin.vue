@@ -6,10 +6,11 @@
           <v-toolbar-title class="toolbar-title">Admin Login</v-toolbar-title>
         </v-toolbar>
         <div class="register-page pl-4 pr-4 pb-3 pt-4">
-          <!-- <router-link to="/admin/register"><v-btn color="blue">Admin Register</v-btn></router-link> -->
           <router-link to="/admin/login" event=""><v-btn color="blue">Admin Login</v-btn></router-link>
           <router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link>
           <router-link to="/"><v-btn color="blue">User Login</v-btn></router-link>
+
+          <!-- TODO: List all Admin accounts on the side and fill username by clicking on it -->
           <v-text-field
             type="text"
             v-model="username"

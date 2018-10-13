@@ -26,8 +26,8 @@
           <h3>Username:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="username.success_messages"
-              :error-messages="username.error_messages"
+              :success-messages="username.success_message"
+              :error-messages="username.error_message"
               maxlength="15"
               type="text"
               v-model="username.value"
@@ -51,9 +51,9 @@
           </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              @input="analyzePasswordStrength(password), isPasswordConfirmed(password2)"
-              :success-messages="password.success_messages"
-              :error-messages="password.error_messages"
+              @input="analyzePasswordStrength(password.value), isPasswordConfirmed(password2.value)"
+              :success-messages="password.success_message"
+              :error-messages="password.error_message"
               maxlength="32"
               type="password"
               v-model="password.value"
@@ -77,9 +77,9 @@
           </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              @input="isPasswordConfirmed(password2)"
-              :success-messages="password2.success_messages"
-              :error-messages="password2.error_messages"
+              @input="isPasswordConfirmed(password2.value)"
+              :success-messages="password2.success_message"
+              :error-messages="password2.error_message"
               maxlength="32"
               type="password"
               v-model="password2.value"
@@ -90,8 +90,8 @@
           <h3>Full name:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="name.success_messages"
-              :error-messages="name.error_messages"
+              :success-messages="name.success_message"
+              :error-messages="name.error_message"
               maxlength="32"
               type="text"
               v-model="name.value"
@@ -102,8 +102,8 @@
           <h3>Telephone 1:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="telephone1.success_messages"
-              :error-messages="telephone1.error_messages"
+              :success-messages="telephone1.success_message"
+              :error-messages="telephone1.error_message"
               maxlength="20"
               type="text"
               v-model="telephone1.value"
@@ -114,8 +114,8 @@
           <h3>Telephone 2:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="telephone2.success_messages"
-              :error-messages="telephone2.error_messages"
+              :success-messages="telephone2.success_message"
+              :error-messages="telephone2.error_message"
               maxlength="20"
               type="text"
               v-model="telephone2.value"
@@ -126,8 +126,8 @@
           <h3>Address:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="address.success_messages"
-              :error-messages="address.error_messages"
+              :success-messages="address.success_message"
+              :error-messages="address.error_message"
               maxlength="35"
               type="text"
               v-model="address.value"
@@ -138,8 +138,8 @@
           <h3>Note:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-textarea
-              :success-messages="note.success_messages"
-              :error-messages="note.error_messages"
+              :success-messages="note.success_message"
+              :error-messages="note.error_message"
               maxlength="250"
               type="text"
               v-model="note.value"
@@ -195,42 +195,43 @@ export default {
     return {
       username: {
         value: '',
-        success_messages: ['Success username test'],
-        error_messsages: ['Error username test']
+        success_message: '',
+        error_message: ''
       },
       password: {
         value: '',
-        success_messages: ['Success password test'],
-        error_messsages: ['Error password test']
+        success_message: '',
+        error_message: ''
       },
       password2: {
-        success_messages: ['Success confirm password test'],
-        error_messsages: ['Error confirm password test']
+        value: '',
+        success_message: '',
+        error_message: ''
       },
       name: {
         value: '',
-        success_messages: ['Success name test'],
-        error_messsages: ['Error name test']
+        success_message: '',
+        error_message: ''
       },
       telephone1: {
         value: '',
-        success_messages: ['Success telephone 1 test'],
-        error_messsages: ['Error telephone 1 test']
+        success_message: '',
+        error_message: ''
       },
       telephone2: {
         value: '',
-        success_messages: ['Success telephone 2 test'],
-        error_messsages: ['Error telephone 2 test']
+        success_message: '',
+        error_message: ''
       },
       address: {
         value: '',
-        success_messages: ['Success address test'],
-        error_messsages: ['Error address test']
+        success_message: '',
+        error_message: ''
       },
       note: {
         value: '',
-        success_messages: ['Success note test'],
-        error_messsages: ['Error note test']
+        success_message: '',
+        error_message: ''
       },
       userMenu: {
         home: true, // Default is that all users have home page
@@ -282,7 +283,7 @@ export default {
       if (password === '') {
         this.confirmPasswordMatched = null
         this.isPasswordConfirmedText = ''
-      } else if (password === this.password) {
+      } else if (password === this.password.value) {
         this.confirmPasswordMatched = true
         this.isPasswordConfirmedText = 'Passwords match'
       } else {
@@ -333,14 +334,15 @@ export default {
         // If registering was successful
         if (response.user) {
           // Set success message and timeout
-          this.success = `User with username <span style="color: blue; font-size:17px;">${this.username}</span>
+          this.error = null
+          this.info = null
+          this.success = `User with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
            registered successfully.`
-          this.error = ''
           setTimeout(() => {
             this.success = null
-          }, 3000)
+          }, 4000)
 
-          // Set input values to default after registering
+          // Set all Values to default after successful registering
           this.username.value = ''
           this.password.value = ''
           this.password2.value = ''
@@ -354,11 +356,98 @@ export default {
           this.userMenu.tables = false
           image = ''
           imagefile.value = ''
+          // Hide password messages
+          this.showMessage = false
+          this.confirmPasswordMatched = null
         }
       } catch (error) {
         console.log(error)
-        this.success = ''
-        this.error = error.response.data.error
+
+        // Form Messages - Error/Success
+        // Username
+        if (error.response.data.username_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.username_error
+          this.username.error_message = error.response.data.username_error
+        } else {
+          this.username.error_message = ''
+        }
+        // Password
+        if (error.response.data.password_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.password_error
+          this.password.error_message = error.response.data.password_error
+        } else {
+          this.password.error_message = ''
+        }
+        // Confirm Password
+        if (error.response.data.password2_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.password2_error
+          this.password2.error_message = error.response.data.password2_error
+        } else {
+          this.password2.error_message = ''
+        }
+        // Full Name
+        if (error.response.data.name_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.name_error
+          this.name.error_message = error.response.data.name_error
+        } else {
+          this.name.error_message = ''
+        }
+        // Telephone 1
+        if (error.response.data.telephone1_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.telephone1_error
+          this.telephone1.error_message = error.response.data.telephone1_error
+        } else {
+          this.telephone1.error_message = ''
+        }
+        // Telephone 2
+        if (error.response.data.telephone2_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.telephone2_error
+          this.telephone2.error_message = error.response.data.telephone2_error
+        } else {
+          this.telephone2.error_message = ''
+        }
+        // Address
+        if (error.response.data.address_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.address_error
+          this.address.error_message = error.response.data.address_error
+        } else {
+          this.address.error_message = ''
+        }
+        // Note
+        if (error.response.data.note_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.note_error
+          this.note.error_message = error.response.data.note_error
+        } else {
+          this.note.error_message = ''
+        }
+        // User Menu - Privileges
+        if (error.response.data.menu_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.menu_error
+        }
+        // Created By
+        if (error.response.data.created_by_error) {
+          this.success = null
+          this.info = null
+          this.error = error.response.data.created_by_error
+        }
       }
     }
   },

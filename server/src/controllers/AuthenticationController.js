@@ -8,7 +8,7 @@ module.exports = {
   async registerUser(req, res) {
     try {
       // console.log('FILE', req.file)
-      console.log('BODY', req.body.userMenu.tables)
+      // console.log('BODY', req.body.userMenu.tables)
       const username = req.body.userUsername
       const password = req.body.userPassword
       const password2 = req.body.userPassword2
@@ -73,7 +73,6 @@ module.exports = {
             error: 'This username is already in use.'
           })
         } else {
-          console.log('USER: ', user)
           return res.send({
             user: user,
             success: `User: ${user.username} is successfully registered.`
