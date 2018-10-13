@@ -85,7 +85,7 @@
         </v-list-group>
 
         <!-- Admin Manager -->
-        <v-list-group prepend-icon="gavel">
+        <v-list-group v-if="isRootUser === true" prepend-icon="gavel">
           <v-list-tile slot="activator">
             <v-list-tile-title class="list-tile-title">Admin Manager</v-list-tile-title>
           </v-list-tile>
@@ -161,6 +161,7 @@
 export default {
   data() {
     return {
+      isRootUser: this.$store.state.admin.root_user,
       defaultActive: 'home',
       isActivePage: this.$store.state.activePage
     }
