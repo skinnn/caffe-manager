@@ -7,9 +7,7 @@
       <v-flex>
         <div class="user-header">
             <h1 class="heading">Tables</h1>
-            <v-btn @click="logoutUser" class="logout-btn pink">
-              Logout
-            </v-btn>
+            <user-logout-btn />
         </div>
       </v-flex>
 
@@ -33,8 +31,6 @@
 <script>
 // Components
 import UserSideMenu from '@/components/user/UserSideMenu'
-// Global Mixins
-import UserLogout from '@/mixins/UserLogout'
 
 export default {
   components: {
@@ -45,10 +41,7 @@ export default {
       error: null,
       success: null
     }
-  },
-  mixins: [
-    UserLogout
-  ]
+  }
 }
 </script>
 
@@ -72,14 +65,6 @@ export default {
 
   .list-title {
     font-size: 17px;
-  }
-
-  .logout-btn {
-    margin-right: 10px;
-    position: fixed;
-    top: 25px;
-    left: 91%;
-    color: white;
   }
 
 </style>

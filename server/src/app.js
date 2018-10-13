@@ -49,13 +49,6 @@ app.use('/images', express.static(path.join(__dirname, '../images')))
 // Routes
 app.use('/', index)
 
-// Logout when nodemon restarts the server
-// app.get('*', function(req, res, next) {
-//   res.locals.user = req.user || null
-//   res.locals.admin = req.admin || null
-//   next()
-// })
-
 // Connect to a local Mongo Database
 mongoose.connect(config.db.uri, { useNewUrlParser: true })
   .then(() => {

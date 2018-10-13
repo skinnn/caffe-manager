@@ -12,9 +12,7 @@
             </v-btn>
             Edit Store Settings
           </h1>
-          <v-btn @click="logoutAdmin" class="logout-btn pink">
-            Logout
-          </v-btn>
+          <admin-logout-btn />
         </div>
       </v-flex>
 
@@ -92,7 +90,7 @@
             <br>
 
             <!-- Display messages -->
-            <!-- TODO: Create separate Message component and add v-alert to all components for styling messages -->
+            <!-- TODO: Create separate GLOBAL Message component and add v-alert to all components for styling messages -->
             <div class="error-msg" v-if="error" v-html="error" />
             <div class="success-msg" v-if="success" v-html="success" />
             <div class="info-msg" v-if="info" v-html="info" />
@@ -113,8 +111,6 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
 import SettingsService from '@/services/SettingsService'
-// Global Mixins
-import AdminLogout from '@/mixins/AdminLogout'
 
 export default {
   components: {
@@ -197,10 +193,7 @@ export default {
         name: 'admin-settings'
       })
     }
-  },
-  mixins: [
-    AdminLogout
-  ]
+  }
 }
 </script>
 
@@ -219,14 +212,6 @@ export default {
 
   .list-title {
     font-size: 17px;
-  }
-
-  .logout-btn {
-    margin-right: 10px;
-    position: fixed;
-    top: 25px;
-    left: 91%;
-    color: white;
   }
 
 </style>

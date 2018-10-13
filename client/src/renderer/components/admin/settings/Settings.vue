@@ -12,9 +12,7 @@
               Edit
             </v-btn>
           </h1>
-          <v-btn @click="logoutAdmin" class="logout-btn pink">
-            Logout
-          </v-btn>
+          <admin-logout-btn />
         </div>
       </v-flex>
 
@@ -72,10 +70,6 @@
 <script>
 // Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-// Services
-// import SettingsService from '@/services/SettingsService'
-// Global Mixins
-import AdminLogout from '@/mixins/AdminLogout'
 
 export default {
   components: {
@@ -103,10 +97,7 @@ export default {
         name: 'admin-edit-settings'
       })
     }
-  },
-  mixins: [
-    AdminLogout
-  ]
+  }
 }
 </script>
 
@@ -173,14 +164,6 @@ export default {
 
   .list-title {
     font-size: 17px;
-  }
-
-  .logout-btn {
-    margin-right: 10px;
-    position: fixed;
-    top: 25px;
-    left: 91%;
-    color: white;
   }
 
 </style>

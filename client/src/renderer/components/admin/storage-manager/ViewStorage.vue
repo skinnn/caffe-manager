@@ -15,9 +15,7 @@
                 Edit
               </v-btn>
             </h1>
-            <v-btn @click="logoutAdmin" class="logout-btn pink">
-              Logout
-            </v-btn>
+            <admin-logout-btn />
         </div>
       </v-flex>
 
@@ -83,8 +81,6 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import StorageService from '@/services/StorageService'
 import ArticleService from '@/services/ArticleService'
-// Global Mixins
-import AdminLogout from '@/mixins/AdminLogout'
 
 export default {
   components: {
@@ -176,10 +172,7 @@ export default {
         }
       }
     }
-  },
-  mixins: [
-    AdminLogout
-  ]
+  }
 }
 </script>
 
@@ -229,14 +222,6 @@ export default {
       font-size: 15px;
       border: 1px solid red;
     }
-  }
-
-  .logout-btn {
-    margin-right: 10px;
-    position: fixed;
-    top: 25px;
-    left: 91%;
-    color: white;
   }
 
 </style>

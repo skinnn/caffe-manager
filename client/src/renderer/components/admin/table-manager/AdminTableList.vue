@@ -7,9 +7,7 @@
       <v-flex>
         <div class="admin-header">
           <h1 class="heading">Tables</h1>
-          <v-btn @click="logoutAdmin" class="logout-btn pink">
-            Logout
-          </v-btn>
+          <admin-logout-btn />
         </div>
       </v-flex>
 
@@ -50,8 +48,6 @@ import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
 import TableService from '@/services/TableService'
 import OrderService from '@/services/OrderService'
-// Global Mixins
-import AdminLogout from '@/mixins/AdminLogout'
 // Modules
 import swal from 'sweetalert2'
 
@@ -204,10 +200,7 @@ export default {
         }
       }
     }
-  },
-  mixins: [
-    AdminLogout
-  ]
+  }
 }
 </script>
 
@@ -299,13 +292,5 @@ export default {
       }
     }
 }
-
-  .logout-btn {
-    margin-right: 10px;
-    position: fixed;
-    top: 25px;
-    left: 91%;
-    color: white;
-  }
 
 </style>
