@@ -19,12 +19,6 @@
           enctype="multipart/form-data"
           class="create-article-form"
         >
-          <!-- <v-text-field
-            type="text"
-            name="storageId"
-            v-model="storageId"
-            solo
-          ></v-text-field> -->
 
           <h3>Name:</h3>
           <v-flex xs12 sm8 d-flex>
@@ -68,7 +62,13 @@
 
           <h3>Add Image</h3>
           <div class="upload-image">
-            <input @change="imagePreview(this)" id="articleImage" class="previewImgInput" type="file" name="imageUpload" />
+            <input
+              type="file"
+              @change="imagePreview(this)"
+              id="articleImage"
+              name="imageUpload"
+              class="previewImgInput"
+            />
             <img id="previewImg" class="previewImg" src="" alt="">
           </div>
 
@@ -110,7 +110,6 @@ export default {
     }
   },
   methods: {
-    // TODO: Add image preview
     imagePreview() {
       const img = document.getElementById('articleImage').files
       const previewImg = document.getElementById('previewImg')
@@ -146,13 +145,14 @@ export default {
               formData.append('articleRetailPrice', artRetailPrice)
               formData.append('articleQuantity', artQuantity)
 
-              // Create article
+              // Create Article
               const response = (await ArticleService.createArticle(formData)).data
 
               // If successfully created
               if (response.created) {
                 // Success message and timeout
                 this.error = null
+                this.info = null
                 this.success = response.success
                 setTimeout(() => {
                   this.success = null
@@ -164,6 +164,8 @@ export default {
                 this.retail_price = 0
                 image = null
                 imagefile = null
+                const previewImg = document.getElementById('previewImg')
+                previewImg.src = ''
               }
             } else {
               this.success = null

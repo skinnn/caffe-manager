@@ -145,7 +145,7 @@
               maxlength="250"
               type="text"
               v-model="note.value"
-              placeholder="Write a short note about the user.."
+              placeholder="Write a short note about the person.."
               outline
             ></v-textarea>
           </v-flex>

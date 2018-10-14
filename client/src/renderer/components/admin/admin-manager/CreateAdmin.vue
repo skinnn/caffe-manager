@@ -143,7 +143,7 @@
               maxlength="250"
               type="text"
               v-model="note.value"
-              placeholder="Write a short note about the admin.."
+              placeholder="Write a short note about the person.."
               outline
             ></v-textarea>
           </v-flex>
@@ -151,7 +151,14 @@
           <h3>Add image</h3>
           <br>
           <div class="upload-image">
-            <input id="adminImage" type="file" name="imageUpload" />
+            <input
+              type="file"
+              @change="imagePreview(this)"
+              id="adminImage"
+              name="imageUpload"
+              class="previewImgInput"
+            />
+            <img id="previewImg" class="previewImg" src="" alt="">
           </div>
           <br>
 
@@ -270,6 +277,15 @@ export default {
         this.isPasswordConfirmedText = 'Passwords don\'t match'
       }
     },
+    imagePreview() {
+      const img = document.getElementById('adminImage').files
+      const previewImg = document.getElementById('previewImg')
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        previewImg.src = e.target.result
+      }
+      reader.readAsDataURL(img[0])
+    },
     async registerAdmin() {
       try {
         // Check if someone is trying to create account with 'admin' or 'root' usernames
@@ -332,6 +348,8 @@ export default {
               this.note.value = ''
               image = ''
               imagefile.value = ''
+              const previewImg = document.getElementById('previewImg')
+              previewImg.src = ''
               // Hide password messages
               this.showMessage = false
               this.confirmPasswordMatched = null
@@ -524,6 +542,21 @@ export default {
     .passwordMatched {
       text-align: center;
       background-color: lighten(green, 35);
+    }
+
+    .previewImg {
+      width: 130px;
+      height: 130px;
+      max-width: 130px;
+      max-height: 130px;
+      border: 1px solid orange;
+      border-radius: 3px;
+      margin: 10px 0 0 10px;
+      display: block;
+    }
+
+    .previewImgInput {
+      margin: 5px 0 0 10px;
     }
   } // Register Admin Form
 
