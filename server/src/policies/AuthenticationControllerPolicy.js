@@ -38,6 +38,7 @@ module.exports = {
     if (error) {
       switch (error.details[0].context.key) {
         case 'userUsername':
+          console.log(error)
           res.status(400).send({
             username_error: `Username must have more than 5 characters.
               <br>
@@ -58,6 +59,100 @@ module.exports = {
         case 'userPassword2':
           res.status(400).send({
             password2_error: 'Passwords do not match.'
+          })
+          break
+
+        case 'userName':
+          res.status(400).send({
+            name_error: `You must provide a name.
+            <br>
+            It can contain ONLY letters.
+            <br>
+            It MUST have more than 5 characters.`
+          })
+          break
+
+        case 'userTelephone1':
+          res.status(400).send({
+            telephone1_error: `Telephone 1 can contain ONLY letters, numbers, dashes and plus signs.`
+          })
+          break
+
+        case 'userTelephone2':
+          res.status(400).send({
+            telephone2_error: `Telephone 2 can contain ONLY letters, numbers, dashes and plus signs.`
+          })
+          break
+
+        case 'userAddress':
+          res.status(400).send({
+            address_error: `Address can contain ONLY letters and numbers.`
+          })
+          break
+
+        case 'userMenu':
+          res.status(400).send({
+            menu_error: `You must provide user with some permissions.`
+          })
+          break
+
+        case 'userNote':
+          res.status(400).send({
+            note_error: `Note can contain ONLY letters, numbers and dots.`
+          })
+          break
+
+        case 'createdBy':
+          res.status(400).send({
+            created_by_error: `Created by which admin is not specified.
+              <br>
+              Please try reloading the application.`
+          })
+          break
+
+        default:
+          console.log(error)
+          res.status(400).send({
+            error: 'Invalid registration information.'
+          })
+      }
+    } else {
+      next()
+    }
+  },
+
+  // Update user policy
+  updateUser(req, res, next) {
+    const schema = {
+      userUsername: Joi.string()
+        .min(5)
+        .max(15)
+        .regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$'))
+        .required(),
+      userName: Joi.string()
+        .min(5)
+        .max(32)
+        .regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$'))
+        .required(),
+
+      userTelephone1: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      userTelephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      userAddress: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
+      userNote: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
+      userMenu: Joi.any(),
+      createdBy: Joi.any(),
+      imageUpload: Joi.any()
+    }
+
+    const { error, value } = Joi.validate(req.body, schema)
+
+    if (error) {
+      switch (error.details[0].context.key) {
+        case 'userUsername':
+          res.status(400).send({
+            username_error: `Username must have more than 5 characters.
+              <br>
+              It can contain ONLY letters and numbers.`
           })
           break
 

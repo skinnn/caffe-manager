@@ -112,9 +112,10 @@ export default {
 
       .storeImage {
         vertical-align: top;
-        max-width: 300px;
-        max-height: 200px;
-        min-width: 270px;
+        max-width: 330px;
+        max-height: 330px;
+        min-width: 260px;
+        min-height: 260px;
         display: inline-block;
         border: 1px solid grey;
         border-radius: 5px;

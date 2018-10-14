@@ -83,9 +83,18 @@
 
             <h3>Store Image</h3>
             <br>
-            <!-- TODO: Create image preview -->
             <div class="upload-image">
-              <input id="storeImage" type="file" name="imageUpload" />
+              <input
+                type="file"
+                @change="imagePreview(this)"
+                id="storeImage"
+                name="imageUpload"
+              />
+              <img id="previewImg" class="previewImg"
+                :src="`http://localhost:8080/${currentStoreImage}`"
+                alt="">
+              <!-- Preview Image placeholder -->
+              <img v-if="!currentStoreImage && currentStoreImage !== ''" class="previewImgPlaceholder" src="" alt="">
             </div>
             <br>
 
@@ -119,6 +128,7 @@ export default {
   data() {
     return {
       settings: {},
+      currentStoreImage: this.$store.state.settings.store_image,
       adminId: this.$store.state.admin._id,
       select: {
         currency: ['$', '€', 'RSD']
@@ -142,6 +152,15 @@ export default {
     }
   },
   methods: {
+    imagePreview() {
+      const img = document.getElementById('storeImage').files
+      const previewImg = document.getElementById('previewImg')
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        previewImg.src = e.target.result
+      }
+      reader.readAsDataURL(img[0])
+    },
     async updateSettings() {
       try {
         // Get Admin id
@@ -201,11 +220,34 @@ export default {
 
   .admin-container {
 
-    .admin-settings {
-      background-color: lighten(grey, 40);
+    .admin-update-settings {
 
       .settings-form {
         margin-left: 50px;
+      }
+
+      .previewImg {
+        min-width: 150px;
+        min-height: 150px;
+        max-width: 300px;
+        max-height: 300px;
+        border: 1px solid orange;
+        border-radius: 3px;
+        margin: 10px 0 0 10px;
+        display: block;
+      }
+
+      .previewImgPlaceholder {
+        width: 150px;
+        height: 150px;
+        border: 1px solid orange;
+        border-radius: 3px;
+        margin: 10px 0 0 10px;
+        display: block;
+      }
+
+      .previewImgInput {
+        margin: 5px 0 0 10px;
       }
     }
   }

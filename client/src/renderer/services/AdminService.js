@@ -25,8 +25,8 @@ export default {
   getUserById(userId) {
     return Api().get(`admin/user/${userId}`)
   },
-  saveUser(user) {
-    return Api().put(`admin/user/${user._id}`, user)
+  updateUser(userId, user) {
+    return Api().put(`admin/user/${userId}`, user)
   },
   deleteAdmin(adminId, imgPath) {
     return Api().delete(`admin/${adminId}`, {data: { imgPath: imgPath }})

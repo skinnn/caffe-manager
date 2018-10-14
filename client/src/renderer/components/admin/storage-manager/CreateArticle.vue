@@ -70,6 +70,8 @@
               class="previewImgInput"
             />
             <img id="previewImg" class="previewImg" src="" alt="">
+            <!-- Preview Image placeholder -->
+            <img v-if="!selectedImage" class="previewImgPlaceholder" src="" alt="">
           </div>
 
           <v-btn class="createArticleBtn green" type="submit">
@@ -113,6 +115,7 @@ export default {
     imagePreview() {
       const img = document.getElementById('articleImage').files
       const previewImg = document.getElementById('previewImg')
+      this.selectedImage = true
       var reader = new FileReader()
       reader.onload = function(e) {
         previewImg.src = e.target.result
@@ -164,6 +167,7 @@ export default {
                 this.retail_price = 0
                 image = null
                 imagefile = null
+                this.selectedImage = null
                 const previewImg = document.getElementById('previewImg')
                 previewImg.src = ''
               }
@@ -203,10 +207,19 @@ export default {
     padding: 20px;
 
     .previewImg {
-      width: 130px;
-      height: 130px;
-      max-width: 130px;
-      max-height: 130px;
+      min-width: 150px;
+      min-height: 150px;
+      max-width: 200px;
+      max-height: 200px;
+      border: 1px solid orange;
+      border-radius: 3px;
+      margin: 10px 0 0 10px;
+      display: block;
+    }
+
+    .previewImgPlaceholder {
+      width: 150px;
+      height: 150px;
       border: 1px solid orange;
       border-radius: 3px;
       margin: 10px 0 0 10px;

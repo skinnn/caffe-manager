@@ -149,7 +149,9 @@ router.put('/admin/:adminId',
 
 // Update User
 router.put('/admin/user/:userId',
-  AdminController.saveUser)
+  upload.single('imageUpload'),
+  AuthenticationControllerPolicy.updateUser,
+  AdminController.updateUser)
 
 // Get User by id
 router.get('/admin/user/:userId',

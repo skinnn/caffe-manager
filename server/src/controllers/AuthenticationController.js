@@ -18,7 +18,7 @@ module.exports = {
       const address = req.body.userAddress
       const note = req.body.userNote
 
-      const isTable = req.body.isTables
+      // const isTable = req.body.isTables
 
       let image = ''
       // If image is added create image path

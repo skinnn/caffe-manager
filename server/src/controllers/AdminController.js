@@ -184,11 +184,27 @@ module.exports = {
   },
 
   // Update User by id
-  async saveUser(req, res) {
+  async updateUser(req, res) {
     try {
       let query = {_id: req.params.userId}
+      let options = { upsert: true, new: true }
 
-      await User.findOneAndUpdate(query, req.body, function(err, user) {
+      let updatedUser = {}
+      updatedUser.username = req.body.userUsername
+      updatedUser.name = req.body.userName
+      updatedUser.telephone1 = req.body.userTelephone1
+      updatedUser.telephone2 = req.body.userTelephone2
+      updatedUser.address = req.body.userAddress
+      updatedUser.note = req.body.userNote
+      updatedUser.userMenu = req.body.userMenu
+      updatedUser.createdBy = req.body.createdBy
+
+      // If image is added create image path
+      if (req.file !== undefined && req.file !== '') {
+        updatedUser.image = req.file.path
+      }
+
+      await User.findOneAndUpdate(query, updatedUser, function(err, user) {
         if (err) {
           console.log(err)
         } else {

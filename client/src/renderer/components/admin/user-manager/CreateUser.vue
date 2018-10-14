@@ -23,10 +23,8 @@
             Username: <span class="required-field">*</span>
           </h3>
           <v-flex xs12 sm8 d-flex>
-            <!-- :rules="['Required field']" -->
             <v-text-field
               title="Required field"
-              :success-messages="username.success_message"
               :error-messages="username.error_message"
               maxlength="15"
               type="text"
@@ -92,7 +90,6 @@
           </h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="name.success_message"
               :error-messages="name.error_message"
               maxlength="32"
               type="text"
@@ -104,7 +101,6 @@
           <h3>Telephone 1:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="telephone1.success_message"
               :error-messages="telephone1.error_message"
               maxlength="20"
               type="text"
@@ -116,7 +112,6 @@
           <h3>Telephone 2:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="telephone2.success_message"
               :error-messages="telephone2.error_message"
               maxlength="20"
               type="text"
@@ -128,7 +123,6 @@
           <h3>Address:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-text-field
-              :success-messages="address.success_message"
               :error-messages="address.error_message"
               maxlength="35"
               type="text"
@@ -140,7 +134,6 @@
           <h3>Note:</h3>
           <v-flex xs12 sm8 d-flex>
             <v-textarea
-              :success-messages="note.success_message"
               :error-messages="note.error_message"
               maxlength="250"
               type="text"
@@ -201,7 +194,6 @@ export default {
     return {
       username: {
         value: '',
-        success_message: '',
         error_message: ''
       },
       password: {
@@ -216,27 +208,22 @@ export default {
       },
       name: {
         value: '',
-        success_message: '',
         error_message: ''
       },
       telephone1: {
         value: '',
-        success_message: '',
         error_message: ''
       },
       telephone2: {
         value: '',
-        success_message: '',
         error_message: ''
       },
       address: {
         value: '',
-        success_message: '',
         error_message: ''
       },
       note: {
         value: '',
-        success_message: '',
         error_message: ''
       },
       userMenu: {
