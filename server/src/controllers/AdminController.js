@@ -163,6 +163,31 @@ module.exports = {
     }
   },
 
+  // Get User login List - just usernames
+  async getUserLoginList(req, res) {
+    try {
+      await User.find()
+        .select('username name _id')
+        .exec()
+        .then(docs => {
+          res.send({
+            users: docs
+          })
+        })
+        .catch(err => {
+          console.log(err)
+          res.status(500).send({
+            error: 'An error has occurred trying to get the user list.'
+          })
+        })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occurred trying to get the list of staff members.'
+      })
+    }
+  },
+
   // Get User by id
   async getUserById(req, res) {
     try {
