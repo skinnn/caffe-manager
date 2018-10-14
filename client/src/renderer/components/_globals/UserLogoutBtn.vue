@@ -16,9 +16,10 @@ export default {
         if (response.user === false) {
           // Set user and isLoggedIn states to false
           this.$store.dispatch('setUser', null)
-          // Redirect to user login page
-          this.$router.push({
-            name: 'user-login'
+          // Redirect to user login page and send success msg
+          await this.$router.push({
+            name: 'user-login',
+            params: { loggedOutMessage: 'Logged out' }
           })
         }
       } catch (error) {

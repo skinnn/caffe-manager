@@ -23,9 +23,10 @@ export default {
 
           console.log('App state cleared. ', this.$store.state)
 
-          // Redirect to admin login page
+          // Redirect to admin login page and send success msg
           this.$router.push({
-            name: 'user-login'
+            name: 'admin-login',
+            params: { loggedOutMessage: 'Logged out' }
           })
         }
       } catch (error) {

@@ -75,7 +75,8 @@ export default {
       error: null,
       success: null,
       info: null,
-      noUsers: null
+      noUsers: null,
+      loggedOutMessage: this.$store.state.route.params.loggedOutMessage
     }
   },
   async mounted() {
@@ -88,16 +89,17 @@ export default {
         userList.push(user)
       })
     }
-    // If there is no Users in the DB
+    // If there are no Users in the DB
     if (response.noUsers) {
       this.noUsers = response.noUsers
     }
     // TODO: Fire this only if user logged out
-    if (!this.$store.state.isUserLoggedIn) {
-      this.success = 'Logged out.'
-      setTimeout(() => {
+    if (this.loggedOutMessage !== null && this.loggedOutMessage !== {}) {
+      this.success = this.loggedOutMessage
+      await setTimeout(() => {
         this.success = null
       }, 3000)
+      this.loggedOutMessage = null
     }
   },
   methods: {
@@ -146,7 +148,7 @@ export default {
     list-style: none;
     display: table;
     position: fixed;
-    min-height: 378px;
+    min-height: 415px;
     min-width: 430px;
     padding: 0 10px 0 10px;
     left: 67%;

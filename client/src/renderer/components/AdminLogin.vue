@@ -74,7 +74,8 @@ export default {
       error: null,
       success: null,
       info: null,
-      noAdmins: null
+      noAdmins: null,
+      loggedOutMessage: this.$store.state.route.params.loggedOutMessage
     }
   },
   async mounted() {
@@ -87,16 +88,17 @@ export default {
         adminList.push(admin)
       })
     }
-    // If there is no Admins in the DB (root_user doesnt count)
+    // If there are no Admins in the DB (root_user doesnt count)
     if (response.noAdmins) {
       this.noAdmins = response.noAdmins
     }
     // TODO: Fire this only if admin logged out
-    if (!this.$store.state.isAdminLoggedIn) {
-      this.success = 'Logged out.'
-      setTimeout(() => {
+    if (this.loggedOutMessage) {
+      this.success = this.loggedOutMessage
+      await setTimeout(() => {
         this.success = null
       }, 3000)
+      this.loggedOutMessage = null
     }
   },
   methods: {
@@ -154,7 +156,7 @@ export default {
     list-style: none;
     display: table;
     position: fixed;
-    min-height: 378px;
+    min-height: 415px;
     min-width: 430px;
     padding: 0 10px 0 10px;
     left: 67%;
