@@ -9,6 +9,7 @@ module.exports = {
       let query = {}
       let update = { type: 'settings' }
       let options = { upsert: true, new: true, setDefaultsOnInsert: true }
+
       await AdminSettings.findOneAndUpdate(query, update, options, function(err, settings) {
         if (err) {
           return res.status(500).send({
@@ -32,8 +33,9 @@ module.exports = {
   async updateAdminSettings(req, res) {
     try {
       let query = { type: 'settings' }
-      let settings = {}
+      let options = { upsert: true, new: true }
 
+      let settings = {}
       settings.store_name = req.body.storeName
       settings.store_address = req.body.storeAddress
       settings.currency = req.body.storeCurrency
@@ -50,7 +52,7 @@ module.exports = {
         settings.store_image = req.body.oldImage
       }
 
-      await AdminSettings.findOneAndUpdate(query, settings, { upsert: true, new: true }, function(err, settings) {
+      await AdminSettings.findOneAndUpdate(query, settings, options, function(err, settings) {
         if (err) {
           return res.status(500).send({
             error: 'A database error has occurred trying to update the settings. Please try again.'

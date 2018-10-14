@@ -15,7 +15,6 @@ module.exports = {
       // Create or Update
       let query = { root_user: true, username: 'admin' }
       // let update = { root_admin: true }
-      // let options = { upsert: true, new: true, setDefaultsOnInsert: true }
       await Admin.find(query, function(err, root) {
         if (err) {
           return res.status(500).send({
@@ -114,6 +113,7 @@ module.exports = {
   async saveAdmin(req, res) {
     try {
       let query = {_id: req.params.adminId}
+      let options = { upsert: true, new: true }
 
       let admin = {}
       admin.name = req.body.name
@@ -124,7 +124,7 @@ module.exports = {
 
       // Check if the name is typed and create article in the db
       if (admin.name !== '' && admin.username !== '') {
-        await Admin.findOneAndUpdate(query, req.body, { upsert: true, new: true }, function(err, admin) {
+        await Admin.findOneAndUpdate(query, req.body, options, function(err, admin) {
           if (err) {
             console.log(err)
           } else {

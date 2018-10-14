@@ -119,6 +119,7 @@ module.exports = {
   async saveArticle(req, res) {
     try {
       let query = {_id: req.params.articleId}
+      let options = { upsert: true, new: true }
 
       let article = {}
       article.name = req.body.articleName
@@ -135,7 +136,7 @@ module.exports = {
 
       // If fields are not empty save article
       if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
-        await Article.findOneAndUpdate(query, article, { upsert: true, new: true }, function(err, article) {
+        await Article.findOneAndUpdate(query, article, options, function(err, article) {
           if (err) {
             res.status(500).send({
               error: 'A database error has occurred trying to update the article. Please try again.'

@@ -103,6 +103,7 @@
                 name="imageUpload"
               />
               <img id="previewImg" class="previewImg"
+                v-if="image.value && image.value !== ''"
                 :src="`http://localhost:8080/${image.value}`"
                 alt="">
               <!-- Preview Image placeholder -->
