@@ -204,7 +204,7 @@ module.exports = {
         updatedUser.image = req.file.path
       }
 
-      await User.findOneAndUpdate(query, updatedUser, function(err, user) {
+      await User.findOneAndUpdate(query, updatedUser, options, function(err, user) {
         if (err) {
           console.log(err)
         } else {
