@@ -163,7 +163,13 @@
           <h3>Add image</h3>
           <br>
           <div class="upload-image">
-            <input id="userImage" type="file" name="imageUpload" />
+            <input
+              type="file"
+              @change="imagePreview(this)"
+              id="userImage"
+              name="imageUpload"
+            />
+            <img id="previewImg" class="previewImg" src="" alt="">
           </div>
           <br>
 
@@ -291,6 +297,15 @@ export default {
         this.isPasswordConfirmedText = 'Passwords don\'t match'
       }
     },
+    imagePreview() {
+      const img = document.getElementById('userImage').files
+      const previewImg = document.getElementById('previewImg')
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        previewImg.src = e.target.result
+      }
+      reader.readAsDataURL(img[0])
+    },
     async registerUser() {
       try {
         const userFormData = new FormData()
@@ -356,6 +371,8 @@ export default {
           this.userMenu.tables = false
           image = ''
           imagefile.value = ''
+          const previewImg = document.getElementById('previewImg')
+          previewImg.src = ''
           // Hide password messages
           this.showMessage = false
           this.confirmPasswordMatched = null
@@ -522,7 +539,22 @@ export default {
     .passwordMatched {
       background-color: lighten(green, 45);
     }
-  }
+
+    .previewImg {
+      width: 130px;
+      height: 130px;
+      max-width: 130px;
+      max-height: 130px;
+      border: 1px solid orange;
+      border-radius: 3px;
+      margin: 10px 0 0 10px;
+      display: block;
+    }
+
+    .previewImgInput {
+      margin: 5px 0 0 10px;
+    }
+  } // Register User form
 
   .list-title {
     font-size: 17px;
