@@ -19,6 +19,9 @@ export default {
   getUserLoginList() {
     return Api().get('user/login-list')
   },
+  getAdminLoginList() {
+    return Api().get('admin/login-list')
+  },
   getUserById(userId) {
     return Api().get(`admin/user/${userId}`)
   },

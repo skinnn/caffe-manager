@@ -63,8 +63,13 @@ router.use(function timeLog(req, res, next) {
 
 // TODO: Secure all endpoints so only logged in admin can access it
 
+// Get User login list
 router.get('/user/login-list',
   AdminController.getUserLoginList)
+
+// Get Admin login list
+router.get('/admin/login-list',
+  AdminController.getAdminLoginList)
 
 router.get('/find/root',
   AdminController.createRootAdmin)

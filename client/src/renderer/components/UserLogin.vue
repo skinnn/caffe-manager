@@ -11,7 +11,6 @@
           <router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link>
           <router-link to="/" event=""><v-btn color="blue">User Login</v-btn></router-link>
 
-          <!-- TODO: List all User accounts on the side and fill username by clicking on it -->
           <v-form @keyup.enter.native="loginUser">
             <v-text-field
               type="text"
@@ -32,7 +31,7 @@
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="success-msg" v-if="success" v-html="success" />
           <div class="info-msg" v-if="info" v-html="info" />
-          <div class="msg-placeholder" v-if="!info && !success && !error" v-html="" />
+          <div class="msg-placeholder" v-if="!info && !success && !error" />
           <br>
           <v-btn class="green login-button"
             block
@@ -45,12 +44,11 @@
     </v-flex>
     <v-flex xs4>
       <div class="elevation-5">
-        <!-- TODO: When clicked on the name populate the username input field -->
         <ul class="userList">
-          <h3 v-if="userList.length < 1" class="userListEmptyText">No users</h3>
+          <h3 v-if="userList.length < 1" class="userListEmptyText">{{noUsers}}</h3>
           <li
             v-for="user in this.userList"
-            :key="user._id"
+            :key="user.username"
             @click="populateUsername(user.username)"
             class="singleUserLi"
           >
@@ -76,17 +74,25 @@ export default {
       // Messages
       error: null,
       success: null,
-      info: null
+      info: null,
+      noUsers: null
     }
   },
   async mounted() {
     const response = (await AdminService.getUserLoginList()).data
     console.log(response)
-    let userList = this.userList
-    response.users.forEach(function(user) {
-      userList.push(user)
-    })
-    // TODO: Fire this only if logout was clicked
+    if (response.users) {
+      this.noUsers = null
+      let userList = this.userList
+      response.users.forEach(function(user) {
+        userList.push(user)
+      })
+    }
+    // If there is no Users in the DB
+    if (response.noUsers) {
+      this.noUsers = response.noUsers
+    }
+    // TODO: Fire this only if user logged out
     if (!this.$store.state.isUserLoggedIn) {
       this.success = 'Logged out.'
       setTimeout(() => {
@@ -132,6 +138,10 @@ export default {
     color: white;
   }
 
+  .msg-placeholder {
+    height: 36px;
+  }
+
   .userList {
     list-style: none;
     display: table;
@@ -170,10 +180,6 @@ export default {
       text-align: center;
       font-size: 20px;
     }
-  }
-
-  .msg-placeholder {
-    height: 36px;
   }
 
 </style>

@@ -1,6 +1,6 @@
 <template>
   <v-layout row class="mt-5">
-    <v-flex xs6 offset-xs3>
+    <v-flex xs5 offset-xs3>
       <div class="white elevation-5">
         <v-toolbar class="black toolbar" flat dense>
           <v-toolbar-title class="toolbar-title">Admin Login</v-toolbar-title>
@@ -10,22 +10,26 @@
           <router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link>
           <router-link to="/"><v-btn color="blue">User Login</v-btn></router-link>
 
-          <!-- TODO: List all Admin accounts on the side and fill username by clicking on it -->
-          <v-text-field
-            type="text"
-            v-model="username"
-            label="Username:"
-            outline
-            ></v-text-field>
-          <v-text-field
-            type="password"
-            v-model="password"
-            label="Password:"
-            outline
-            ></v-text-field>
+          <v-form @keyup.enter.native="loginAdmin">
+            <v-text-field
+              type="text"
+              v-model="username"
+              label="Username:"
+              outline
+              ></v-text-field>
+            <v-text-field
+              id="pwFocus"
+              type="password"
+              v-model="password"
+              label="Password:"
+              outline
+              ></v-text-field>
+          </v-form>
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="success-msg" v-if="success" v-html="success" />
+          <div class="info-msg" v-if="info" v-html="info" />
+          <div class="msg-placeholder" v-if="!info && !success && !error" />
           <br>
           <v-btn class="green login-button"
             block
@@ -36,23 +40,71 @@
 
       </div>
     </v-flex>
+    <v-flex xs4>
+      <div class="elevation-5">
+        <ul class="adminList">
+          <h3 v-if="adminList.length < 1" class="adminListEmptyText">{{noAdmins}}</h3>
+          <li
+            v-for="admin in this.adminList"
+            :key="admin.username"
+            @click="populateUsername(admin.username)"
+            class="singleAdminLi"
+          >
+          <div class="singleAdminDiv">{{admin.name}}</div>
+          </li>
+        </ul>
+
+      </div>
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
 import SettingsService from '@/services/SettingsService'
+import AdminService from '@/services/AdminService'
 
 export default {
   data() {
     return {
+      adminList: [],
       username: '',
       password: '',
+      // Messages
       error: null,
-      success: null
+      success: null,
+      info: null,
+      noAdmins: null
+    }
+  },
+  async mounted() {
+    const response = (await AdminService.getAdminLoginList()).data
+    console.log(response)
+    if (response.admins) {
+      this.noAdmins = null
+      let adminList = this.adminList
+      response.admins.forEach(function(admin) {
+        adminList.push(admin)
+      })
+    }
+    // If there is no Admins in the DB (root_user doesnt count)
+    if (response.noAdmins) {
+      this.noAdmins = response.noAdmins
+    }
+    // TODO: Fire this only if admin logged out
+    if (!this.$store.state.isAdminLoggedIn) {
+      this.success = 'Logged out.'
+      setTimeout(() => {
+        this.success = null
+      }, 3000)
     }
   },
   methods: {
+    populateUsername(username) {
+      this.username = username
+      this.password = ''
+      document.getElementById('pwFocus').focus()
+    },
     async loginAdmin() {
       try {
         // Admin Login
@@ -84,15 +136,6 @@ export default {
         this.error = error.response.data.error
       }
     }
-  },
-  mounted() {
-    // TODO: Fire this only if logout was clicked
-    if (!this.$store.state.isAdminLoggedIn) {
-      this.success = 'Logged out.'
-      setTimeout(() => {
-        this.success = null
-      }, 3000)
-    }
   }
 }
 </script>
@@ -101,6 +144,50 @@ export default {
 
   .toolbar-title {
     color: white;
+  }
+
+  .msg-placeholder {
+    height: 36px;
+  }
+
+  .adminList {
+    list-style: none;
+    display: table;
+    position: fixed;
+    min-height: 378px;
+    min-width: 430px;
+    padding: 0 10px 0 10px;
+    left: 67%;
+    border: 1px solid grey;
+    border-radius: 5px;
+    background-color: lighten(grey, 40);
+
+    .singleAdminLi {
+      cursor: pointer;
+      list-style: none;
+      text-align: left;
+      font-size: 18px;
+      margin: 10px 0 0 0;
+      &:hover {
+        .singleAdminDiv {
+          background-color: lighten(green, 40);
+          border-left: 2px solid green;
+        }
+      }
+
+      .singleAdminDiv {
+        min-height: 50px;
+        background-color: lighten(green, 55);
+        padding: 10px;
+        border-radius: 10px;
+        display: table;
+      }
+    }
+
+    .adminListEmptyText {
+      text-align: center;
+      font-size: 20px;
+    }
   }
 
 </style>

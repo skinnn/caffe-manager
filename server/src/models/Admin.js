@@ -6,18 +6,15 @@ const AdminSchema = new Schema({
   userType: {
     type: String,
     required: true
-    // default: 'admin'
   },
   root_user: {
     type: Boolean,
     required: true
-    // default: true
   },
   username: {
     type: String,
     required: true,
     unique: true
-    // default: 'admin'
   },
   password: {
     type: String,

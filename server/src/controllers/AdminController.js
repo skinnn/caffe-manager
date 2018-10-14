@@ -163,31 +163,6 @@ module.exports = {
     }
   },
 
-  // Get User login List - just usernames
-  async getUserLoginList(req, res) {
-    try {
-      await User.find()
-        .select('username name _id')
-        .exec()
-        .then(docs => {
-          res.send({
-            users: docs
-          })
-        })
-        .catch(err => {
-          console.log(err)
-          res.status(500).send({
-            error: 'An error has occurred trying to get the user list.'
-          })
-        })
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of staff members.'
-      })
-    }
-  },
-
   // Get User by id
   async getUserById(req, res) {
     try {
@@ -225,6 +200,70 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to update the user data.'
+      })
+    }
+  },
+
+  // Get User login List - just usernames and names
+  async getUserLoginList(req, res) {
+    try {
+      await User.find()
+        .select('-_id username name')
+        .exec()
+        .then(docs => {
+          if (docs.length > 0) {
+            res.send({
+              users: docs
+            })
+          } else {
+            res.send({
+              noUsers: 'No users'
+            })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          res.status(500).send({
+            error: 'An error has occurred trying to get the user list.'
+          })
+        })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occurred trying to get the list of staff members.'
+      })
+    }
+  },
+
+  // Get Admin login List - just usernames and names
+  async getAdminLoginList(req, res) {
+    try {
+      // Find all admins except the root user/admin
+      let query = { root_user: false }
+      await Admin.find(query)
+        .select('-_id username name')
+        .exec()
+        .then(docs => {
+          if (docs.length > 0) {
+            res.send({
+              admins: docs
+            })
+          } else {
+            res.send({
+              noAdmins: 'No admins'
+            })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          res.status(500).send({
+            error: 'An error has occurred trying to get the admin list.'
+          })
+        })
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occurred trying to get the list of admins.'
       })
     }
   },
