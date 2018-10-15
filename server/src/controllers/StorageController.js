@@ -7,21 +7,23 @@ module.exports = {
     try {
       let storage = new Storage()
       storage.name = req.body.storageName
-      // Check if the name is typed and create storage in the db
-      if (storage.name !== '') {
+      storage.type = req.body.type
+      // Validation
+      if (storage.name !== '' && storage.type !== '') {
         await storage.save(function(err) {
           if (err) {
             return console.log(err)
           } else {
-            res.send({
+            return res.send({
               saved: true,
               success: 'Storage created.'
             })
-            console.log('Storage has been successfully created.')
           }
         })
       } else {
-        return console.log('Error: Storage must have a name.')
+        return res.status(400).send({
+          error: 'Please fill out all required fields.'
+        })
       }
     } catch (err) {
       res.status(500).send({

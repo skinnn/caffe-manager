@@ -6,6 +6,12 @@ const StorageSchema = new Schema({
     type: String,
     required: true
   },
+  // TODO: Only - 'Main' - storage is the storage from which Articles
+  // get listed in the Article Menu and bill is printed
+  type: {
+    type: String,
+    required: true
+  },
   date: {
     type: Date,
     default: Date.now

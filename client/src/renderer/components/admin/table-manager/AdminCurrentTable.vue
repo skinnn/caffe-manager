@@ -60,7 +60,7 @@
                 Select articles for:
                 <span class="currentOrderName">{{currentOrderName}}</span>
               </h2>
-              <!-- TODO: Display article sub groups/storages instead of all articles -->
+              <!-- TODO: Display Article Subgroups > Articles - instead of listing all articles -->
               <li
                 v-for="article in this.articleList"
                 :key="article._id"

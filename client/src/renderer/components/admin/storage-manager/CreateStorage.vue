@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-create-storage">
+  <div class="admin-create-storage-page">
     <div>
       <admin-side-menu />
     </div>
@@ -14,16 +14,33 @@
       </v-flex>
 
       <v-flex class="admin-container">
-          <v-text-field
-            type="text"
-            v-model="storageName"
-            label="Storage Name:"
-            outline
-          ></v-text-field>
+        <div class="create-storage">
+
+          <h3>Storage name:</h3>
+          <v-flex xs12 sm8 d-flex>
+            <v-text-field
+              type="text"
+              v-model="storage.name"
+              label="Example: Storage 1, Main, Alternative 1..."
+              solo
+            ></v-text-field>
+          </v-flex>
+
+          <h3>Type:</h3>
+          <v-flex xs12 sm5 d-flex>
+            <v-select
+              :items="select.storageType"
+              v-model="storage.type"
+              label="Select"
+              solo
+            ></v-select>
+          </v-flex>
+        </div>
 
           <!-- Display messages -->
           <div class="error-msg" v-if="error" v-html="error" />
           <div class="success-msg" v-if="success" v-html="success" />
+          <div class="info-msg" v-if="info" v-html="info" />
 
           <v-btn @click="createStorage()" class="yellow">
             Create
@@ -44,9 +61,17 @@ export default {
   },
   data() {
     return {
-      storageName: '',
+      storage: {
+        name: '',
+        type: ''
+      },
+      select: {
+        storageType: ['Main', 'Alt']
+      },
+      // Messages
       error: null,
-      success: null
+      success: null,
+      info: null
     }
   },
   mounted() {
@@ -55,16 +80,29 @@ export default {
   methods: {
     async createStorage() {
       try {
-        const response = (await StorageService.createStorage({
-          storageName: this.storageName
-        })).data
+        if (this.storage.name !== '' && this.storage.type !== '') {
+          const response = (await StorageService.createStorage({
+            storageName: this.storage.name,
+            type: this.storage.type
+          })).data
 
-        if (response.saved) {
-          this.success = response.success
-          setTimeout(() => {
-            this.success = null
-          }, 3000)
-          console.log(response)
+          if (response.saved) {
+            this.error = null
+            this.info = null
+            this.success = response.success
+            setTimeout(() => {
+              this.success = null
+            }, 3000)
+            console.log(response)
+
+            // Reset input fields
+            this.storage.name = ''
+            this.storage.type = ''
+          }
+        } else {
+          this.success = null
+          this.info = null
+          this.error = 'Please fill out all required fields.'
         }
       } catch (error) {
         console.log(error)
@@ -77,6 +115,21 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  .admin-container {
+
+    .create-storage {
+      width: 600px;
+      max-width: 600px;
+      padding: 20px;
+
+      h3 {
+        height: 40px;
+        display: inline-block;
+        width: 370px;
+      }
+    }
+  }
 
   .list-title {
     font-size: 17px;
