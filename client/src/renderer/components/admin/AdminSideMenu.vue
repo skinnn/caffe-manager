@@ -213,6 +213,23 @@ export default {
     border-right: 1px solid #3d3d3d;
   }
 
+  nav {
+    height: 98px;
+
+    .v-list {
+      margin-top: 35px;
+      background-color: lighten(grey, 40);
+
+      .v-list__tile__title {
+        font-size: 25px;
+        .material-icons {
+          color: blue;
+          font-size: 25px;
+        }
+      }
+    }
+  }
+
   .activePage {
     background-color: #404040;
     color: white;

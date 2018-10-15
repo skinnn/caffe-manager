@@ -20,6 +20,7 @@
 
         <div class="admin-edit">
 
+          <!-- TODO: Add the rest of the fields so they can be updated as well - same as Edit User -->
           <label>Username:</label>
           <v-text-field
             type="text"
