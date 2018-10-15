@@ -34,6 +34,7 @@
           <!-- TODO: Create pagination and limit fetching Articles with ~20 per page -->
           <!-- Articles from the current storage -->
           <v-pagination
+            v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
             v-model="pagination.currentPage"
             :length="pagination.totalPages"
             @input="pageChanged"
@@ -92,7 +93,7 @@ export default {
       displayedArticles: [],
       pagination: {
         currentPage: 1,
-        totalPages: 2,
+        totalPages: null,
         itemsPerPage: 20
       },
       storage: {},
@@ -129,13 +130,14 @@ export default {
       // Get Artilces from the Current Storage
       const res = (await ArticleService.getArticlesByStorageId(storageId)).data
       if (res.articles) {
-        this.articles = res.articles
+        this.articles = await res.articles
+        let l = this.articles.length
+        let s = this.pagination.itemsPerPage
+        this.pagination.totalPages = await Math.floor(l / s)
         let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
         let end = start + this.pagination.itemsPerPage
         // Set Displayed Articles
         this.displayedArticles = this.articles.slice(start, end)
-        console.log('Displayed: ', this.displayedArticles)
-        console.log('Articles: ', this.articles)
       }
     } catch (error) {
       this.success = null
@@ -153,19 +155,6 @@ export default {
       let storageId = this.storageId
       this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
     },
-    // async nextPage(page) {
-    //   try {
-    //     let storageId = this.storageId
-    //     let page = this.pagination.page
-    //     let response = (await ArticleService.getArticlesByStorageId(storageId, page)).data
-    //     if (response.articles) {
-    //       this.articles = response.articles
-    //       console.log(response)
-    //     }
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // },
     async pageChanged() {
       try {
         let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
