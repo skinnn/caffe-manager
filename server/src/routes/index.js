@@ -165,7 +165,7 @@ router.post('/admin/storage/create',
 router.put('/storage/:storageId',
   StorageController.saveStorage)
 
-// Get all Articles
+// Get Articles by storage id
 router.get('/admin/storage/:storageId/articles',
   ArticleController.getArticlesByStorageId)
 

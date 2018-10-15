@@ -33,11 +33,16 @@
           <!-- TODO: Add animation for fetching/displaying Articles possibly with Scroll Reveal -->
           <!-- TODO: Create pagination and limit fetching Articles with ~20 per page -->
           <!-- Articles from the current storage -->
+          <v-pagination
+            v-model="pagination.currentPage"
+            :length="pagination.totalPages"
+            @input="pageChanged"
+          ></v-pagination>
           <div id="list-div">
 
             <v-data-table
               :headers="headers"
-              :items="articles"
+              :items="displayedArticles"
               hide-actions
               class="elevation-1"
               dark
@@ -65,12 +70,8 @@
                   <v-btn @click="editArticlePage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
                   <v-btn @click="deleteArticle(props.item._id, props.item)" class="delete-btn white">Delete</v-btn>
                 </td>
-                <!-- <td class="td text-xs-right delete-td">
-
-                </td> -->
               </template>
             </v-data-table>
-
           </div>
       </v-flex>
     </v-layout>
@@ -88,6 +89,12 @@ export default {
   },
   data() {
     return {
+      displayedArticles: [],
+      pagination: {
+        currentPage: 1,
+        totalPages: 2,
+        itemsPerPage: 20
+      },
       storage: {},
       storageId: this.$store.state.route.params.storageId,
       articles: [],
@@ -119,10 +126,16 @@ export default {
         this.storage = response.storage
       }
 
-      // Get artilces from the current storage
+      // Get Artilces from the Current Storage
       const res = (await ArticleService.getArticlesByStorageId(storageId)).data
       if (res.articles) {
         this.articles = res.articles
+        let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+        let end = start + this.pagination.itemsPerPage
+        // Set Displayed Articles
+        this.displayedArticles = this.articles.slice(start, end)
+        console.log('Displayed: ', this.displayedArticles)
+        console.log('Articles: ', this.articles)
       }
     } catch (error) {
       this.success = null
@@ -139,6 +152,31 @@ export default {
     editArticlePage(articleId) {
       let storageId = this.storageId
       this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
+    },
+    // async nextPage(page) {
+    //   try {
+    //     let storageId = this.storageId
+    //     let page = this.pagination.page
+    //     let response = (await ArticleService.getArticlesByStorageId(storageId, page)).data
+    //     if (response.articles) {
+    //       this.articles = response.articles
+    //       console.log(response)
+    //     }
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // },
+    async pageChanged() {
+      try {
+        let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+        let end = start + this.pagination.itemsPerPage
+        // Change Displayed Articles
+        this.displayedArticles = this.articles.slice(start, end)
+        console.log('Displayed: ', this.displayedArticles)
+        console.log('Articles: ', this.articles)
+      } catch (error) {
+        console.log(error)
+      }
     },
     async deleteArticle(articleId, article) {
       let confirmation = confirm(
