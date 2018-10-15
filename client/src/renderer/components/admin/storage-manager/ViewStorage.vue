@@ -94,7 +94,7 @@ export default {
       pagination: {
         currentPage: 1,
         totalPages: null,
-        itemsPerPage: 20
+        itemsPerPage: 2
       },
       storage: {},
       storageId: this.$store.state.route.params.storageId,
@@ -161,14 +161,12 @@ export default {
         let end = start + this.pagination.itemsPerPage
         // Change Displayed Articles
         this.displayedArticles = this.articles.slice(start, end)
-        console.log('Displayed: ', this.displayedArticles)
-        console.log('Articles: ', this.articles)
       } catch (error) {
         console.log(error)
       }
     },
     async deleteArticle(articleId, article) {
-      let confirmation = confirm(
+      let confirmation = await confirm(
         'Are you sure?'
       )
       if (confirmation) {
