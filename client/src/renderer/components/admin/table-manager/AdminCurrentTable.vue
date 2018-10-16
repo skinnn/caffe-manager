@@ -205,6 +205,7 @@ import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import OrderService from '@/services/OrderService'
 import ArticleService from '@/services/ArticleService'
 import TableService from '@/services/TableService'
+import ArticleSubgroupService from '@/services/ArticleSubgroupService'
 // Modules
 import uuidv1 from 'uuid/v1'
 import swal from 'sweetalert2'
@@ -216,6 +217,7 @@ export default {
   data() {
     return {
       articleMenu: false,
+      articleSubgroups: [],
       reservedArticles: [],
       currentOrderId: null,
       currentOrderName: null,
@@ -530,24 +532,27 @@ export default {
     },
     async openArticleMenu(orderId, currentOrderName) {
       try {
-        // Get all Articles
-        const allArticles = (await ArticleService.getAllArticles()).data
-        // Reset Article List each time menu is opened
-        const articleList = this.articleList = []
-        // Add articles in the article array
-        allArticles.articles.forEach(function(article) {
-          articleList.push(article)
-        })
+        // // Get all Articles
+        // const allArticles = (await ArticleService.getAllArticles()).data
+        // // Reset Article List each time menu is opened
+        // const articleList = this.articleList = []
+        // // Add articles in the article array
+        // allArticles.articles.forEach(function(article) {
+        //   articleList.push(article)
+        // })
 
-        // Set Current Order Id and Name
-        this.currentOrderId = orderId
-        this.currentOrderName = currentOrderName
-        console.log(this.currentOrderName)
+        const subgroupsRes = (await ArticleSubgroupService.getSubgroupsFromMainStorages()).data
+        console.log(subgroupsRes)
 
-        // Open Article Menu
-        if (articleList.length >= 1) {
-          this.articleMenu = true
-        }
+        // // Set Current Order Id and Name
+        // this.currentOrderId = orderId
+        // this.currentOrderName = currentOrderName
+        // console.log(this.currentOrderName)
+
+        // // Open Article Menu if there are any articles
+        // if (articleList.length >= 1) {
+        //   this.articleMenu = true
+        // }
       } catch (error) {
         if (error.response.data.info) {
           this.info = error.response.data.info

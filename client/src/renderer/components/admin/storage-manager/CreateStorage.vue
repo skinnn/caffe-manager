@@ -20,6 +20,7 @@
           <v-flex xs12 sm8 d-flex>
             <v-text-field
               type="text"
+              maxlength = "35"
               v-model="storage.name"
               label="Example: Storage 1, Main, Alternative 1..."
               solo
