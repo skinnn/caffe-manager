@@ -12,6 +12,7 @@ const SettingsController = require('../controllers/SettingsController')
 const AdminController = require('../controllers/AdminController')
 const StorageController = require('../controllers/StorageController')
 const ArticleController = require('../controllers/ArticleController')
+const ArticleSubgroupController = require('../controllers/ArticleSubgroupController')
 const TablesController = require('../controllers/TablesController')
 const OrderController = require('../controllers/OrderController')
 const auth = require('../controllers/ensureAuthenticated')
@@ -62,6 +63,14 @@ router.use(function timeLog(req, res, next) {
 })
 
 // TODO: Secure all endpoints so only logged in admin can access it
+
+// Create Article Subgroup
+router.post('/admin/storage/:storageId/subgroup/create',
+  ArticleSubgroupController.createArticleSubgroup)
+
+// Get Article Subgroup list by storage id
+router.get('/admin/storage/:storageId/subgroups',
+  ArticleSubgroupController.getSubgroupsByStorageId)
 
 // Get User login list
 router.get('/user/login-list',

@@ -1,0 +1,169 @@
+<template>
+  <div class="admin-article-subgroup-list-page">
+    <div>
+      <admin-side-menu />
+    </div>
+      <v-layout column class="right-side">
+        <v-flex>
+          <div class="admin-header">
+              <h1 class="heading">{{storageName}} - Subgroups</h1>
+              <admin-logout-btn />
+          </div>
+        </v-flex>
+
+        <v-flex class="admin-container">
+          <!-- Display messages -->
+          <div class="error-msg" v-if="error" v-html="error" />
+          <div class="success-msg" v-if="success" v-html="success" />
+          <div class="info-msg" v-if="info" v-html="info" />
+
+          <div class="create-subgroup">
+            <!-- TODO: Add Image to the Subgroup -->
+            <v-form
+              @submit.prevent="createSubgroup"
+              class="create-article-subgroup-form"
+            >
+
+              <h3>Create Subgroup:</h3>
+              <v-flex xs12 sm8 d-flex>
+                <v-text-field
+                  type="text"
+                  name="name"
+                  maxlength="35"
+                  placeholder="Subgroup name"
+                  v-model="subgroup.name"
+                  solo
+                ></v-text-field>
+              </v-flex>
+
+              <!-- <h3>Add Image</h3>
+              <div class="upload-image">
+                <input
+                  type="file"
+                  @change="imagePreview(this)"
+                  id="articleImage"
+                  name="imageUpload"
+                  class="previewImgInput"
+                />
+                <img id="previewImg" class="previewImg" src="" alt="">
+                <img v-if="!selectedImage" class="previewImgPlaceholder" src="" alt="">
+              </div> -->
+
+              <v-btn class="createSubgroupBtn green" type="submit">
+                Create
+              </v-btn>
+            </v-form>
+          </div>
+
+          <div class="list-of-article-subgroups">
+            <!-- Article Subgroup List -->
+            <v-list two-line>
+              <v-list-tile
+                v-for="subgroup in this.subgroups"
+                :key="subgroup._id"
+                @click="viewSubgroup(subgroup._id, this.storageId)"
+              >
+
+                <v-list-tile-action>
+                  <v-icon>folder</v-icon>
+                </v-list-tile-action>
+
+                <v-list-tile-content>
+                  <v-list-tile-title>{{subgroup.name}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{subgroup.name}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </div>
+
+        </v-flex>
+      </v-layout>
+  </div>
+</template>
+
+<script>
+import AdminSideMenu from '@/components/admin/AdminSideMenu'
+import ArticleSubgroupService from '@/services/ArticleSubgroupService'
+
+export default {
+  components: {
+    AdminSideMenu
+  },
+  data() {
+    return {
+      storageName: this.$store.state.route.params.storageName,
+      storageId: this.$store.state.route.params.storageId,
+      subgroup: {
+        name: ''
+      },
+      subgroups: [],
+      // Messages
+      error: null,
+      success: null,
+      info: null
+    }
+  },
+  async mounted() {
+    try {
+      console.log('Storage id: ', this.storageId)
+      const storageId = this.storageId
+      const response = (await ArticleSubgroupService.getSubgroupsByStorageId(storageId)).data
+      console.log('Get Subgroups Response: ', response)
+      // Get User list
+      if (response.subgroups) {
+        const subgroups = this.subgroups
+        // Add user in the storages array
+        response.subgroups.forEach(function(subgroup) {
+          subgroups.push(subgroup)
+        })
+      }
+    } catch (error) {
+      console.log(error)
+      this.success = ''
+      this.error = error.response.data.error
+    }
+  },
+  methods: {
+    async createSubgroup() {
+      try {
+        let storageId = this.storageId
+        let subgroup = {}
+        subgroup.name = this.subgroup.name
+        const response = (await ArticleSubgroupService.createArticleSubgroup(storageId, subgroup)).data
+        console.log(response)
+        if (response.subgroup) {
+          response.subgroup.forEach(function(subgroup) {
+            this.subgroups.push(subgroup)
+          })
+        }
+      } catch (error) {
+      }
+    },
+    viewSubgroup(subgroupId, storageId) {
+      this.$router.push({
+        name: 'admin-view-storage',
+        params: {storageId, subgroupId}
+      })
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+
+  .create-article-subgroup-form {
+    width: 600px;
+    max-width: 600px;
+    padding: 20px;
+
+    .createSubgroupBtn {
+      display: block;
+      width: 25%;
+    }
+  }
+
+  .list-title {
+    font-size: 17px;
+  }
+
+</style>

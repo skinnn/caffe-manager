@@ -22,7 +22,7 @@
               <v-list-tile
                 v-for="storage in this.storages"
                 :key="storage._id"
-                @click="viewStorage(storage._id)"
+                @click="viewSubgroups(storage._id, storage.name)"
               >
 
                 <v-list-tile-action>
@@ -76,10 +76,10 @@ export default {
     }
   },
   methods: {
-    viewStorage(storageId) {
+    viewSubgroups(storageId, storageName) {
       this.$router.push({
-        name: 'admin-view-storage',
-        params: {storageId}
+        name: 'admin-storage-subgroup-list',
+        params: {storageId, storageName}
       })
     }
   }
