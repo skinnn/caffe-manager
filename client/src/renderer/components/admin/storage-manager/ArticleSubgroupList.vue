@@ -105,10 +105,9 @@ export default {
   },
   async mounted() {
     try {
-      console.log('Storage id: ', this.storageId)
       const storageId = this.storageId
       const response = (await ArticleSubgroupService.getSubgroupsByStorageId(storageId)).data
-      console.log('Get Subgroups Response: ', response)
+      console.log('Subgroups: ', response)
       // Get User list
       if (response.subgroups) {
         const subgroups = this.subgroups
@@ -132,9 +131,7 @@ export default {
         const response = (await ArticleSubgroupService.createArticleSubgroup(storageId, subgroup)).data
         console.log(response)
         if (response.subgroup) {
-          response.subgroup.forEach(function(subgroup) {
-            this.subgroups.push(subgroup)
-          })
+          this.subgroups.push(response.subgroup)
         }
       } catch (error) {
       }
