@@ -26,6 +26,14 @@ const ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  subgroup_name: {
+    type: String,
+    required: true
+  },
+  subgroup_id: {
+    type: String,
+    required: true
+  },
   updated_date: {
     type: String,
     default: ''

@@ -7,11 +7,11 @@
       <v-flex>
         <div class="admin-header">
             <h1 class="heading">
-              Storage: {{storage.name}}
-              <v-btn @click="createArticlePage(storage._id)" class="green">
+              {{subgroup.name}}
+              <v-btn @click="createArticlePage(storage._id, subgroup._id, subgroup.name)" class="green">
                 Add Article
               </v-btn>
-              <v-btn @click="editStoragePage(storage._id)" class="yellow">
+              <v-btn @click="editArticleSubgroupPage(storage._id, subgroup._id)" class="yellow">
                 Edit
               </v-btn>
             </h1>
@@ -23,6 +23,7 @@
         <!-- Display messages -->
         <div class="error-msg" v-if="error" v-html="error" />
         <div class="success-msg" v-if="success" v-html="success" />
+        <div class="info-msg" v-if="info" v-html="info" />
 
         <!-- Storage data-->
           <h3>Storage info:</h3>
@@ -90,6 +91,10 @@ export default {
   },
   data() {
     return {
+      subgroup: {
+        _id: this.$store.state.route.params.subgroup._id,
+        name: this.$store.state.route.params.subgroup.name
+      },
       displayedArticles: [],
       pagination: {
         currentPage: 1,
@@ -114,12 +119,16 @@ export default {
         { text: 'Price', value: 'price' },
         { text: 'Options', sortable: false, align: 'center', value: 'option' }
       ],
+      // Message
       error: null,
-      success: null
+      success: null,
+      info: null
     }
   },
   async mounted() {
     try {
+      console.log('Subgroup _id: ', this.subgroup._id)
+      console.log('Subgroup name: ', this.subgroup.name)
       let storageId = this.storageId
       // Get Storage data
       const response = (await StorageService.getStorageById(storageId)).data
@@ -145,11 +154,12 @@ export default {
     }
   },
   methods: {
-    createArticlePage(storageId) {
-      this.$router.push({name: 'admin-create-article', params: {storageId}})
+    createArticlePage(storageId, subgroupId, subgroupName) {
+      this.$router.push({name: 'admin-create-article', params: {storageId, subgroupId, subgroupName}})
     },
-    editStorage(storageId) {
-      this.$router.push({name: 'admin-edit-storage', params: {storageId}})
+    editArticleSubgroupPage(subgroupId) {
+      // TODO: Edit Article Subgroup
+      this.$router.push({name: 'admin-edit-article-subgroup', params: {subgroupId}})
     },
     editArticlePage(articleId) {
       let storageId = this.storageId

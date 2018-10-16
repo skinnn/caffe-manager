@@ -100,6 +100,10 @@ export default {
   data() {
     return {
       storageId: this.$store.state.route.params.storageId,
+      subgroup: {
+        _id: this.$store.state.route.params.subgroupId,
+        name: this.$store.state.route.params.subgroupName
+      },
       name: '',
       quantity: 0,
       price: 0,
@@ -133,8 +137,11 @@ export default {
         const artPrice = this.price
         const artRetailPrice = this.retail_price
         const artQuantity = this.quantity
-        // Storage ID
+        // In Storage
         const storageId = this.storageId
+        // In Subgroup
+        const subgroupId = this.subgroup._id
+        const subgroupName = this.subgroup.name
 
         // Some Validation
         if (artName !== '' && artName !== undefined) {
@@ -143,6 +150,8 @@ export default {
               // Append everything to form data
               formData.append('imageUpload', image)
               formData.append('storageId', storageId)
+              formData.append('subgroupId', subgroupId)
+              formData.append('subgroupName', subgroupName)
               formData.append('articleName', artName)
               formData.append('articlePrice', artPrice)
               formData.append('articleRetailPrice', artRetailPrice)

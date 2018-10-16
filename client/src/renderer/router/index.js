@@ -16,7 +16,7 @@ const AdminTaxes = require('@/components/admin/AdminTaxes').default
 const Settings = require('@/components/admin/settings/Settings').default
 const EditSettings = require('@/components/admin/settings/EditSettings').default
 // Storage-Manager
-const AdminViewStorage = require('@/components/admin/storage-manager/ViewStorage').default
+const AdminViewSubgroup = require('@/components/admin/storage-manager/ViewArticleSubgroup').default
 const AdminEditStorage = require('@/components/admin/storage-manager/EditStorage').default
 const AdminStorageList = require('@/components/admin/storage-manager/StorageList').default
 const AdminArticleSubgroupList = require('@/components/admin/storage-manager/ArticleSubgroupList').default
@@ -164,8 +164,8 @@ export default new Router({
     },
     {
       path: '/admin/storage/:storageId',
-      name: 'admin-view-storage',
-      component: AdminViewStorage
+      name: 'admin-view-article-subgroups',
+      component: AdminViewSubgroup
     },
     {
       path: '/admin/storage/:storageId/edit',

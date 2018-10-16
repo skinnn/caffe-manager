@@ -61,7 +61,7 @@
               <v-list-tile
                 v-for="subgroup in this.subgroups"
                 :key="subgroup._id"
-                @click="viewSubgroup(subgroup._id, this.storageId)"
+                @click="viewArticleSubgroup(subgroup, storageId)"
               >
 
                 <v-list-tile-action>
@@ -136,10 +136,10 @@ export default {
       } catch (error) {
       }
     },
-    viewSubgroup(subgroupId, storageId) {
+    viewArticleSubgroup(subgroup, storageId) {
       this.$router.push({
-        name: 'admin-view-storage',
-        params: {storageId, subgroupId}
+        name: 'admin-view-article-subgroups',
+        params: {subgroup, storageId}
       })
     }
   }

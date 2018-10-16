@@ -11,11 +11,14 @@ module.exports = {
       // console.log('FILE', req.file)
       // console.log('BODY', req.body)
       let article = new Article()
-      article.inStorage = req.body.storageId
       article.name = req.body.articleName
       article.quantity = req.body.articleQuantity
       article.price = req.body.articlePrice
       article.retail_price = req.body.articleRetailPrice
+      // Storage and Subgroup data
+      article.inStorage = req.body.storageId
+      article.subgroup_name = req.body.subgroupName
+      article.subgroup_id = req.body.subgroupId
 
       // If image is added create image path
       if (req.file !== undefined && req.file !== '') {
