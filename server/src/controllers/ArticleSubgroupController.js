@@ -42,46 +42,67 @@ module.exports = {
     try {
       const query = { type: 'Main' }
 
-      await Storage.find(query, function(err, storages) {
-        if (err) {
-          return console.log(err)
-        } else {
+      await Storage.find(query)
+        .exec()
+        .then(storages => {
           // If there are any Main Storages
           if (storages.length > 0) {
-            var mainSubgroups = []
-            storages.forEach(async function(val, key, storage) {
-              try {
-                let mainStorageId = { inWhichStorage: storage[key]._id }
-                // console.log('Storage id: ', storage[key]._id)
-                ArticleSubgroup.find(mainStorageId, function(err, subgroups) {
-                  if (err) {
-                    return console.log(err)
-                  }
-                  if (subgroups.length > 0) {
-                    subgroups.forEach(function(subgroup) {
-                      mainSubgroups.push(subgroup)
-                    })
-                    console.log('ONE PUSH:', mainSubgroups)
-                  }
-                  // Last iteration of storages.forEach
-                  if (Object.is(storages.length - 1, key)) {
-                    // console.log('END: key= ', key)
-                    console.log('All subgroups from main storages: ', mainSubgroups)
+            for (let i = 0; i < storages.length; i++) {
+              var mainSubgroups = []
+              console.log('Current Iteration: ', storages[i]._id)
+              let mainStorageId = { inWhichStorage: storages[i]._id }
+              ArticleSubgroup.find(mainStorageId)
+                .exec()
+                .then(subgroups => {
+                  subgroups.forEach(function(subgroup) {
+                    mainSubgroups.push(subgroup)
+                  })
+                  // console.log('ONE PUSH:', mainSubgroups)
+                  if (i === storages.length - 1) {
                     res.send({
                       subgroups: mainSubgroups
                     })
+                    console.log('All subgroups from main storages: ', mainSubgroups)
                   }
                 })
-              } catch (error) {
-              }
-            })
-          } else {
-            return res.status(400).send({
-              error: 'No Main storages found.'
-            })
+                .catch(err => console.log(err))
+            }
           }
-        }
-      })
+        })
+        // .then(subgroups => {
+        //   if (i === storages.length - 1) {
+        //     console.log('All subgroups from main storages: ', mainSubgroups)
+        //     res.send({
+        //       subgroups: mainSubgroups
+        //     })
+        //   }
+        // })
+        // .then(subgroups => {
+        //   Last iteration of storages.forEach
+        // if (storages.length - 1)) {
+        // res.send({
+        //   subgroups: mainSubgroups
+        // })
+        // console.log('All subgroups from main storages: ', mainSubgroups)
+        //   }
+        // })
+        //     .catch(err => console.log(err))
+        // } else if (i === storages.length - 1) {
+        //   console.log('All subgroups from main storages: ', mainSubgroups)
+        //   res.send({
+        //     subgroups: mainSubgroups
+        //   })
+        // }
+        //   } else {
+        //     return res.status(400).send({
+        //       error: 'No Main storages found.'
+        //     })
+        //   }
+        // })
+        // .then(storages => {
+        //
+        // })
+        .catch(err => console.log(err))
     } catch (err) {
       return res.status(500).send({
         error: 'An error has occurred trying to get the subgroups.'
