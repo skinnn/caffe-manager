@@ -34,7 +34,7 @@
         <div class="container">
 
           <!-- Reserve Article Menu -->
-          <div v-if="articleMenu" class="reserve-article-menu">
+          <div v-if="reservingMenu" class="reserve-article-menu">
             <!-- Selected Articles -->
             <div v-if="selectedArticles != 0" class="selectedArticles">
               <!-- TODO: Implement Search -->
@@ -55,40 +55,40 @@
                 </li>
               </ul>
             </div>
-            <ul class="articleMenuList">
-              <h2 class="articleMenuHeading">
-                Select articles for:
+            <ul class="reservingMenuList">
+              <h2 class="reservingMenuHeading">
+                Choose subgroup for order:
                 <span class="currentOrderName">{{currentOrderName}}</span>
               </h2>
               <!-- TODO: Display Article Subgroups > Articles - instead of listing all articles -->
               <li
-                v-for="article in this.articleList"
-                :key="article._id"
-                @click="selectArticle(article.name, article._id, article.price)"
+                v-for="subgroup in this.articleSubgroups"
+                :key="subgroup._id"
+                @click="selectArticle(subgroup.name, subgroup._id, subgroup.price)"
                 class="singleArticleMenuLi"
               >
                 <img
-                  v-if="article.image"
-                  :src="`http://localhost:8080/${article.image}`"
-                  class="articleMenuImage"
+                  v-if="subgroup.image"
+                  :src="`http://localhost:8080/${subgroup.image}`"
+                  class="reservingMenuImage"
                   alt="No image"
                 >
-                <!-- Placeholder if there is no article image -->
-                <div v-if="!article.image" class="articleMenuImage"></div>
+                <!-- Placeholder if there is no subgroup image -->
+                <div v-if="!subgroup.image" class="reservingMenuImage"></div>
                 <div class="singleArticleMenuInfo">
-                  <p class="info-text info-name">{{article.name}}</p>
-                  <p class="info-text">Quantity: {{article.quantity}}</p>
-                  <p class="info-text">Price: {{article.price}} {{settings.currency}}</p>
+                  <p class="info-text info-name">{{subgroup.name}}</p>
+                  <p class="info-text">Quantity: {{subgroup.quantity}}</p>
+                  <p class="info-text">Price: {{subgroup.price}} {{settings.currency}}</p>
                 </div>
               </li>
               <v-btn
-                class="articleMenuReserveBtn"
+                class="reservingMenuReserveBtn"
                 @click="reserveArticles"
               >
                 Reserve
               </v-btn>
               <v-btn
-                class="articleMenuCancelBtn"
+                class="reservingMenuCancelBtn"
                 @click="cancelReserving"
               >
                 Cancel
@@ -97,7 +97,7 @@
           </div>
 
           <!-- Current Table Content -->
-          <div v-if="currentTable && !articleMenu" class="currentTable">
+          <div v-if="currentTable && !reservingMenu" class="currentTable">
             <div class="createOrderDiv">
               <v-text-field
                 type="text"
@@ -169,7 +169,7 @@
 
           <div class="admin-table-list">
             <!-- List of Tables from the current logged in user -->
-            <ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
+            <ul v-if="!reservingMenu" id="listOfTables" class="listOfTables collection">
               <p class="tablesListText">List of Tables</p>
               <hr class="tableListDivider">
 
@@ -216,7 +216,7 @@ export default {
   },
   data() {
     return {
-      articleMenu: false,
+      reservingMenu: false,
       articleSubgroups: [],
       reservedArticles: [],
       currentOrderId: null,
@@ -335,12 +335,16 @@ export default {
     cancelReserving() {
       // Reset Selected Article list
       this.selectedArticles = []
+      console.log(this.selectedArticles)
       // Reset currentOrderId to null
       this.currentOrderId = null
+      console.log(this.currentOrderId)
       // Close Select Article menu
-      this.articleMenu = false
+      this.reservingMenu = false
+      console.log(this.reservingMenu)
       // Reset Order name
       this.currentOrderName = null
+      console.log(this.currentOrderName)
     },
     async selectArticle(articleName, articleId, articlePrice) {
       try {
@@ -492,7 +496,7 @@ export default {
           // Reset currentOrderId to null
           this.currentOrderId = null
           // Close Select Article menu
-          this.articleMenu = false
+          this.reservingMenu = false
 
         // If no articles has been selected
         } else {
@@ -543,15 +547,20 @@ export default {
 
         const subgroupsRes = (await ArticleSubgroupService.getSubgroupsFromMainStorages()).data
         console.log(subgroupsRes)
+        const articleSubgroups = this.articleSubgroups = []
+        // Add articles in the article array
+        subgroupsRes.subgroups.forEach(function(subgroup) {
+          articleSubgroups.push(subgroup)
+        })
 
         // // Set Current Order Id and Name
         // this.currentOrderId = orderId
         // this.currentOrderName = currentOrderName
-        // console.log(this.currentOrderName)
-
+        // console.log('Current Order Name: ', this.currentOrderName)
+        //
         // // Open Article Menu if there are any articles
-        // if (articleList.length >= 1) {
-        //   this.articleMenu = true
+        // if (articleSubgroups.length >= 1) {
+        //   this.reservingMenu = true
         // }
       } catch (error) {
         if (error.response.data.info) {
@@ -599,7 +608,7 @@ export default {
             // If there is one or more articles in the list
             if (articleList.length >= 1) {
               // Open Article Menu
-              this.articleMenu = true
+              this.reservingMenu = true
               // Set Current Order Id
               this.currentOrderId = response.orderId
               // Set Order Name
@@ -885,7 +894,7 @@ export default {
         }
       }
 
-      .articleMenuHeading {
+      .reservingMenuHeading {
         width: 100%;
         margin-bottom: 5px;
         font-size: 25px;
@@ -895,7 +904,7 @@ export default {
         }
       }
 
-      .articleMenuList {
+      .reservingMenuList {
         align-content: center;
         align-items: center;
         justify-content: center;
@@ -918,7 +927,7 @@ export default {
             background-color: #F8F8FF;
           }
 
-          .articleMenuImage {
+          .reservingMenuImage {
             display: block;
             margin: 5px auto 7px auto;
             border: 1px solid orange;
@@ -949,7 +958,7 @@ export default {
         }
       }
 
-      .articleMenuReserveBtn {
+      .reservingMenuReserveBtn {
         background-color: lighten(green, 50);
         // font-weight: 600;
         font-size: 16px;
@@ -963,7 +972,7 @@ export default {
         }
       }
 
-      .articleMenuCancelBtn {
+      .reservingMenuCancelBtn {
         background-color: pink;
         // font-weight: 600;
         font-size: 16px;
