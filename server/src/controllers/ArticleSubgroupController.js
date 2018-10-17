@@ -41,36 +41,51 @@ module.exports = {
   async getSubgroupsFromMainStorages(req, res) {
     try {
       const query = { type: 'Main' }
+      var mainStorageIds = []
 
       await Storage
         .find(query)
         .exec()
         .then(storages => {
-          // If there are any Main Storages
           if (storages.length > 0) {
+            // Go through all Main Storages and fetch their IDs
             for (let i = 0; i < storages.length; i++) {
-              var allSubgroups = []
-              console.log('Current Storage: ', storages[i])
-              let mainStorageId = { inWhichStorage: storages[i]._id }
-              ArticleSubgroup
-                .find(mainStorageId)
-                .exec()
-                .then(subgroups => {
-                  subgroups.forEach(function(subgroup) {
-                    console.log('Current subgrup: ', subgroup)
-                    allSubgroups.push(subgroup)
-                  })
-                  // console.log('ONE PUSH:', allSubgroups)
-                  if (i === storages.length - 1) {
-                    res.send({
-                      subgroups: allSubgroups
-                    })
-                    console.log('All subgroups from main storages: ', allSubgroups)
-                  }
-                })
-                .catch(err => console.log(err))
+              mainStorageIds.push(storages[i]._id)
+              // Last iteration
+              if (i === storages.length - 1) {
+                console.log('TOTAL IDS:', mainStorageIds.length)
+              }
             }
           }
+        })
+        .then(storages => {
+          var allSubgroups = []
+          var start = 0
+          mainStorageIds.forEach(function(id) {
+            let mainStorageId = { inWhichStorage: id }
+            ArticleSubgroup
+              .find(mainStorageId)
+              .exec()
+              .then(subgroups => {
+                // console.log(subgroups)
+                subgroups.forEach(function(subgroup) {
+                  allSubgroups.push(subgroup)
+                })
+              })
+              .catch(err => console.log(err))
+            while (start < mainStorageIds.length) {
+              start++
+              console.log('Working... ', start)
+              if (start === mainStorageIds.length) {
+                setTimeout(function() {
+                  console.log('1s delay: ', allSubgroups.length)
+                  res.send({
+                    subgroups: allSubgroups
+                  })
+                }, 1000)
+              }
+            }
+          })
         })
         .catch(err => console.log(err))
     } catch (err) {
