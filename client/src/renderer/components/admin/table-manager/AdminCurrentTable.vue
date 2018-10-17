@@ -545,11 +545,12 @@ export default {
         //   articleList.push(article)
         // })
 
-        const subgroupsRes = (await ArticleSubgroupService.getSubgroupsFromMainStorages()).data
-        console.log(subgroupsRes)
-        const articleSubgroups = this.articleSubgroups = []
-        // Add articles in the article array
-        subgroupsRes.subgroups.forEach(function(subgroup) {
+        const response = (await ArticleSubgroupService.getSubgroupsFromMainStorages()).data
+        console.log(response)
+        this.articleSubgroups = []
+        const articleSubgroups = this.articleSubgroups
+        // Add all Subgroups in the Subgroups array
+        response.subgroups.forEach(function(subgroup) {
           articleSubgroups.push(subgroup)
         })
 

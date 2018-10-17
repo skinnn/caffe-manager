@@ -40,54 +40,41 @@ module.exports = {
   // Get Article Subgroups from the Main Storage/s
   async getSubgroupsFromMainStorages(req, res) {
     try {
-      const query = { type: 'Main' }
-      var mainStorageIds = []
-
-      await Storage
-        .find(query)
-        .exec()
-        .then(storages => {
-          if (storages.length > 0) {
-            // Go through all Main Storages and fetch their IDs
-            for (let i = 0; i < storages.length; i++) {
-              mainStorageIds.push(storages[i]._id)
-              // Last iteration
-              if (i === storages.length - 1) {
-                console.log('TOTAL IDS:', mainStorageIds.length)
-              }
-            }
-          }
-        })
-        .then(storages => {
-          var allSubgroups = []
-          var start = 0
-          mainStorageIds.forEach(function(id) {
-            let mainStorageId = { inWhichStorage: id }
-            ArticleSubgroup
-              .find(mainStorageId)
-              .exec()
-              .then(subgroups => {
-                // console.log(subgroups)
-                subgroups.forEach(function(subgroup) {
-                  allSubgroups.push(subgroup)
-                })
-              })
-              .catch(err => console.log(err))
-            while (start < mainStorageIds.length) {
-              start++
-              console.log('Working... ', start)
-              if (start === mainStorageIds.length) {
-                setTimeout(function() {
-                  console.log('1s delay: ', allSubgroups.length)
-                  res.send({
-                    subgroups: allSubgroups
-                  })
-                }, 1000)
-              }
-            }
+      const getMainStorageIds = async() => {
+        const query = { type: 'Main' }
+        let storages = await Storage.find(query)
+        if (storages.length > 0) {
+          let ids = []
+          storages.forEach(function(storage) {
+            ids.push(storage._id)
           })
-        })
-        .catch(err => console.log(err))
+          return ids
+        } else {
+          return res.status(400).send({
+            noMainStorages: true,
+            error: `There are no Main storages.`
+          })
+        }
+      }
+
+      const storageIds = await getMainStorageIds()
+
+      const getAllSubgroups = async() => {
+        let allSubgroups = []
+        for (let i = 0; i < storageIds.length; i++) {
+          let mainStorageId = { inWhichStorage: storageIds[i] }
+          let subgroups = await ArticleSubgroup.find(mainStorageId)
+          subgroups.forEach(function(subgroup) {
+            allSubgroups.push(subgroup)
+          })
+        }
+        console.log('Finished: ', allSubgroups)
+        return allSubgroups
+      }
+      // let result = await getAllSubgroups()
+      res.send({
+        subgroups: await getAllSubgroups()
+      })
     } catch (err) {
       return res.status(500).send({
         error: 'An error has occurred trying to get the subgroups.'
