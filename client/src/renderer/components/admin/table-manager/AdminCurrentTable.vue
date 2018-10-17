@@ -554,6 +554,11 @@ export default {
           articleSubgroups.push(subgroup)
         })
 
+        // Success message
+        this.success = null
+        this.info = null
+        this.error = null
+
         // // Set Current Order Id and Name
         // this.currentOrderId = orderId
         // this.currentOrderName = currentOrderName

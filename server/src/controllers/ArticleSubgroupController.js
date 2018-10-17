@@ -64,17 +64,29 @@ module.exports = {
         for (let i = 0; i < storageIds.length; i++) {
           let mainStorageId = { inWhichStorage: storageIds[i] }
           let subgroups = await ArticleSubgroup.find(mainStorageId)
-          subgroups.forEach(function(subgroup) {
-            allSubgroups.push(subgroup)
-          })
+          if (subgroups.length > 0) {
+            subgroups.forEach(function(subgroup) {
+              allSubgroups.push(subgroup)
+            })
+          } else {
+            console.log(`\nNo Subgroups in storage: ${storageIds[i]}\n`)
+          }
         }
-        console.log('Finished: ', allSubgroups)
+        console.log(`Total number of found subgrups: ${allSubgroups.length}\n` + allSubgroups)
         return allSubgroups
       }
-      // let result = await getAllSubgroups()
-      res.send({
-        subgroups: await getAllSubgroups()
-      })
+
+      let result = await getAllSubgroups()
+      if (result.length > 0) {
+        res.send({
+          subgroups: result
+        })
+      } else {
+        res.status(400).send({
+          noSubgroups: true,
+          error: `There are no any Subgroups in Main storage/s.`
+        })
+      }
     } catch (err) {
       return res.status(500).send({
         error: 'An error has occurred trying to get the subgroups.'
