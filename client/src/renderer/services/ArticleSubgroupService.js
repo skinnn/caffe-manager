@@ -9,5 +9,8 @@ export default {
   },
   getSubgroupsByStorageId(storageId) {
     return Api().get(`admin/storage/${storageId}/subgroups`)
+  },
+  getArticlesFromSubgroup(subgroupId) {
+    return Api().get(`admin/subgroup/${subgroupId}/articles`)
   }
 }

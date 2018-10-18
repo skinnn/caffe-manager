@@ -32,9 +32,9 @@
         <div class="info-msg" v-if="info" v-html="info" />
 
         <div class="container">
-
+          <!-- TODO: Create separate component for Reserve Article Menu -->
           <!-- Reserve Article Menu -->
-          <div v-if="reservingMenu" class="reserve-article-menu">
+          <div v-if="articleSubgroupList" class="reserve-article-menu">
             <!-- Selected Articles -->
             <div v-if="selectedArticles != 0" class="selectedArticles">
               <!-- TODO: Implement Search -->
@@ -55,8 +55,8 @@
                 </li>
               </ul>
             </div>
-            <ul class="reservingMenuList">
-              <h2 class="reservingMenuHeading">
+            <ul class="articleSubgroupListList">
+              <h2 class="articleSubgroupListHeading">
                 Choose subgroup for order:
                 <span class="currentOrderName">{{currentOrderName}}</span>
               </h2>
@@ -64,31 +64,31 @@
               <li
                 v-for="subgroup in this.articleSubgroups"
                 :key="subgroup._id"
-                @click="selectArticle(subgroup.name, subgroup._id, subgroup.price)"
-                class="singleArticleMenuLi"
+                @click="openArticleSubgroup(subgroup._id)"
+                class="singleSubgroupLi"
               >
                 <img
                   v-if="subgroup.image"
                   :src="`http://localhost:8080/${subgroup.image}`"
-                  class="reservingMenuImage"
+                  class="articleSubgroupListImage"
                   alt="No image"
                 >
-                <!-- Placeholder if there is no subgroup image -->
-                <div v-if="!subgroup.image" class="reservingMenuImage"></div>
-                <div class="singleArticleMenuInfo">
+                <!-- Placeholder if there is no Subgroup image -->
+                <div v-if="!subgroup.image" class="articleSubgroupListImage"></div>
+                <div class="singleSubgroupInfo">
                   <p class="info-text info-name">{{subgroup.name}}</p>
-                  <p class="info-text">Quantity: {{subgroup.quantity}}</p>
-                  <p class="info-text">Price: {{subgroup.price}} {{settings.currency}}</p>
+                  <!-- <p class="info-text">Quantity: {{subgroup.quantity}}</p>
+                  <p class="info-text">Price: {{subgroup.price}} {{settings.currency}}</p> -->
                 </div>
               </li>
               <v-btn
-                class="reservingMenuReserveBtn"
+                class="articleSubgroupListReserveBtn"
                 @click="reserveArticles"
               >
                 Reserve
               </v-btn>
               <v-btn
-                class="reservingMenuCancelBtn"
+                class="articleSubgroupListCancelBtn"
                 @click="cancelReserving"
               >
                 Cancel
@@ -96,8 +96,25 @@
             </ul>
           </div>
 
+          <!-- Current Opened Subgroup -->
+          <div v-if="currentSubgroup.isOpened === true" class="currentSubgroup">
+            <h3>{{currentSubgroup.name}}CURRENT SUBGROUP</h3>
+            <v-btn @click="closeArticleSubgroup">Close</v-btn>
+            <ul>
+              <li
+                v-for="article in this.currentSubgroup.articleList"
+                :key="article._id"
+                class="singleArticleLi"
+              >
+                Name: {{article.name}}
+                Price: {{article.price}}
+                Quantity: {{article.quantity}}
+              </li>
+            </ul>
+          </div>
+
           <!-- Current Table Content -->
-          <div v-if="currentTable && !reservingMenu" class="currentTable">
+          <div v-if="currentTable && !articleSubgroupList && currentSubgroup.isOpened === false" class="currentTable">
             <div class="createOrderDiv">
               <v-text-field
                 type="text"
@@ -129,8 +146,8 @@
                         <v-icon>delete</v-icon>
                       </v-btn>
                       <v-btn
-                        class="addArticleBtn"
-                        @click="openArticleMenu(order._id, order.name)"
+                        class="openSubgroupListMenuBtn"
+                        @click="openSubgroupListMenu(order._id, order.name)"
                       >
                         Add article
                       </v-btn>
@@ -169,7 +186,7 @@
 
           <div class="admin-table-list">
             <!-- List of Tables from the current logged in user -->
-            <ul v-if="!reservingMenu" id="listOfTables" class="listOfTables collection">
+            <ul v-if="!articleSubgroupList && currentSubgroup.isOpened === false" id="listOfTables" class="listOfTables collection">
               <p class="tablesListText">List of Tables</p>
               <hr class="tableListDivider">
 
@@ -216,7 +233,11 @@ export default {
   },
   data() {
     return {
-      reservingMenu: false,
+      articleSubgroupList: false,
+      currentSubgroup: {
+        isOpened: false,
+        articleList: []
+      },
       articleSubgroups: [],
       reservedArticles: [],
       currentOrderId: null,
@@ -340,8 +361,8 @@ export default {
       this.currentOrderId = null
       console.log(this.currentOrderId)
       // Close Select Article menu
-      this.reservingMenu = false
-      console.log(this.reservingMenu)
+      this.articleSubgroupList = false
+      console.log(this.articleSubgroupList)
       // Reset Order name
       this.currentOrderName = null
       console.log(this.currentOrderName)
@@ -496,7 +517,7 @@ export default {
           // Reset currentOrderId to null
           this.currentOrderId = null
           // Close Select Article menu
-          this.reservingMenu = false
+          this.articleSubgroupList = false
 
         // If no articles has been selected
         } else {
@@ -534,7 +555,7 @@ export default {
         })
       }
     },
-    async openArticleMenu(orderId, currentOrderName) {
+    async openSubgroupListMenu(orderId, currentOrderName) {
       try {
         // // Get all Articles
         // const allArticles = (await ArticleService.getAllArticles()).data
@@ -544,7 +565,7 @@ export default {
         // allArticles.articles.forEach(function(article) {
         //   articleList.push(article)
         // })
-
+        // Get Subgroups
         const response = (await ArticleSubgroupService.getSubgroupsFromMainStorages()).data
         console.log(response)
         this.articleSubgroups = []
@@ -554,20 +575,16 @@ export default {
           articleSubgroups.push(subgroup)
         })
 
+        // Set Current Order Id and Name
+        this.currentOrderId = orderId
+        this.currentOrderName = currentOrderName
+        // Open Subgroup Menu
+        this.articleSubgroupList = true
+
         // Success message
         this.success = null
         this.info = null
         this.error = null
-
-        // // Set Current Order Id and Name
-        // this.currentOrderId = orderId
-        // this.currentOrderName = currentOrderName
-        // console.log('Current Order Name: ', this.currentOrderName)
-        //
-        // // Open Article Menu if there are any articles
-        // if (articleSubgroups.length >= 1) {
-        //   this.reservingMenu = true
-        // }
       } catch (error) {
         if (error.response.data.info) {
           this.info = error.response.data.info
@@ -581,6 +598,27 @@ export default {
           this.error = error.response.data.error
         }
       }
+    },
+    async openArticleSubgroup(subgroupId) {
+      try {
+        // TODO: Get all Articles from this Subgroup
+        const response = (await ArticleSubgroupService.getArticlesFromSubgroup(subgroupId)).data
+        console.log(response)
+        if (response.articles) {
+          this.currentSubgroup.articleList = []
+          const articleList = this.currentSubgroup.articleList
+          response.articles.forEach(function(article) {
+            articleList.push(article)
+          })
+        }
+        this.articleSubgroupList = false
+        this.currentSubgroup.isOpened = true
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    closeArticleSubgroup() {
+      this.currentSubgroup.isOpened = false
     },
     // TODO: Create Order with prompt for name, same like reserving article quantity
     async createOrder(currentTableId) {
@@ -614,7 +652,7 @@ export default {
             // If there is one or more articles in the list
             if (articleList.length >= 1) {
               // Open Article Menu
-              this.reservingMenu = true
+              this.articleSubgroupList = true
               // Set Current Order Id
               this.currentOrderId = response.orderId
               // Set Order Name
@@ -900,7 +938,7 @@ export default {
         }
       }
 
-      .reservingMenuHeading {
+      .articleSubgroupListHeading {
         width: 100%;
         margin-bottom: 5px;
         font-size: 25px;
@@ -910,7 +948,7 @@ export default {
         }
       }
 
-      .reservingMenuList {
+      .articleSubgroupListList {
         align-content: center;
         align-items: center;
         justify-content: center;
@@ -918,7 +956,7 @@ export default {
         list-style: none;
         padding: 10px 35px 10px 35px;
 
-        .singleArticleMenuLi {
+        .singleSubgroupLi {
           display: inline-block;
           border: 2px solid grey;
           border-radius: 20px;
@@ -933,7 +971,7 @@ export default {
             background-color: #F8F8FF;
           }
 
-          .reservingMenuImage {
+          .articleSubgroupListImage {
             display: block;
             margin: 5px auto 7px auto;
             border: 1px solid orange;
@@ -942,7 +980,7 @@ export default {
             height: 100px;
           }
 
-          .singleArticleMenuInfo {
+          .singleSubgroupInfo {
             text-align: center;
 
             .articleCheckbox {
@@ -964,9 +1002,8 @@ export default {
         }
       }
 
-      .reservingMenuReserveBtn {
+      .articleSubgroupListReserveBtn {
         background-color: lighten(green, 50);
-        // font-weight: 600;
         font-size: 16px;
         letter-spacing: 1px;
         position: fixed;
@@ -978,9 +1015,8 @@ export default {
         }
       }
 
-      .reservingMenuCancelBtn {
+      .articleSubgroupListCancelBtn {
         background-color: pink;
-        // font-weight: 600;
         font-size: 16px;
         letter-spacing: 1px;
         position: fixed;
@@ -1077,6 +1113,11 @@ export default {
         } // ./ singleOrderDiv
       } // ./ singleOrderLi
     } // ./ currentTable
+
+    .currentSubgroup {
+      width: 100%;
+      height: 100%;
+    }
   } // ./ container
 
   .circleDiv {

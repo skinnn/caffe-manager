@@ -64,6 +64,10 @@ router.use(function timeLog(req, res, next) {
 
 // TODO: Secure all endpoints so only logged in admin can access it
 
+// Get Articles from Subgroup
+router.get('/admin/subgroup/:subgroupId/articles',
+  ArticleSubgroupController.getArticlesFromSubgroup)
+
 // Get Article Subgroups from Main Storages
 router.get('/admin/main-storages/subgroups',
   ArticleSubgroupController.getSubgroupsFromMainStorages)

@@ -1,6 +1,7 @@
 const passport = require('passport')
 const ArticleSubgroup = require('../models/ArticleSubgroup')
 const Storage = require('../models/Storage')
+const Article = require('../models/Article')
 module.exports = {
 
   // Create Article Subgroup
@@ -110,6 +111,25 @@ module.exports = {
     } catch (err) {
       return res.status(500).send({
         error: 'An error has occurred trying to get the subgroups.'
+      })
+    }
+  },
+
+  async getArticlesFromSubgroup(req, res) {
+    try {
+      let query = { subgroup_id: req.params.subgroupId }
+      await Article.find(query, function(err, articles) {
+        if (err) {
+          console.log(err)
+        }
+        res.send({
+          articles: articles
+        })
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).send({
+        error: 'An error has occurred trying to get the articles from this subgroup.'
       })
     }
   }
