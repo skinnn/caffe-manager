@@ -66,7 +66,7 @@ router.use(function timeLog(req, res, next) {
 
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',
-  ArticleSubgroupController.getArticlesFromSubgroup)
+  ArticleController.getArticlesFromSubgroup)
 
 // Get Article Subgroups from Main Storages
 router.get('/admin/main-storages/subgroups',

@@ -33,8 +33,8 @@
 
         <div class="container">
           <!-- TODO: Create separate component for Reserve Article Menu -->
-          <!-- Reserve Article Menu -->
-          <div v-if="articleSubgroupList" class="reserve-article-menu">
+          <!-- List of Article Subgroups -->
+          <div v-if="articleSubgroupList" class="article-subgroup-list">
             <!-- Selected Articles -->
             <div v-if="selectedArticles != 0" class="selectedArticles">
               <!-- TODO: Implement Search -->
@@ -64,7 +64,7 @@
               <li
                 v-for="subgroup in this.articleSubgroups"
                 :key="subgroup._id"
-                @click="openArticleSubgroup(subgroup._id)"
+                @click="openArticleSubgroup(subgroup._id, subgroup.name)"
                 class="singleSubgroupLi"
               >
                 <img
@@ -77,43 +77,95 @@
                 <div v-if="!subgroup.image" class="articleSubgroupListImage"></div>
                 <div class="singleSubgroupInfo">
                   <p class="info-text info-name">{{subgroup.name}}</p>
-                  <!-- <p class="info-text">Quantity: {{subgroup.quantity}}</p>
-                  <p class="info-text">Price: {{subgroup.price}} {{settings.currency}}</p> -->
                 </div>
               </li>
-              <v-btn
-                class="articleSubgroupListReserveBtn"
-                @click="reserveArticles"
-              >
-                Reserve
-              </v-btn>
-              <v-btn
-                class="articleSubgroupListCancelBtn"
-                @click="cancelReserving"
-              >
-                Cancel
-              </v-btn>
             </ul>
+            <v-btn
+              v-if="selectedArticles.length > 0"
+              class="reserveArticlesBtn"
+              @click="reserveArticles"
+            >
+              Reserve
+            </v-btn>
+            <v-btn
+              class="cancelReservingArticlesBtn"
+              @click="cancelReserving"
+            >
+              Cancel
+            </v-btn>
           </div>
 
-          <!-- Current Opened Subgroup -->
+          <!-- Current Opened Subgroup NOW -->
           <div v-if="currentSubgroup.isOpened === true" class="currentSubgroup">
-            <h3>{{currentSubgroup.name}}CURRENT SUBGROUP</h3>
-            <v-btn @click="closeArticleSubgroup">Close</v-btn>
-            <ul>
+            <h2 class="currentSubgroupArticleListHeading">
+              Choose Articles for order:
+              <span class="currentSubgroupOrderName">{{currentOrderName}}</span>
+            </h2>
+            <hr>
+            <!-- Selected Articles -->
+            <div v-if="selectedArticles != 0" class="selectedArticles">
+              <!-- TODO: Implement Search -->
+              <h3>Selected articles</h3>
+              <ul class="selectedArticleList">
+                <li
+                  v-for="article in this.selectedArticles"
+                  :key="article._id"
+                  class="selectedArticleLi"
+                >
+                  <span class="selectedArticleName">
+                    {{article.name}}
+                  </span>
+                  <div class="articleQuantity">{{article.quantity}}</div>
+                  <button @click="removeSelectedArticle(article.selectedId)" class="removeSelectedArticleBtn">
+                    <v-icon class="closeIcon">close</v-icon>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <v-btn @click="closeArticleSubgroup">
+              <v-icon>arrow_back</v-icon>
+            </v-btn>
+            <ul class="currentSubgroupArticleList">
+              <h3>CURRENT SUBGROUP: {{currentSubgroup.name}}</h3>
+              <!-- Current Subgroup Article List -->
               <li
                 v-for="article in this.currentSubgroup.articleList"
                 :key="article._id"
-                class="singleArticleLi"
+                @click="selectArticle(article.name, article._id, article.price)"
+                class="currentSubgroupArticleLi"
               >
-                Name: {{article.name}}
-                Price: {{article.price}}
-                Quantity: {{article.quantity}}
+                <img
+                  v-if="article.image"
+                  :src="`http://localhost:8080/${article.image}`"
+                  class="currentSubgroupArticleImage"
+                  alt="No image"
+                >
+                <!-- Placeholder if there is no Subgroup image -->
+                <div v-if="!article.image" class="currentSubgroupArticleImage"></div>
+                <div class="currentSubgroupArticleInfo">
+                  <p class="info-text info-name">{{article.name}}</p>
+                  <p class="info-text">Quantity: {{article.quantity}}</p>
+                  <p class="info-text">Price: {{article.price}} {{settings.currency}}</p>
+                </div>
               </li>
             </ul>
+            <v-btn
+              v-if="selectedArticles.length > 0"
+              class="reserveArticlesBtn"
+              @click="reserveArticles"
+            >
+              Reserve
+            </v-btn>
+            <v-btn
+              class="cancelReservingArticlesBtn"
+              @click="cancelReserving"
+            >
+              Cancel
+            </v-btn>
           </div>
 
-          <!-- Current Table Content -->
+          <!-- Current Table -->
           <div v-if="currentTable && !articleSubgroupList && currentSubgroup.isOpened === false" class="currentTable">
             <div class="createOrderDiv">
               <v-text-field
@@ -235,6 +287,7 @@ export default {
     return {
       articleSubgroupList: false,
       currentSubgroup: {
+        name: '',
         isOpened: false,
         articleList: []
       },
@@ -352,20 +405,6 @@ export default {
       this.$router.push({
         name: 'admin-table-list'
       })
-    },
-    cancelReserving() {
-      // Reset Selected Article list
-      this.selectedArticles = []
-      console.log(this.selectedArticles)
-      // Reset currentOrderId to null
-      this.currentOrderId = null
-      console.log(this.currentOrderId)
-      // Close Select Article menu
-      this.articleSubgroupList = false
-      console.log(this.articleSubgroupList)
-      // Reset Order name
-      this.currentOrderName = null
-      console.log(this.currentOrderName)
     },
     async selectArticle(articleName, articleId, articlePrice) {
       try {
@@ -514,10 +553,14 @@ export default {
 
           // Reset Selected Article list
           this.selectedArticles = []
-          // Reset currentOrderId to null
+          // Reset Current Order
+          this.currentOrderName = false
           this.currentOrderId = null
           // Close Select Article menu
           this.articleSubgroupList = false
+          // Reset current Subgroup
+          this.currentSubgroup.name = ''
+          this.currentSubgroup.isOpened = false
 
         // If no articles has been selected
         } else {
@@ -555,6 +598,24 @@ export default {
         })
       }
     },
+    cancelReserving() {
+      // Reset Selected Article list
+      this.selectedArticles = []
+      console.log(this.selectedArticles)
+      // Reset currentOrderId to null
+      this.currentOrderId = null
+      console.log(this.currentOrderId)
+      // Close Select Article menu
+      this.articleSubgroupList = false
+      console.log(this.articleSubgroupList)
+      // Reset Order name
+      this.currentOrderName = null
+      console.log(this.currentOrderName)
+      // Reset current Subgroup Name
+      this.currentSubgroup.name = ''
+      // Close Current Subgroup
+      this.currentSubgroup.isOpened = false
+    },
     async openSubgroupListMenu(orderId, currentOrderName) {
       try {
         // // Get all Articles
@@ -578,7 +639,7 @@ export default {
         // Set Current Order Id and Name
         this.currentOrderId = orderId
         this.currentOrderName = currentOrderName
-        // Open Subgroup Menu
+        // Open List of Subgroups
         this.articleSubgroupList = true
 
         // Success message
@@ -599,10 +660,10 @@ export default {
         }
       }
     },
-    async openArticleSubgroup(subgroupId) {
+    async openArticleSubgroup(subgroupId, subgroupName) {
       try {
-        // TODO: Get all Articles from this Subgroup
-        const response = (await ArticleSubgroupService.getArticlesFromSubgroup(subgroupId)).data
+        // Get all Articles from this Subgroup
+        const response = (await ArticleService.getArticlesFromSubgroup(subgroupId)).data
         console.log(response)
         if (response.articles) {
           this.currentSubgroup.articleList = []
@@ -610,15 +671,24 @@ export default {
           response.articles.forEach(function(article) {
             articleList.push(article)
           })
+          // TODO: Styling, selecting articles and reserving
         }
+        // Close List of Subgroups
         this.articleSubgroupList = false
+        // Selected Subgroup Name
+        this.currentSubgroup.name = subgroupName
+        // Open selected Subgroup
         this.currentSubgroup.isOpened = true
       } catch (error) {
         console.log(error)
       }
     },
     closeArticleSubgroup() {
+      this.currentSubgroup.name = ''
+      // Close Current Subgroup
       this.currentSubgroup.isOpened = false
+      // Open List of Subgroup
+      this.articleSubgroupList = true
     },
     // TODO: Create Order with prompt for name, same like reserving article quantity
     async createOrder(currentTableId) {
@@ -651,7 +721,7 @@ export default {
 
             // If there is one or more articles in the list
             if (articleList.length >= 1) {
-              // Open Article Menu
+              // Open List of Subgroup
               this.articleSubgroupList = true
               // Set Current Order Id
               this.currentOrderId = response.orderId
@@ -864,79 +934,92 @@ export default {
       }
     }
 
-    .reserve-article-menu {
+    // Current Subgroup - Now
+    .currentSubgroup {
       height: 100%;
       width: 100%;
 
-      .selectedArticles {
-        display: table;
-        margin-bottom: 10px;
-        min-height: 65px;
+      .currentSubgroupArticleList {
+        align-content: center;
+        align-items: center;
+        justify-content: center;
+        background-color: #FFFFFF;
+        list-style: none;
+        padding: 10px 35px 10px 35px;
 
-        .selectedArticleList {
-          display: table;
-          list-style: none;
-          width: 100%;
-          border: 1px solid grey;
+        .currentSubgroupArticleListHeading {
+        }
+        .currentSubgroupArticleLi {
+          display: inline-block;
+          border: 2px solid grey;
+          border-radius: 20px;
+          width: 180px;
+          height: 180px;
+          margin-left: 20px;
+          margin-bottom: 5px;
           background-color: white;
-          padding: 4px 4px 0 4px;
+          cursor: pointer;
+          &:hover {
+            opacity: 0.7;
+            background-color: #F8F8FF;
+          }
 
-          .selectedArticleLi {
-            display: inline-block;
-            height: 36px;
-            margin: 0 6px 4px 0;
-            background-color: inherit;
-            border: 1px solid grey;
-            float: left;
-            background-color: grey;
+          .currentSubgroupArticleImage {
+            display: block;
+            margin: 5px auto 7px auto;
+            border: 1px solid orange;
+            border-radius: 20px;
+            width: 100px;
+            height: 100px;
+          }
 
-            .selectedArticleName {
-              color: white;
-              vertical-align: middle;
-              font-weight: 600;
-              font-size: 15px;
-              margin: 0 5px 0 5px;
-            }
+          .currentSubgroupArticleInfo {
+            text-align: center;
 
-            .articleQuantity {
-              display: inline-block;
-              height: 30px;
-              width: 30px;
-              padding: 2px;
-              margin-top: 2px;
-              color: yellow;
-              font-weight: 600;
-              font-size: 15px;
-              border: 2px solid lighten(grey, 20);
-              border-radius: 50%;
-              vertical-align: middle;
-              text-align: center;
-            }
-
-            .removeSelectedArticleBtn {
-              float: right;
-              min-height: 34px;
-              min-width: 34px;
+            .info-text {
+              margin: 0;
               position: relative;
-              background-color: pink;
-              top: 0;
-              margin-left: 10px;
-              border-left: 1px solid grey;
-              padding: 2px 0 0 0;
-              &:hover {
-                background-color: lighten(red, 30);
-
-                .closeIcon {
-                  color: red;
-                }
-              }
-              .closeIcon {
-                color: lighten(red, 20);
-              }
+              bottom: 5px;
+              font-size: 15px;
+              background-color: inherit;
+            }
+            .info-name {
+              font-size: 17px;
+              font-weight: 600;
             }
           }
         }
       }
+      .reserveArticlesBtn {
+        background-color: lighten(green, 50);
+        font-size: 16px;
+        letter-spacing: 1px;
+        position: fixed;
+        left: 20%;
+        bottom: 0;
+        width: 49.5%;
+        &:hover {
+          background-color: #00FF00;
+        }
+      }
+
+      .cancelReservingArticlesBtn {
+        background-color: pink;
+        font-size: 16px;
+        letter-spacing: 1px;
+        position: fixed;
+        left: 70%;
+        bottom: 0;
+        width: 25.4%;
+        &:hover {
+          background-color: red;
+        }
+      }
+    }
+
+    .article-subgroup-list {
+      height: 100%;
+      width: 100%;
 
       .articleSubgroupListHeading {
         width: 100%;
@@ -1002,7 +1085,7 @@ export default {
         }
       }
 
-      .articleSubgroupListReserveBtn {
+      .reserveArticlesBtn {
         background-color: lighten(green, 50);
         font-size: 16px;
         letter-spacing: 1px;
@@ -1015,7 +1098,7 @@ export default {
         }
       }
 
-      .articleSubgroupListCancelBtn {
+      .cancelReservingArticlesBtn {
         background-color: pink;
         font-size: 16px;
         letter-spacing: 1px;
@@ -1114,9 +1197,74 @@ export default {
       } // ./ singleOrderLi
     } // ./ currentTable
 
-    .currentSubgroup {
-      width: 100%;
-      height: 100%;
+    .selectedArticles {
+      display: table;
+      margin-bottom: 10px;
+      min-height: 65px;
+
+      .selectedArticleList {
+        display: table;
+        list-style: none;
+        width: 100%;
+        border: 1px solid grey;
+        background-color: white;
+        padding: 4px 4px 0 4px;
+
+        .selectedArticleLi {
+          display: inline-block;
+          height: 36px;
+          margin: 0 6px 4px 0;
+          background-color: inherit;
+          border: 1px solid grey;
+          float: left;
+          background-color: grey;
+
+          .selectedArticleName {
+            color: white;
+            vertical-align: middle;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 5px 0 5px;
+          }
+
+          .articleQuantity {
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            padding: 2px;
+            margin-top: 2px;
+            color: yellow;
+            font-weight: 600;
+            font-size: 15px;
+            border: 2px solid lighten(grey, 20);
+            border-radius: 50%;
+            vertical-align: middle;
+            text-align: center;
+          }
+
+          .removeSelectedArticleBtn {
+            float: right;
+            min-height: 34px;
+            min-width: 34px;
+            position: relative;
+            background-color: pink;
+            top: 0;
+            margin-left: 10px;
+            border-left: 1px solid grey;
+            padding: 2px 0 0 0;
+            &:hover {
+              background-color: lighten(red, 30);
+
+              .closeIcon {
+                color: red;
+              }
+            }
+            .closeIcon {
+              color: lighten(red, 20);
+            }
+          }
+        }
+      }
     }
   } // ./ container
 

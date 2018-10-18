@@ -132,6 +132,26 @@ module.exports = {
     }
   },
 
+  // Get Articles from selected Subgroup
+  async getArticlesFromSubgroup(req, res) {
+    try {
+      let query = { subgroup_id: req.params.subgroupId }
+      await Article.find(query, function(err, articles) {
+        if (err) {
+          console.log(err)
+        }
+        res.send({
+          articles: articles
+        })
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).send({
+        error: 'An error has occurred trying to get the articles from this subgroup.'
+      })
+    }
+  },
+
   // Update Article by id
   async saveArticle(req, res) {
     try {
