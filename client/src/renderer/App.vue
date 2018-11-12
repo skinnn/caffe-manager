@@ -39,6 +39,10 @@
 
 <style lang="scss">
 
+    #app {
+      user-select: none;
+    }
+
   .v-list__group__header {
     background-color: #f4f4f4;
 

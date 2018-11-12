@@ -25,7 +25,7 @@
               <li
                 v-for="table in this.tables"
                 :key="table._id"
-                @click="viewTable(table._id)"
+                @click="getTable(table._id)"
                 class="liSingleTable"
               >
                 <div class="singleTableNumber">{{table.number}}</div>
@@ -121,9 +121,9 @@ export default {
     }
   },
   methods: {
-    async viewTable(tableId) {
+    async getTable(tableId) {
       try {
-        const response = (await TableService.viewTable(this.ownerId, tableId)).data
+        const response = (await TableService.getTable(this.ownerId, tableId)).data
         if (response.table) {
           // this.currentTable = response.table
           this.$router.push({

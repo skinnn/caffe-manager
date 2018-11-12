@@ -61,7 +61,7 @@ module.exports = {
   },
 
   // Get Table by id
-  async viewTable(req, res) {
+  async getTable(req, res) {
     try {
       let query = { _id: req.params.tableId }
       // console.log(`OWNER: ${ownerId}, TABLE: ${tableIdQuery}`)

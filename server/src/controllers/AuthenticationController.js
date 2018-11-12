@@ -1,6 +1,17 @@
 const passport = require('passport')
 const User = require('../models/User')
 const Admin = require('../models/Admin')
+const jwt = require('jsonwebtoken')
+const config = require('../config/config')
+
+// Sign user
+function jwtSignUser(user) {
+  // Token expires in 1h
+  const ONE_HOUR = 60 * 60 * 24
+  return jwt.sign(user, config.authentication.jwtSecret, {
+    expiresIn: ONE_HOUR
+  })
+}
 
 module.exports = {
 
@@ -158,8 +169,11 @@ module.exports = {
           if (err) {
             return next(err)
           }
+          const userJson = user.toJSON()
           return res.send({
-            user: user
+            user: user,
+            // Create JWT
+            token: jwtSignUser(userJson)
           })
         })
       })(req, res, next)
@@ -186,8 +200,11 @@ module.exports = {
           if (err) {
             return next(err)
           }
+          const adminJson = admin.toJSON()
           return res.send({
             admin: admin,
+            // Create JWT
+            token: jwtSignUser(adminJson),
             success: `Logged in: ${admin.username}`
           })
         })

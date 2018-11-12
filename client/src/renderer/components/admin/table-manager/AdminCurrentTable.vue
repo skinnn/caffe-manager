@@ -246,7 +246,7 @@
               <li
                 v-for="table in this.tableList"
                 :key="table._id"
-                @click="viewTable(table._id)"
+                @click="getTable(table._id)"
                 class="liSingleTable"
                 v-bind:class="{ 'activeTable' : currentTable._id === table._id }"
               >
@@ -294,7 +294,7 @@ export default {
       articleSubgroups: [],
       reservedArticles: [],
       currentOrderId: null,
-      currentOrderName: null,
+      currentOrderName: '',
       selectedArticles: [],
       // TODO: Get currency from the Admin Settings - state
       settings: {
@@ -321,7 +321,7 @@ export default {
     try {
       // Get Current Table
       const currentTableId = this.$store.state.route.params.tableId
-      var currentTable = (await TableService.viewTable(this.ownerId, currentTableId)).data
+      var currentTable = (await TableService.getTable(this.ownerId, currentTableId)).data
       // If Current Table is fetched successfully
       if (currentTable.table) {
         this.currentTable = currentTable.table
@@ -445,9 +445,9 @@ export default {
         return false
       }
     },
-    async viewTable(tableId) {
+    async getTable(tableId) {
       try {
-        const response = (await TableService.viewTable(this.ownerId, tableId)).data
+        const response = (await TableService.getTable(this.ownerId, tableId)).data
         if (response.table) {
           this.currentTable = response.table
         }
@@ -710,32 +710,24 @@ export default {
               orders.push(order)
             })
 
-            // After order is saved open the Reserve Article menu
-            // Get all Articles
-            const allArticles = (await ArticleService.getAllArticles()).data
-            const articleList = this.articleList = [] // Reset each time menu is opened
-            // Add articles in the article array
-            await allArticles.articles.forEach(function(article) {
-              articleList.push(article)
+            // After order is saved open the Article Subgroup List
+            // Get all Subgroups
+            // Get Subgroups
+            const response = (await ArticleSubgroupService.getSubgroupsFromMainStorages()).data
+            console.log(response)
+            this.articleSubgroups = []
+            const articleSubgroups = this.articleSubgroups
+            // Add all Subgroups in the Subgroups array
+            await response.subgroups.forEach(function(subgroup) {
+              articleSubgroups.push(subgroup)
             })
 
-            // If there is one or more articles in the list
-            if (articleList.length >= 1) {
-              // Open List of Subgroup
-              this.articleSubgroupList = true
-              // Set Current Order Id
-              this.currentOrderId = response.orderId
-              // Set Order Name
-              this.currentOrderName = response.name
-            // If there is no articles in the list just print the message
-            } else {
-              this.error = null
-              this.success = null
-              this.info = 'There are no articles.'
-              setTimeout(() => {
-                this.info = null
-              }, 3000)
-            }
+            // Open List of Subgroup
+            this.articleSubgroupList = true
+            // Set Current Order Id
+            this.currentOrderId = response.orderId
+            // Set Order Name
+            this.currentOrderName = response.name
           }
         } else {
           this.error = null

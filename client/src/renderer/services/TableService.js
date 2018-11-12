@@ -7,7 +7,7 @@ export default {
   getTablesByOwnerId(ownerId) {
     return Api().get(`/admin/${ownerId}/tables`)
   },
-  viewTable(ownerId, currentTableId) {
+  getTable(ownerId, currentTableId) {
     return Api().get(`/admin/${ownerId}/table/${currentTableId}`)
   },
   // saveTable(tableId) {

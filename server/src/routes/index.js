@@ -213,7 +213,7 @@ router.get('/admin/:ownerId/tables',
 
 // Get Table by id
 router.get('/admin/:ownerId/table/:tableId',
-  TablesController.viewTable)
+  TablesController.getTable)
 
 // Delete Table
 router.delete('/admin/:ownerId/table/:tableId',
