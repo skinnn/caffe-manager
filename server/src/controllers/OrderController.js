@@ -64,36 +64,81 @@ module.exports = {
   // Reserve Articles
   async reserveArticles(req, res) {
     try {
-      // For each article in the reservedArticle array get and save data
-      for (let i = 0; i <= req.body.selectedArticles.length - 1; i++) {
-        // console.log('RESERVED: ', req.body.selectedArticles[i])
-        let reservedArticle = new ReservedArticle()
-        reservedArticle.name = await req.body.selectedArticles[i].name
-        reservedArticle.quantity = await req.body.selectedArticles[i].quantity
-        reservedArticle.image = await req.body.selectedArticles[i].image
-        reservedArticle.updated_date = await dateHandler.getCurrentTime()
-        reservedArticle.inWhichOrder = await req.body.orderId
-        reservedArticle.reservedBy = await req.body.ownerId
-        reservedArticle.inWhichTable = await req.body.currentTableId
-        reservedArticle.price = await req.body.selectedArticles[i].price
-        reservedArticle.total_price = await reservedArticle.price * reservedArticle.quantity
-        // Check for name and quantity and save reserved articles in the db
-        if (reservedArticle.name !== '' && reservedArticle.quantity !== '') {
-          await reservedArticle.save(function(err) {
-            if (err) {
-              return console.log(err)
-            }
-          })
-        } else {
-          return res.status(400).send({
-            error: 'Invalid article information.'
-          })
+      // Save all selected articles
+      // TODO: If selected article length is 0 send error/info
+      const saveSelectedArticles = async() => {
+        let selectedArticlesLength = req.body.selectedArticles.length - 1
+        for (let i = 0; i <= selectedArticlesLength; i++) {
+          // console.log('RESERVED: ', req.body.selectedArticles[i])
+          let reservedArticle = await new ReservedArticle()
+          reservedArticle.name = await req.body.selectedArticles[i].name
+          reservedArticle.quantity = await req.body.selectedArticles[i].quantity
+          reservedArticle.image = await req.body.selectedArticles[i].image
+          reservedArticle.updated_date = await dateHandler.getCurrentTime()
+          reservedArticle.inWhichOrder = await req.body.orderId
+          reservedArticle.reservedBy = await req.body.ownerId
+          reservedArticle.inWhichTable = await req.body.currentTableId
+          reservedArticle.price = await req.body.selectedArticles[i].price
+          reservedArticle.total_price = await reservedArticle.price * await reservedArticle.quantity
+          // Check for name and quantity and save reserved articles in the db
+          if (reservedArticle.name !== '' && reservedArticle.quantity !== '') {
+            await reservedArticle.save(function(err) {
+              if (err) {
+                return console.log(err)
+              }
+              console.log('SAVED')
+            })
+          } else {
+            return res.status(400).send({
+              error: 'Invalid article information.'
+            })
+          }
         }
+
+        return selectedArticlesLength
       }
-      return res.send({
-        saved: true,
-        success: 'Articles reserved.'
-      })
+
+      let result = await saveSelectedArticles()
+      console.log('RESULT: ', result)
+      if (result > 0) {
+        return res.send({
+          saved: true,
+          success: 'Articles reserved.'
+        })
+      } else {
+        return res.send({
+          saved: false,
+          success: 'Error, no saved articles.'
+        })
+      }
+
+      // let selectedArticlesLength = req.body.selectedArticles.length - 1
+      // // For each article in the reservedArticle array get and save data
+      // for (let i = 0; i === selectedArticlesLength; i++) {
+      //   // console.log('RESERVED: ', req.body.selectedArticles[i])
+      //   let reservedArticle = new ReservedArticle()
+      //   reservedArticle.name = await req.body.selectedArticles[i].name
+      //   reservedArticle.quantity = await req.body.selectedArticles[i].quantity
+      //   reservedArticle.image = await req.body.selectedArticles[i].image
+      //   reservedArticle.updated_date = await dateHandler.getCurrentTime()
+      //   reservedArticle.inWhichOrder = await req.body.orderId
+      //   reservedArticle.reservedBy = await req.body.ownerId
+      //   reservedArticle.inWhichTable = await req.body.currentTableId
+      //   reservedArticle.price = await req.body.selectedArticles[i].price
+      //   reservedArticle.total_price = await reservedArticle.price * reservedArticle.quantity
+      //   // Check for name and quantity and save reserved articles in the db
+      //   if (reservedArticle.name !== '' && reservedArticle.quantity !== '') {
+      //     await reservedArticle.save(function(err) {
+      //       if (err) {
+      //         return console.log(err)
+      //       }
+      //     })
+      //   } else {
+      //     return res.status(400).send({
+      //       error: 'Invalid article information.'
+      //     })
+      //   }
+      // }
     } catch (err) {
       console.log(err)
       res.status(500).send({

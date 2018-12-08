@@ -433,8 +433,11 @@ export default {
             price: articlePrice
           }
           // Push selectedArticle to the selectedArticles array
-          this.selectedArticles.push(selectedArticle)
-          console.log(this.selectedArticles)
+          let articles = this.selectedArticles
+          articles.push(selectedArticle)
+          console.log(articles)
+          console.log('Selected Article: ', selectedArticle)
+          console.log('LENGTH: ', articles.length)
         } else {
           this.info = 'Article\'s quantity is not selected.'
           setTimeout(() => {
@@ -564,12 +567,12 @@ export default {
 
         // If no articles has been selected
         } else {
-          this.error = null
+          this.info = null
           this.success = null
-          this.info = 'No articles have been selected.'
-          setTimeout(() => {
-            this.info = null
-          }, 2000)
+          this.error = 'No articles have been selected.'
+          // setTimeout(() => {
+          //   this.info = null
+          // }, 2000)
         }
       } catch (error) {
         if (error.response.data.info) {
@@ -693,15 +696,14 @@ export default {
     // TODO: Create Order with prompt for name, same like reserving article quantity
     async createOrder(currentTableId) {
       try {
-        const orderName = this.newOrderName
+        let orderName = this.newOrderName
         if (orderName !== '' && orderName !== undefined) {
-          const response = (await OrderService.createOrder(this.ownerId, currentTableId, {
+          const currentOrderResponse = (await OrderService.createOrder(this.ownerId, currentTableId, {
             newOrderName: orderName
           })).data
-          console.log(response)
 
           // If order is saved successfully
-          if (response.saved) {
+          if (currentOrderResponse.saved) {
             // Reset current table order list whenever new order is created
             const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
             const orders = this.currentTableOrders = [] // Reset each time order is created
@@ -710,11 +712,9 @@ export default {
               orders.push(order)
             })
 
-            // After order is saved open the Article Subgroup List
-            // Get all Subgroups
+            // After order is saved open the Article Subgroup List & get all Subgroups
             // Get Subgroups
             const response = (await ArticleSubgroupService.getSubgroupsFromMainStorages()).data
-            console.log(response)
             this.articleSubgroups = []
             const articleSubgroups = this.articleSubgroups
             // Add all Subgroups in the Subgroups array
@@ -725,9 +725,9 @@ export default {
             // Open List of Subgroup
             this.articleSubgroupList = true
             // Set Current Order Id
-            this.currentOrderId = response.orderId
+            this.currentOrderId = currentOrderResponse.orderId
             // Set Order Name
-            this.currentOrderName = response.name
+            this.currentOrderName = currentOrderResponse.name
           }
         } else {
           this.error = null

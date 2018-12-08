@@ -85,7 +85,7 @@ module.exports = {
       } else {
         res.status(400).send({
           noSubgroups: true,
-          error: `There are no any Subgroups in Main storage/s.`
+          error: `There are no Subgroups in Main storage/s.`
         })
       }
     } catch (err) {

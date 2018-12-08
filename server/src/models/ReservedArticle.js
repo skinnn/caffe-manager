@@ -34,8 +34,7 @@ const reservedArticleSchema = new Schema({
     type: String
   },
   updated_date: {
-    type: String,
-    default: ''
+    type: String
   },
   date: {
     type: Date,
