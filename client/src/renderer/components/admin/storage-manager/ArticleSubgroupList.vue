@@ -21,6 +21,7 @@
             <!-- TODO: Add Image to the Subgroup -->
             <v-form
               @submit.prevent="createSubgroup"
+              enctype="multipart/form-data"
               class="create-article-subgroup-form"
             >
 
@@ -36,18 +37,19 @@
                 ></v-text-field>
               </v-flex>
 
-              <!-- <h3>Add Image</h3>
+              <h3>Add Image</h3>
               <div class="upload-image">
                 <input
                   type="file"
                   @change="imagePreview(this)"
-                  id="articleImage"
+                  id="subgroupImage"
                   name="imageUpload"
                   class="previewImgInput"
                 />
                 <img id="previewImg" class="previewImg" src="" alt="">
+                <!-- Preview Image placeholder -->
                 <img v-if="!selectedImage" class="previewImgPlaceholder" src="" alt="">
-              </div> -->
+              </div>
 
               <v-btn class="createSubgroupBtn green" type="submit">
                 Create
@@ -97,6 +99,7 @@ export default {
         name: ''
       },
       subgroups: [],
+      selectedImage: null,
       // Messages
       error: null,
       success: null,
@@ -123,12 +126,30 @@ export default {
     }
   },
   methods: {
+    imagePreview() {
+      const img = document.getElementById('subgroupImage').files
+      const previewImg = document.getElementById('previewImg')
+      this.selectedImage = true
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        previewImg.src = e.target.result
+      }
+      reader.readAsDataURL(img[0])
+    },
     async createSubgroup() {
       try {
+        const formData = new FormData()
+        // Get image
+        let imagefile = document.querySelector('#subgroupImage')
+        let image = imagefile.files[0]
         let storageId = this.storageId
-        let subgroup = {}
-        subgroup.name = this.subgroup.name
-        const response = (await ArticleSubgroupService.createArticleSubgroup(storageId, subgroup)).data
+        let subgroupName = this.subgroup.name
+        // -----------------------------
+        formData.append('imageUpload', image)
+        formData.append('storageId', storageId)
+        formData.append('subgroupName', subgroupName)
+
+        const response = (await ArticleSubgroupService.createArticleSubgroup(formData, storageId)).data
         console.log(response)
         if (response.subgroup) {
           this.subgroups.push(response.subgroup)
@@ -156,6 +177,30 @@ export default {
     .createSubgroupBtn {
       display: block;
       width: 25%;
+    }
+
+    .previewImg {
+      min-width: 150px;
+      min-height: 150px;
+      max-width: 200px;
+      max-height: 200px;
+      border: 1px solid orange;
+      border-radius: 3px;
+      margin: 10px 0 0 10px;
+      display: block;
+    }
+
+    .previewImgPlaceholder {
+      width: 150px;
+      height: 150px;
+      border: 1px solid orange;
+      border-radius: 3px;
+      margin: 10px 0 0 10px;
+      display: block;
+    }
+
+    .previewImgInput {
+      margin: 5px 0 0 10px;
     }
   }
 

@@ -74,6 +74,7 @@ router.get('/admin/main-storages/subgroups',
 
 // Create Article Subgroup
 router.post('/admin/storage/:storageId/subgroup/create',
+  upload.single('imageUpload'),
   ArticleSubgroupController.createArticleSubgroup)
 
 // Get Article Subgroup list by storage id

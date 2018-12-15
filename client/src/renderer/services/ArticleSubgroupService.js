@@ -1,8 +1,8 @@
 import Api from '@/services/Api'
 
 export default {
-  createArticleSubgroup(storageId, subgroup) {
-    return Api().post(`admin/storage/${storageId}/subgroup/create`, subgroup)
+  createArticleSubgroup(formData, storageId) {
+    return Api().post(`/admin/storage/${storageId}/subgroup/create`, formData)
   },
   getSubgroupsFromMainStorages() {
     return Api().get(`admin/main-storages/subgroups`)

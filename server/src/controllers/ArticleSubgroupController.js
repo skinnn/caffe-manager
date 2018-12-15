@@ -9,9 +9,18 @@ module.exports = {
     try {
       // console.log('BODY: ', req.body)
       // console.log('PARAMS: ', req.params)
+      // console.log('FILE: ', req.file)
       let subgroup = new ArticleSubgroup()
-      subgroup.name = req.body.name
+      subgroup.name = req.body.subgroupName
       subgroup.inWhichStorage = req.params.storageId
+
+      // If image is added create image path
+      if (req.file !== undefined && req.file !== '') {
+        subgroup.image = req.file.path
+        // console.log('IMG', subgroup.image)
+      } else {
+        subgroup.image = ''
+      }
 
       // Validation
       if (subgroup.name !== '' && subgroup.inWhichStorage !== '') {
