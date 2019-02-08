@@ -6,8 +6,8 @@
   "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon src/app.js --exec \"npm run lint && node\"",
-    "lint": "eslint src/**/*.js"
+    "start": "./node_modules/nodemon/bin/nodemon.js src/app.js --exec 'npm run lint && node'",
+    "lint": "./node_modules/.bin/eslint ."
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

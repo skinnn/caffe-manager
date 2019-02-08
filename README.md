@@ -1,4 +1,5 @@
-# Vue-caffe
+# caffe-manager
+App that will make managing a caffe/restaurant/shop/warehouse easier.
 
 ### Node.js, Electron, Express, Vue.js
 
@@ -8,10 +9,10 @@
 
 ## How to run
 
-### Linux
+### Linux (not tested on MacOS)
 1. Clone - `git clone https://github.com/skinnn/vue-caffe.git` or download the code repo
-2. Run `npm run install-dependencies` in the **root** folder to install all the dependencies
-3. To start the app (both client and server) run `npm start` in the **root** folder
+2. Run `npm run install-dependencies` command in the **root** folder to install all the dependencies
+3. To start the app (both client and the server) run `npm start` in the **root** folder
 
 :tada: :fireworks:
 
@@ -20,12 +21,11 @@
 1. After installing all the dependencies, in the first terminal inside the **client** folder you can run `npm start` to start the client
 2. In the second terminal inside the **server** folder you can run `npm start` to start the server
 
-
 - Client default port: 9080
 - Server default port: 8080
 
 ### Windows
-1. After you install all the dependencies you need to change the start and lint scripts in **package.json** file in the **server** folder. It should look like this:
+1. After you install all the dependencies with `npm run install-dependencies` you need to change start and lint scripts in **package.json** file in the **server** folder. It should look like this:
 
 ```json
 "scripts": {
@@ -33,6 +33,10 @@
   "lint": "eslint src/**/*.js"
 }
 ```
+
+2. You can start the app with `npm start` command from the **root** folder or run alternatively
+in separate terminals as described above.
+
 
 
 
