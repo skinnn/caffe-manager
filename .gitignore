@@ -1,11 +1,19 @@
-client/node_modules
 server/node_modules
-server/images/*.jpg
-server/images*/.jpeg
-server/images/*.png
-package-lock.json
-client/package-lock.json
 server/package-lock.json
+server/images/*.png
+server/images/*.jpg
+server/images/*.gif
+server/images/!.gitkeep
 
+client/node_modules
+client/package-lock.json
+client/dist/electron/*
+client/dist/web/*
+client/build/*
+client/!build/icons
+client/npm-debug.log
+client/npm-debug.log.*
+
+!.gitkeep
 *.log
 *.txt
