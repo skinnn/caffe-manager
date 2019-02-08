@@ -1,4 +1,4 @@
-# caffe-manager
+# vue-caffe
 App that will make managing a caffe/restaurant/shop/warehouse easier.
 
 ### Node.js, Electron, Express, Vue.js
