@@ -1,5 +1,5 @@
 <template>
-  </div>
+  <div>
     <!-- mini-variant option instead of permanent can be used for tablet devices -->
     <v-navigation-drawer class="navigationDrawer" value="true" permanent fixed width="260">
       <v-toolbar flat>
@@ -72,7 +72,6 @@
                 <v-icon class="list-icon">format_list_numbered</v-icon>
               </v-list-tile-action>
             </v-list-tile>
-          </v-list-tile>
             <v-list-tile
               v-bind:class="{ activePage : isActivePage === 'create storage' }"
               @click="navigateTo({ name: 'admin-create-storage' }), setActivePage('create storage')"
@@ -98,7 +97,6 @@
                 <v-icon class="list-icon">format_list_numbered</v-icon>
               </v-list-tile-action>
             </v-list-tile>
-          </v-list-tile>
             <v-list-tile
               v-bind:class="{ activePage : isActivePage === 'admin register' }"
               @click="navigateTo({ name: 'admin-register' }), setActivePage('admin register')"
@@ -237,9 +235,6 @@ export default {
     .list-icon {
       color: white;
     }
-  }
-
-  .dashboard-title {
   }
 
   .admin-username {
