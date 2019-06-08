@@ -6,7 +6,7 @@
   "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js src/app.js --exec 'npm run lint && node'",
+    "start": "nodemon src/app.js",
     "lint": "./node_modules/.bin/eslint ."
   },
   "dependencies": {

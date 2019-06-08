@@ -1,4 +1,4 @@
-# vue-caffe
+# caffe-manager
 App that will make managing a caffe/restaurant/shop/warehouse easier.
 
 ### Node.js, Electron, Express, Vue.js
@@ -10,7 +10,7 @@ App that will make managing a caffe/restaurant/shop/warehouse easier.
 ## How to run
 
 ### Linux (not tested on MacOS)
-1. Clone - `git clone https://github.com/skinnn/vue-caffe.git` or download the code repo
+1. Clone - `git clone https://sk1nnn@bitbucket.org/sk1nnn/caffe-manager.git` or download the code repo
 2. Run `npm run install-dependencies` command in the **root** folder to install all the dependencies
 3. To start the app (both client and the server) run `npm start` in the **root** folder
 
