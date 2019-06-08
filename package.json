@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://sk1nnn@bitbucket.org/sk1nnn/caffe-manager.git"
+    "url": "https://github.com/skinnn/vue-caffe"
   },
   "bugs": {
-    "url": "https://bitbucket.org/sk1nnn/caffe-manager/issues"
+    "url": "https://github.com/skinnn/vue-caffe/issues"
   },
-  "homepage": "https://bitbucket.org/sk1nnn/caffe-manager/src/master/",
+  "homepage": "https://github.com/skinnn/vue-caffe#readme",
   "dependencies": {
     "concurrently": "^3.6.1"
   }
