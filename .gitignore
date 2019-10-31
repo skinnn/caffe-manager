@@ -1,3 +1,9 @@
+node_modules
+!.gitkeep
+*.log
+*.txt
+TODO.md
+
 server/node_modules
 server/node_modules/*
 server/images/*.png
@@ -13,7 +19,3 @@ client/build/*
 client/!build/icons
 client/npm-debug.log
 client/npm-debug.log.*
-
-!.gitkeep
-*.log
-*.txt
