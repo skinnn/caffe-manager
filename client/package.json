@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "caffe-manager-client",
   "version": "1.0.0",
   "description": "vue-caffe backend",
   "main": "./dist/electron/main.js",

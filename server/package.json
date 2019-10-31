@@ -1,9 +1,9 @@
 {
-  "name": "server",
+  "name": "caffe-manager-server",
   "version": "1.0.0",
-  "description": "vue-caffe backend",
+  "description": "Caffe manager API",
   "main": "app.js",
-  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com>",
+  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",
   "license": "MIT",
   "scripts": {
     "start": "nodemon src/app.js",
