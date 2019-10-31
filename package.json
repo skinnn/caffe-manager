@@ -1,13 +1,13 @@
 {
   "name": "caffe-manager",
   "version": "1.0.0",
-  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",
   "description": "Manage a cafe/restaurant/store or warehouse easier.",
+  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",
   "license": "MIT",
   "scripts": {
     "install-deps": "npm install --prefix client && npm install --prefix server",
-    "client": "npm start --prefix client",
-    "server": "npm start --prefix server"
+    "client": "npm run dev --prefix client",
+    "server": "npm run dev --prefix server"
   },
   "repository": {
     "type": "git",

@@ -1,12 +1,13 @@
 {
   "name": "caffe-manager-client",
   "version": "1.0.0",
-  "description": "vue-caffe backend",
+  "description": "Caffe manager client.",
   "main": "./dist/electron/main.js",
-  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com>",
+  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",
   "license": "MIT",
   "scripts": {
     "start": "node .electron-vue/dev-runner.js",
+    "dev": "node .electron-vue/dev-runner.js",
     "build": "node .electron-vue/build.js",
     "build:darwin": "cross-env BUILD_TARGET=darwin node .electron-vue/build.js",
     "build:linux": "cross-env BUILD_TARGET=linux node .electron-vue/build.js",
@@ -14,7 +15,6 @@
     "build:win32": "cross-env BUILD_TARGET=win32 node .electron-vue/build.js",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
-    "dev": "node .electron-vue/dev-runner.js",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src",
     "pack": "npm run pack:main && npm run pack:renderer",
