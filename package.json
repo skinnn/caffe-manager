@@ -1,26 +1,20 @@
 {
-  "name": "vue-caffe",
+  "name": "caffe-manager",
   "version": "1.0.0",
-  "author": "Nikola Jovanovic",
-  "description": "App for managing a cafe or a store.",
+  "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",
+  "description": "Manage cafe, restaurant, store or warehouse easier.",
   "license": "MIT",
   "scripts": {
-    "client-install": "cd client && npm install",
-    "server-install": "cd server && npm install",
-    "install-dependencies": "concurrently \"npm run server-install\" \"npm run client-install\"",
+    "install-deps": "npm install --prefix client && npm install --prefix server",
     "client": "npm start --prefix client",
-    "server": "npm start --prefix server",
-    "start": "concurrently \"npm run server\" \"npm run client\""
+    "server": "npm start --prefix server"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/skinnn/vue-caffe"
+    "url": "https://github.com/skinnn/caffe-manager"
   },
   "bugs": {
-    "url": "https://github.com/skinnn/vue-caffe/issues"
+    "url": "https://github.com/skinnn/caffe-manager/issues"
   },
-  "homepage": "https://github.com/skinnn/vue-caffe#readme",
-  "dependencies": {
-    "concurrently": "^3.6.1"
-  }
+  "homepage": "https://github.com/skinnn/caffe-manager#readme"
 }
