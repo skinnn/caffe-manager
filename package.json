@@ -1,7 +1,7 @@
 {
   "name": "caffe-manager",
   "version": "1.0.0",
-  "description": "Manage a cafe/restaurant/store or warehouse easier.",
+  "description": "Modern application for managing a cafe/restaurant/store or warehouse easier.",
   "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",
   "license": "MIT",
   "scripts": {
