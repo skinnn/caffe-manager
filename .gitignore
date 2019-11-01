@@ -4,13 +4,21 @@ node_modules
 *.txt
 TODO.md
 
+# .env config
+.env
+client/.env
+server/.env
+
+# Server
 server/node_modules
 server/node_modules/*
 server/images/*.png
 server/images/*.jpg
 server/images/*.gif
+server/images/*.svg
 server/images/!.gitkeep
 
+# Client
 client/node_modules
 client/node_modules/*
 client/dist/electron/*
