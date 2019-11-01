@@ -4,11 +4,6 @@ node_modules
 *.txt
 TODO.md
 
-# .env config
-.env
-client/.env
-server/.env
-
 # Server
 server/node_modules
 server/node_modules/*
