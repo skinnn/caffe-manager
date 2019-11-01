@@ -12,6 +12,7 @@ const passport = require('passport')
 const flash = require('connect-flash')
 const index = require('./routes/index')
 
+// Load config
 const config = require('./config/config')
 
 app.use(morgan('combined'))
