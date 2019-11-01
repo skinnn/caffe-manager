@@ -51,8 +51,11 @@ app.use('/images', express.static(path.join(__dirname, '../images')))
 app.use('/api', index)
 
 // Connect to a local Mongo Database
-mongoose
-  .connect(config.db.uri, { useNewUrlParser: true })
+mongoose.connect(config.db.uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+  })
   .then(() => {
     console.log('Database connected!')
     // Start server
