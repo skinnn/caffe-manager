@@ -23,6 +23,7 @@ function createWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
+    title: 'Caffe Manager',
     minHeight: 650,
     minWidth: 1100,
     center: true,
@@ -31,8 +32,7 @@ function createWindow() {
     icon: iconPath,
     webPreferences: {
       nodeIntegration: true
-    },
-    title: 'Caffe Manager'
+    }
   })
 
   mainWindow.loadURL(winURL)
