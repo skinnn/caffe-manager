@@ -56,11 +56,11 @@ const upload = multer({
 // router.use('/images', express.static(path.join(__dirname, '/../../images')))
 // console.log(path.join(__dirname, '/../../images'))
 
-// Time stamp
-router.use(function timeLog(req, res, next) {
-  console.log('Route hit - Time: ', new Date().toJSON())
-  next()
-})
+// // Time stamp
+// router.use(function timeLog(req, res, next) {
+//   console.log('Route hit - Time: ', new Date().toJSON())
+//   next()
+// })
 
 // TODO: Secure all endpoints so only logged in admin can access it
 

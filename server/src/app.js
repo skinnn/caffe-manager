@@ -1,7 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const morgan = require('morgan')
+// const morgan = require('morgan')
+const logger = require('./middleware/logger')
 const app = express()
 const path = require('path')
 // const favicon = require('serve-favicon')
@@ -15,7 +16,9 @@ const index = require('./routes/index')
 // Load config
 const config = require('./config/config')
 
-app.use(morgan('combined'))
+// app.use(morgan('combined'))
+// Middleware
+app.use(logger)
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
