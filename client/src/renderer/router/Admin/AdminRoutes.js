@@ -1,5 +1,6 @@
 /*
-  Admin routes - Need to be atuhenticated as Admin to get this assets
+  Admin routes - Need to be atuhenticated as Admin to get
+  this assets (if in production)
 */
 
 // Admin Components

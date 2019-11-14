@@ -1,5 +1,6 @@
 /*
-  User routes - Needs to be atuhenticated as User to get this assets
+  User routes - Needs to be atuhenticated as User to get
+  this assets (if in production)
 */
 
 

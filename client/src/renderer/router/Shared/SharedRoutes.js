@@ -1,5 +1,6 @@
 /*
-  Shared routes - don't need to be atuhenticated to get this assets
+  Shared routes - don't need to be atuhenticated to get
+  this assets (if in production)
 */
 
 const AdminLogin = require('@/components/AdminLogin').default
