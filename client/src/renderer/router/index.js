@@ -185,8 +185,6 @@
 //   ]
 // })
 
-/* TODO: Split routes in separate folders and files */
-
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
@@ -203,14 +201,14 @@ allRoutes = allRoutes.concat(SharedRoutes, AdminRoutes)
 const routes = allRoutes
 
 var Router = new VueRouter({
-  // mode: 'history',
+  // mode: 'history', // if enabled and app realoaded with CTRL+R it breaks
   base: process.env.BASE_URL,
   routes: routes
 })
 
 // Route Guard - working only in production mode
 /* It secures all routes that have a field - meta: {requiresLogin: true} */
-if (config.NODE_ENV === 'production') {
+if (config.node_env === 'production') {
   Router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresLogin)) {
       // Can use store variable here to access globalError or commit mutation for example

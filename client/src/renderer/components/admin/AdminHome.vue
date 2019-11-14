@@ -56,6 +56,10 @@ export default {
       success: null,
       info: null
     }
+  },
+
+  mounted() {
+    // TODO: Get and populate admin info from the database instead of Vuex Store
   }
 }
 </script>
