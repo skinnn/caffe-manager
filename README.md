@@ -1,7 +1,9 @@
-# caffe-manager
-App that will make managing a caffe/restaurant/shop/warehouse easier.
+<img src="client/static/logo/caffe_manager_horizontal.png" alt="Caffe Manager" width="400">
+<br><br>
 
-### Node.js, MongoDB, Electron, Express, Vue.js
+App that makes managing a caffe/restaurant/shop/warehouse easier.
+
+### Node.js, Express, MongoDB, Vue.js, Electron
 
 ## First
 
