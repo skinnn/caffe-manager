@@ -69,7 +69,7 @@
               >
                 <img
                   v-if="subgroup.image"
-                  :src="`http://localhost:8080/${subgroup.image}`"
+                  :src="`http://localhost:9090/${subgroup.image}`"
                   class="articleSubgroupListImage"
                   alt="No image"
                 >
@@ -137,7 +137,7 @@
               >
                 <img
                   v-if="article.image"
-                  :src="`http://localhost:8080/${article.image}`"
+                  :src="`http://localhost:9090/${article.image}`"
                   class="currentSubgroupArticleImage"
                   alt="No image"
                 >
