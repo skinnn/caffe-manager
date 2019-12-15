@@ -573,7 +573,7 @@ export default {
           }
           // Reserve Selected Articles
           const response = (await OrderService.reserveArticles(orderData)).data
-          console.log(response)
+          console.log('Reserve articles response: ', response)
 
           // If articles are successfully reserved
           if (response.saved) {
