@@ -214,6 +214,7 @@
                         </div>
                         <li
                           v-for="reservedArticle in reservedArticles"
+                          :key="reservedArticle.id"
                           v-if="order._id === reservedArticle.inWhichOrder"
                           class="reservedArticleLi"
                         >
@@ -963,6 +964,10 @@ export default {
       height: 100%;
       width: 100%;
 
+      .currentSubgroupArticleListHeading {
+        color: blue;
+      }
+
       .currentSubgroupArticleList {
         align-content: center;
         align-items: center;
@@ -971,8 +976,6 @@ export default {
         list-style: none;
         padding: 10px 35px 10px 35px;
 
-        .currentSubgroupArticleListHeading {
-        }
         .currentSubgroupArticleLi {
           display: inline-block;
           border: 2px solid grey;
@@ -1240,7 +1243,6 @@ export default {
           margin: 0 6px 4px 0;
           background-color: inherit;
           border: 1px solid grey;
-          float: left;
           background-color: grey;
 
           .selectedArticleName {
