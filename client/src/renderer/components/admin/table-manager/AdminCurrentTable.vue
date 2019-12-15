@@ -406,14 +406,37 @@ export default {
         name: 'admin-table-list'
       })
     },
+
     async selectArticle(articleName, articleId, articlePrice) {
       try {
         const selectedArticlePrompt = await swal({
-          title: `Quantity for article: ${articleName}`,
-          input: 'text',
+          title: `${articleName}`,
+          text: 'Quantity:',
+          input: 'number',
           inputPlaceholder: 'Quantity',
+          // TODO: Create number fields for easier input on tablets, maybe even separate component for prompt
+          // html:
+          //   `<table>
+          //   <tr>
+          //     <td>1</td>
+          //     <td>2</td>
+          //     <td>3</td>
+          //   </tr>
+          //   <tr>
+          //     <td>4</td>
+          //     <td>5</td>
+          //     <td>6</td>
+          //   </tr>
+          //   <tr>
+          //     <td>7</td>
+          //     <td>8</td>
+          //     <td>9</td>
+          //   </tr>
+          //   </table>
+          //   <button style="background-color: pink; padding: 5px 10px">Clear</button>`,
           inputAttributes: {
-            maxlength: 2
+            min: 1,
+            max: 99
           },
           // Automatically remove whitespaces from both ends of a result string
           inputAutoTrim: true,
@@ -422,14 +445,23 @@ export default {
           // Timer which if passed closes the window and returns value = null
           // timer: 3000
         })
+
+        // If Cancel button is clicked return without message/error
+        if (selectedArticlePrompt.value === undefined) {
+          return
+        }
+
+        // Get prompt value and parse it as a number or set it to 0
+        let promptValue = parseInt(selectedArticlePrompt.value, 10) || 0
+
         // If input field is not empty
-        if (selectedArticlePrompt.value !== '' && selectedArticlePrompt.value !== undefined) {
+        if (promptValue !== '' && promptValue !== 0 && promptValue !== undefined) {
           let selectedArticle = {
             // Create a temporary timestamp based ID for selected article
             selectedId: uuidv1(),
             id: articleId,
             name: articleName,
-            quantity: selectedArticlePrompt.value,
+            quantity: parseInt(promptValue, 10),
             price: articlePrice
           }
           // Push selectedArticle to the selectedArticles array
@@ -439,10 +471,10 @@ export default {
           console.log('Selected Article: ', selectedArticle)
           console.log('LENGTH: ', articles.length)
         } else {
-          this.info = 'Article\'s quantity is not selected.'
+          this.info = 'Quantity is not valid.'
           setTimeout(() => {
             this.info = null
-          }, 2000)
+          }, 5000)
         }
       } catch (error) {
         return false
