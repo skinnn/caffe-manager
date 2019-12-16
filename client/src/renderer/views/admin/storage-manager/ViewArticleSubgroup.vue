@@ -32,7 +32,7 @@
           <v-select
             v-model="pagination.itemsPerPage"
             :items="pagination.selectItemsPerPage"
-            @change="logChange"
+            @change="changePagination"
             label="Items per page"
             class="pagination-items-per-page"
             required
@@ -172,7 +172,7 @@ export default {
     }
   },
   methods: {
-    logChange() {
+    changePagination() {
       let l = this.articles.length
       let s = this.pagination.itemsPerPage
       this.pagination.totalPages = Math.floor(l / s)
@@ -193,6 +193,7 @@ export default {
       let storageId = this.storageId
       this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
     },
+
     async pageChanged() {
       try {
         let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
@@ -203,6 +204,7 @@ export default {
         console.log(error)
       }
     },
+
     async deleteArticle(articleId, article) {
       let confirmation = await confirm(
         'Are you sure?'
