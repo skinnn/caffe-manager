@@ -136,8 +136,10 @@ export default {
         this.storage = response.storage
       }
 
-      // Get Artilces from the Current Storage
-      const res = (await ArticleService.getArticlesByStorageId(storageId)).data
+      // Get Articles from the selected Subgroup
+      const res = (await ArticleService.getArticlesBySubgroupId(this.subgroup._id)).data
+      console.log('ArticlesBySubgroupId: ', res)
+
       if (res.articles) {
         this.articles = await res.articles
         let l = this.articles.length

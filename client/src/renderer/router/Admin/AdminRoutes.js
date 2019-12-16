@@ -6,7 +6,7 @@
 // Admin Components
 // TODO: Delete AdminLandingRegister page for production
 const AdminLandingRegister = require('@/views/AdminLandingRegister').default
-const AdminHome = require('@/views/admin/AdminHome').default
+const AdminDashboard = require('@/views/admin/AdminDashboard').default
 const AdminTaxes = require('@/views/admin/AdminTaxes').default
 // Settings
 const Settings = require('@/views/admin/settings/Settings').default
@@ -38,7 +38,7 @@ const routes = [
   {
     path: '/admin/home',
     name: 'admin-home',
-    component: AdminHome,
+    component: AdminDashboard,
     // TODO: Each route needs to be protected with requresLogin meta
     meta: { requiresLogin: true }
   },

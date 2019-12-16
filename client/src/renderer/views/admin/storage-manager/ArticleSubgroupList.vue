@@ -17,6 +17,28 @@
           <div class="success-msg" v-if="success" v-html="success" />
           <div class="info-msg" v-if="info" v-html="info" />
 
+          <!-- List of subgroups -->
+          <div class="list-of-article-subgroups">
+            <!-- Article Subgroup List -->
+            <v-list two-line>
+              <v-list-tile
+                v-for="subgroup in this.subgroups"
+                :key="subgroup._id"
+                @click="viewArticleSubgroup(subgroup, storageId)"
+              >
+
+                <v-list-tile-action>
+                  <v-icon>folder</v-icon>
+                </v-list-tile-action>
+
+                <v-list-tile-content>
+                  <v-list-tile-title>{{subgroup.name}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{subgroup.name}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </div>
+
           <div class="create-subgroup">
             <!-- TODO: Add Image to the Subgroup -->
             <v-form
@@ -55,27 +77,6 @@
                 Create
               </v-btn>
             </v-form>
-          </div>
-
-          <div class="list-of-article-subgroups">
-            <!-- Article Subgroup List -->
-            <v-list two-line>
-              <v-list-tile
-                v-for="subgroup in this.subgroups"
-                :key="subgroup._id"
-                @click="viewArticleSubgroup(subgroup, storageId)"
-              >
-
-                <v-list-tile-action>
-                  <v-icon>folder</v-icon>
-                </v-list-tile-action>
-
-                <v-list-tile-content>
-                  <v-list-tile-title>{{subgroup.name}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{subgroup.name}}</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
           </div>
 
         </v-flex>
@@ -136,6 +137,7 @@ export default {
       }
       reader.readAsDataURL(img[0])
     },
+
     async createSubgroup() {
       try {
         const formData = new FormData()
@@ -157,6 +159,7 @@ export default {
       } catch (error) {
       }
     },
+
     viewArticleSubgroup(subgroup, storageId) {
       this.$router.push({
         name: 'admin-view-article-subgroups',

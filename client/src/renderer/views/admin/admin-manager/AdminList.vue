@@ -30,7 +30,7 @@
           >
             <template slot="items" slot-scope="props">
               <td class="td text-xs-left">
-                <img class="admin-image" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
+                <img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
               </td>
               <td class="td text-xs-left">
                 <span class="admin-name">
