@@ -139,12 +139,13 @@ export default {
           }
         })
 
+        // Handle pagination
         let l = this.admins.length
         let s = this.pagination.itemsPerPage
         this.pagination.totalPages = Math.floor(l / s)
         let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
         let end = start + this.pagination.itemsPerPage
-        // Set Displayed Articles
+        // Set Displayed Admins
         this.displayedAdmins = this.admins.slice(start, end)
       }
     } catch (error) {
