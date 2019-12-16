@@ -21,16 +21,32 @@
         <!-- List of all admins in the db -->
         <div class="list-of-admins">
 
+          <v-select
+            v-model="pagination.itemsPerPage"
+            :items="pagination.selectItemsPerPage"
+            @change="changePagination"
+            label="Items per page"
+            class="pagination-items-per-page"
+            required
+          ></v-select>
+
+          <v-pagination
+            v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+            v-model="pagination.currentPage"
+            :length="pagination.totalPages"
+            @input="pageChanged"
+          ></v-pagination>
+
           <v-data-table
             :headers="headers"
-            :items="admins"
+            :items="displayedAdmins"
             hide-actions
             class="elevation-1"
             dark
           >
             <template slot="items" slot-scope="props">
               <td class="td text-xs-left">
-                <img class="admin-image" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
+                <img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
               </td>
               <td class="td text-xs-left">
                 <span class="admin-name">
@@ -48,6 +64,13 @@
               </td>
             </template>
           </v-data-table>
+
+          <v-pagination
+            v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+            v-model="pagination.currentPage"
+            :length="pagination.totalPages"
+            @input="pageChanged"
+          ></v-pagination>
 
         </div>
 
@@ -67,6 +90,7 @@ export default {
   data() {
     return {
       admins: [],
+      displayedAdmins: [],
       headers: [
         {
           text: 'Image',
@@ -79,6 +103,18 @@ export default {
         { text: 'Username', sortable: true, value: 'username' },
         { text: 'Options', sortable: false, align: 'center', value: 'option' }
       ],
+      pagination: {
+        currentPage: 1,
+        totalPages: null,
+        itemsPerPage: 5,
+        selectItemsPerPage: [
+          1,
+          5,
+          20,
+          50,
+          80
+        ]
+      },
       error: null,
       success: null,
       info: null
@@ -87,6 +123,7 @@ export default {
   async mounted() {
     try {
       // Get Admin list
+      // TODO: Get all admins except the Root Admin!!!
       const response = (await AdminService.getAllAdmins()).data
       if (response.admins) {
         const admins = this.admins
@@ -101,6 +138,15 @@ export default {
             admins.push(admin)
           }
         })
+
+        // Handle pagination
+        let l = this.admins.length
+        let s = this.pagination.itemsPerPage
+        this.pagination.totalPages = Math.floor(l / s)
+        let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+        let end = start + this.pagination.itemsPerPage
+        // Set Displayed Admins
+        this.displayedAdmins = this.admins.slice(start, end)
       }
     } catch (error) {
       this.success = null
@@ -108,12 +154,35 @@ export default {
     }
   },
   methods: {
+    changePagination() {
+      let l = this.admins.length
+      let s = this.pagination.itemsPerPage
+      this.pagination.totalPages = Math.floor(l / s)
+      let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+      let end = start + this.pagination.itemsPerPage
+      // Set Displayed Articles
+      this.displayedAdmins = this.admins.slice(start, end)
+      console.log(this.pagination.itemsPerPage)
+    },
+
+    async pageChanged() {
+      try {
+        let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+        let end = start + this.pagination.itemsPerPage
+        // Change Displayed Articles
+        this.displayedAdmins = this.admins.slice(start, end)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
     editAdminPage(adminId) {
       this.$router.push({
         name: 'admin-edit-admin',
         params: {adminId}
       })
     },
+
     async deleteAdmin(admin) {
       let confirmation = confirm(
         'Are you sure?'
@@ -154,6 +223,7 @@ export default {
         }
       }
     },
+
     viewAdmin(adminId) {
       this.$router.push({name: 'admin-view-admin', params: {adminId}})
     }

@@ -20,6 +20,25 @@
         <!-- TODO: Add animation for fetching/displaying Users possibly with Scroll Reveal -->
         <!-- List of all Users/Staff in the db -->
         <div class="list-of-users">
+          <v-select
+            v-model="pagination.itemsPerPage"
+            :items="pagination.selectItemsPerPage"
+            @change="changePagination"
+            label="Items per page"
+            class="pagination-items-per-page"
+            required
+          ></v-select>
+
+          <!-- Pagination top -->
+          <v-pagination
+            v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+            v-model="pagination.currentPage"
+            :length="pagination.totalPages"
+            @input="pageChanged"
+          ></v-pagination>
+
+          <!-- TODO: Implement Search -->
+
           <v-data-table
             :headers="headers"
             :items="users"
@@ -28,15 +47,15 @@
             dark
           >
             <template slot="items" slot-scope="props">
-              <td class="td text-xs-left">
-                <img class="admin-image" v-if="props.item.image" :src="`http://localhost:8080/${props.item.image}`" />
+              <td class="td text-xs-left" @click="viewUser(props.item.id)">
+                <img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
               </td>
-              <td class="td text-xs-left">
+              <td class="td text-xs-left" @click="viewUser(props.item.id)">
                 <span class="admin-name">
                   {{ props.item.name }}
                 </span>
               </td>
-              <td class="td text-xs-left">
+              <td class="td text-xs-left" @click="viewUser(props.item.id)">
                 <span class="admin-username">
                   {{ props.item.username }}
                 </span>
@@ -47,6 +66,14 @@
               </td>
             </template>
           </v-data-table>
+
+          <!-- Pagination bottom -->
+          <v-pagination
+          v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+          v-model="pagination.currentPage"
+          :length="pagination.totalPages"
+          @input="pageChanged"
+        ></v-pagination>
 
         </div>
 
@@ -68,6 +95,7 @@ export default {
   data() {
     return {
       users: [],
+      displayedUsers: [],
       adminId: this.$store.state.admin._id,
       headers: [
         {
@@ -81,6 +109,18 @@ export default {
         { text: 'Username', sortable: true, value: 'username' },
         { text: 'Options', sortable: false, align: 'center', value: 'option' }
       ],
+      pagination: {
+        currentPage: 1,
+        totalPages: null,
+        itemsPerPage: 5,
+        selectItemsPerPage: [
+          1,
+          5,
+          20,
+          50,
+          80
+        ]
+      },
       error: null,
       success: null,
       info: null
@@ -97,6 +137,15 @@ export default {
         response.users.forEach(function(user) {
           users.push(user)
         })
+
+        // Handle pagination
+        let l = this.users.length
+        let s = this.pagination.itemsPerPage
+        this.pagination.totalPages = Math.floor(l / s)
+        let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+        let end = start + this.pagination.itemsPerPage
+        // Set Displayed Articles
+        this.displayedUsers = this.users.slice(start, end)
       }
     } catch (error) {
       this.success = null
@@ -105,15 +154,39 @@ export default {
     }
   },
   methods: {
-    viewUser(userId) {
-      this.$router.push({name: 'admin-view-user', params: {userId}})
+    changePagination() {
+      let l = this.users.length
+      let s = this.pagination.itemsPerPage
+      this.pagination.totalPages = Math.floor(l / s)
+      let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+      let end = start + this.pagination.itemsPerPage
+      // Set Displayed Articles
+      this.displayedUsers = this.users.slice(start, end)
+      console.log(this.pagination.itemsPerPage)
     },
+
+    async pageChanged() {
+      try {
+        let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+        let end = start + this.pagination.itemsPerPage
+        // Change Displayed Articles
+        this.displayedAdmins = this.admins.slice(start, end)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    viewUser(userId) {
+      this.$router.push({name: 'admin-view-user', params: { userId }})
+    },
+
     editUserPage(userId) {
       this.$router.push({
         name: 'admin-edit-user',
         params: {userId}
       })
     },
+
     async deleteUser(user) {
       let confirmation = confirm(
         'Are you sure?'

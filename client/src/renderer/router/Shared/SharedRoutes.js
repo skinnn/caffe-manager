@@ -3,8 +3,8 @@
   this assets (if in production)
 */
 
-const AdminLogin = require('@/components/AdminLogin').default
-const UserLogin = require('@/components/UserLogin').default
+const AdminLogin = require('@/views/AdminLogin').default
+const UserLogin = require('@/views/UserLogin').default
 
 const routes = [
   {

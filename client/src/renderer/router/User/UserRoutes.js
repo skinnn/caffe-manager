@@ -5,9 +5,9 @@
 
 
 // User components
-const UserHome = require('@/components/user/UserHome').default
-const UserTables = require('@/components/user/UserTables').default
-const UserWarehouse = require('@/components/user/UserWarehouse').default
+const UserHome = require('@/views/user/UserHome').default
+const UserTables = require('@/views/user/UserTables').default
+const UserWarehouse = require('@/views/user/UserWarehouse').default
 
 const routes = [
   {

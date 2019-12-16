@@ -5,40 +5,40 @@
 
 // Admin Components
 // TODO: Delete AdminLandingRegister page for production
-const AdminLandingRegister = require('@/components/AdminLandingRegister').default
-const AdminHome = require('@/components/admin/AdminHome').default
-const AdminTaxes = require('@/components/admin/AdminTaxes').default
+const AdminLandingRegister = require('@/views/AdminLandingRegister').default
+const AdminDashboard = require('@/views/admin/AdminDashboard').default
+const AdminTaxes = require('@/views/admin/AdminTaxes').default
 // Settings
-const Settings = require('@/components/admin/settings/Settings').default
-const EditSettings = require('@/components/admin/settings/EditSettings').default
+const Settings = require('@/views/admin/settings/Settings').default
+const EditSettings = require('@/views/admin/settings/EditSettings').default
 // Storage-Manager
-const AdminViewSubgroup = require('@/components/admin/storage-manager/ViewArticleSubgroup').default
-const AdminEditStorage = require('@/components/admin/storage-manager/EditStorage').default
-const AdminStorageList = require('@/components/admin/storage-manager/StorageList').default
-const AdminArticleSubgroupList = require('@/components/admin/storage-manager/ArticleSubgroupList').default
-const AdminCreateStorage = require('@/components/admin/storage-manager/CreateStorage').default
-const AdminCreateArticle = require('@/components/admin/storage-manager/CreateArticle').default
-const AdminEditArticle = require('@/components/admin/storage-manager/EditArticle').default
+const AdminViewSubgroup = require('@/views/admin/storage-manager/ViewArticleSubgroup').default
+const AdminEditStorage = require('@/views/admin/storage-manager/EditStorage').default
+const AdminStorageList = require('@/views/admin/storage-manager/StorageList').default
+const AdminArticleSubgroupList = require('@/views/admin/storage-manager/ArticleSubgroupList').default
+const AdminCreateStorage = require('@/views/admin/storage-manager/CreateStorage').default
+const AdminCreateArticle = require('@/views/admin/storage-manager/CreateArticle').default
+const AdminEditArticle = require('@/views/admin/storage-manager/EditArticle').default
 // Table-Manager
-const AdminCurrentTable = require('@/components/admin/table-manager/AdminCurrentTable').default
-const AdminTableList = require('@/components/admin/table-manager/AdminTableList').default
+const AdminCurrentTable = require('@/views/admin/table-manager/AdminCurrentTable').default
+const AdminTableList = require('@/views/admin/table-manager/AdminTableList').default
 // Admin-Manager
-const AdminCreateAdmin = require('@/components/admin/admin-manager/CreateAdmin').default
-const AdminViewAdmin = require('@/components/admin/admin-manager/ViewAdmin').default
-const AdminEditAdmin = require('@/components/admin/admin-manager/EditAdmin').default
-const AdminAdminList = require('@/components/admin/admin-manager/AdminList').default
+const AdminCreateAdmin = require('@/views/admin/admin-manager/CreateAdmin').default
+const AdminViewAdmin = require('@/views/admin/admin-manager/ViewAdmin').default
+const AdminEditAdmin = require('@/views/admin/admin-manager/EditAdmin').default
+const AdminAdminList = require('@/views/admin/admin-manager/AdminList').default
 // User-Manager
-const AdminCreateUser = require('@/components/admin/user-manager/CreateUser').default
-const AdminUserList = require('@/components/admin/user-manager/UserList').default
-const AdminEditUser = require('@/components/admin/user-manager/EditUser').default
-const AdminViewUser = require('@/components/admin/user-manager/ViewUser').default
+const AdminCreateUser = require('@/views/admin/user-manager/CreateUser').default
+const AdminUserList = require('@/views/admin/user-manager/UserList').default
+const AdminEditUser = require('@/views/admin/user-manager/EditUser').default
+const AdminViewUser = require('@/views/admin/user-manager/ViewUser').default
 
 // Admin Routes
 const routes = [
   {
     path: '/admin/home',
     name: 'admin-home',
-    component: AdminHome,
+    component: AdminDashboard,
     // TODO: Each route needs to be protected with requresLogin meta
     meta: { requiresLogin: true }
   },

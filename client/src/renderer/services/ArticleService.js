@@ -13,7 +13,7 @@ export default {
   getArticleById(articleId, storageId) {
     return Api().get(`admin/storage/${storageId}/article/${articleId}`)
   },
-  getArticlesFromSubgroup(subgroupId) {
+  getArticlesBySubgroupId(subgroupId) {
     return Api().get(`admin/subgroup/${subgroupId}/articles`)
   },
   saveArticle(articleFormData, articleId) {

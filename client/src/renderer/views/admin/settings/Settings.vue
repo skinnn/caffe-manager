@@ -26,7 +26,7 @@
         <div class="admin-settings">
           <img
             v-if="settings.store_image"
-            :src="`http://localhost:8080/${settings.store_image}`"
+            :src="`http://localhost:9090/${settings.store_image}`"
             class="storeImage"
             alt="No image"
           >

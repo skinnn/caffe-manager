@@ -6,7 +6,7 @@
     <v-layout column class="right-side">
       <v-flex>
         <div class="admin-header">
-            <h1 class="heading">Home</h1>
+            <h1 class="heading">Dashboard</h1>
             <admin-logout-btn />
         </div>
       </v-flex>

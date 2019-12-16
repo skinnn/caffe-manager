@@ -28,6 +28,15 @@
         <!-- Storage data-->
           <h3>Storage info:</h3>
           <p>STORAGE ID: {{storage._id}} </p>
+
+          <v-select
+            v-model="pagination.itemsPerPage"
+            :items="pagination.selectItemsPerPage"
+            @change="changePagination"
+            label="Items per page"
+            class="pagination-items-per-page"
+            required
+          ></v-select>
           <hr>
           <br>
 
@@ -99,7 +108,14 @@ export default {
       pagination: {
         currentPage: 1,
         totalPages: null,
-        itemsPerPage: 2
+        itemsPerPage: 20,
+        selectItemsPerPage: [
+          1,
+          5,
+          20,
+          50,
+          80
+        ]
       },
       storage: {},
       storageId: this.$store.state.route.params.storageId,
@@ -136,8 +152,10 @@ export default {
         this.storage = response.storage
       }
 
-      // Get Artilces from the Current Storage
-      const res = (await ArticleService.getArticlesByStorageId(storageId)).data
+      // Get Articles from the selected Subgroup
+      const res = (await ArticleService.getArticlesBySubgroupId(this.subgroup._id)).data
+      console.log('ArticlesBySubgroupId: ', res)
+
       if (res.articles) {
         this.articles = await res.articles
         let l = this.articles.length
@@ -154,6 +172,16 @@ export default {
     }
   },
   methods: {
+    changePagination() {
+      let l = this.articles.length
+      let s = this.pagination.itemsPerPage
+      this.pagination.totalPages = Math.floor(l / s)
+      let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+      let end = start + this.pagination.itemsPerPage
+      // Set Displayed Articles
+      this.displayedArticles = this.articles.slice(start, end)
+      console.log(this.pagination.itemsPerPage)
+    },
     createArticlePage(storageId, subgroupId, subgroupName) {
       this.$router.push({name: 'admin-create-article', params: {storageId, subgroupId, subgroupName}})
     },
@@ -165,6 +193,7 @@ export default {
       let storageId = this.storageId
       this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
     },
+
     async pageChanged() {
       try {
         let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
@@ -175,6 +204,7 @@ export default {
         console.log(error)
       }
     },
+
     async deleteArticle(articleId, article) {
       let confirmation = await confirm(
         'Are you sure?'
@@ -212,6 +242,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.admin-container {
+  
+  .pagination-items-per-page {
+    max-width: 120px;
+  }
+}
 
   #list-div {
     width: 100%;

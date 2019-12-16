@@ -24,10 +24,10 @@
           @click="navigateTo({ name: 'admin-home' }), setActivePage('home')"
         >
           <v-list-tile-action>
-            <v-icon class="list-icon">home</v-icon>
+            <v-icon class="list-icon">dashboard</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title class="list-tile-title">Home</v-list-tile-title>
+            <v-list-tile-title class="list-tile-title">Dashboard</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
 
