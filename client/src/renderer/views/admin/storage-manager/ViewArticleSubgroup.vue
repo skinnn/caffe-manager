@@ -28,6 +28,15 @@
         <!-- Storage data-->
           <h3>Storage info:</h3>
           <p>STORAGE ID: {{storage._id}} </p>
+
+          <v-select
+            v-model="pagination.itemsPerPage"
+            :items="pagination.selectItemsPerPage"
+            @change="logChange"
+            label="Items per page"
+            class="pagination-items-per-page"
+            required
+          ></v-select>
           <hr>
           <br>
 
@@ -99,7 +108,14 @@ export default {
       pagination: {
         currentPage: 1,
         totalPages: null,
-        itemsPerPage: 2
+        itemsPerPage: 20,
+        selectItemsPerPage: [
+          1,
+          5,
+          20,
+          50,
+          80
+        ]
       },
       storage: {},
       storageId: this.$store.state.route.params.storageId,
@@ -156,6 +172,16 @@ export default {
     }
   },
   methods: {
+    logChange() {
+      let l = this.articles.length
+      let s = this.pagination.itemsPerPage
+      this.pagination.totalPages = Math.floor(l / s)
+      let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+      let end = start + this.pagination.itemsPerPage
+      // Set Displayed Articles
+      this.displayedArticles = this.articles.slice(start, end)
+      console.log(this.pagination.itemsPerPage)
+    },
     createArticlePage(storageId, subgroupId, subgroupName) {
       this.$router.push({name: 'admin-create-article', params: {storageId, subgroupId, subgroupName}})
     },
@@ -214,6 +240,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+.admin-container {
+  
+  .pagination-items-per-page {
+    max-width: 120px;
+  }
+}
 
   #list-div {
     width: 100%;
