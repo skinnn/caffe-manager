@@ -71,7 +71,7 @@
     "html-webpack-plugin": "^2.30.1",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "node-sass": "^4.10.0",
+    "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
