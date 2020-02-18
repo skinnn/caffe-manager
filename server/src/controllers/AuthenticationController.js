@@ -4,16 +4,74 @@ const Admin = require('../models/Admin')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
+const Login = require('../models/Login')
+
+
 // Sign user
 function jwtSignUser(user) {
   // Token expires in 1h
   const ONE_HOUR = 60 * 60 * 24
   return jwt.sign(user, config.authentication.jwtSecret, {
-    expiresIn: ONE_HOUR
+    // expiresIn: ONE_HOUR
   })
 }
 
 module.exports = {
+
+	async newLogin(req, res) {
+		try {
+			const userRes = await Admin.find({username: req.body.username})
+
+			if (userRes && userRes.length > 0) {
+				const user = userRes[0]
+				console.log('U: ', user)
+				// TODO: Create login record
+				const userJson = JSON.stringify(user)
+				const token = jwtSignUser(userJson)
+				const login = new Login({
+					user: user.id,
+					username: user.username,
+					password: user.password,
+					token
+				})
+
+				login.save((err) => {
+					if (err) console.error(err)
+					else {
+						Login.find({}, (err, logins) => {
+							if (err) console.error(err)
+							else {
+								let check = logins[0]
+								let filtered = logins.filter(login => login.token !== check.token)
+								console.log('All login records:', filtered)
+								user.token = token
+								res.setHeader('Content-Type', 'application/json')
+								res.json(user)
+							}
+						})
+					}
+				})
+			}
+
+			// const login = {
+				
+			// }
+			// await Login.save(login, (err) => {
+			// 	if (err) {
+			// 		console.log(err)
+			// 	} else {
+			// 		res.status(201).send({
+			// 			user: user,
+			// 			token: jwtSignUser(adminJson),
+			// 			success: 'Logged in successfully.'
+			// 		})
+			// 	}
+			// })
+		
+		} catch (err) {
+			console.error(err)
+		}
+	},
 
   // User Register
   async registerUser(req, res) {
@@ -246,6 +304,7 @@ module.exports = {
         error: 'An error has occurred trying to logout.'
       })
     }
-  }
+	}
+	
 
 } /* Module exports */

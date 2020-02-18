@@ -66,7 +66,8 @@ const upload = multer({
 
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',
-  ArticleController.getArticlesFromSubgroup)
+	ArticleController.getArticlesFromSubgroup)
+
 
 // Get Article Subgroups from Main Storages
 router.get('/admin/main-storages/subgroups',
@@ -135,7 +136,7 @@ router.get('/user/logout',
 
 // Admin Login
 router.post('/admin/login',
-  AuthenticationController.loginAdmin)
+  AuthenticationController.newLogin)
 
 // Admin Logout
 router.get('/admin/logout',
@@ -151,7 +152,7 @@ router.post('/user/register',
 router.post('/admin/register',
   upload.single('imageUpload'),
   AuthenticationControllerPolicy.registerAdmin,
-  AuthenticationController.registerAdmin)
+	AuthenticationController.registerAdmin)
 
 // Get all Admins
 router.get('/admin/admins',
@@ -238,6 +239,9 @@ router.post('/admin/:ownerId/table/:currentTableId/order/:orderId/reserve',
 
 // Get Reserved Articles by Table id
 router.get('/admin/:ownerId/table/:currentTableId/reserved-articles',
-  OrderController.getReservedArticles)
+	OrderController.getReservedArticles)
+	
+router.post('/new-login',
+	AuthenticationController.newLogin)
 
 module.exports = router
