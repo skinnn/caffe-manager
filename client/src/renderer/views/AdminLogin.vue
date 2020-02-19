@@ -89,7 +89,7 @@ export default {
 				adminList.push(admin)
 			})
 		}
-		// If there are no Admins in the DB (root_user doesnt count)
+		// If there are no Admins in the DB (root doesnt count)
 		if (response.noAdmins) {
 			this.noAdmins = response.noAdmins
 		}
@@ -118,6 +118,7 @@ export default {
 				})
 				const admin = res.data.admin
 				const token = res.data.token
+
 				// If Admin login is successfull
 				if (admin) {
 					// Hide errors
@@ -125,19 +126,25 @@ export default {
 					this.error = null
 
 					// Set Admin in the Vuex Store
-					this.$store.dispatch('loginAdmin', admin, token)
+					const data = {
+						admin,
+						token
+					}
+					const isLoggedIn = await this.$store.dispatch('loginAdmin', data)
 
 					// Get or Create Settings
-					const res = (await SettingsService.getOrCreateAdminSettings(admin._id)).data
-					if (res.settings) {
+					const res = await SettingsService.getOrCreateAdminSettings(admin._id)
+					if (res.data.settings) {
 						// Set Settings in the Vuex Store
-						this.$store.dispatch('setSettings', res.settings)
+						var areSettingsSet = await this.$store.dispatch('setSettings', res.data.settings)
 					}
 
-					// Redirect to the Admin Home page
-					this.$router.push({
-						name: 'admin-home'
-					})
+					if (isLoggedIn && areSettingsSet) {
+						// Redirect to the Admin Home page
+						this.$router.push({
+							name: 'admin-home'
+						})
+					}
 				}
 			} catch (err) {
 				console.error(err)

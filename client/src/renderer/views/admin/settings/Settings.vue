@@ -70,11 +70,18 @@
 <script>
 // Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
 	components: {
 		AdminSideMenu
 	},
+
+	computed: {
+		...mapGetters(['getSettings'])
+	},
+
 	data() {
 		return {
 			settings: {
@@ -91,6 +98,11 @@ export default {
 			info: null
 		}
 	},
+
+	created() {
+		console.log(this.$store)
+	},
+
 	methods: {
 		editSettings() {
 			this.$router.push({

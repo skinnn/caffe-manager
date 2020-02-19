@@ -28,17 +28,17 @@ export default new Vuex.Store({
 				state.isUserLoggedIn = false
 			}
 		},
-		setAdmin(state, admin) {
-			state.admin = admin
-			if (admin) {
-				state.isAdminLoggedIn = true
-			} else {
-				state.isAdminLoggedIn = false
-			}
-		},
-		setSettings(state, settings) {
-			state.settings = settings
-		},
+		// setAdmin(state, admin) {
+		// 	state.admin = admin
+		// 	if (admin) {
+		// 		state.isAdminLoggedIn = true
+		// 	} else {
+		// 		state.isAdminLoggedIn = false
+		// 	}
+		// },
+		// setSettings(state, settings) {
+		// 	state.settings = settings
+		// },
 		setActivePage(state, activePage) {
 			state.activePage = activePage
 		}
@@ -47,12 +47,12 @@ export default new Vuex.Store({
 		setUser({commit}, user) {
 			commit('setUser', user)
 		},
-		setAdmin({commit}, admin) {
-			commit('setAdmin', admin)
-		},
-		setSettings({commit}, settings) {
-			commit('setSettings', settings)
-		},
+		// setAdmin({commit}, admin) {
+		// 	commit('setAdmin', admin)
+		// },
+		// setSettings({commit}, settings) {
+		// 	commit('setSettings', settings)
+		// },
 		setActivePage({commit}, activePage) {
 			commit('setActivePage', activePage)
 		}

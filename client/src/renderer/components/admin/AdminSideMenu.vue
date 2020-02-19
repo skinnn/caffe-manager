@@ -159,7 +159,7 @@
 export default {
 	data() {
 		return {
-			isRootUser: this.$store.state.admin.root_user,
+			isRootUser: this.$store.state.admin.root,
 			defaultActive: 'home',
 			isActivePage: this.$store.state.activePage
 		}

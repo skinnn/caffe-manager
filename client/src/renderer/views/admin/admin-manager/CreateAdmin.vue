@@ -187,7 +187,7 @@ export default {
 	},
 	data() {
 		return {
-			isRootUser: this.$store.state.admin.root_user,
+			isRootUser: this.$store.state.admin.root,
 			username: {
 				value: '',
 				success_message: '',

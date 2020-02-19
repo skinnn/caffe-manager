@@ -20,12 +20,12 @@
 
 				<div class="admin-info">
 					<!-- TODO: Create admin profile page and option to edit profile -->
-					<p>Name: <span class="info-data">{{admin_info.name}}</span></p>
+					<!-- <p>Name: <span class="info-data">{{admin_info.name}}</span></p>
 					<p>Username: <span class="info-data">{{admin_info.username}}</span></p>
 					<p>Telephone 1: <span class="info-data">{{admin_info.telephone1}}</span></p>
 					<p>Telephone 2: <span class="info-data">{{admin_info.telephone2}}</span></p>
 					<p>Address: <span class="info-data">{{admin_info.address}}</span></p>
-					<p>Last time updated: <span class="info-data">{{admin_info.updated_date}}</span></p>
+					<p>Last time updated: <span class="info-data">{{admin_info.updated_date}}</span></p> -->
 				</div>
 
 			</v-flex>
@@ -65,9 +65,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-		.activeHome {
-			background-color: red
-		}
+	.activeHome {
+		background-color: red
+	}
 	.admin-container {
 
 		.admin-info {

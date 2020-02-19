@@ -22,53 +22,54 @@ module.exports = {
 		try {
 			const user = await Admin.getAdminByUsername(req.body.username)
 
-			if (user) {
-				const candidatePassword = req.body.password
-				const isMatch = await Admin.compareAdminPassword(candidatePassword, user.password)
-
-				if (!isMatch) {
-					return res.status(401).json({
-						error: {
-							message: 'Username or password do not match.'
-						}
-					})
-				}
-
-				const token = jwtSignUser(user)
-				const login = new Login({
-					user: user.id,
-					username: user.username,
-					password: user.password,
-					token
-				})
-
-				login.save((err) => {
-					if (err) throw err
-					else {
-						Login.find({token}, (err, logins) => {
-							if (err) console.error(err)
-							else {
-								let check = logins[0]
-								let filtered = logins.filter(login => login.token !== check.token)
-								console.log('ALL: ', logins)
-								console.log('All login records:', filtered)
-								user.token = token
-								res.setHeader('Content-Type', 'application/json')
-								return res.json({ admin: user })
-							}
-						})
-					}
-				})
-
-			// Username not found in the db
-			} else {
+			if (!user) {
 				res.setHeader('Content-Type', 'application/json')
-				return res.json({
+				return res.status(401).json({
 					error: {
 						message: 'Incorrect username or password.'
 					}
 				})
 			}
+
+			const candidatePassword = req.body.password
+			const isMatch = await Admin.compareAdminPassword(candidatePassword, user.password)
+
+			if (!isMatch) {
+				return res.status(401).json({
+					error: {
+						message: 'Incorrect username or password..'
+					}
+				})
+			}
+
+			const token = jwtSignUser(user)
+			const login = new Login({
+				user: user.id,
+				username: user.username,
+				password: user.password,
+				token
+			})
+
+			login.save((err) => {
+				if (err) throw err
+				else {
+					Login.find({token}, (err, logins) => {
+						if (err) console.error(err)
+						else {
+							let check = logins[0]
+							let filtered = logins.filter(login => login.token !== check.token)
+							console.log('ALL: ', logins)
+							console.log('All login records:', filtered)
+							user.token = token
+							res.setHeader('Content-Type', 'application/json')
+							return res.json({
+								admin: user,
+								token
+							})
+						}
+					})
+				}
+			})
 
 			// const login = {
 				

@@ -14,14 +14,13 @@ export default {
 				const response = (await AuthenticationService.logoutAdmin()).data
 
 				if (response.admin === false) {
-					// Set admin and isLoggedIn states to false
-					this.$store.dispatch('setAdmin', null)
-					// Set settings state to null
+					// Clear store and local storage data
+					this.$store.dispatch('logoutAdmin', null)
 					this.$store.dispatch('setSettings', null)
-					// Set active page state to false
+					// TODO: Change logic for active page and side navigation
 					this.$store.dispatch('setActivePage', null)
 
-					console.log('App state cleared. ', this.$store.state)
+					console.log('App state cleared: ', this.$store.state)
 
 					// Redirect to admin login page and send success msg
 					this.$router.push({
