@@ -9,45 +9,45 @@ const dateHandler = require('./getDate')
 
 module.exports = {
 
-  // Create Admin Root if it doesn't exist
+  // Create root Admin if it doesn't exist
   async createRootAdmin(req, res) {
     try {
       // Create or Update
-      let query = { root_user: true, username: 'admin' }
+      let query = { root: true, username: 'admin' }
       // let update = { root_admin: true }
-      await Admin.find(query, function(err, root) {
+      await Admin.find(query, (err, admin) => {
         if (err) {
           return res.status(500).send({
             error: 'An DB error has occurred trying to find the root.'
           })
         } else {
-          // If Root User exists
-          if (root && root.length > 0) {
+          // If Root Admin exists
+          if (admin && admin.length > 0) {
             return res.send({
               rootExist: true,
-              message: 'Root user already exist.'
+              message: 'Root admin already exist.'
             })
           // If Root User doesn't exist
-          } else if (root.root_user !== true && root.username !== 'admin') {
+          } else if (admin.root !== true && admin.username !== 'admin') {
             // If no Root User is found create one
-            const root = new Admin({
-              root_user: true,
+            const admin = new Admin({
+              root: true,
               username: 'admin',
               password: '123123',
-              userType: 'admin'
+              userRoles: ['admin']
             })
             // Create default crypted password
-            bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.genSalt(10, (err, salt) => {
               if (err) {
                 return console.log(err)
               }
-              bcrypt.hash(root.password, salt, function(err, hash) {
+              bcrypt.hash(admin.password, salt, (err, hash) => {
                 if (err) {
                   return console.log(err)
                 }
-                root.password = hash
+                admin.password = hash
                 // Save Root User in the database
-                root.save()
+                admin.save()
               })
             })
             // Root User created message
@@ -255,7 +255,7 @@ module.exports = {
   async getAdminLoginList(req, res) {
     try {
       // Find all admins except the root user/admin
-      let query = { root_user: false }
+      let query = { root: false }
       await Admin.find(query)
         .select('-_id username name')
         .exec()

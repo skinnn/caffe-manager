@@ -11,8 +11,8 @@ const Login = require('../models/Login')
 function jwtSignUser(user) {
   // Token expires in 1h
   const ONE_HOUR = 60 * 60 * 24
-  return jwt.sign(user, config.authentication.jwtSecret, {
-    // expiresIn: ONE_HOUR
+  return jwt.sign(user.toJSON(), config.authentication.jwtSecret, {
+    expiresIn: ONE_HOUR
   })
 }
 
@@ -20,14 +20,21 @@ module.exports = {
 
 	async newLogin(req, res) {
 		try {
-			const userRes = await Admin.find({username: req.body.username})
+			const user = await Admin.getAdminByUsername(req.body.username)
 
-			if (userRes && userRes.length > 0) {
-				const user = userRes[0]
-				console.log('U: ', user)
-				// TODO: Create login record
-				const userJson = JSON.stringify(user)
-				const token = jwtSignUser(userJson)
+			if (user) {
+				const candidatePassword = req.body.password
+				const isMatch = await Admin.compareAdminPassword(candidatePassword, user.password)
+
+				if (!isMatch) {
+					return res.status(401).json({
+						error: {
+							message: 'Username or password do not match.'
+						}
+					})
+				}
+
+				const token = jwtSignUser(user)
 				const login = new Login({
 					user: user.id,
 					username: user.username,
@@ -36,19 +43,29 @@ module.exports = {
 				})
 
 				login.save((err) => {
-					if (err) console.error(err)
+					if (err) throw err
 					else {
-						Login.find({}, (err, logins) => {
+						Login.find({token}, (err, logins) => {
 							if (err) console.error(err)
 							else {
 								let check = logins[0]
 								let filtered = logins.filter(login => login.token !== check.token)
+								console.log('ALL: ', logins)
 								console.log('All login records:', filtered)
 								user.token = token
 								res.setHeader('Content-Type', 'application/json')
-								res.json(user)
+								return res.json({ admin: user })
 							}
 						})
+					}
+				})
+
+			// Username not found in the db
+			} else {
+				res.setHeader('Content-Type', 'application/json')
+				return res.json({
+					error: {
+						message: 'Incorrect username or password.'
 					}
 				})
 			}
@@ -178,8 +195,8 @@ module.exports = {
 
       // Create new admin object
       const newAdmin = new Admin({
-        userType: 'admin',
-        root_user: false,
+        userRoles: ['admin'],
+        root: false,
         username: username,
         password: password,
         name: name,

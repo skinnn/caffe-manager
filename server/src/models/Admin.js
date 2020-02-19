@@ -3,13 +3,13 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
 const AdminSchema = new Schema({
-  userType: {
-    type: String,
-    required: true
-  },
-  root_user: {
+	userRoles: {
+		type: Array,
+		default: []
+	},
+  root: {
     type: Boolean,
-    required: true
+    default: false
   },
   username: {
     type: String,
@@ -40,23 +40,22 @@ const AdminSchema = new Schema({
     type: String,
     default: ''
   },
-  note: {
-    type: String,
-    default: ''
-  },
   createdBy: {
     type: String,
     default: ''
+	},
+	note: {
+    type: String,
+    default: ''
   },
-  date: {
+  created: {
     type: Date,
     default: Date.now
   },
-  updated_date: {
+  updated: {
     type: String,
     default: ''
   }
-
 })
 
 let Admin = module.exports = mongoose.model('Admin', AdminSchema)
@@ -76,18 +75,24 @@ module.exports.createAdmin = function(newAdmin, callback) {
   })
 }
 
-module.exports.getAdminByUsername = function(username, callback) {
-  let query = {username: username}
-  Admin.findOne(query, callback)
+module.exports.getAdminByUsername = (username) => {
+	return new Promise((resolve, reject) => {
+		Admin.findOne({ username: username }, (err, admin) => {
+			if (err) reject(err)
+			resolve(admin)
+		})
+	})
 }
 
 module.exports.getAdminById = function(id, callback) {
   Admin.findById(id, callback)
 }
 
-module.exports.compareAdminPassword = function(candidatePassword, hash, callback) {
-  bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-    if (err) throw err
-    callback(null, isMatch)
-  })
+module.exports.compareAdminPassword = (candidatePassword, hash) => {
+	return new Promise((resolve, reject) => {
+		bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+			if (err) reject(err)
+			resolve(isMatch)
+		})
+	})
 }
