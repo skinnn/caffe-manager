@@ -108,6 +108,7 @@ export default {
 			this.password = ''
 			document.getElementById('pwFocus').focus()
 		},
+
 		async loginAdmin() {
 			try {
 				// Admin Login
@@ -116,15 +117,15 @@ export default {
 					password: this.password
 				})
 				const admin = res.data.admin
+				const token = res.data.token
 				// If Admin login is successfull
 				if (admin) {
-					console.log('admin: ', admin)
 					// Hide errors
 					this.success = 'You are now logged in'
 					this.error = null
 
 					// Set Admin in the Vuex Store
-					this.$store.dispatch('setAdmin', admin)
+					this.$store.dispatch('loginAdmin', admin, token)
 
 					// Get or Create Settings
 					const res = (await SettingsService.getOrCreateAdminSettings(admin._id)).data
