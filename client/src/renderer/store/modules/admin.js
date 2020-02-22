@@ -37,6 +37,16 @@ const actions = {
 		})
 	},
 
+	logoutAdmin(context) {
+		return new Promise((resolve, reject) => {
+			const isAdminRemoved = context.dispatch('setAdmin', null)
+			const isTokenRemoved = context.dispatch('setToken', null)
+
+			if (isAdminRemoved && isTokenRemoved) resolve(true)
+			else reject(new Error('Could not remove admin and token.'))
+		})
+	},
+
 	setAdmin({ commit }, admin) {
 		return new Promise((resolve, reject) => {
 			localStorage.setItem('admin', JSON.stringify(admin))
@@ -50,16 +60,6 @@ const actions = {
 			localStorage.setItem('token', JSON.stringify(token))
 			commit('SET_ADMIN_TOKEN', token)
 			resolve(token)
-		})
-	},
-
-	logoutAdmin(context) {
-		return new Promise((resolve, reject) => {
-			const isAdminRemoved = context.dispatch('setAdmin', null)
-			const isTokenRemoved = context.dispatch('setToken', null)
-
-			if (isAdminRemoved && isTokenRemoved) resolve(true)
-			else reject(new Error('Could not remove admin and token.'))
 		})
 	}
 }

@@ -59,6 +59,7 @@ export default {
 	},
 
 	mounted() {
+		console.log('STORE: ', this.$store.state)
 		// TODO: Get and populate admin info from the database instead of Vuex Store
 	}
 }

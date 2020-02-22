@@ -1,5 +1,8 @@
 <template>
-	<v-btn @click="logoutAdmin" class="logout-btn pink">
+	<v-btn
+		@click="logoutAdmin"
+		class="logout-btn pink"
+	>
 		Logout
 	</v-btn>
 </template>

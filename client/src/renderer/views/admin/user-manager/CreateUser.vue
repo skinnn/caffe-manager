@@ -15,7 +15,7 @@
 
 			<v-flex class="admin-container">
 				<v-form
-					@submit.prevent="registerUser"
+					@submit="onSubmit"
 					enctype="multipart/form-data"
 					class="register-user-form"
 				>
@@ -158,11 +158,10 @@
 					<div class="upload-image">
 						<input
 							type="file"
-							@change="imagePreview(this)"
-							id="userImage"
+							@change="imagePreview()"
 							name="imageUpload"
-						/>
-						<img id="previewImg" class="previewImg" src="" alt="">
+						>
+						<img class="previewImg" :src="profileImage.src" alt="">
 					</div>
 					<br>
 
@@ -231,6 +230,10 @@ export default {
 				warehouse: false,
 				tables: false
 			},
+			profileImage: {
+				src: null,
+				file: null
+			},
 			createdBy: {
 				id: this.$store.state.admin._id,
 				name: this.$store.state.admin.name,
@@ -243,6 +246,7 @@ export default {
 			// Is Password Confirmed - default
 			confirmPasswordMatched: false,
 			isPasswordConfirmedText: '',
+			// TODO: Centralize regexes/form policies, create helpers
 			// Password Regexes ( Password Strength )
 			strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
 			mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'),
@@ -284,21 +288,26 @@ export default {
 				this.isPasswordConfirmedText = 'Passwords don\'t match'
 			}
 		},
+
 		imagePreview() {
-			const img = document.getElementById('userImage').files
-			const previewImg = document.getElementById('previewImg')
+			const file = event.target.files[0]
+			// Set selected image
+			this.profileImage.file = file
+			// Preview selected image
+			const previewImg = this.profileImage
 			var reader = new FileReader()
 			reader.onload = function(e) {
 				previewImg.src = e.target.result
 			}
-			reader.readAsDataURL(img[0])
+			reader.readAsDataURL(file)
 		},
-		async registerUser() {
+
+		async onSubmit() {
+			event.preventDefault()
 			try {
 				const userFormData = new FormData()
 				// Get image
-				let imagefile = document.querySelector('#userImage')
-				let image = imagefile.files[0]
+				const image = this.profileImage.file
 				// Get and append text inputs to form data
 				const username = this.username.value
 				const password = this.password.value
@@ -318,52 +327,51 @@ export default {
 				// Created By
 				const createdBy = this.createdBy
 				// Append everything to form data
-				await userFormData.append('imageUpload', image)
-				await userFormData.append('userUsername', username)
-				await userFormData.append('userName', fullName)
-				await userFormData.append('userPassword', password)
-				await userFormData.append('userPassword2', password2)
-				await userFormData.append('userTelephone1', telephone1)
-				await userFormData.append('userTelephone2', telephone2)
-				await userFormData.append('userAddress', address)
-				await userFormData.append('userNote', note)
-				await userFormData.append('userMenu', userMenu)
-				await userFormData.append('createdBy', createdBy)
+				userFormData.append('imageUpload', image)
+				userFormData.append('userUsername', username)
+				userFormData.append('userName', fullName)
+				userFormData.append('userPassword', password)
+				userFormData.append('userPassword2', password2)
+				userFormData.append('userTelephone1', telephone1)
+				userFormData.append('userTelephone2', telephone2)
+				userFormData.append('userAddress', address)
+				userFormData.append('userNote', note)
+				userFormData.append('userMenu', userMenu)
+				userFormData.append('createdBy', createdBy)
 
 				// Register User
-				const response = (await AuthenticationService.registerUser(userFormData)).data
+				// const response = (await AuthenticationService.registerUser(userFormData)).data
+				console.log('IMAGE: ', image)
 
 				// If registering was successful
-				if (response.user) {
-					// Set success message and timeout
-					this.error = null
-					this.info = null
-					this.success = `User with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
-					 registered successfully.`
-					setTimeout(() => {
-						this.success = null
-					}, 4000)
+				// if (response.user) {
+				// 	// Set success message and timeout
+				// 	this.error = null
+				// 	this.info = null
+				// 	this.success = `User with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
+				// 	 registered successfully.`
+				// 	setTimeout(() => {
+				// 		this.success = null
+				// 	}, 4000)
 
-					// Set all Values to default after successful registering
-					this.username.value = ''
-					this.password.value = ''
-					this.password2.value = ''
-					this.name.value = ''
-					this.telephone1.value = ''
-					this.telephone2.value = ''
-					this.address.value = ''
-					this.note.value = ''
-					this.userMenu.home = true
-					this.userMenu.warehouse = false
-					this.userMenu.tables = false
-					image = ''
-					imagefile.value = ''
-					const previewImg = document.getElementById('previewImg')
-					previewImg.src = ''
-					// Hide password messages
-					this.showMessage = false
-					this.confirmPasswordMatched = null
-				}
+				// 	// Set all Values to default after successful registering
+				// 	this.username.value = ''
+				// 	this.password.value = ''
+				// 	this.password2.value = ''
+				// 	this.name.value = ''
+				// 	this.telephone1.value = ''
+				// 	this.telephone2.value = ''
+				// 	this.address.value = ''
+				// 	this.note.value = ''
+				// 	this.userMenu.home = true
+				// 	this.userMenu.warehouse = false
+				// 	this.userMenu.tables = false
+				// 	this.profileImage.file = null
+				// 	this.profileImage.src = ''
+				// 	// Hide password messages
+				// 	this.showMessage = false
+				// 	this.confirmPasswordMatched = null
+				// }
 			} catch (error) {
 				console.log(error)
 

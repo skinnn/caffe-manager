@@ -10,32 +10,34 @@
 					<router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link>
 					<router-link to="/"><v-btn color="blue">User Login</v-btn></router-link>
 
-					<v-form @keyup.enter.native="loginAdmin">
+					<v-form @submit="onSubmit">
 						<v-text-field
 							type="text"
 							v-model="username"
 							label="Username:"
 							outline
-							></v-text-field>
+						></v-text-field>
 						<v-text-field
-							id="pwFocus"
+							ref="inputPassword"
 							type="password"
 							v-model="password"
 							label="Password:"
 							outline
-							></v-text-field>
+						></v-text-field>
+						<!-- Display messages -->
+						<div class="error-msg" v-if="error" v-html="error" />
+						<div class="success-msg" v-if="success" v-html="success" />
+						<div class="info-msg" v-if="info" v-html="info" />
+						<div class="msg-placeholder" v-if="!info && !success && !error" />
+						<br>
+						<v-btn
+							class="green login-button"
+							block
+							type="submit"
+						>
+							Login
+						</v-btn>
 					</v-form>
-					<!-- Display messages -->
-					<div class="error-msg" v-if="error" v-html="error" />
-					<div class="success-msg" v-if="success" v-html="success" />
-					<div class="info-msg" v-if="info" v-html="info" />
-					<div class="msg-placeholder" v-if="!info && !success && !error" />
-					<br>
-					<v-btn class="green login-button"
-						block
-						@click="loginAdmin">
-						Login
-					</v-btn>
 				</div>
 
 			</div>
@@ -106,10 +108,11 @@ export default {
 		populateUsername(username) {
 			this.username = username
 			this.password = ''
+			this.$refs.inputPassword.focus()
 			document.getElementById('pwFocus').focus()
 		},
 
-		async loginAdmin() {
+		async onSubmit() {
 			try {
 				// Admin Login
 				const res = await AuthenticationService.loginAdmin({
@@ -136,10 +139,10 @@ export default {
 					const res = await SettingsService.getOrCreateAdminSettings(admin._id)
 					if (res.data.settings) {
 						// Set Settings in the Vuex Store
-						var areSettingsSet = await this.$store.dispatch('setSettings', res.data.settings)
+						var isSettingsSet = await this.$store.dispatch('setSettings', res.data.settings)
 					}
 
-					if (isLoggedIn && areSettingsSet) {
+					if (isLoggedIn && isSettingsSet) {
 						// Redirect to the Admin Home page
 						this.$router.push({
 							name: 'admin-home'
