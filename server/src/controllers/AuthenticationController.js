@@ -12,13 +12,13 @@ function jwtSignUser(user) {
   // Token expires in 1h
   const ONE_HOUR = 60 * 60 * 24
   return jwt.sign(user.toJSON(), config.authentication.jwtSecret, {
-    expiresIn: ONE_HOUR
+    // expiresIn: ONE_HOUR
   })
 }
 
 module.exports = {
 
-	async newLogin(req, res) {
+	async login(req, res) {
 		try {
 			const user = await Admin.getAdminByUsername(req.body.username)
 
@@ -71,23 +71,33 @@ module.exports = {
 				}
 			})
 
-			// const login = {
-				
-			// }
-			// await Login.save(login, (err) => {
-			// 	if (err) {
-			// 		console.log(err)
-			// 	} else {
-			// 		res.status(201).send({
-			// 			user: user,
-			// 			token: jwtSignUser(adminJson),
-			// 			success: 'Logged in successfully.'
-			// 		})
-			// 	}
-			// })
-		
 		} catch (err) {
 			console.error(err)
+		}
+	},
+
+	async logout(req, res) {
+		try {
+			const token = req.headers.authorization.split(' ')[1]
+			const loginRecord = await Login.getLoginByToken(token)
+
+			const isDeleted = await Login.deleteMany({ token: token})
+
+			const loginAfter = await Login.getLoginByToken(token)
+
+			if (isDeleted) {
+				console.log('Deleted..... ', loginAfter)
+				return res.status(200).json({
+					message: 'Logged out successfully.'
+				})
+			}
+
+		} catch (err) {
+			console.error(err)
+			
+			return res.status(500).json({
+				message: 'An error occurred while logging out.'
+			})
 		}
 	},
 
@@ -230,67 +240,67 @@ module.exports = {
   },
 
   // User Login
-  async loginUser(req, res, next) {
-    try {
-      await passport.authenticate('user', function(err, user, info) {
-        if (err) {
-          return next(err)
-        }
-        if (!user) {
-          return res.status(403).send({
-            error: 'Login authentication has failed.'
-          })
-        }
-        req.logIn(user, function(err) {
-          if (err) {
-            return next(err)
-          }
-          const userJson = user.toJSON()
-          return res.send({
-            user: user,
-            // Create JWT
-            token: jwtSignUser(userJson)
-          })
-        })
-      })(req, res, next)
-    } catch (err) {
-      return res.status(500).send({
-        error: 'An error has occurred trying to log in.'
-      })
-    }
-  },
+  // async loginUser(req, res, next) {
+  //   try {
+  //     await passport.authenticate('user', function(err, user, info) {
+  //       if (err) {
+  //         return next(err)
+  //       }
+  //       if (!user) {
+  //         return res.status(403).send({
+  //           error: 'Login authentication has failed.'
+  //         })
+  //       }
+  //       req.logIn(user, function(err) {
+  //         if (err) {
+  //           return next(err)
+  //         }
+  //         const userJson = user.toJSON()
+  //         return res.send({
+  //           user: user,
+  //           // Create JWT
+  //           token: jwtSignUser(userJson)
+  //         })
+  //       })
+  //     })(req, res, next)
+  //   } catch (err) {
+  //     return res.status(500).send({
+  //       error: 'An error has occurred trying to log in.'
+  //     })
+  //   }
+  // },
 
   // Admin Login
-  async loginAdmin(req, res, next) {
-    try {
-      await passport.authenticate('admin', function(err, admin, info) {
-        if (err) {
-          return next(err)
-        }
-        if (!admin) {
-          return res.status(403).send({
-            error: 'Log in authentication failed.'
-          })
-        }
-        req.logIn(admin, function(err) {
-          if (err) {
-            return next(err)
-          }
-          const adminJson = admin.toJSON()
-          return res.send({
-            admin: admin,
-            // Create JWT
-            token: jwtSignUser(adminJson),
-            success: `Logged in: ${admin.username}`
-          })
-        })
-      })(req, res, next)
-    } catch (err) {
-      return res.status(500).send({
-        error: 'An error has occurred trying to log in.'
-      })
-    }
-  },
+  // async loginAdmin(req, res, next) {
+  //   try {
+  //     await passport.authenticate('admin', function(err, admin, info) {
+  //       if (err) {
+  //         return next(err)
+  //       }
+  //       if (!admin) {
+  //         return res.status(403).send({
+  //           error: 'Log in authentication failed.'
+  //         })
+  //       }
+  //       req.logIn(admin, function(err) {
+  //         if (err) {
+  //           return next(err)
+  //         }
+  //         const adminJson = admin.toJSON()
+  //         return res.send({
+  //           admin: admin,
+  //           // Create JWT
+  //           token: jwtSignUser(adminJson),
+  //           success: `Logged in: ${admin.username}`
+  //         })
+  //       })
+  //     })(req, res, next)
+  //   } catch (err) {
+  //     return res.status(500).send({
+  //       error: 'An error has occurred trying to log in.'
+  //     })
+  //   }
+  // },
 
   // User Logout
   async logoutUser(req, res) {

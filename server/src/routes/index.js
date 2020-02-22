@@ -128,19 +128,21 @@ router.get('/admin/users',
 
 // User Login
 router.post('/user/login',
-  AuthenticationController.loginUser)
+  AuthenticationController.login)
 
 // User Logout
 router.get('/user/logout',
-  AuthenticationController.logoutUser)
+	AuthenticationController.logout)
+  // AuthenticationController.logoutUser)
 
 // Admin Login
 router.post('/admin/login',
-  AuthenticationController.newLogin)
+  AuthenticationController.login)
 
 // Admin Logout
-router.get('/admin/logout',
-  AuthenticationController.logoutAdmin)
+router.post('/admin/logout',
+	AuthenticationController.logout)
+  // AuthenticationController.logoutAdmin)
 
 // Register User
 router.post('/user/register',
@@ -241,7 +243,7 @@ router.post('/admin/:ownerId/table/:currentTableId/order/:orderId/reserve',
 router.get('/admin/:ownerId/table/:currentTableId/reserved-articles',
 	OrderController.getReservedArticles)
 	
-router.post('/new-login',
-	AuthenticationController.newLogin)
+// router.post('/new-login',
+// 	AuthenticationController.login)
 
 module.exports = router

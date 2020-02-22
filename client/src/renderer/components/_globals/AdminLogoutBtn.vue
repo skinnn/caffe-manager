@@ -8,15 +8,24 @@
 </template>
 
 <script>
+// Services
 import AuthenticationService from '@/services/AuthenticationService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
+
+	computed: {
+		...mapGetters(['getAdminToken'])
+	},
+
 	methods: {
 		async logoutAdmin() {
 			try {
-				const response = (await AuthenticationService.logoutAdmin()).data
+				const token = this.getAdminToken
+				const res = await AuthenticationService.logoutAdmin(token)
 
-				if (response.admin === false) {
+				if (res.status === 200) {
 					// Clear store and local storage data
 					this.$store.dispatch('logoutAdmin', null)
 					this.$store.dispatch('setSettings', null)

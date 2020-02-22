@@ -31,6 +31,24 @@ const LoginSchema = new Schema({
 
 const Login = module.exports = mongoose.model('Login', LoginSchema)
 
+module.exports.getLoginById = (id) => {
+	return new Promise((resolve, reject) => {
+		Login.findOne({ _id: id }, (err, login) => {
+			if (err) reject(err)
+			resolve(login)
+		})
+	})
+}
+
+module.exports.getLoginByToken = (token) => {
+	return new Promise((resolve, reject) => {
+		Login.findOne({ token: token }, (err, login) => {
+			if (err) reject(err)
+			resolve(login)
+		})
+	})
+}
+
 // module.exports.createAdmin = function(newAdmin, callback) {
 //   bcrypt.genSalt(10, function(err, salt) {
 //     if (err) {
@@ -49,10 +67,6 @@ const Login = module.exports = mongoose.model('Login', LoginSchema)
 // module.exports.getAdminByUsername = function(username, callback) {
 //   let query = {username: username}
 //   Admin.findOne(query, callback)
-// }
-
-// module.exports.getAdminById = function(id, callback) {
-//   Admin.findById(id, callback)
 // }
 
 // module.exports.compareAdminPassword = function(candidatePassword, hash, callback) {

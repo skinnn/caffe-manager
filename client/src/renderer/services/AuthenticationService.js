@@ -16,7 +16,7 @@ export default {
 	logoutUser(credentials) {
 		return Api().get('user/logout', credentials)
 	},
-	logoutAdmin(credentials) {
-		return Api().get('admin/logout', credentials)
+	logoutAdmin(token) {
+		return Api(token).post('admin/logout')
 	}
 }
