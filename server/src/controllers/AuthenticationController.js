@@ -63,7 +63,7 @@ module.exports = {
 							user.token = token
 							res.setHeader('Content-Type', 'application/json')
 							return res.json({
-								admin: user,
+								user,
 								token
 							})
 						}

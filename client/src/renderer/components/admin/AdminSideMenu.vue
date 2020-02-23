@@ -7,7 +7,7 @@
 					<v-list-tile>
 						<v-list-tile-title class="dashboard-title">
 							<v-icon>gavel</v-icon>
-							<span class="admin-username">{{ this.$store.state.admin.username }}</span>
+							<!-- <span class="admin-username">{{ this.$store.state.user.username }}</span> -->
 						</v-list-tile-title>
 					</v-list-tile>
 				</v-list>
@@ -159,7 +159,7 @@
 export default {
 	data() {
 		return {
-			isRootUser: this.$store.state.admin.root,
+			isRootUser: this.$store.state.user.root,
 			defaultActive: 'home',
 			isActivePage: this.$store.state.activePage
 		}

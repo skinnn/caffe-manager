@@ -68,6 +68,7 @@ import SettingsService from '@/services/SettingsService'
 import AdminService from '@/services/AdminService'
 
 export default {
+
 	data() {
 		return {
 			adminList: [],
@@ -81,6 +82,7 @@ export default {
 			loggedOutMessage: this.$store.state.route.params.loggedOutMessage
 		}
 	},
+
 	async mounted() {
 		const response = (await AdminService.getAdminLoginList()).data
 		console.log(response)
@@ -104,6 +106,7 @@ export default {
 			this.loggedOutMessage = null
 		}
 	},
+
 	methods: {
 		populateUsername(username) {
 			this.username = username
@@ -114,29 +117,29 @@ export default {
 
 		async onSubmit() {
 			try {
-				// Admin Login
-				const res = await AuthenticationService.loginAdmin({
+				// Login
+				const res = await AuthenticationService.login({
 					username: this.username,
 					password: this.password
 				})
-				const admin = res.data.admin
+				const user = res.data.user
 				const token = res.data.token
 
-				// If Admin login is successfull
-				if (admin) {
+				// If user login is successfull
+				if (user) {
 					// Hide errors
 					this.success = 'You are now logged in'
 					this.error = null
 
-					// Set Admin in the Vuex Store
+					// Set user in the Vuex Store
 					const data = {
-						admin,
+						user,
 						token
 					}
-					const isLoggedIn = await this.$store.dispatch('loginAdmin', data)
+					const isLoggedIn = await this.$store.dispatch('loginUser', data)
 
 					// Get or Create Settings
-					const res = await SettingsService.getOrCreateAdminSettings(admin._id)
+					const res = await SettingsService.getOrCreateAdminSettings(user._id)
 					if (res.data.settings) {
 						// Set Settings in the Vuex Store
 						var isSettingsSet = await this.$store.dispatch('setSettings', res.data.settings)

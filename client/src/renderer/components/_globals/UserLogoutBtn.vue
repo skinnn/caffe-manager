@@ -1,17 +1,26 @@
 <template>
-	<v-btn @click="logoutUser" class="logout-btn pink">
+	<v-btn @click="onClick" class="logout-btn pink">
 		Logout
 	</v-btn>
 </template>
 
 <script>
+// Services
 import AuthenticationService from '@/services/AuthenticationService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
+
+	computed: {
+		...mapGetters(['getUserToken'])
+	},
+
 	methods: {
-		async logoutUser() {
+		async onClick() {
 			try {
-				const response = (await AuthenticationService.logoutUser()).data
+				const token = await this.getUserToken
+				const response = (await AuthenticationService.logout(token)).data
 
 				if (response.user === false) {
 					// Set user and isLoggedIn states to false

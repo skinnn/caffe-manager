@@ -5,9 +5,6 @@ const state = {
 const mutations = {
 	SET_SETTINGS(state, settings) {
 		state.settings = settings
-	},
-	REMOVE_SETTINGS(state) {
-		state.settings = null
 	}
 }
 
@@ -16,18 +13,14 @@ const actions = {
 		return new Promise((resolve, reject) => {
 			localStorage.setItem('settings', JSON.stringify(settings))
 			commit('SET_SETTINGS', settings)
-			resolve(settings)
+			resolve(true)
 		})
-	},
-
-	removeSettings({ commit }) {
-		commit('REMOVE_SETTINGS')
 	}
 }
 
 const getters = {
 	getSettings(state) {
-		return state.admin
+		return state.settings
 	}
 }
 

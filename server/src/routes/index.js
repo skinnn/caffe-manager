@@ -62,7 +62,15 @@ const upload = multer({
 //   next()
 // })
 
-// TODO: Secure all endpoints so only logged in admin can access it
+// TODO: Secure all endpoints so only logged in user/admin can access it
+
+// Login
+router.post('/login',
+	AuthenticationController.login)
+	
+// Logout
+router.post('/logout',
+  AuthenticationController.logout)
 
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',
@@ -125,24 +133,6 @@ router.get('/admin/storages',
 // Get all users
 router.get('/admin/users',
   AdminController.getAllUsers)
-
-// User Login
-router.post('/user/login',
-  AuthenticationController.login)
-
-// User Logout
-router.get('/user/logout',
-	AuthenticationController.logout)
-  // AuthenticationController.logoutUser)
-
-// Admin Login
-router.post('/admin/login',
-  AuthenticationController.login)
-
-// Admin Logout
-router.post('/admin/logout',
-	AuthenticationController.logout)
-  // AuthenticationController.logoutAdmin)
 
 // Register User
 router.post('/user/register',

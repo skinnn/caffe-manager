@@ -44,14 +44,14 @@ export default {
 	data() {
 		return {
 			admin_info: {
-				name: this.$store.state.admin.name,
-				username: this.$store.state.admin.username,
-				telephone1: this.$store.state.admin.telephone1,
-				telephone2: this.$store.state.admin.telephone2,
-				address: this.$store.state.admin.address,
-				updated_date: this.$store.state.admin.updated_date
+				name: this.$store.state.user.name,
+				username: this.$store.state.user.username,
+				telephone1: this.$store.state.user.telephone1,
+				telephone2: this.$store.state.user.telephone2,
+				address: this.$store.state.user.address,
+				updated_date: this.$store.state.user.updated_date
 			},
-			ownerId: this.$store.state.admin._id,
+			ownerId: this.$store.state.user._id,
 			error: null,
 			success: null,
 			info: null

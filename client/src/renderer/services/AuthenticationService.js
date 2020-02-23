@@ -7,16 +7,19 @@ export default {
 	registerAdmin(adminFormData) {
 		return Api().post('admin/register', adminFormData)
 	},
-	loginUser(credentials) {
-		return Api().post('user/login', credentials)
+	// loginUser(credentials) {
+	// 	return Api().post('user/login', credentials)
+	// },
+	// loginAdmin(credentials) {
+	// 	return Api().post('admin/login', credentials)
+	// },
+	login(data) {
+		return Api().post('login', data)
 	},
-	loginAdmin(credentials) {
-		return Api().post('admin/login', credentials)
-	},
-	logoutUser(credentials) {
-		return Api().get('user/logout', credentials)
-	},
-	logoutAdmin(token) {
-		return Api(token).post('admin/logout')
+	// logoutUser(credentials) {
+	// 	return Api().get('user/logout', credentials)
+	// },
+	logout(token) {
+		return Api(token).post('logout')
 	}
 }
