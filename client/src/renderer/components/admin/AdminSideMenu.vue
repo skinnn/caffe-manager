@@ -7,7 +7,7 @@
 					<v-list-tile>
 						<v-list-tile-title class="dashboard-title">
 							<v-icon>gavel</v-icon>
-							<span class="admin-username">{{ this.$store.state.user.username }}</span>
+							<span class="admin-username">{{ user.username }}</span>
 						</v-list-tile-title>
 					</v-list-tile>
 				</v-list>
@@ -254,7 +254,7 @@ export default {
 	}
 
 	.admin-username {
-		font-size: 22px;
+		font-size: 18px;
 		margin-left: 5%;
 	}
 

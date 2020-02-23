@@ -11,7 +11,7 @@ export default {
 		return Api().get(`/admin/${ownerId}/table/${currentTableId}`)
 	},
 	// saveTable(tableId) {
-	//   return Api().put(``)
+	//   return Api().patch(``)
 	// },
 	deleteTable(ownerId, tableId) {
 		return Api().delete(`/admin/${ownerId}/table/${tableId}`)

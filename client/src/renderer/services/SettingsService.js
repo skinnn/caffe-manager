@@ -5,6 +5,6 @@ export default {
 		return Api().get(`admin/${adminId}/settings`)
 	},
 	updateAdminSettings(adminId, settingsFormData) {
-		return Api().put(`admin/${adminId}/settings`, settingsFormData)
+		return Api().patch(`admin/${adminId}/settings`, settingsFormData)
 	}
 }

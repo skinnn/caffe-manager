@@ -15,7 +15,7 @@
 
 			<v-flex class="admin-container">
 				<v-form
-					@submit.prevent="registerAdmin"
+					@submit="onSubmit"
 					enctype="multipart/form-data"
 					class="register-admin-form"
 				>
@@ -49,12 +49,12 @@
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
+							v-model="password.value"
 							:success-messages="password.success_message"
 							:error-messages="password.error_message"
 							@input="analyzePasswordStrength(password.value), isPasswordConfirmed(password2.value)"
 							maxlength="32"
 							type="password"
-							v-model="password.value"
 							solo
 						></v-text-field>
 					</v-flex>
@@ -153,12 +153,11 @@
 					<div class="upload-image">
 						<input
 							type="file"
-							@change="imagePreview(this)"
-							id="adminImage"
+							@change="handleFileChange()"
 							name="imageUpload"
 							class="previewImgInput"
 						/>
-						<img id="previewImg" class="previewImg" src="" alt="">
+						<img class="previewImg" :src="profileImage.src" alt="">
 					</div>
 					<br>
 
@@ -167,7 +166,10 @@
 					<div class="success-msg" v-if="success" v-html="success" />
 					<div class="info-msg" v-if="info" v-html="info" />
 
-					<v-btn type="submit" class="yellow">
+					<v-btn
+						type="submit"
+						class="yellow"
+					>
 						Create
 					</v-btn>
 				</v-form>
@@ -178,16 +180,30 @@
 </template>
 
 <script>
+// Services
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
+import AdminService from '@/services/AdminService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
 	components: {
 		AdminSideMenu
 	},
+
+	computed: {
+		...mapGetters(['getUser', 'getUserToken'])
+	},
+
 	data() {
 		return {
-			isRootUser: this.$store.state.admin.root,
+			user: {},
+
+			name: {
+				value: '',
+				success_message: '',
+				error_message: ''
+			},
 			username: {
 				value: '',
 				success_message: '',
@@ -199,11 +215,6 @@ export default {
 				error_message: ''
 			},
 			password2: {
-				value: '',
-				success_message: '',
-				error_message: ''
-			},
-			name: {
 				value: '',
 				success_message: '',
 				error_message: ''
@@ -228,7 +239,11 @@ export default {
 				success_message: '',
 				error_message: ''
 			},
-			createdBy: this.$store.state.admin._id,
+			profileImage: {
+				file: null,
+				src: ''
+			},
+			createdBy: this.$store.state.user._id,
 			showMessage: false,
 			// Password Strength - default
 			passwordStrength: 'weak',
@@ -245,6 +260,11 @@ export default {
 			success: null
 		}
 	},
+
+	mounted() {
+		this.user = this.getUser
+	},
+
 	methods: {
 		analyzePasswordStrength(password) {
 			if (this.strongRegex.test(password)) {
@@ -265,6 +285,7 @@ export default {
 				this.showMessage = true
 			}
 		},
+
 		isPasswordConfirmed(password) {
 			if (password === '') {
 				this.confirmPasswordMatched = null
@@ -277,53 +298,43 @@ export default {
 				this.isPasswordConfirmedText = 'Passwords don\'t match'
 			}
 		},
-		imagePreview() {
-			const img = document.getElementById('adminImage').files
-			const previewImg = document.getElementById('previewImg')
-			var reader = new FileReader()
-			reader.onload = function(e) {
-				previewImg.src = e.target.result
+
+		handleFileChange() {
+			this.profileImage.file = event.target.files[0]
+			let reader = new FileReader()
+
+			reader.onload = (e) => {
+				this.profileImage.src = e.target.result
 			}
-			reader.readAsDataURL(img[0])
+			reader.readAsDataURL(this.profileImage.file)
 		},
-		async registerAdmin() {
+
+		async onSubmit() {
+			event.preventDefault()
 			try {
 				// Check if someone is trying to create account with 'admin' or 'root' usernames
 				if (this.username.value !== 'admin' && this.username.value !== 'root') {
-					// Make sure the user is root
-					if (this.isRootUser === true) {
+					// Check if logged in admin is the root admin
+					if (this.user.root === true) {
 						const adminFormData = new FormData()
-						// Get image
-						const imagefile = document.querySelector('#adminImage')
-						let image = imagefile.files[0]
-						// Get and append text inputs to form data
-						const adminUsername = this.username.value
-						const adminPassword = this.password.value
-						const adminPassword2 = this.password2.value
-						const adminName = this.name.value
-						const telephone1 = this.telephone1.value
-						const telephone2 = this.telephone2.value
-						const address = this.address.value
-						const note = this.note.value
-						// Admin who created this admin account - should always be root user
-						const createdBy = this.createdBy
 						// Append everything to form data
-						await adminFormData.append('imageUpload', image)
-						await adminFormData.append('adminUsername', adminUsername)
-						await adminFormData.append('adminPassword', adminPassword)
-						await adminFormData.append('adminPassword2', adminPassword2)
-						await adminFormData.append('adminName', adminName)
-						await adminFormData.append('telephone1', telephone1)
-						await adminFormData.append('telephone2', telephone2)
-						await adminFormData.append('address', address)
-						await adminFormData.append('note', note)
-						await adminFormData.append('createdBy', createdBy)
+						adminFormData.append('imageUpload', this.profileImage.file)
+						adminFormData.append('username', this.username.value)
+						adminFormData.append('password', this.password.value)
+						adminFormData.append('password2', this.password2.value)
+						adminFormData.append('name', this.name.value)
+						adminFormData.append('telephone1', this.telephone1.value)
+						adminFormData.append('telephone2', this.telephone2.value)
+						adminFormData.append('address', this.address.value)
+						adminFormData.append('note', this.note.value)
+						adminFormData.append('createdBy', this.createdBy) // ID of the user that created this admin (should always be root)
 
-						// Register admin
-						const response = (await AuthenticationService.registerAdmin(adminFormData)).data
-						// If registering was successful redirect to the admin list
-						if (response.admin) {
-							console.log(response)
+						const token = this.getUserToken
+						// Create admin
+						const res = await AdminService.createAdmin(token, adminFormData)
+						// If registering was successful
+						if (res.data.admin) {
+							console.log('admin res: ', res)
 							this.$router.push({
 								name: 'admin-register'
 							})
@@ -331,33 +342,19 @@ export default {
 							// Set success message and timeout
 							this.error = null
 							this.info = null
-							this.success = `Admin with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
-							 registered successfully.`
+							this.success = `Admin <span style="color: blue; font-size:17px;">${this.username.value}</span>
+							 created successfully.`
 							setTimeout(() => {
 								this.success = null
 							}, 4000)
 
-							// Set input values after registering to blank
-							this.username.value = ''
-							this.password.value = ''
-							this.password2.value = ''
-							this.name.value = ''
-							this.telephone1.value = ''
-							this.telephone2.value = ''
-							this.address.value = ''
-							this.note.value = ''
-							image = ''
-							imagefile.value = ''
-							const previewImg = document.getElementById('previewImg')
-							previewImg.src = ''
-							// Hide password messages
-							this.showMessage = false
-							this.confirmPasswordMatched = null
+							// Reset input fields after creating the admin
+							this.resetInputFields()
 						}
 					}
 				// If someone is trying to register the account with 'admin' or 'root' usernames
 				} else {
-					this.error = `Can't create account with 'admin' or 'root' usernames.`
+					this.error = `Invalid username.`
 					this.info = null
 					this.success = null
 					setTimeout(() => {
@@ -365,7 +362,7 @@ export default {
 					}, 3000)
 				}
 			} catch (error) {
-				console.log(error)
+				console.error(error)
 
 				// Form Messages - Error/Success
 				// Username
@@ -471,6 +468,22 @@ export default {
 					this.error = error.response.data.created_by_error
 				}
 			}
+		},
+
+		resetInputFields() {
+			this.username.value = ''
+			this.password.value = ''
+			this.password2.value = ''
+			this.name.value = ''
+			this.telephone1.value = ''
+			this.telephone2.value = ''
+			this.address.value = ''
+			this.note.value = ''
+			this.profileImage.file = null
+			this.profileImage.src = ''
+			// Hide password messages
+			this.showMessage = false
+			this.confirmPasswordMatched = null
 		}
 	}
 }

@@ -17,7 +17,7 @@ export default {
 		return Api().get(`admin/subgroup/${subgroupId}/articles`)
 	},
 	saveArticle(articleFormData, articleId) {
-		return Api().put(`article/${articleId}`, articleFormData)
+		return Api().patch(`article/${articleId}`, articleFormData)
 	},
 	deleteArticle(articleId, imgPath) {
 		return Api().delete(`article/${articleId}`, {data: { imgPath: imgPath }})

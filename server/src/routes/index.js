@@ -107,7 +107,7 @@ router.get('/admin/:adminId/settings',
 	SettingsController.getOrCreateAdminSettings)
 
 // Update Admin Settings
-router.put('/admin/:adminId/settings',
+router.patch('/admin/:adminId/settings',
 	upload.single('imageUpload'),
 	SettingsController.updateAdminSettings)
 
@@ -142,7 +142,7 @@ router.post('/user',
 	UserController.createUser)
 
 // Create Admin
-router.post('/admin/register',
+router.post('/admin',
 	upload.single('imageUpload'),
 	AuthenticationControllerPolicy.createAdmin,
 	AdminController.createAdmin)
@@ -156,11 +156,11 @@ router.get('/admin/:adminId',
 	AdminController.getAdminById)
 
 // Update Admin
-router.put('/admin/:adminId',
+router.patch('/admin/:adminId',
 	AdminController.saveAdmin)
 
 // Update User
-router.put('/admin/user/:userId',
+router.patch('/admin/user/:userId',
 	upload.single('imageUpload'),
 	AuthenticationControllerPolicy.updateUser,
 	AdminController.updateUser)
@@ -174,7 +174,7 @@ router.post('/admin/storage/create',
 	StorageController.createStorage)
 
 // Update Storage
-router.put('/storage/:storageId',
+router.patch('/storage/:storageId',
 	StorageController.saveStorage)
 
 // Get Articles by storage id
@@ -195,7 +195,7 @@ router.get('/admin/storage/:storageId/article/:articleId',
 	ArticleController.getArticleById)
 
 // Update Article
-router.put('/article/:articleId',
+router.patch('/article/:articleId',
 	upload.single('imageUpload'),
 	ArticleController.saveArticle)
 

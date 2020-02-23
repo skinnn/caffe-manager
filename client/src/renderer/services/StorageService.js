@@ -11,6 +11,6 @@ export default {
 		return Api().get(`admin/storage/${storageId}`)
 	},
 	saveStorage(storage) {
-		return Api().put(`storage/${storage._id}`, storage)
+		return Api().patch(`storage/${storage._id}`, storage)
 	}
 }

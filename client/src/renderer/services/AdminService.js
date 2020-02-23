@@ -10,8 +10,11 @@ export default {
 	getAdminById(adminId) {
 		return Api().get(`admin/${adminId}`)
 	},
+	createAdmin(token, data) {
+		return Api(token).post('admin', data)
+	},
 	saveAdmin(admin) {
-		return Api().put(`admin/${admin._id}`, admin)
+		return Api().patch(`admin/${admin._id}`, admin)
 	},
 	getAllUsers() {
 		return Api().get('admin/users')
@@ -26,7 +29,7 @@ export default {
 		return Api().get(`admin/user/${userId}`)
 	},
 	updateUser(userId, user) {
-		return Api().put(`admin/user/${userId}`, user)
+		return Api().patch(`admin/user/${userId}`, user)
 	},
 	deleteAdmin(adminId, imgPath) {
 		return Api().delete(`admin/${adminId}`, {data: { imgPath: imgPath }})

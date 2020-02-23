@@ -73,35 +73,25 @@ module.exports = {
 	// Create Admin
   async createAdmin(req, res) {
     try {
-      const username = req.body.adminUsername
-      const password = req.body.adminPassword
-      // const password2 = req.body.adminPassword2
-      const name = req.body.adminName
-      const telephone1 = req.body.telephone1
-      const telephone2 = req.body.telephone2
-      const address = req.body.address
-      const note = req.body.userName
-      const createdBy = req.body.createdBy
-
-      let image = ''
-      // If image is added create image path
-      if (req.file !== undefined && req.file !== '') {
-        image = req.file.path
-      }
+      const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
+      // // If image is added create image path
+      // if (req.file !== undefined && req.file !== '') {
+      //   image = req.file.path
+      // }
 
       // Create new admin object
       const newAdmin = new Admin({
         userRoles: ['admin'],
         root: false,
-        username: username,
-        password: password,
-        name: name,
-        telephone1: telephone1,
-        telephone2: telephone2,
-        address: address,
-        note: note,
+        username: req.body.username,
+        password: req.body.password,
+        name: req.body.name,
+        telephone1: req.body.telephone1,
+        telephone2: req.body.telephone2,
+        address: req.body.address,
+        note: req.body.note,
         image: image,
-        createdBy: createdBy
+        createdBy: req.body.createdBy
 			})
 
       Admin.createAdmin(newAdmin, (err, admin) => {

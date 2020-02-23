@@ -1,6 +1,6 @@
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 
-// TODO: Separate files with policies for articles, storages, etc.
+// TODO: Separate files with policies for different models; articles, storages, etc.
 
 module.exports = {
   // User Policy
@@ -218,38 +218,37 @@ module.exports = {
 
   // Admin Policy
   createAdmin(req, res, next) {
-    const schema = {
-      adminUsername: Joi.string()
+    const schema = Joi.object({
+			username: Joi.string()
+				.alphanum()
         .min(5)
         .max(15)
-        .regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$'))
+				// .pattern(new RegExp('^[a-zA-Z0-9&@!#$^]{5,15}$'))
         .required(),
-      adminPassword: Joi.string()
-        .regex(new RegExp('^(?=.*[0-9]+.*)[a-zA-Z0-9]{6,32}$'))
-        .required(),
-      adminPassword2: Joi.any()
-        .valid(Joi.ref('adminPassword'))
-        .options({ language: { any: { allowOnly: 'must match password' } } })
-        .label('Password Confirmation'),
-      adminName: Joi.string()
+			password: Joi.string()
+        .pattern(new RegExp('^[a-zA-Z0-9&@!#$]{6,32}$')),
+			password2: Joi.ref('password'),
+        // .options({ language: { any: { allowOnly: 'must match password' } } })
+        // .label('Password Confirmation'),
+      name: Joi.string()
         .min(5)
         .max(32)
         .regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$'))
         .required(),
 
-      telephone1: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      telephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      address: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
-      note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
+      telephone1: Joi.string().allow('').max(20).pattern(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      telephone2: Joi.string().allow('').max(20).pattern(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      address: Joi.string().allow('').min(0).max(35).pattern(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
+      note: Joi.string().max(250).allow('').pattern(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9-@#. ]+)*$')),
       createdBy: Joi.any(),
       imageUpload: Joi.any()
-    }
+		})
 
-    const { error, value } = Joi.validate(req.body, schema)
+    const { error, value } = schema.validate(req.body)
 
     if (error) {
       switch (error.details[0].context.key) {
-        case 'adminUsername':
+        case 'username':
           res.status(400).send({
             username_error: `Username must have more than 5 characters.
               <br>
@@ -257,7 +256,7 @@ module.exports = {
           })
           break
 
-        case 'adminPassword':
+        case 'password':
           res.status(400).send({
             password_error: `Password must have more than 6 characters.
               <br>
@@ -267,13 +266,13 @@ module.exports = {
           })
           break
 
-        case 'adminPassword2':
+        case 'password2':
           res.status(400).send({
             password2_error: 'Passwords do not match.'
           })
           break
 
-        case 'adminName':
+        case 'name':
           res.status(400).send({
             name_error: `You must provide a name.
             <br>
