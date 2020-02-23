@@ -96,7 +96,7 @@ export default {
 		return {
 			users: [],
 			displayedUsers: [],
-			adminId: this.$store.state.admin._id,
+			adminId: this.$store.state.user._id,
 			headers: [
 				{
 					text: 'Image',

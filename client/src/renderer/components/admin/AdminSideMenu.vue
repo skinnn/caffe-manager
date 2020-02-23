@@ -7,7 +7,7 @@
 					<v-list-tile>
 						<v-list-tile-title class="dashboard-title">
 							<v-icon>gavel</v-icon>
-							<!-- <span class="admin-username">{{ this.$store.state.user.username }}</span> -->
+							<span class="admin-username">{{ this.$store.state.user.username }}</span>
 						</v-list-tile-title>
 					</v-list-tile>
 				</v-list>
@@ -84,7 +84,7 @@
 				</v-list-group>
 
 				<!-- Admin Manager -->
-				<v-list-group v-if="isRootUser === true" prepend-icon="gavel">
+				<v-list-group v-if="user.root === true" prepend-icon="gavel">
 					<v-list-tile slot="activator">
 						<v-list-tile-title class="list-tile-title">Admin Manager</v-list-tile-title>
 					</v-list-tile>
@@ -156,15 +156,30 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
+
 	data() {
 		return {
-			isRootUser: this.$store.state.user.root,
+			user: {},
 			defaultActive: 'home',
 			isActivePage: this.$store.state.activePage
 		}
 	},
+
+	computed: {
+		...mapGetters(['getUser'])
+	},
+
+	mounted() {
+		this.getLoggedInAdmin()
+	},
+
 	methods: {
+		getLoggedInAdmin() {
+			this.user = this.getUser
+		},
+
 		setActivePage(page) {
 			// Set Active Page
 			if (page === 'home') {
@@ -198,6 +213,7 @@ export default {
 				return this.$store.dispatch('setActivePage', page)
 			}
 		},
+
 		navigateTo(route, page) {
 			this.$router.push(route)
 		}

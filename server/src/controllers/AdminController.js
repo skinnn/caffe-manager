@@ -68,6 +68,61 @@ module.exports = {
         error: 'An error has occurred trying to fetch/create the root user.'
       })
     }
+	},
+	
+	// Create Admin
+  async createAdmin(req, res) {
+    try {
+      const username = req.body.adminUsername
+      const password = req.body.adminPassword
+      // const password2 = req.body.adminPassword2
+      const name = req.body.adminName
+      const telephone1 = req.body.telephone1
+      const telephone2 = req.body.telephone2
+      const address = req.body.address
+      const note = req.body.userName
+      const createdBy = req.body.createdBy
+
+      let image = ''
+      // If image is added create image path
+      if (req.file !== undefined && req.file !== '') {
+        image = req.file.path
+      }
+
+      // Create new admin object
+      const newAdmin = new Admin({
+        userRoles: ['admin'],
+        root: false,
+        username: username,
+        password: password,
+        name: name,
+        telephone1: telephone1,
+        telephone2: telephone2,
+        address: address,
+        note: note,
+        image: image,
+        createdBy: createdBy
+			})
+
+      Admin.createAdmin(newAdmin, (err, admin) => {
+        if (err) {
+          console.error(err)
+          return res.status(400).send({
+            error: 'This username is already in use.'
+          })
+        } else {
+          return res.send({
+            admin: admin,
+            success: `You have successfully registered. ${admin.username}`
+          })
+        }
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).send({
+        error: 'An error has occurred trying to register the admin. Please try again.'
+      })
+    }
   },
 
   // Get Admins

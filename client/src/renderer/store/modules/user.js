@@ -1,7 +1,6 @@
 var state = {
 	user: JSON.parse(localStorage.getItem('user')) || null,
 	token: JSON.parse(localStorage.getItem('token')) || null
-	// isTokenValid: false // TODO: Implement
 }
 
 const mutations = {
@@ -35,7 +34,6 @@ const actions = {
 		return new Promise((resolve, reject) => {
 			const isUserSet = context.dispatch('setUser', data.user)
 			const isTokenSet = context.dispatch('setToken', data.token)
-			console.log('TOK: ', data.token)
 
 			if (isUserSet && isTokenSet) resolve(data.user, data.token)
 			else reject(new Error('Could not set user and token.'))
@@ -43,7 +41,7 @@ const actions = {
 	},
 
 	logoutUser(context) {
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			const isUserRemoved = context.dispatch('setUser', null)
 			const isTokenRemoved = context.dispatch('setToken', null)
 
@@ -65,6 +63,9 @@ const getters = {
 	isUserLoggedIn(state) {
 		return state.token !== null
 	}
+
+	// isTokenValid() { // TODO: Implement
+	// }
 }
 
 export default {

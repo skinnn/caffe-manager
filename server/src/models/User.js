@@ -5,9 +5,17 @@ const bcrypt = require('bcryptjs')
 // TODO: Modify user model similar to updated admin model, add regexes, move errors to the fields
 // TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
 const UserSchema = new Schema({
-  userType: {
-    type: String,
-    default: 'user'
+  // userType: {
+  //   type: String,
+  //   default: 'user'
+	// },
+	userRoles: {
+		type: Array,
+		default: [] // 'user', 'admin' 'anon'
+	},
+  root: {
+    type: Boolean,
+    default: false
   },
   username: {
     type: String,
@@ -21,47 +29,50 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
-  },
+	},
+	email: {
+		type: String,
+		default: null
+	},
   image: {
     type: String
   },
   telephone1: {
     type: String,
-    default: ''
+    default: null
   },
   telephone2: {
     type: String,
-    default: ''
+    default: null
   },
   address: {
     type: String,
-    default: ''
+    default: null
+	},
+	// permissions: {
+  //   type: String,
+  //   default: null
+	// },
+	userMenu: {
+    type: Array,
+    required: true
   },
   note: {
     type: String,
-    default: ''
+    default: null
   },
   createdBy: {
-    type: Object,
-    default: ''
-  },
-  permissions: {
     type: String,
-    default: ''
-  },
-  userMenu: {
-    type: Array,
-    required: true
+    default: null
   },
   date: {
     type: Date,
     default: Date.now
   },
-  updated_date: {
+  updated: {
     type: String,
     default: ''
   }
-
 })
 
 let User = module.exports = mongoose.model('User', UserSchema)

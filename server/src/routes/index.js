@@ -15,6 +15,7 @@ const ArticleController = require('../controllers/ArticleController')
 const ArticleSubgroupController = require('../controllers/ArticleSubgroupController')
 const TablesController = require('../controllers/TablesController')
 const OrderController = require('../controllers/OrderController')
+const UserController = require('../controllers/UserController')
 const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
@@ -23,34 +24,34 @@ const AuthenticationControllerPolicy = require('../policies/AuthenticationContro
 
 // Multer storage engine
 const multerStorage = multer.diskStorage({
-  // Destination of uploaded images
-  destination: function(req, file, cb) {
-    cb(null, './images')
-  },
-  // Define image name
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname)
-  }
+	// Destination of uploaded images
+	destination: function(req, file, cb) {
+		cb(null, './images')
+	},
+	// Define image name
+	filename: function(req, file, cb) {
+		cb(null, Date.now() + '-' + file.originalname)
+	}
 })
 
 // File filter for uploading images - allow only jpg and png
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-    cb(null, true)
-  } else {
-    // Reject a file
-    cb(null, false)
-  }
+	if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+		cb(null, true)
+	} else {
+		// Reject a file
+		cb(null, false)
+	}
 }
 
 // Init img upload
 const upload = multer({
-  storage: multerStorage,
-  // Max file/image size
-  limits: {
-    fileSize: 1024 * 1024 * 3
-  },
-  fileFilter: fileFilter
+	storage: multerStorage,
+	// Max file/image size
+	limits: {
+		fileSize: 1024 * 1024 * 3
+	},
+	fileFilter: fileFilter
 })
 
 // router.use('/images', express.static(path.join(__dirname, '/../../images')))
@@ -70,7 +71,7 @@ router.post('/login',
 	
 // Logout
 router.post('/logout',
-  AuthenticationController.logout)
+	AuthenticationController.logout)
 
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',
@@ -79,155 +80,155 @@ router.get('/admin/subgroup/:subgroupId/articles',
 
 // Get Article Subgroups from Main Storages
 router.get('/admin/main-storages/subgroups',
-  ArticleSubgroupController.getSubgroupsFromMainStorages)
+	ArticleSubgroupController.getSubgroupsFromMainStorages)
 
 // Create Article Subgroup
 router.post('/admin/storage/:storageId/subgroup/create',
-  upload.single('imageUpload'),
-  ArticleSubgroupController.createArticleSubgroup)
+	upload.single('imageUpload'),
+	ArticleSubgroupController.createArticleSubgroup)
 
 // Get Article Subgroup list by storage id
 router.get('/admin/storage/:storageId/subgroups',
-  ArticleSubgroupController.getSubgroupsByStorageId)
+	ArticleSubgroupController.getSubgroupsByStorageId)
 
 // Get User login list
 router.get('/user/login-list',
-  AdminController.getUserLoginList)
+	AdminController.getUserLoginList)
 
 // Get Admin login list
 router.get('/admin/login-list',
-  AdminController.getAdminLoginList)
+	AdminController.getAdminLoginList)
 
 router.get('/find/root',
-  AdminController.createRootAdmin)
+	AdminController.createRootAdmin)
 
 // Get or Create Admin Settings
 router.get('/admin/:adminId/settings',
-  SettingsController.getOrCreateAdminSettings)
+	SettingsController.getOrCreateAdminSettings)
 
 // Update Admin Settings
 router.put('/admin/:adminId/settings',
-  upload.single('imageUpload'),
-  SettingsController.updateAdminSettings)
+	upload.single('imageUpload'),
+	SettingsController.updateAdminSettings)
 
 // Get all Articles
 router.get('/admin/articles',
-  ArticleController.getAllArticles)
+	ArticleController.getAllArticles)
 
 // Delete Admin
 router.delete('/admin/:adminId',
-  AdminController.deleteAdmin)
+	AdminController.deleteAdmin)
 
 // Delete User
 router.delete('/admin/:adminId/user/:userId',
-  AdminController.deleteUser)
+	AdminController.deleteUser)
 
 // Get Storage by id
 router.get('/admin/storage/:storageId',
-  StorageController.getStorageById)
+	StorageController.getStorageById)
 
 // Get all Storages
 router.get('/admin/storages',
-  StorageController.getAllStorages)
+	StorageController.getAllStorages)
 
 // Get all users
 router.get('/admin/users',
-  AdminController.getAllUsers)
+	AdminController.getAllUsers)
 
 // Register User
-router.post('/user/register',
-  upload.single('imageUpload'),
-  AuthenticationControllerPolicy.registerUser,
-  AuthenticationController.registerUser)
+router.post('/user',
+	upload.single('imageUpload'),
+	AuthenticationControllerPolicy.createUser,
+	UserController.createUser)
 
-// Register Admin
+// Create Admin
 router.post('/admin/register',
-  upload.single('imageUpload'),
-  AuthenticationControllerPolicy.registerAdmin,
-	AuthenticationController.registerAdmin)
+	upload.single('imageUpload'),
+	AuthenticationControllerPolicy.createAdmin,
+	AdminController.createAdmin)
 
 // Get all Admins
 router.get('/admin/admins',
-  AdminController.getAllAdmins)
+	AdminController.getAllAdmins)
 
 // Get Admin by id
 router.get('/admin/:adminId',
-  AdminController.getAdminById)
+	AdminController.getAdminById)
 
 // Update Admin
 router.put('/admin/:adminId',
-  AdminController.saveAdmin)
+	AdminController.saveAdmin)
 
 // Update User
 router.put('/admin/user/:userId',
-  upload.single('imageUpload'),
-  AuthenticationControllerPolicy.updateUser,
-  AdminController.updateUser)
+	upload.single('imageUpload'),
+	AuthenticationControllerPolicy.updateUser,
+	AdminController.updateUser)
 
 // Get User by id
 router.get('/admin/user/:userId',
-  AdminController.getUserById)
+	AdminController.getUserById)
 
 // Create Storage
 router.post('/admin/storage/create',
-  StorageController.createStorage)
+	StorageController.createStorage)
 
 // Update Storage
 router.put('/storage/:storageId',
-  StorageController.saveStorage)
+	StorageController.saveStorage)
 
 // Get Articles by storage id
 router.get('/admin/storage/:storageId/articles',
-  ArticleController.getArticlesByStorageId)
+	ArticleController.getArticlesByStorageId)
 
 // Delete Article
 router.delete('/article/:articleId',
-  ArticleController.deleteArticle)
+	ArticleController.deleteArticle)
 
 // Create Article
 router.post('/admin/article/create',
-  upload.single('imageUpload'),
-  ArticleController.createArticle)
+	upload.single('imageUpload'),
+	ArticleController.createArticle)
 
 // Get Article by id
 router.get('/admin/storage/:storageId/article/:articleId',
-  ArticleController.getArticleById)
+	ArticleController.getArticleById)
 
 // Update Article
 router.put('/article/:articleId',
-  upload.single('imageUpload'),
-  ArticleController.saveArticle)
+	upload.single('imageUpload'),
+	ArticleController.saveArticle)
 
 router.post('/admin/:ownerId/table/create',
-  TablesController.createTable)
+	TablesController.createTable)
 
 // Get Tables by Owner id
 router.get('/admin/:ownerId/tables',
-  TablesController.getTablesByOwnerId)
+	TablesController.getTablesByOwnerId)
 
 // Get Table by id
 router.get('/admin/:ownerId/table/:tableId',
-  TablesController.getTable)
+	TablesController.getTable)
 
 // Delete Table
 router.delete('/admin/:ownerId/table/:tableId',
-  TablesController.deleteTable)
+	TablesController.deleteTable)
 
 // Create Order
 router.post('/admin/:ownerId/table/:currentTableId/order',
-  OrderController.createOrder)
+	OrderController.createOrder)
 
 // Get Orders by Table id
 router.get('/admin/:ownerId/table/:currentTableId/order',
-  OrderController.getOrdersByTableId)
+	OrderController.getOrdersByTableId)
 
 // Delete Order by id
 router.delete('/admin/:ownerId/table/:currentTableId/order/:orderId',
-  OrderController.deleteOrder)
+	OrderController.deleteOrder)
 
 // Reserve Articles
 router.post('/admin/:ownerId/table/:currentTableId/order/:orderId/reserve',
-  OrderController.reserveArticles)
+	OrderController.reserveArticles)
 
 // Get Reserved Articles by Table id
 router.get('/admin/:ownerId/table/:currentTableId/reserved-articles',

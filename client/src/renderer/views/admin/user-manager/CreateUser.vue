@@ -183,12 +183,19 @@
 <script>
 // Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import AuthenticationService from '@/services/AuthenticationService'
+import UserService from '@/services/UserService'
+import { mapGetters } from 'vuex'
 
 export default {
+
 	components: {
 		AdminSideMenu
 	},
+
+	computed: {
+		...mapGetters(['getUserToken'])
+	},
+
 	data() {
 		return {
 			username: {
@@ -235,10 +242,12 @@ export default {
 				file: null
 			},
 			createdBy: {
-				id: this.$store.state.admin._id,
-				name: this.$store.state.admin.name,
-				username: this.$store.state.admin.username
+				id: this.$store.state.user._id,
+				name: this.$store.state.user.name,
+				username: this.$store.state.user.username
 			},
+			userRoles: ['user'],
+
 			showMessage: false,
 			// Password Strength - default
 			passwordStrength: 'weak',
@@ -256,6 +265,7 @@ export default {
 			success: null
 		}
 	},
+
 	methods: {
 		analyzePasswordStrength(password) {
 			if (this.strongRegex.test(password)) {
@@ -276,6 +286,7 @@ export default {
 				this.showMessage = true
 			}
 		},
+
 		isPasswordConfirmed(password) {
 			if (password === '') {
 				this.confirmPasswordMatched = null
@@ -304,19 +315,9 @@ export default {
 
 		async onSubmit() {
 			event.preventDefault()
+			const token = await this.getUserToken
 			try {
 				const userFormData = new FormData()
-				// Get image
-				const image = this.profileImage.file
-				// Get and append text inputs to form data
-				const username = this.username.value
-				const password = this.password.value
-				const password2 = this.password2.value
-				const fullName = this.name.value
-				const telephone1 = this.telephone1.value
-				const telephone2 = this.telephone2.value
-				const address = this.address.value
-				const note = this.note.value
 
 				// Permisions - user menu
 				const userMenu = {
@@ -325,55 +326,54 @@ export default {
 					tables: this.userMenu.tables
 				}
 				// Created By
-				const createdBy = this.createdBy
 				// Append everything to form data
-				userFormData.append('imageUpload', image)
-				userFormData.append('userUsername', username)
-				userFormData.append('userName', fullName)
-				userFormData.append('userPassword', password)
-				userFormData.append('userPassword2', password2)
-				userFormData.append('userTelephone1', telephone1)
-				userFormData.append('userTelephone2', telephone2)
-				userFormData.append('userAddress', address)
-				userFormData.append('userNote', note)
+				userFormData.append('imageUpload', this.profileImage.file)
+				userFormData.append('userUsername', this.username.value)
+				userFormData.append('userName', this.name.value)
+				userFormData.append('userPassword', this.password.value)
+				// userFormData.append('userPassword2', password2)
+				userFormData.append('userTelephone1', this.telephone1.value)
+				userFormData.append('userTelephone2', this.telephone2.value)
+				userFormData.append('userAddress', this.address.value)
+				userFormData.append('userNote', this.note.value)
 				userFormData.append('userMenu', userMenu)
-				userFormData.append('createdBy', createdBy)
+				userFormData.append('createdBy', this.createdBy)
+				userFormData.append('userRoles', this.userRoles)
 
 				// Register User
-				// const response = (await AuthenticationService.registerUser(userFormData)).data
-				console.log('IMAGE: ', image)
+				const response = (await UserService.createUser(token, userFormData)).data
 
 				// If registering was successful
-				// if (response.user) {
-				// 	// Set success message and timeout
-				// 	this.error = null
-				// 	this.info = null
-				// 	this.success = `User with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
-				// 	 registered successfully.`
-				// 	setTimeout(() => {
-				// 		this.success = null
-				// 	}, 4000)
+				if (response.user) {
+					// Set success message and timeout
+					this.error = null
+					this.info = null
+					this.success = `User with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
+					 registered successfully.`
+					setTimeout(() => {
+						this.success = null
+					}, 4000)
 
-				// 	// Set all Values to default after successful registering
-				// 	this.username.value = ''
-				// 	this.password.value = ''
-				// 	this.password2.value = ''
-				// 	this.name.value = ''
-				// 	this.telephone1.value = ''
-				// 	this.telephone2.value = ''
-				// 	this.address.value = ''
-				// 	this.note.value = ''
-				// 	this.userMenu.home = true
-				// 	this.userMenu.warehouse = false
-				// 	this.userMenu.tables = false
-				// 	this.profileImage.file = null
-				// 	this.profileImage.src = ''
-				// 	// Hide password messages
-				// 	this.showMessage = false
-				// 	this.confirmPasswordMatched = null
-				// }
+					// Set all Values to default after successful registering
+					this.username.value = ''
+					this.password.value = ''
+					this.password2.value = ''
+					this.name.value = ''
+					this.telephone1.value = ''
+					this.telephone2.value = ''
+					this.address.value = ''
+					this.note.value = ''
+					this.userMenu.home = true
+					this.userMenu.warehouse = false
+					this.userMenu.tables = false
+					this.profileImage.file = null
+					this.profileImage.src = ''
+					// Hide password messages
+					this.showMessage = false
+					this.confirmPasswordMatched = null
+				}
 			} catch (error) {
-				console.log(error)
+				console.log(error.response)
 
 				// Form Messages - Error/Success
 				// Username

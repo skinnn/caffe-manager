@@ -20,7 +20,7 @@
 
 				<div class="admin-edit">
 					<v-form
-						@submit.prevent="updateUser"
+						@submit="onSubmit()"
 						enctype="multipart/form-data"
 						class="edit-user-form"
 					>
@@ -180,9 +180,9 @@ export default {
 				tables: false
 			},
 			createdBy: {
-				id: this.$store.state.admin._id,
-				name: this.$store.state.admin.name,
-				username: this.$store.state.admin.username
+				id: this.$store.state.user._id,
+				name: this.$store.state.user.name,
+				username: this.$store.state.user.username
 			},
 			error: null,
 			success: null
@@ -219,7 +219,9 @@ export default {
 			}
 			reader.readAsDataURL(img[0])
 		},
-		async updateUser() {
+
+		async onSubmit() {
+			event.preventDefault()
 			try {
 				const userId = this.userId.value
 				const updatedUser = new FormData()

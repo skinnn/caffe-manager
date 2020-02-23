@@ -4,7 +4,7 @@ const Joi = require('joi')
 
 module.exports = {
   // User Policy
-  registerUser(req, res, next) {
+  createUser(req, res, next) {
     const schema = {
       userUsername: Joi.string()
         .min(5)
@@ -30,7 +30,8 @@ module.exports = {
       userNote: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
       userMenu: Joi.any(),
       createdBy: Joi.any(),
-      imageUpload: Joi.any()
+      imageUpload: Joi.any(),
+      userRoles: Joi.array()
     }
 
     const { error, value } = Joi.validate(req.body, schema)
@@ -216,7 +217,7 @@ module.exports = {
   },
 
   // Admin Policy
-  registerAdmin(req, res, next) {
+  createAdmin(req, res, next) {
     const schema = {
       adminUsername: Joi.string()
         .min(5)

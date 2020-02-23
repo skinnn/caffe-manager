@@ -14,13 +14,14 @@
 						<v-text-field
 							type="text"
 							v-model="username"
+							ref="inputUsername"
 							label="Username:"
 							outline
 						></v-text-field>
 						<v-text-field
-							ref="inputPassword"
 							type="password"
 							v-model="password"
+							ref="inputPassword"
 							label="Password:"
 							outline
 						></v-text-field>
@@ -45,14 +46,16 @@
 		<v-flex xs4>
 			<div class="elevation-5">
 				<ul class="adminList">
-					<h3 v-if="adminList.length < 1" class="adminListEmptyText">{{noAdmins}}</h3>
+					<h3 v-if="adminList.length === 0" class="adminListEmptyText">
+						No admins
+					</h3>
 					<li
-						v-for="admin in this.adminList"
+						v-for="admin in adminList"
 						:key="admin.username"
 						@click="populateUsername(admin.username)"
 						class="singleAdminLi"
 					>
-					<div class="singleAdminDiv">{{admin.name}}</div>
+						<div class="singleAdminDiv">{{admin.name}}</div>
 					</li>
 				</ul>
 
@@ -78,29 +81,20 @@ export default {
 			error: null,
 			success: null,
 			info: null,
-			noAdmins: null,
+			// adminList: false,
 			loggedOutMessage: this.$store.state.route.params.loggedOutMessage
 		}
 	},
 
 	async mounted() {
-		const response = (await AdminService.getAdminLoginList()).data
-		console.log(response)
-		if (response.admins) {
-			this.noAdmins = null
-			let adminList = this.adminList
-			response.admins.forEach(function(admin) {
-				adminList.push(admin)
-			})
-		}
-		// If there are no Admins in the DB (root doesnt count)
-		if (response.noAdmins) {
-			this.noAdmins = response.noAdmins
-		}
+		this.$refs.inputUsername.focus()
+
+		this.getAdminLoginList()
+
 		// TODO: Fire this only if admin logged out
 		if (this.loggedOutMessage) {
 			this.success = this.loggedOutMessage
-			await setTimeout(() => {
+			setTimeout(() => {
 				this.success = null
 			}, 3000)
 			this.loggedOutMessage = null
@@ -108,11 +102,31 @@ export default {
 	},
 
 	methods: {
+		async getAdminLoginList() {
+			try {
+				const response = (await AdminService.getAdminLoginList()).data
+				// console.log(response)
+
+				if (response.admins) {
+					// this.adminList = null
+					response.admins.forEach((admin) => {
+						this.adminList.push(admin)
+					})
+				}
+				// If there are no Admins in the DB (root admin doesn't count)
+				// if (response.adminList) {
+				// 	this.adminList = response.adminList
+				// }
+			} catch (err) {
+				console.error(err)
+			}
+		},
+
 		populateUsername(username) {
 			this.username = username
 			this.password = ''
 			this.$refs.inputPassword.focus()
-			document.getElementById('pwFocus').focus()
+			// document.getElementById('pwFocus').focus()
 		},
 
 		async onSubmit() {
