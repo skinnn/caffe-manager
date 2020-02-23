@@ -6,8 +6,8 @@
 		<v-layout column class="right-side">
 			<v-flex>
 				<div class="admin-header">
-						<h1 class="heading">Admins</h1>
-						<admin-logout-btn />
+					<h1 class="heading">Admins</h1>
+					<admin-logout-btn />
 				</div>
 			</v-flex>
 
@@ -120,22 +120,22 @@ export default {
 			info: null
 		}
 	},
+
 	async mounted() {
 		try {
 			// Get Admin list
-			// TODO: Get all admins except the Root Admin!!!
-			const response = (await AdminService.getAllAdmins()).data
-			if (response.admins) {
-				const admins = this.admins
-				const currentLoggedInAdmin = this.$store.state.admin.username
-				const rootUser = this.$store.state.admin.root
+			// TODO: Get all admins except the Root Admin
+			const res = await AdminService.getAllAdmins()
+			const admins = res.data.admins
+			if (admins) {
+				const currentLoggedInAdmin = this.$store.state.user.username
 				// Add admin in the admins array
-				response.admins.forEach(function(admin) {
+				admins.forEach((admin) => {
 					// Don't display the currently logged in admin
-					if (admin.username === currentLoggedInAdmin || admin.root === rootUser) {
+					if (admin.username === currentLoggedInAdmin || admin.root === true) {
 						return false
 					} else {
-						admins.push(admin)
+						this.admins.push(admin)
 					}
 				})
 
@@ -153,8 +153,10 @@ export default {
 			this.error = error.response.data.error
 		}
 	},
+
 	methods: {
 		changePagination() {
+			// TODO: Save pagination options in localStorage
 			let l = this.admins.length
 			let s = this.pagination.itemsPerPage
 			this.pagination.totalPages = Math.floor(l / s)
@@ -165,15 +167,11 @@ export default {
 			console.log(this.pagination.itemsPerPage)
 		},
 
-		async pageChanged() {
-			try {
-				let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
-				let end = start + this.pagination.itemsPerPage
-				// Change Displayed Articles
-				this.displayedAdmins = this.admins.slice(start, end)
-			} catch (error) {
-				console.log(error)
-			}
+		pageChanged() {
+			let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+			let end = start + this.pagination.itemsPerPage
+			// Change Displayed Articles
+			this.displayedAdmins = this.admins.slice(start, end)
 		},
 
 		editAdminPage(adminId) {
@@ -184,13 +182,13 @@ export default {
 		},
 
 		async deleteAdmin(admin) {
-			let confirmation = confirm(
-				'Are you sure?'
-			)
+			let confirmation = confirm('Are you sure?')
+
 			if (confirmation) {
 				try {
 					const adminId = admin._id
 					const imgPath = admin.image
+					// TODO: Don't send the image, api should delete all relevant admin data by admin ID
 					const response = (await AdminService.deleteAdmin(adminId, imgPath)).data
 					// If Admin is deleted successfully
 					if (response.deleted) {
@@ -201,21 +199,26 @@ export default {
 							this.success = null
 						}, 3000)
 
-						// Reset User list after deleting
-						const ress = (await AdminService.getAllAdmins()).data
-						if (ress.admins) {
-							this.admins = []
-							const admins = this.admins
-							const currentLoggedInAdmin = this.$store.state.admin.username
-							ress.admins.forEach(function(admin) {
-								// Don't display the currently logged in admin
-								if (admin.username === currentLoggedInAdmin) {
-									return false
-								} else {
-									admins.push(admin)
-								}
-							})
-						}
+						// Reset Admin list after deleting
+						const filteredAdmins = this.admins.filter(admin => admin._id !== adminId)
+						this.admins = filteredAdmins
+						// this.displayedAdmins = filteredAdmins
+						this.pageChanged()
+
+						// // Reset Admin list after deleting
+						// const ress = (await AdminService.getAllAdmins()).data
+						// if (ress.admins) {
+						// 	this.admins = []
+						// 	const currentLoggedInAdmin = this.$store.state.admin.username
+						// 	ress.admins.forEach((admin) => {
+						// 		// Don't display the currently logged in admin
+						// 		if (admin.username === currentLoggedInAdmin) {
+						// 			return false
+						// 		} else {
+						// 			this.admins.push(admin)
+						// 		}
+						// 	})
+						// }
 					}
 				} catch (error) {
 					this.success = null

@@ -155,7 +155,7 @@ module.exports = {
   },
 
   // Update Admin by id
-  async saveAdmin(req, res) {
+  async updateAdminById(req, res) {
     try {
       let query = {_id: req.params.adminId}
       let options = { upsert: true, new: true }
@@ -163,15 +163,15 @@ module.exports = {
       let admin = {}
       admin.name = req.body.name
       admin.username = req.body.username
-      // TODO: Also edit admin password
+      // TODO: Implement editing admin password
       // admin.password = req.body.password
       admin.updated_date = dateHandler.getCurrentTime()
 
       // Check if the name is typed and create article in the db
       if (admin.name !== '' && admin.username !== '') {
-        await Admin.findOneAndUpdate(query, req.body, options, function(err, admin) {
+        await Admin.findOneAndUpdate(query, req.body, options, (err, admin) => {
           if (err) {
-            console.log(err)
+						throw err
           } else {
             res.send({
               saved: true,

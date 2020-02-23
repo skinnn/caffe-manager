@@ -13,7 +13,7 @@ export default {
 	createAdmin(token, data) {
 		return Api(token).post('admin', data)
 	},
-	saveAdmin(admin) {
+	updateAdmin(admin) {
 		return Api().patch(`admin/${admin._id}`, admin)
 	},
 	getAllUsers() {

@@ -19,9 +19,10 @@ const UserController = require('../controllers/UserController')
 const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
-const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
+const UserControllerPolicy = require('../policies/UserControllerPolicy')
 // const ensureAuthenticated = require('../controllers/ensureAuthenticated')
 
+// TODO: Move multer config to separate file
 // Multer storage engine
 const multerStorage = multer.diskStorage({
 	// Destination of uploaded images
@@ -57,13 +58,7 @@ const upload = multer({
 // router.use('/images', express.static(path.join(__dirname, '/../../images')))
 // console.log(path.join(__dirname, '/../../images'))
 
-// // Time stamp
-// router.use(function timeLog(req, res, next) {
-//   console.log('Route hit - Time: ', new Date().toJSON())
-//   next()
-// })
-
-// TODO: Secure all endpoints so only logged in user/admin can access it
+// TODO: Secure endpoints so only authenticated user/admin can access them
 
 // Login
 router.post('/login',
@@ -138,13 +133,13 @@ router.get('/admin/users',
 // Register User
 router.post('/user',
 	upload.single('imageUpload'),
-	AuthenticationControllerPolicy.createUser,
+	UserControllerPolicy.user,
 	UserController.createUser)
 
 // Create Admin
 router.post('/admin',
 	upload.single('imageUpload'),
-	AuthenticationControllerPolicy.createAdmin,
+	UserControllerPolicy.admin,
 	AdminController.createAdmin)
 
 // Get all Admins
@@ -157,12 +152,12 @@ router.get('/admin/:adminId',
 
 // Update Admin
 router.patch('/admin/:adminId',
-	AdminController.saveAdmin)
+	AdminController.updateAdminById)
 
 // Update User
 router.patch('/admin/user/:userId',
 	upload.single('imageUpload'),
-	AuthenticationControllerPolicy.updateUser,
+	UserControllerPolicy.updateUser,
 	AdminController.updateUser)
 
 // Get User by id

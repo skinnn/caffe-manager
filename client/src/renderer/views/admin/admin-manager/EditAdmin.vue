@@ -35,7 +35,10 @@
 						outline
 					></v-text-field>
 
-					<v-btn @click="saveAdmin(admin._id)" class="yellow">
+					<v-btn
+						@click="onClick(admin._id)"
+						class="yellow"
+					>
 						Save
 					</v-btn>
 				</div>
@@ -74,10 +77,10 @@ export default {
 		}
 	},
 	methods: {
-		async saveAdmin(adminId) {
+		async onClick(adminId) {
 			try {
 				// Save Admin
-				const response = (await AdminService.saveAdmin(this.admin)).data
+				const response = (await AdminService.updateAdmin(this.admin)).data
 
 				// Set success message and timeout
 				this.success = response.success
