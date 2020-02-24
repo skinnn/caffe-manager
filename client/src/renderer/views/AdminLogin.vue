@@ -130,21 +130,24 @@ export default {
 		},
 
 		async onSubmit() {
+			event.preventDefault()
 			try {
 				// Login
-				const res = await AuthenticationService.login({
+				const loginRes = await AuthenticationService.login({
 					username: this.username,
 					password: this.password
 				})
-				const user = res.data.user
-				const token = res.data.token
+
+				console.log('loginRes: ', loginRes)
 
 				// If user login is successfull
-				if (user) {
+				if (loginRes.status === 200) {
 					// Hide errors
 					this.success = 'You are now logged in'
 					this.error = null
 
+					const user = loginRes.data.user
+					const token = loginRes.data.token
 					// Set user in the Vuex Store
 					const data = {
 						user,
