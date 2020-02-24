@@ -29,7 +29,11 @@ const SettingsSchema = new Schema({
   currency: {
     type: String,
     default: 'RSD'
-  },
+	},
+	// updated_by: {
+	// 	type: String,
+	// 	default: ''
+	// },
   updated_date: {
     type: String,
     default: ''

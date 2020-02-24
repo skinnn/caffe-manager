@@ -156,7 +156,7 @@ export default {
 					const isLoggedIn = await this.$store.dispatch('loginUser', data)
 
 					// Get or Create Settings
-					const res = await SettingsService.getOrCreateAdminSettings(user._id)
+					const res = await SettingsService.getOrCreateStoreSettings(token, user._id)
 					if (res.data.settings) {
 						// Set Settings in the Vuex Store
 						var isSettingsSet = await this.$store.dispatch('setSettings', res.data.settings)

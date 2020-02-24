@@ -141,7 +141,7 @@ export default {
 	async mounted() {
 		try {
 			let adminId = this.ownerId
-			const response = (await SettingsService.getOrCreateAdminSettings(adminId)).data
+			const response = (await SettingsService.getOrCreateStoreSettings(adminId)).data
 			if (response.settings) {
 				this.settings = response.settings
 			}

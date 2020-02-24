@@ -6,6 +6,9 @@ const fs = require('fs')
 const path = require('path')
 const multer = require('multer')
 
+// Middleware
+const auth = require('../middleware/token')
+
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
 const SettingsController = require('../controllers/SettingsController')
@@ -16,7 +19,7 @@ const ArticleSubgroupController = require('../controllers/ArticleSubgroupControl
 const TablesController = require('../controllers/TablesController')
 const OrderController = require('../controllers/OrderController')
 const UserController = require('../controllers/UserController')
-const auth = require('../controllers/ensureAuthenticated')
+// const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
 const UserControllerPolicy = require('../policies/UserControllerPolicy')
@@ -97,14 +100,18 @@ router.get('/admin/login-list',
 router.get('/find/root',
 	AdminController.createRootAdmin)
 
-// Get or Create Admin Settings
-router.get('/admin/:adminId/settings',
-	SettingsController.getOrCreateAdminSettings)
+// Get or Create Store Settings
+// router.get('/admin/:adminId/settings',
+// 	SettingsController.getOrCreateStoreSettings)
+
+router.get('/store/settings',
+	auth.checkToken,
+	SettingsController.getOrCreateStoreSettings)
 
 // Update Admin Settings
 router.patch('/admin/:adminId/settings',
 	upload.single('imageUpload'),
-	SettingsController.updateAdminSettings)
+	SettingsController.updateStoreSettings)
 
 // Get all Articles
 router.get('/admin/articles',
