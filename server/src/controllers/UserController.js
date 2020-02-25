@@ -56,11 +56,7 @@ module.exports = {
   async createUser(req, res) {
     try {
       // const isTable = req.body.isTables
-      var image = ''
-      // If image is added create image path
-      if (req.file !== undefined && req.file !== '') {
-        image = req.file.path
-      }
+      const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
 
       // TODO: Fix User privileges
       // Create user menu
@@ -85,17 +81,9 @@ module.exports = {
         }
 			]
 			
-			// const username = req.body.userUsername
-      // const password = req.body.userPassword
-      // // const password2 = req.body.userPassword2
-      // const name = req.body.userName
-      // const telephone1 = req.body.userTelephone1
-      // const telephone2 = req.body.userTelephone2
-      // const address = req.body.userAddress
-      // const note = req.body.userNote
-      // const userRoles = req.body.userRoles
-
       const newUser = new User({
+				userRoles: ['admin'],
+				// userRoles: req.body.userRoles,
         username: req.body.userUsername,
         password: req.body.userPassword,
         name: req.body.userName,
@@ -103,7 +91,6 @@ module.exports = {
         telephone2: req.body.userTelephone2,
         address: req.body.userAddress,
         note: req.body.userNote,
-				userRoles: req.body.userRoles,
         createdBy: req.body.createdBy.id,
         image: image,
 				userMenu: userMenu,
@@ -125,6 +112,66 @@ module.exports = {
     } catch (err) {
       return res.status(500).send({
         error: 'An error has occurred trying to register the user.'
+      })
+    }
+	},
+	
+	// Create Admin
+  async createAdmin(req, res) {
+    try {
+      const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
+
+      // Create new admin object
+      const newAdmin = new Admin({
+        userRoles: ['admin'],
+        root: false,
+        username: req.body.username,
+        password: req.body.password,
+        name: req.body.name,
+        telephone1: req.body.telephone1,
+        telephone2: req.body.telephone2,
+        address: req.body.address,
+        note: req.body.note,
+        image: image,
+        createdBy: req.body.createdBy
+			})
+
+      User.createAdmin(newAdmin, (err, admin) => {
+        if (err) {
+          console.error(err)
+          return res.status(400).send({
+            error: 'This username is already in use.'
+          })
+        } else {
+          return res.send({
+            admin: admin,
+            success: `You have successfully registered. ${admin.username}`
+          })
+        }
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).send({
+        error: 'An error has occurred trying to register the admin. Please try again.'
+      })
+    }
+	},
+	
+	// Get Admins
+  async getAllAdmins(req, res) {
+    try {
+      await User.find({ userRoles: 'admin' }, (err, admins) => {
+        if (err) {
+          console.log(err)
+        } else {
+          res.send({
+            admins: admins
+          })
+        }
+      })
+    } catch (err) {
+      res.status(500).send({
+        error: 'An error has occurred trying to get the list of admins.'
       })
     }
   },

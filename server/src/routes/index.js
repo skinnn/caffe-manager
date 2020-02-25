@@ -149,8 +149,9 @@ router.post('/admin',
 	AdminController.createAdmin)
 
 // Get all Admins
-router.get('/admin/admins',
-	AdminController.getAllAdmins)
+router.get('/admin',
+	auth.ensureAuthenticated,
+	UserController.getAllAdmins)
 
 // Get Admin by id
 router.get('/admin/:adminId',

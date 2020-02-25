@@ -80,13 +80,22 @@
 </template>
 
 <script>
+// Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
+// Services
 import AdminService from '@/services/AdminService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
 	components: {
 		AdminSideMenu
 	},
+
+	computed: {
+		...mapGetters(['getUserToken', 'getUser'])
+	},
+
 	data() {
 		return {
 			admins: [],
@@ -122,22 +131,20 @@ export default {
 	},
 
 	async mounted() {
+		const token = this.getUserToken
 		try {
 			// Get Admin list
 			// TODO: Get all admins except the Root Admin
-			const res = await AdminService.getAllAdmins()
+			const res = await AdminService.getAllAdmins(token)
 			const admins = res.data.admins
 			if (admins) {
-				const currentLoggedInAdmin = this.$store.state.user.username
-				// Add admin in the admins array
-				admins.forEach((admin) => {
-					// Don't display the currently logged in admin
-					if (admin.username === currentLoggedInAdmin || admin.root === true) {
-						return false
-					} else {
-						this.admins.push(admin)
-					}
-				})
+				const currentLoggedInAdmin = this.getUser.username
+
+				// TODO: Uncomment when table is fixed
+				// Filter out currently logged in admin and root admin from the list
+				const filteredAdmins = admins.filter(admin => admin.username !== currentLoggedInAdmin || !admin.root)
+
+				this.admins = filteredAdmins
 
 				// Handle pagination
 				let l = this.admins.length

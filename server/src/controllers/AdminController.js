@@ -49,24 +49,24 @@ module.exports = {
     }
   },
 
-  // Get Admins
-  async getAllAdmins(req, res) {
-    try {
-      await Admin.find({}, function(err, admins) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            admins: admins
-          })
-        }
-      })
-    } catch (err) {
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of admins.'
-      })
-    }
-  },
+  // // Get Admins
+  // async getAllAdmins(req, res) {
+  //   try {
+  //     await Admin.find({}, function(err, admins) {
+  //       if (err) {
+  //         console.log(err)
+  //       } else {
+  //         res.send({
+  //           admins: admins
+  //         })
+  //       }
+  //     })
+  //   } catch (err) {
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of admins.'
+  //     })
+  //   }
+  // },
 
   // Get Admin by id
   async getAdminById(req, res) {

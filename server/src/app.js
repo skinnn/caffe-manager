@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-// const morgan = require('morgan')
 const logger = require('./middleware/logger')
 const app = express()
 const path = require('path')

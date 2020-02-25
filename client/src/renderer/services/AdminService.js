@@ -4,8 +4,8 @@ export default {
 	createRootAdmin() {
 		return Api().get('find/root')
 	},
-	getAllAdmins() {
-		return Api().get('admin/admins')
+	getAllAdmins(token) {
+		return Api(token).get('admin')
 	},
 	getAdminById(adminId) {
 		return Api().get(`admin/${adminId}`)
