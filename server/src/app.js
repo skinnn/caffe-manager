@@ -12,6 +12,7 @@ const passport = require('passport')
 // const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash')
 const index = require('./routes/index')
+const UserController = require('./controllers/UserController')
 
 // Load config
 const config = require('./config/config')
@@ -62,7 +63,9 @@ mongoose.connect(config.db.uri, {
   .then(() => {
     console.log('Database connected!')
     // Start server
-    app.listen(config.port, function() {
+    app.listen(config.port, async () => {
+			// Create root admin if it does not exist
+			UserController.createRootAdmin()
       console.log(`Listening on port: ${config.port}`)
     })
   })

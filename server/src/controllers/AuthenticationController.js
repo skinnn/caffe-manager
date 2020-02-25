@@ -19,7 +19,9 @@ module.exports = {
 
 	async login(req, res) {
 		try {
-			var user = await Admin.getAdminByUsername(req.body.username)
+			const user = await User.getUserByUsername(req.body.username)
+			// var admin = await Admin.getAdminByUsername(req.body.username)
+			// const isAdmin = user.userRoles.includes('admin')
 
 			if (!user) {
 				res.setHeader('Content-Type', 'application/json')
@@ -31,7 +33,8 @@ module.exports = {
 			}
 
 			const candidatePassword = req.body.password
-			const isMatch = await Admin.compareAdminPassword(candidatePassword, user.password)
+			// const isMatch = await Admin.compareAdminPassword(candidatePassword, user.password)
+			const isMatch = await User.compareUserPassword(candidatePassword, user.password)
 
 			if (!isMatch) {
 				return res.status(401).json({

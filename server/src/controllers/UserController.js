@@ -1,7 +1,56 @@
 const User = require('../models/User')
 const config = require('../config/config')
+const bcrypt = require('bcryptjs')
 
 module.exports = {
+
+	// Create root Admin if it doesn't exist
+  async createRootAdmin() {
+    try {
+      // Create or Update
+      let query = { root: true }
+      User.find(query, (err, admin) => {
+        if (err) {
+					throw err
+        }
+				// If Root Admin exists
+				if (admin.length > 0) {
+					return console.log('Root user already exists')
+
+				} else if (!admin.root) {
+					// If Root User doesn't exist create one
+					const admin = new User({
+						root: true,
+						username: 'admin',
+						password: '123123',
+						userRoles: ['admin']
+					})
+					// Hash the password
+					bcrypt.genSalt(10, (err, salt) => {
+						if (err) {
+							throw err
+						}
+						bcrypt.hash(admin.password, salt, (err, hash) => {
+							if (err) {
+								throw err
+							}
+							console.log('Root user created.')
+							admin.password = hash
+							// Save Root User in the database
+							admin.save()
+						})
+					})
+				} else {
+					console.log('An error has occurred while creating the root user.')
+				}
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).send({
+        error: 'An error has occurred trying to fetch/create the root user.'
+      })
+    }
+	},
 
   // Create user
   async createUser(req, res) {

@@ -20,19 +20,19 @@
 			UserSideMenu
 		},
 		async mounted() {
-			try {
-				// Get or Create Root Admin if it doesn't exist
-				const response = (await AdminService.createRootAdmin()).data
-				// console.log(response)
-				if (response.rootExist) {
-					return console.log(response.message)
-				} else if (response.rootCreated) {
-					return console.log(response.message)
-				}
-			} catch (error) {
-				console.log(error.response.data.error)
-				console.log(error)
-			}
+			// try {
+			// 	// Get or Create Root Admin if it doesn't exist
+			// 	const response = (await AdminService.createRootAdmin()).data
+			// 	// console.log(response)
+			// 	if (response.rootExist) {
+			// 		return console.log(response.message)
+			// 	} else if (response.rootCreated) {
+			// 		return console.log(response.message)
+			// 	}
+			// } catch (error) {
+			// 	console.log(error.response.data.error)
+			// 	console.log(error)
+			// }
 		}
 	}
 </script>

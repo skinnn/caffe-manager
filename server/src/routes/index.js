@@ -95,8 +95,9 @@ router.get('/user/login-list',
 router.get('/admin/login-list',
 	AdminController.getAdminLoginList)
 
-router.get('/find/root',
-	AdminController.createRootAdmin)
+// TODO: Modify to POST /reinit (route that only root user can use to flush the database and reinitialize the app )
+// router.get('/find/root',
+// 	AdminController.createRootAdmin)
 
 // Get or Create Store Settings
 // router.get('/admin/:adminId/settings',

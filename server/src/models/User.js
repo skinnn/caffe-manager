@@ -19,12 +19,11 @@ const UserSchema = new Schema({
   },
   username: {
     type: String,
-    required: true,
-    unique: true
+    required: true
+    // unique: true
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   password: {
     type: String,
@@ -55,7 +54,7 @@ const UserSchema = new Schema({
 	// },
 	userMenu: {
     type: Array,
-    required: true
+    default: []
   },
   note: {
     type: String,
@@ -71,7 +70,7 @@ const UserSchema = new Schema({
   },
   updated: {
     type: String,
-    default: ''
+    default: null
   }
 })
 
@@ -92,18 +91,36 @@ module.exports.createUser = function(newUser, callback) {
   })
 }
 
-module.exports.getUserByUsername = function(username, callback) {
-  let query = {username: username}
-  User.findOne(query, callback)
+// module.exports.getUserByUsername = function(username, callback) {
+//   let query = {username: username}
+//   User.findOne(query, callback)
+// }
+
+module.exports.getUserByUsername = (username) => {
+	return new Promise((resolve, reject) => {
+		User.findOne({ username: username }, (err, user) => {
+			if (err) reject(err)
+			resolve(user)
+		})
+	})
 }
 
 module.exports.getUserById = function(id, callback) {
   User.findById(id, callback)
 }
 
-module.exports.compareUserPassword = function(candidatePassword, hash, callback) {
-  bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-    if (err) throw err
-    callback(null, isMatch)
-  })
+module.exports.compareUserPassword = (candidatePassword, hash) => {
+	return new Promise((resolve, reject) => {
+		bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+			if (err) reject(err)
+			resolve(isMatch)
+		})
+	})
 }
+
+// module.exports.compareUserPassword = function(candidatePassword, hash, callback) {
+//   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+//     if (err) throw err
+//     callback(null, isMatch)
+//   })
+// }
