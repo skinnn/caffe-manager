@@ -36,7 +36,7 @@ const ensureAuthenticated = async (req, res, next) => {
 			})
 		}
 
-		req.decoded = decoded
+		// req.decoded = decoded
 		next()
 	
 	} catch (err) {

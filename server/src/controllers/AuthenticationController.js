@@ -11,7 +11,7 @@ function jwtSignUser(user) {
   // Token expires in 1h
   const ONE_HOUR = 60 * 60 * 24
   return jwt.sign(user.toJSON(), config.authentication.jwtSecret, {
-    expiresIn: ONE_HOUR
+    // expiresIn: ONE_HOUR
   })
 }
 
