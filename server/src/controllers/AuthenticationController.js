@@ -1,4 +1,3 @@
-const passport = require('passport')
 const User = require('../models/User')
 const Admin = require('../models/Admin')
 const jwt = require('jsonwebtoken')
@@ -6,13 +5,13 @@ const config = require('../config/config')
 
 const Login = require('../models/Login')
 
-
+// TODO: Sign admin and user tokens
 // Sign user
 function jwtSignUser(user) {
   // Token expires in 1h
   const ONE_HOUR = 60 * 60 * 24
   return jwt.sign(user.toJSON(), config.authentication.jwtSecret, {
-    // expiresIn: ONE_HOUR
+    expiresIn: ONE_HOUR
   })
 }
 
@@ -20,7 +19,7 @@ module.exports = {
 
 	async login(req, res) {
 		try {
-			const user = await Admin.getAdminByUsername(req.body.username)
+			var user = await Admin.getAdminByUsername(req.body.username)
 
 			if (!user) {
 				res.setHeader('Content-Type', 'application/json')
@@ -47,28 +46,17 @@ module.exports = {
 				user: user.id,
 				username: user.username,
 				password: user.password,
-				token
+				token: token
 			})
 
 			login.save((err) => {
 				if (err) throw err
-				else {
-					Login.find({token}, (err, logins) => {
-						if (err) console.error(err)
-						else {
-							let check = logins[0]
-							let filtered = logins.filter(login => login.token !== check.token)
-							console.log('ALL: ', logins)
-							console.log('All login records:', filtered)
-							user.token = token
-							res.setHeader('Content-Type', 'application/json')
-							return res.json({
-								user,
-								token
-							})
-						}
-					})
-				}
+
+				res.setHeader('Content-Type', 'application/json')
+				return res.json({
+					user,
+					token
+				})
 			})
 
 		} catch (err) {
@@ -82,11 +70,15 @@ module.exports = {
 			const isDeleted = await Login.deleteMany({ token: token})
 			// const loginAfter = await Login.getLoginByToken(token)
 
-			if (isDeleted) {
-				return res.status(200).json({
-					message: 'Logged out successfully.'
+			if (!isDeleted) {
+				return res.status(500).json({
+					message: 'An error occurred while trying to delete the login record.'
 				})
 			}
+
+			return res.status(200).json({
+				message: 'Logged out successfully.'
+			})
 
 		} catch (err) {
 			console.error(err)

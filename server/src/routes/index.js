@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const passport = require('passport')
-const dateHandler = require('../controllers/getDate')
-const fs = require('fs')
-const path = require('path')
+// const passport = require('passport')
+// const dateHandler = require('../controllers/getDate')
+// const fs = require('fs')
+// const path = require('path')
 const multer = require('multer')
 
 // Middleware
-const auth = require('../middleware/token')
+const auth = require('../middleware/authentication')
 
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
@@ -19,11 +19,9 @@ const ArticleSubgroupController = require('../controllers/ArticleSubgroupControl
 const TablesController = require('../controllers/TablesController')
 const OrderController = require('../controllers/OrderController')
 const UserController = require('../controllers/UserController')
-// const auth = require('../controllers/ensureAuthenticated')
 
 // Policies
 const UserControllerPolicy = require('../policies/UserControllerPolicy')
-// const ensureAuthenticated = require('../controllers/ensureAuthenticated')
 
 // TODO: Move multer config to separate file
 // Multer storage engine
@@ -105,7 +103,7 @@ router.get('/find/root',
 // 	SettingsController.getOrCreateStoreSettings)
 
 router.get('/store/settings',
-	auth.checkToken,
+	auth.ensureAuthenticated,
 	SettingsController.getOrCreateStoreSettings)
 
 // Update Admin Settings
