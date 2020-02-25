@@ -1,7 +1,6 @@
 // Models
 const Admin = require('../models/Admin')
 const User = require('../models/User')
-const passport = require('passport')
 // Modules
 const bcrypt = require('bcryptjs')
 const fs = require('fs')
@@ -9,75 +8,10 @@ const dateHandler = require('./getDate')
 
 module.exports = {
 
-  // // Create root Admin if it doesn't exist
-  // async createRootAdmin(req, res) {
-  //   try {
-  //     // Create or Update
-  //     let query = { root: true, username: 'admin' }
-  //     // let update = { root_admin: true }
-  //     await Admin.find(query, (err, admin) => {
-  //       if (err) {
-  //         return res.status(500).send({
-  //           error: 'An DB error has occurred trying to find the root.'
-  //         })
-  //       } else {
-  //         // If Root Admin exists
-  //         if (admin && admin.length > 0) {
-  //           return res.send({
-  //             rootExist: true,
-  //             message: 'Root admin already exist.'
-  //           })
-  //         // If Root User doesn't exist
-  //         } else if (admin.root !== true && admin.username !== 'admin') {
-  //           // If no Root User is found create one
-  //           const admin = new Admin({
-  //             root: true,
-  //             username: 'admin',
-  //             password: '123123',
-  //             userRoles: ['admin']
-  //           })
-  //           // Create default crypted password
-  //           bcrypt.genSalt(10, (err, salt) => {
-  //             if (err) {
-  //               return console.log(err)
-  //             }
-  //             bcrypt.hash(admin.password, salt, (err, hash) => {
-  //               if (err) {
-  //                 return console.log(err)
-  //               }
-  //               admin.password = hash
-  //               // Save Root User in the database
-  //               admin.save()
-  //             })
-  //           })
-  //           // Root User created message
-  //           return res.send({
-  //             rootCreated: true,
-  //             message: 'Root user created.'
-  //           })
-  //         } else {
-  //           return res.status(500).send({
-  //             error: 'An error has occured.'
-  //           })
-  //         }
-  //       }
-  //     })
-  //   } catch (err) {
-  //     console.log(err)
-  //     return res.status(500).send({
-  //       error: 'An error has occurred trying to fetch/create the root user.'
-  //     })
-  //   }
-	// },
-	
 	// Create Admin
   async createAdmin(req, res) {
     try {
       const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
-      // // If image is added create image path
-      // if (req.file !== undefined && req.file !== '') {
-      //   image = req.file.path
-      // }
 
       // Create new admin object
       const newAdmin = new Admin({

@@ -8,7 +8,7 @@ const path = require('path')
 // const favicon = require('serve-favicon')
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
-const passport = require('passport')
+// const passport = require('passport')
 // const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash')
 const index = require('./routes/index')
@@ -17,10 +17,12 @@ const UserController = require('./controllers/UserController')
 // Load config
 const config = require('./config/config')
 
-// app.use(morgan('combined'))
 // Middleware
 app.use(logger)
-app.use(cors())
+app.use(cors({
+	credentials: true,
+	origin: 'http://localhost:9080'
+}))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cookieParser())
@@ -35,13 +37,13 @@ app.use(require('express-session')({
 }))
 
 // Passport config
-require('./config/passport')(passport)
-// Passport middleware
-app.use(passport.initialize())
-app.use(passport.session())
+// require('./config/passport')(passport)
+// // Passport middleware
+// app.use(passport.initialize())
+// app.use(passport.session())
 
 // Global Variables
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.error_msg = req.flash('error_msg')
   res.locals.error = req.flash('error')
@@ -55,18 +57,20 @@ app.use('/images', express.static(path.join(__dirname, '../images')))
 app.use('/api', index)
 
 // Connect to a local Mongo Database
-mongoose.connect(config.db.uri, {
+mongoose
+	.connect(config.db.uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
   })
   .then(() => {
-    console.log('Database connected!')
-    // Start server
-    app.listen(config.port, async () => {
+		console.log('Database connected.')
+
+    // Start the server
+    app.listen(config.port, () => {
 			// Create root admin if it does not exist
-			UserController.createRootAdmin()
       console.log(`Listening on port: ${config.port}`)
+			UserController.createRootAdmin()
     })
   })
   .catch((err) => console.error(err))
