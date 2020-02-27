@@ -44,24 +44,6 @@
 		</v-flex>
 
 		<LoginList :userType="'admins'" @userSelected="handleSelectedUser" />
-		<!-- <v-flex xs4>
-			<div class="elevation-5">
-				<ul class="adminList">
-					<h3 v-if="adminList.length === 0" class="adminListEmptyText">
-						No admins
-					</h3>
-					<li
-						v-for="admin in adminList"
-						:key="admin.username"
-						@click="populateUsername(admin.username)"
-						class="singleAdminLi"
-					>
-						<div class="singleAdminDiv">{{admin.name}}</div>
-					</li>
-				</ul>
-
-			</div>
-		</v-flex> -->
 	</v-layout>
 </template>
 
@@ -91,25 +73,6 @@ export default {
 		}
 	},
 
-	mounted() {
-		// this.$refs.inputUsername.focus()
-
-		// if (this.$props.for === 'admins') {
-		// 	this.getAdminLoginList()
-		// } else if (this.$props.for === 'users') {
-		// 	this.getUserLoginList()
-		// }
-
-		// // TODO: Fire this only if admin logged out
-		// if (this.loggedOutMessage) {
-		// 	this.success = this.loggedOutMessage
-		// 	setTimeout(() => {
-		// 		this.success = null
-		// 	}, 3000)
-		// 	this.loggedOutMessage = null
-		// }
-	},
-
 	methods: {
 		async getAdminLoginList() {
 			try {
@@ -122,19 +85,9 @@ export default {
 						this.adminList.push(admin)
 					})
 				}
-				// If there are no Admins in the DB (root admin doesn't count)
-				// if (response.adminList) {
-				// 	this.adminList = response.adminList
-				// }
 			} catch (err) {
 				console.error(err)
 			}
-		},
-
-		handleSelectedUser(selectedUser) {
-			this.username = selectedUser.username
-			this.password = ''
-			this.$refs.inputPassword.focus()
 		},
 
 		async onSubmit() {
@@ -182,6 +135,12 @@ export default {
 				this.success = null
 				this.error = err.response.data.error.message
 			}
+		},
+
+		handleSelectedUser(selectedUser) {
+			this.username = selectedUser.username
+			this.password = ''
+			this.$refs.inputPassword.focus()
 		}
 	}
 }

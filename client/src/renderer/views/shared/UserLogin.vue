@@ -86,29 +86,7 @@ export default {
 			loggedOutMessage: this.$store.state.route.params.loggedOutMessage
 		}
 	},
-	mounted() {
-		// const response = (await AdminService.getUserLoginList()).data
-		// console.log(response)
-		// if (response.users) {
-		// 	this.noUsers = null
-		// 	let userList = this.userList
-		// 	response.users.forEach(function(user) {
-		// 		userList.push(user)
-		// 	})
-		// }
-		// // If there are no Users in the DB
-		// if (response.noUsers) {
-		// 	this.noUsers = response.noUsers
-		// }
-		// // TODO: Fire this only if user logged out
-		// if (this.loggedOutMessage !== null && this.loggedOutMessage !== {}) {
-		// 	this.success = this.loggedOutMessage
-		// 	await setTimeout(() => {
-		// 		this.success = null
-		// 	}, 3000)
-		// 	this.loggedOutMessage = null
-		// }
-	},
+
 	methods: {
 		handleSelectedUser(selectedUser) {
 			this.username = selectedUser.username
