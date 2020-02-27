@@ -20,8 +20,6 @@
 
 <script>
 // Services
-import AuthenticationService from '@/services/AuthenticationService'
-import SettingsService from '@/services/SettingsService'
 import UserService from '@/services/UserService'
 
 export default {
