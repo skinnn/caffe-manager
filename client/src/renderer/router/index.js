@@ -206,22 +206,22 @@ var Router = new VueRouter({
 	routes: routes
 })
 
-// Route Guard - working only in production mode
+// Route Guard - works only in production mode
 /* It secures all routes that have a field - meta: {requiresLogin: true} */
-if (config.node_env === 'production') {
-	Router.beforeEach((to, from, next) => {
-		if (to.matched.some(record => record.meta.requiresLogin)) {
-			// Can use store variable here to access globalError or commit mutation for example
-			console.log('Store state - isAdminLoggedIn:', store.state.isAdminLoggedIn)
-			if (store.state.isAdminLoggedIn) {
-				return next()
-			} else {
-				return next('/admin/login')
-			}
-		} else {
-			return next()
-		}
-	})
-}
+// if (config.node_env === 'production') {
+// 	Router.beforeEach((to, from, next) => {
+// 		if (to.matched.some(record => record.meta.requiresLogin)) {
+// 			// Can use store variable here to access globalError or commit mutation for example
+// 			console.log('Store state - isAdminLoggedIn:', store.state.isAdminLoggedIn)
+// 			if (store.state.isAdminLoggedIn) {
+// 				return next()
+// 			} else {
+// 				return next('/admin/login')
+// 			}
+// 		} else {
+// 			return next()
+// 		}
+// 	})
+// }
 
 export default Router

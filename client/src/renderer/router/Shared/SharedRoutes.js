@@ -1,6 +1,6 @@
 /*
-	Shared routes - don't need to be atuhenticated to get
-	this assets (if in production)
+	Shared routes - don't need to be authenticated to get
+	this assets (in production)
 */
 
 const AdminLogin = require('@/views/shared/AdminLogin').default
@@ -15,15 +15,15 @@ const routes = [
 		component: UserLogin
 	},
 	{
-		path: '/admin/login',
+		path: '/admin-login',
 		name: 'admin-login',
 		component: AdminLogin
 	},
-	{
-		path: '/admin/landingpage/register',
-		name: 'landing-admin-register',
-		component: AdminLandingRegister
-	},
+	// {
+	// 	path: '/admin/landingpage/register',
+	// 	name: 'landing-admin-register',
+	// 	component: AdminLandingRegister
+	// },
 	{
 		path: '*',
 		redirect: '/'

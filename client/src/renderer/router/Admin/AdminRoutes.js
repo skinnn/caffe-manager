@@ -37,7 +37,7 @@ const routes = [
 		path: '/admin/home',
 		name: 'admin-home',
 		component: AdminDashboard,
-		// TODO: Each route needs to be protected with requresLogin meta
+		// TODO: Each route needs to be protected with requiresLogin meta
 		meta: { requiresLogin: true }
 	},
 	{

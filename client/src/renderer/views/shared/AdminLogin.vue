@@ -1,8 +1,9 @@
 <template>
 	<v-layout row class="mt-5">
-		<LoginForm :heading="'Admin Login'" :selectedUser="selectedUser" />
 
+		<LoginForm :heading="'Admin Login'" :selectedUser="selectedUser" />
 		<LoginList :userType="'admins'" @userSelected="handleSelectedUser" />
+		
 	</v-layout>
 </template>
 

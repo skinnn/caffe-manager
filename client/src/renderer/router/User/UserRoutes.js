@@ -24,7 +24,7 @@ const routes = [
 		path: '/user/tables',
 		name: 'user-tables',
 		component: UserTables
-	},
+	}
 ]
 
 export default routes
