@@ -1,8 +1,7 @@
 /*
 	User routes - Needs to be atuhenticated as User to get
-	this assets (if in production)
+	this assets (in production)
 */
-
 
 // User components
 const UserHome = require('@/views/user/UserHome').default
