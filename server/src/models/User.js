@@ -76,17 +76,32 @@ const UserSchema = new Schema({
 
 let User = module.exports = mongoose.model('User', UserSchema)
 
-module.exports.createUser = function(newUser, callback) {
-  bcrypt.genSalt(10, function(err, salt) {
+module.exports.createUser = (newUser, callback) => {
+  bcrypt.genSalt(10, (err, salt) => {
     if (err) {
       return console.log(err)
     }
-    bcrypt.hash(newUser.password, salt, function(err, hash) {
+    bcrypt.hash(newUser.password, salt, (err, hash) => {
       if (err) {
         console.log(err)
       }
       newUser.password = hash
       newUser.save(callback)
+    })
+  })
+}
+
+module.exports.createAdmin = (newAdmin, callback) => {
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      throw err
+    }
+    bcrypt.hash(newAdmin.password, salt, (err, hash) => {
+      if (err) {
+        throw err
+      }
+      newAdmin.password = hash
+      newAdmin.save(callback)
     })
   })
 }

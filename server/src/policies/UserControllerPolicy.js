@@ -110,7 +110,8 @@ module.exports = {
 
 	// User Policy
   user(req, res, next) {
-    const schema = {
+		console.log('as: ', req.body.userRoles)
+    const schema = Joi.object({
       userUsername: Joi.string()
         .min(5)
         .max(15)
@@ -120,9 +121,7 @@ module.exports = {
         .regex(new RegExp('^(?=.*[0-9]+.*)[a-zA-Z0-9]{6,32}$'))
         .required(),
       userPassword2: Joi.any()
-        .valid(Joi.ref('userPassword'))
-        .options({ language: { any: { allowOnly: 'must match password' } } })
-        .label('Password Confirmation'),
+        .valid(Joi.ref('userPassword')),
       userName: Joi.string()
         .min(5)
         .max(32)
@@ -136,10 +135,10 @@ module.exports = {
       userMenu: Joi.any(),
       createdBy: Joi.any(),
       imageUpload: Joi.any(),
-      userRoles: Joi.array()
-    }
+      userRoles: Joi.array().items(Joi.string())
+    })
 
-    const { error, value } = Joi.validate(req.body, schema)
+		const { error, value } = schema.validate(req.body)
 
     if (error) {
       switch (error.details[0].context.key) {

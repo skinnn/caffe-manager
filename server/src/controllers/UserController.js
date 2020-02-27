@@ -54,6 +54,7 @@ module.exports = {
 
   // Create user
   async createUser(req, res) {
+		// TODO: Check is username not already registered
     try {
       // const isTable = req.body.isTables
       const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
@@ -82,7 +83,7 @@ module.exports = {
 			]
 			
       const newUser = new User({
-				userRoles: ['admin'],
+				userRoles: ['user'],
 				// userRoles: req.body.userRoles,
         username: req.body.userUsername,
         password: req.body.userPassword,
@@ -118,11 +119,12 @@ module.exports = {
 	
 	// Create Admin
   async createAdmin(req, res) {
+		// TODO: Check is username not already registered
     try {
       const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
 
       // Create new admin object
-      const newAdmin = new Admin({
+      const newAdmin = new User({
         userRoles: ['admin'],
         root: false,
         username: req.body.username,
@@ -172,6 +174,80 @@ module.exports = {
     } catch (err) {
       res.status(500).send({
         error: 'An error has occurred trying to get the list of admins.'
+      })
+    }
+	},
+
+	// Get Admin login List - just usernames and names
+	async getAdminLoginList(req, res) {
+		try {
+			let query = {
+				userRoles: { $all : ['admin'] },
+				root: false
+			}
+			const admins = await User.find(query).select('-_id username name')
+			{ $all : ["sushi", "bananas"] }
+			return res.status(200).json({
+				admins: admins,
+			})
+		
+		} catch (err) {
+			console.error(err)
+			return res.status(500).send({
+				error: 'An error has occurred trying to get the admin list.'
+			})
+		}
+	},
+	
+	// // Get Admin login List - just usernames and names
+  // async getAdminLoginList(req, res) {
+  //   try {
+  //     // Find all admins except the root user/admin
+  //     let query = { root: false }
+  //     User.find(query)
+  //       .select('-_id username name')
+  //       .exec()
+  //       .then(docs => {
+  //         if (docs.length > 0) {
+  //           return res.json({
+  //             admins: docs
+  //           })
+  //         } else {
+  //           return res.send({
+	// 						admins: docs,
+  //             noAdmins: 'No admins.'
+  //           })
+  //         }
+  //       })
+  //       .catch(err => {
+  //         console.error(err)
+  //         return res.status(500).send({
+  //           error: 'An error has occurred trying to get the admin list.'
+  //         })
+  //       })
+  //   } catch (err) {
+  //     console.error(err)
+  //     return res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of admins.'
+  //     })
+  //   }
+	// },
+	
+	 // Get User login List - just usernames and names
+	 async getUserLoginList(req, res) {
+    try {
+			let query = {
+				userRoles: { $all : ['user'] }
+			}
+			const users = await User.find(query).select('-_id username name')
+
+			return res.status(200).json({
+				users: users
+			})
+    } catch (err) {
+      console.log(err)
+      res.status(500).send({
+        error: 'An error has occurred trying to get the list of staff members.'
       })
     }
   },

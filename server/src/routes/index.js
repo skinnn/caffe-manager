@@ -89,11 +89,11 @@ router.get('/admin/storage/:storageId/subgroups',
 
 // Get User login list
 router.get('/user/login-list',
-	AdminController.getUserLoginList)
+	UserController.getUserLoginList)
 
 // Get Admin login list
 router.get('/admin/login-list',
-	AdminController.getAdminLoginList)
+	UserController.getAdminLoginList)
 
 // TODO: Modify to POST /reinit (route that only root user can use to flush the database and reinitialize the app )
 // router.get('/find/root',
@@ -146,7 +146,7 @@ router.post('/user',
 router.post('/admin',
 	upload.single('imageUpload'),
 	UserControllerPolicy.admin,
-	AdminController.createAdmin)
+	UserController.createAdmin)
 
 // Get all Admins
 router.get('/admin',

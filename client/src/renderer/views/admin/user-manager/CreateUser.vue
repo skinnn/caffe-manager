@@ -241,12 +241,7 @@ export default {
 				src: null,
 				file: null
 			},
-			createdBy: {
-				id: this.$store.state.user._id,
-				name: this.$store.state.user.name,
-				username: this.$store.state.user.username
-			},
-			userRoles: ['user'],
+			createdBy: this.$store.state.user._id,
 
 			showMessage: false,
 			// Password Strength - default
@@ -338,7 +333,7 @@ export default {
 				userFormData.append('userNote', this.note.value)
 				userFormData.append('userMenu', userMenu)
 				userFormData.append('createdBy', this.createdBy)
-				userFormData.append('userRoles', this.userRoles)
+				userFormData.append('userRoles[]', 'user')
 
 				// Register User
 				const response = (await UserService.createUser(token, userFormData)).data

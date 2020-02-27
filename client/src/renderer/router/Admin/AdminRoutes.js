@@ -4,8 +4,6 @@
 */
 
 // Admin Components
-// TODO: Delete AdminLandingRegister page for production
-const AdminLandingRegister = require('@/views/AdminLandingRegister').default
 const AdminDashboard = require('@/views/admin/AdminDashboard').default
 const AdminTaxes = require('@/views/admin/AdminTaxes').default
 // Settings
@@ -46,11 +44,6 @@ const routes = [
 		path: '/admin/user/create',
 		name: 'admin-create-user',
 		component: AdminCreateUser
-	},
-	{
-		path: '/admin/landingpage/register',
-		name: 'landing-admin-register',
-		component: AdminLandingRegister
 	},
 	{
 		path: '/admin/register',

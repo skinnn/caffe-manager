@@ -3,8 +3,10 @@
 	this assets (if in production)
 */
 
-const AdminLogin = require('@/views/AdminLogin').default
-const UserLogin = require('@/views/UserLogin').default
+const AdminLogin = require('@/views/shared/AdminLogin').default
+const UserLogin = require('@/views/shared/UserLogin').default
+// TODO: Delete AdminLandingRegister page for production
+const AdminLandingRegister = require('@/views/shared/AdminLandingRegister').default
 
 const routes = [
 	{
@@ -16,6 +18,11 @@ const routes = [
 		path: '/admin/login',
 		name: 'admin-login',
 		component: AdminLogin
+	},
+	{
+		path: '/admin/landingpage/register',
+		name: 'landing-admin-register',
+		component: AdminLandingRegister
 	},
 	{
 		path: '*',

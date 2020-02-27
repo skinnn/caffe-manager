@@ -69,7 +69,8 @@ module.exports = {
 
 	async logout(req, res) {
 		try {
-			const token = req.headers.authorization.split(' ')[1]
+			const authHeader = req.headers['authorization'] || req.headers['x-access-token'] || ''
+			const token = authHeader.split(' ')[1] || ''
 			const isDeleted = await Login.deleteMany({ token: token})
 			// const loginAfter = await Login.getLoginByToken(token)
 

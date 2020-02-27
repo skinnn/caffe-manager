@@ -6,7 +6,6 @@
 					<v-toolbar-title class="toolbar-title">User Login</v-toolbar-title>
 				</v-toolbar>
 				<div class="register-page pl-4 pr-4 pb-3 pt-4">
-					<!-- <router-link to="/admin/register"><v-btn color="blue">Admin Register</v-btn></router-link> -->
 					<router-link to="/admin/login"><v-btn color="blue">Admin Login</v-btn></router-link>
 					<router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link>
 					<router-link to="/" event=""><v-btn color="blue">User Login</v-btn></router-link>
@@ -21,13 +20,13 @@
 						<v-text-field
 							id="pwFocus"
 							type="password"
+							ref="inputPassword"
 							v-model="password"
 							label="Password:"
 							outline
 							></v-text-field>
 					</v-form>
 
-					<!-- Display messages -->
 					<div class="error-msg" v-if="error" v-html="error" />
 					<div class="success-msg" v-if="success" v-html="success" />
 					<div class="info-msg" v-if="info" v-html="info" />
@@ -42,7 +41,9 @@
 
 			</div>
 		</v-flex>
-		<v-flex xs4>
+
+		<LoginList :userType="'users'" @userSelected="handleSelectedUser" />
+		<!-- <v-flex xs4>
 			<div class="elevation-5">
 				<ul class="userList">
 					<h3 v-if="userList.length < 1" class="userListEmptyText">{{noUsers}}</h3>
@@ -57,15 +58,21 @@
 				</ul>
 
 			</div>
-		</v-flex>
+		</v-flex> -->
 	</v-layout>
 </template>
 
 <script>
+// Components
+import LoginList from '@/components/LoginList'
+// Services
 import AuthenticationService from '@/services/AuthenticationService'
 import AdminService from '@/services/AdminService'
 
 export default {
+
+	components: { LoginList },
+
 	data() {
 		return {
 			userList: [],
@@ -79,35 +86,36 @@ export default {
 			loggedOutMessage: this.$store.state.route.params.loggedOutMessage
 		}
 	},
-	async mounted() {
-		const response = (await AdminService.getUserLoginList()).data
-		console.log(response)
-		if (response.users) {
-			this.noUsers = null
-			let userList = this.userList
-			response.users.forEach(function(user) {
-				userList.push(user)
-			})
-		}
-		// If there are no Users in the DB
-		if (response.noUsers) {
-			this.noUsers = response.noUsers
-		}
-		// TODO: Fire this only if user logged out
-		if (this.loggedOutMessage !== null && this.loggedOutMessage !== {}) {
-			this.success = this.loggedOutMessage
-			await setTimeout(() => {
-				this.success = null
-			}, 3000)
-			this.loggedOutMessage = null
-		}
+	mounted() {
+		// const response = (await AdminService.getUserLoginList()).data
+		// console.log(response)
+		// if (response.users) {
+		// 	this.noUsers = null
+		// 	let userList = this.userList
+		// 	response.users.forEach(function(user) {
+		// 		userList.push(user)
+		// 	})
+		// }
+		// // If there are no Users in the DB
+		// if (response.noUsers) {
+		// 	this.noUsers = response.noUsers
+		// }
+		// // TODO: Fire this only if user logged out
+		// if (this.loggedOutMessage !== null && this.loggedOutMessage !== {}) {
+		// 	this.success = this.loggedOutMessage
+		// 	await setTimeout(() => {
+		// 		this.success = null
+		// 	}, 3000)
+		// 	this.loggedOutMessage = null
+		// }
 	},
 	methods: {
-		populateUsername(username) {
-			this.username = username
+		handleSelectedUser(selectedUser) {
+			this.username = selectedUser.username
 			this.password = ''
-			document.getElementById('pwFocus').focus()
+			this.$refs.inputPassword.focus()
 		},
+
 		async loginUser() {
 			try {
 				const response = (await AuthenticationService.loginUser({

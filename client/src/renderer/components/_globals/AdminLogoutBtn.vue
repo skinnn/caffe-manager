@@ -24,6 +24,10 @@ export default {
 			try {
 				const token = this.getUserToken
 				const res = await AuthenticationService.logout(token)
+				// this.$router.push({
+				// 	name: 'admin-login',
+				// 	params: { loggedOutMessage: 'Logged out' }
+				// })
 
 				if (res.status === 200) {
 					// Clear store and local storage data

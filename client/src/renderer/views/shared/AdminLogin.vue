@@ -25,7 +25,6 @@
 							label="Password:"
 							outline
 						></v-text-field>
-						<!-- Display messages -->
 						<div class="error-msg" v-if="error" v-html="error" />
 						<div class="success-msg" v-if="success" v-html="success" />
 						<div class="info-msg" v-if="info" v-html="info" />
@@ -43,7 +42,9 @@
 
 			</div>
 		</v-flex>
-		<v-flex xs4>
+
+		<LoginList :userType="'admins'" @userSelected="handleSelectedUser" />
+		<!-- <v-flex xs4>
 			<div class="elevation-5">
 				<ul class="adminList">
 					<h3 v-if="adminList.length === 0" class="adminListEmptyText">
@@ -60,7 +61,7 @@
 				</ul>
 
 			</div>
-		</v-flex>
+		</v-flex> -->
 	</v-layout>
 </template>
 
@@ -69,8 +70,12 @@
 import AuthenticationService from '@/services/AuthenticationService'
 import SettingsService from '@/services/SettingsService'
 import AdminService from '@/services/AdminService'
+import UserService from '@/services/UserService'
+// Components
+import LoginList from '@/components/LoginList'
 
 export default {
+	components: { LoginList },
 
 	data() {
 		return {
@@ -86,19 +91,23 @@ export default {
 		}
 	},
 
-	async mounted() {
-		this.$refs.inputUsername.focus()
+	mounted() {
+		// this.$refs.inputUsername.focus()
 
-		this.getAdminLoginList()
+		// if (this.$props.for === 'admins') {
+		// 	this.getAdminLoginList()
+		// } else if (this.$props.for === 'users') {
+		// 	this.getUserLoginList()
+		// }
 
-		// TODO: Fire this only if admin logged out
-		if (this.loggedOutMessage) {
-			this.success = this.loggedOutMessage
-			setTimeout(() => {
-				this.success = null
-			}, 3000)
-			this.loggedOutMessage = null
-		}
+		// // TODO: Fire this only if admin logged out
+		// if (this.loggedOutMessage) {
+		// 	this.success = this.loggedOutMessage
+		// 	setTimeout(() => {
+		// 		this.success = null
+		// 	}, 3000)
+		// 	this.loggedOutMessage = null
+		// }
 	},
 
 	methods: {
@@ -122,11 +131,10 @@ export default {
 			}
 		},
 
-		populateUsername(username) {
-			this.username = username
+		handleSelectedUser(selectedUser) {
+			this.username = selectedUser.username
 			this.password = ''
 			this.$refs.inputPassword.focus()
-			// document.getElementById('pwFocus').focus()
 		},
 
 		async onSubmit() {

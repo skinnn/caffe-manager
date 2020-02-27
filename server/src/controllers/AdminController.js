@@ -199,69 +199,69 @@ module.exports = {
     }
   },
 
-  // Get User login List - just usernames and names
-  async getUserLoginList(req, res) {
-    try {
-      await User.find()
-        .select('-_id username name')
-        .exec()
-        .then(docs => {
-          if (docs.length > 0) {
-            res.send({
-              users: docs
-            })
-          } else {
-            res.send({
-              noUsers: 'No users'
-            })
-          }
-        })
-        .catch(err => {
-          console.log(err)
-          res.status(500).send({
-            error: 'An error has occurred trying to get the user list.'
-          })
-        })
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of staff members.'
-      })
-    }
-  },
+  // // Get User login List - just usernames and names
+  // async getUserLoginList(req, res) {
+  //   try {
+  //     await User.find()
+  //       .select('-_id username name')
+  //       .exec()
+  //       .then(docs => {
+  //         if (docs.length > 0) {
+  //           res.send({
+  //             users: docs
+  //           })
+  //         } else {
+  //           res.send({
+  //             noUsers: 'No users'
+  //           })
+  //         }
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //         res.status(500).send({
+  //           error: 'An error has occurred trying to get the user list.'
+  //         })
+  //       })
+  //   } catch (err) {
+  //     console.log(err)
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of staff members.'
+  //     })
+  //   }
+  // },
 
-  // Get Admin login List - just usernames and names
-  async getAdminLoginList(req, res) {
-    try {
-      // Find all admins except the root user/admin
-      let query = { root: false }
-      await Admin.find(query)
-        .select('-_id username name')
-        .exec()
-        .then(docs => {
-          if (docs.length > 0) {
-            res.send({
-              admins: docs
-            })
-          } else {
-            res.send({
-              noAdmins: 'No admins'
-            })
-          }
-        })
-        .catch(err => {
-          console.log(err)
-          res.status(500).send({
-            error: 'An error has occurred trying to get the admin list.'
-          })
-        })
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of admins.'
-      })
-    }
-  },
+  // // Get Admin login List - just usernames and names
+  // async getAdminLoginList(req, res) {
+  //   try {
+  //     // Find all admins except the root user/admin
+  //     let query = { root: false }
+  //     await Admin.find(query)
+  //       .select('-_id username name')
+  //       .exec()
+  //       .then(docs => {
+  //         if (docs.length > 0) {
+  //           res.send({
+  //             admins: docs
+  //           })
+  //         } else {
+  //           res.send({
+  //             noAdmins: 'No admins'
+  //           })
+  //         }
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //         res.status(500).send({
+  //           error: 'An error has occurred trying to get the admin list.'
+  //         })
+  //       })
+  //   } catch (err) {
+  //     console.log(err)
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of admins.'
+  //     })
+  //   }
+  // },
 
   // Delete Admin
   async deleteAdmin(req, res) {
