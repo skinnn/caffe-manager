@@ -24,12 +24,15 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     title: 'Caffe Manager',
-    minHeight: 650,
-    minWidth: 1100,
+    height: 800,
+    width: 1400,
+    minHeight: 800,
+    minWidth: 1400,
     center: true,
     useContentSize: true,
     // fullscreen: true,
     icon: iconPath,
+    resizable: false,
     webPreferences: {
       nodeIntegration: true
     }
@@ -50,7 +53,7 @@ function createWindow() {
       e.preventDefault()
     }
   })
-}
+} /* createWindow */
 
 app.on('ready', createWindow)
 

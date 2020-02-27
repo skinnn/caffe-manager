@@ -5,73 +5,83 @@ const bcrypt = require('bcryptjs')
 // TODO: Modify user model similar to updated admin model, add regexes, move errors to the fields
 // TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
 const UserSchema = new Schema({
-  userType: {
-    type: String,
-    default: 'user'
+  // userType: {
+  //   type: String,
+  //   default: 'user'
+	// },
+	userRoles: {
+		type: Array,
+		default: [] // 'user', 'admin' 'anon'
+	},
+  root: {
+    type: Boolean,
+    default: false
   },
   username: {
     type: String,
-    required: true,
-    unique: true
+    required: true
+    // unique: true
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   password: {
     type: String,
     required: true
-  },
+	},
+	email: {
+		type: String,
+		default: null
+	},
   image: {
     type: String
   },
   telephone1: {
     type: String,
-    default: ''
+    default: null
   },
   telephone2: {
     type: String,
-    default: ''
+    default: null
   },
   address: {
     type: String,
-    default: ''
+    default: null
+	},
+	// permissions: {
+  //   type: String,
+  //   default: null
+	// },
+	userMenu: {
+    type: Array,
+    default: []
   },
   note: {
     type: String,
-    default: ''
+    default: null
   },
   createdBy: {
-    type: Object,
-    default: ''
-  },
-  permissions: {
     type: String,
-    default: ''
-  },
-  userMenu: {
-    type: Array,
-    required: true
+    default: null
   },
   date: {
     type: Date,
     default: Date.now
   },
-  updated_date: {
+  updated: {
     type: String,
-    default: ''
+    default: null
   }
-
 })
 
 let User = module.exports = mongoose.model('User', UserSchema)
 
-module.exports.createUser = function(newUser, callback) {
-  bcrypt.genSalt(10, function(err, salt) {
+module.exports.createUser = (newUser, callback) => {
+  bcrypt.genSalt(10, (err, salt) => {
     if (err) {
       return console.log(err)
     }
-    bcrypt.hash(newUser.password, salt, function(err, hash) {
+    bcrypt.hash(newUser.password, salt, (err, hash) => {
       if (err) {
         console.log(err)
       }
@@ -81,18 +91,51 @@ module.exports.createUser = function(newUser, callback) {
   })
 }
 
-module.exports.getUserByUsername = function(username, callback) {
-  let query = {username: username}
-  User.findOne(query, callback)
+module.exports.createAdmin = (newAdmin, callback) => {
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      throw err
+    }
+    bcrypt.hash(newAdmin.password, salt, (err, hash) => {
+      if (err) {
+        throw err
+      }
+      newAdmin.password = hash
+      newAdmin.save(callback)
+    })
+  })
+}
+
+// module.exports.getUserByUsername = function(username, callback) {
+//   let query = {username: username}
+//   User.findOne(query, callback)
+// }
+
+module.exports.getUserByUsername = (username) => {
+	return new Promise((resolve, reject) => {
+		User.findOne({ username: username }, (err, user) => {
+			if (err) reject(err)
+			resolve(user)
+		})
+	})
 }
 
 module.exports.getUserById = function(id, callback) {
   User.findById(id, callback)
 }
 
-module.exports.compareUserPassword = function(candidatePassword, hash, callback) {
-  bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-    if (err) throw err
-    callback(null, isMatch)
-  })
+module.exports.compareUserPassword = (candidatePassword, hash) => {
+	return new Promise((resolve, reject) => {
+		bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+			if (err) reject(err)
+			resolve(isMatch)
+		})
+	})
 }
+
+// module.exports.compareUserPassword = function(candidatePassword, hash, callback) {
+//   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+//     if (err) throw err
+//     callback(null, isMatch)
+//   })
+// }

@@ -17,16 +17,17 @@ Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.http = Vue.prototype.$http = axios
 
-// Init Globals
+// Register Global Components
 Vue.component('adminLogoutBtn', AdminLogoutBtn)
 Vue.component('userLogoutBtn', UserLogoutBtn)
 
+// Sync store and router
 sync(store, router)
 
 /* eslint-disable no-new */
 new Vue({
-  components: { App },
-  router,
-  store,
-  template: '<App/>'
+	components: { App },
+	router,
+	store,
+	template: '<App/>'
 }).$mount('#app')

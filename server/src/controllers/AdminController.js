@@ -1,7 +1,6 @@
 // Models
 const Admin = require('../models/Admin')
 const User = require('../models/User')
-const passport = require('passport')
 // Modules
 const bcrypt = require('bcryptjs')
 const fs = require('fs')
@@ -9,85 +8,65 @@ const dateHandler = require('./getDate')
 
 module.exports = {
 
-  // Create Admin Root if it doesn't exist
-  async createRootAdmin(req, res) {
+	// Create Admin
+  async createAdmin(req, res) {
     try {
-      // Create or Update
-      let query = { root_user: true, username: 'admin' }
-      // let update = { root_admin: true }
-      await Admin.find(query, function(err, root) {
+      const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
+
+      // Create new admin object
+      const newAdmin = new Admin({
+        userRoles: ['admin'],
+        root: false,
+        username: req.body.username,
+        password: req.body.password,
+        name: req.body.name,
+        telephone1: req.body.telephone1,
+        telephone2: req.body.telephone2,
+        address: req.body.address,
+        note: req.body.note,
+        image: image,
+        createdBy: req.body.createdBy
+			})
+
+      Admin.createAdmin(newAdmin, (err, admin) => {
         if (err) {
-          return res.status(500).send({
-            error: 'An DB error has occurred trying to find the root.'
+          console.error(err)
+          return res.status(400).send({
+            error: 'This username is already in use.'
           })
         } else {
-          // If Root User exists
-          if (root && root.length > 0) {
-            return res.send({
-              rootExist: true,
-              message: 'Root user already exist.'
-            })
-          // If Root User doesn't exist
-          } else if (root.root_user !== true && root.username !== 'admin') {
-            // If no Root User is found create one
-            const root = new Admin({
-              root_user: true,
-              username: 'admin',
-              password: '123123',
-              userType: 'admin'
-            })
-            // Create default crypted password
-            bcrypt.genSalt(10, function(err, salt) {
-              if (err) {
-                return console.log(err)
-              }
-              bcrypt.hash(root.password, salt, function(err, hash) {
-                if (err) {
-                  return console.log(err)
-                }
-                root.password = hash
-                // Save Root User in the database
-                root.save()
-              })
-            })
-            // Root User created message
-            return res.send({
-              rootCreated: true,
-              message: 'Root user created.'
-            })
-          } else {
-            return res.status(500).send({
-              error: 'An error has occured.'
-            })
-          }
+          return res.send({
+            admin: admin,
+            success: `You have successfully registered. ${admin.username}`
+          })
         }
       })
     } catch (err) {
       console.log(err)
       return res.status(500).send({
-        error: 'An error has occurred trying to fetch/create the root user.'
+        error: 'An error has occurred trying to register the admin. Please try again.'
       })
     }
   },
 
-  // Get Admins
-  async getAllAdmins(req, res) {
-    try {
-      await Admin.find({}, function(err, admins) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            admins: admins
-          })
-        }
-      })
-    } catch (err) {
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of admins.'
-      })
-    }
-  },
+  // // Get Admins
+  // async getAllAdmins(req, res) {
+  //   try {
+  //     await Admin.find({}, function(err, admins) {
+  //       if (err) {
+  //         console.log(err)
+  //       } else {
+  //         res.send({
+  //           admins: admins
+  //         })
+  //       }
+  //     })
+  //   } catch (err) {
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of admins.'
+  //     })
+  //   }
+  // },
 
   // Get Admin by id
   async getAdminById(req, res) {
@@ -110,7 +89,7 @@ module.exports = {
   },
 
   // Update Admin by id
-  async saveAdmin(req, res) {
+  async updateAdminById(req, res) {
     try {
       let query = {_id: req.params.adminId}
       let options = { upsert: true, new: true }
@@ -118,15 +97,15 @@ module.exports = {
       let admin = {}
       admin.name = req.body.name
       admin.username = req.body.username
-      // TODO: Also edit admin password
+      // TODO: Implement editing admin password
       // admin.password = req.body.password
       admin.updated_date = dateHandler.getCurrentTime()
 
       // Check if the name is typed and create article in the db
       if (admin.name !== '' && admin.username !== '') {
-        await Admin.findOneAndUpdate(query, req.body, options, function(err, admin) {
+        await Admin.findOneAndUpdate(query, req.body, options, (err, admin) => {
           if (err) {
-            console.log(err)
+						throw err
           } else {
             res.send({
               saved: true,
@@ -220,69 +199,69 @@ module.exports = {
     }
   },
 
-  // Get User login List - just usernames and names
-  async getUserLoginList(req, res) {
-    try {
-      await User.find()
-        .select('-_id username name')
-        .exec()
-        .then(docs => {
-          if (docs.length > 0) {
-            res.send({
-              users: docs
-            })
-          } else {
-            res.send({
-              noUsers: 'No users'
-            })
-          }
-        })
-        .catch(err => {
-          console.log(err)
-          res.status(500).send({
-            error: 'An error has occurred trying to get the user list.'
-          })
-        })
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of staff members.'
-      })
-    }
-  },
+  // // Get User login List - just usernames and names
+  // async getUserLoginList(req, res) {
+  //   try {
+  //     await User.find()
+  //       .select('-_id username name')
+  //       .exec()
+  //       .then(docs => {
+  //         if (docs.length > 0) {
+  //           res.send({
+  //             users: docs
+  //           })
+  //         } else {
+  //           res.send({
+  //             noUsers: 'No users'
+  //           })
+  //         }
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //         res.status(500).send({
+  //           error: 'An error has occurred trying to get the user list.'
+  //         })
+  //       })
+  //   } catch (err) {
+  //     console.log(err)
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of staff members.'
+  //     })
+  //   }
+  // },
 
-  // Get Admin login List - just usernames and names
-  async getAdminLoginList(req, res) {
-    try {
-      // Find all admins except the root user/admin
-      let query = { root_user: false }
-      await Admin.find(query)
-        .select('-_id username name')
-        .exec()
-        .then(docs => {
-          if (docs.length > 0) {
-            res.send({
-              admins: docs
-            })
-          } else {
-            res.send({
-              noAdmins: 'No admins'
-            })
-          }
-        })
-        .catch(err => {
-          console.log(err)
-          res.status(500).send({
-            error: 'An error has occurred trying to get the admin list.'
-          })
-        })
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of admins.'
-      })
-    }
-  },
+  // // Get Admin login List - just usernames and names
+  // async getAdminLoginList(req, res) {
+  //   try {
+  //     // Find all admins except the root user/admin
+  //     let query = { root: false }
+  //     await Admin.find(query)
+  //       .select('-_id username name')
+  //       .exec()
+  //       .then(docs => {
+  //         if (docs.length > 0) {
+  //           res.send({
+  //             admins: docs
+  //           })
+  //         } else {
+  //           res.send({
+  //             noAdmins: 'No admins'
+  //           })
+  //         }
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //         res.status(500).send({
+  //           error: 'An error has occurred trying to get the admin list.'
+  //         })
+  //       })
+  //   } catch (err) {
+  //     console.log(err)
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of admins.'
+  //     })
+  //   }
+  // },
 
   // Delete Admin
   async deleteAdmin(req, res) {

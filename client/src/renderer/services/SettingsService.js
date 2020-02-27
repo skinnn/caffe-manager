@@ -1,10 +1,11 @@
 import Api from '@/services/Api'
 
 export default {
-  getOrCreateAdminSettings(adminId) {
-    return Api().get(`admin/${adminId}/settings`)
-  },
-  updateAdminSettings(adminId, settingsFormData) {
-    return Api().put(`admin/${adminId}/settings`, settingsFormData)
-  }
+	getOrCreateStoreSettings(token) {
+		// return Api(token).get(`admin/${adminId}/settings`)
+		return Api(token).get(`store/settings`)
+	},
+	updateAdminSettings(adminId, settingsFormData) {
+		return Api().patch(`admin/${adminId}/settings`, settingsFormData)
+	}
 }
