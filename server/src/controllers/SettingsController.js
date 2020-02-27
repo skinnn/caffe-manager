@@ -1,16 +1,16 @@
-const AdminSettings = require('../models/Settings')
+const StoreSettings = require('../models/Settings')
 const dateHandler = require('./getDate')
 
 module.exports = {
 
   // Get or Create Admin Settings if it doesn't exist
-  async getOrCreateAdminSettings(req, res) {
+  async getOrCreateStoreSettings(req, res) {
     try {
       let query = {}
       let update = { type: 'settings' }
       let options = { upsert: true, new: true, setDefaultsOnInsert: true }
 
-      await AdminSettings.findOneAndUpdate(query, update, options, function(err, settings) {
+      await StoreSettings.findOneAndUpdate(query, update, options, function(err, settings) {
         if (err) {
           return res.status(500).send({
             error: 'An error has occurred trying to fetch the settings.'
@@ -29,8 +29,8 @@ module.exports = {
     }
   },
 
-  // Update Admin Settings
-  async updateAdminSettings(req, res) {
+  // Update Store Settings
+  async updateStoreSettings(req, res) {
     try {
       let query = { type: 'settings' }
       let options = { upsert: true, new: true }
@@ -52,7 +52,7 @@ module.exports = {
         settings.store_image = req.body.oldImage
       }
 
-      await AdminSettings.findOneAndUpdate(query, settings, options, function(err, settings) {
+      await StoreSettings.findOneAndUpdate(query, settings, options, function(err, settings) {
         if (err) {
           return res.status(500).send({
             error: 'A database error has occurred trying to update the settings. Please try again.'
