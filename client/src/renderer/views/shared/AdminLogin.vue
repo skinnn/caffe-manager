@@ -156,44 +156,4 @@ export default {
 		height: 36px;
 	}
 
-	.adminList {
-		list-style: none;
-		display: table;
-		position: fixed;
-		min-height: 415px;
-		min-width: 430px;
-		padding: 0 10px 0 10px;
-		left: 67%;
-		border: 1px solid grey;
-		border-radius: 5px;
-		background-color: lighten(grey, 40);
-
-		.singleAdminLi {
-			cursor: pointer;
-			list-style: none;
-			text-align: left;
-			font-size: 18px;
-			margin: 10px 0 0 0;
-			&:hover {
-				.singleAdminDiv {
-					background-color: lighten(green, 40);
-					border-left: 2px solid green;
-				}
-			}
-
-			.singleAdminDiv {
-				min-height: 50px;
-				background-color: lighten(green, 55);
-				padding: 10px;
-				border-radius: 10px;
-				display: table;
-			}
-		}
-
-		.adminListEmptyText {
-			text-align: center;
-			font-size: 20px;
-		}
-	}
-
 </style>

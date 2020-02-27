@@ -1,17 +1,17 @@
 <template>
 	<v-flex xs4>
 		<div class="elevation-5">
-			<ul class="loginList">
-				<h3 v-if="noUsers" class="loginListEmptyText">
+			<ul class="login-list">
+				<h3 v-if="noUsers" class="login-list-empty">
 					No users found
 				</h3>
 				<li
 					v-for="user in loginList"
 					:key="user.username"
 					@click="selectUser(user)"
-					class="singleAdminLi"
+					class="single-user"
 				>
-					<div class="singleAdminDiv">{{user.name}}</div>
+					<span class="user-name">{{user.name}}</span>
 				</li>
 			</ul>
 		</div>
@@ -88,15 +88,7 @@ export default {
 
 <style scoped lang="scss">
 
-	.toolbar-title {
-		color: white;
-	}
-
-	.msg-placeholder {
-		height: 36px;
-	}
-
-	.loginList {
+	.login-list {
 		list-style: none;
 		display: table;
 		position: fixed;
@@ -108,20 +100,21 @@ export default {
 		border-radius: 5px;
 		background-color: lighten(grey, 40);
 
-		.singleAdminLi {
+		li.single-user {
 			cursor: pointer;
 			list-style: none;
 			text-align: left;
 			font-size: 18px;
 			margin: 10px 0 0 0;
+
 			&:hover {
-				.singleAdminDiv {
+				span.user-name {
 					background-color: lighten(green, 40);
 					border-left: 2px solid green;
 				}
 			}
 
-			.singleAdminDiv {
+			span.user-name {
 				min-height: 50px;
 				background-color: lighten(green, 55);
 				padding: 10px;
@@ -130,7 +123,7 @@ export default {
 			}
 		}
 
-		.loginListEmptyText {
+		.login-list-empty {
 			text-align: center;
 			font-size: 20px;
 		}
