@@ -18,9 +18,9 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 //     return next()
 //   } else {
 //     res.send({
-//       message: 'You are not Admin.'
+//       message: 'Access denied.'
 //     })
-//     console.log('Access denied, not Admin.')
+//     console.log('Access denied (not admin).')
 //   }
 // }
 //
@@ -30,8 +30,8 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 //     return next()
 //   } else {
 //     res.send({
-//       message: 'You are not User.'
+//       message: 'Access denied.'
 //     })
-//     console.log('Access denied, not User.')
+//     console.log('Access denied (not user).')
 //   }
 // }

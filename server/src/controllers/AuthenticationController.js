@@ -21,7 +21,7 @@ module.exports = {
 		try {
 			const user = await User.getUserByUsername(req.body.username)
 			// var admin = await Admin.getAdminByUsername(req.body.username)
-			// const isAdmin = user.userRoles.includes('admin')
+			// const isAdmin = user.roles.includes('admin')
 
 			if (!user) {
 				res.setHeader('Content-Type', 'application/json')
@@ -196,7 +196,7 @@ module.exports = {
 
   //     // Create new admin object
   //     const newAdmin = new Admin({
-  //       userRoles: ['admin'],
+  //       roles: ['admin'],
   //       root: false,
   //       username: username,
   //       password: password,

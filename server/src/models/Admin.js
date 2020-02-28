@@ -3,7 +3,7 @@
 // const bcrypt = require('bcryptjs')
 
 // const AdminSchema = new Schema({
-// 	userRoles: {
+// 	roles: {
 // 		type: Array,
 // 		default: []
 // 	},

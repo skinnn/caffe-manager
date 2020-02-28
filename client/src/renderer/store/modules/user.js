@@ -60,12 +60,14 @@ const getters = {
 		return state.token
 	},
 
-	isUserLoggedIn(state) {
+	isLoggedIn(state) {
 		return state.token !== null
 	}
 
-	// isTokenValid() { // TODO: Implement
-	// }
+	// TODO: Implement
+	// isUserLoggedIn() {}
+	// isAdminLoggedIn() {}
+	// isTokenValid() {}
 }
 
 export default {
