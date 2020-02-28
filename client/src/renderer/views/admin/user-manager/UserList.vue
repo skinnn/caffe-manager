@@ -87,11 +87,18 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
 import AdminService from '@/services/AdminService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
 	components: {
 		AdminSideMenu
 	},
+
+	computed: {
+		...mapGetters(['getUserToken'])
+	},
+
 	data() {
 		return {
 			users: [],
@@ -128,7 +135,8 @@ export default {
 	},
 	async mounted() {
 		try {
-			const response = (await AdminService.getAllUsers()).data
+			const token = this.getUserToken
+			const response = (await AdminService.getAllUsers(token)).data
 
 			// Get User list
 			if (response.users) {

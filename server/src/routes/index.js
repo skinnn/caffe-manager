@@ -2,9 +2,6 @@ const express = require('express')
 const router = express.Router()
 const multer = require('multer')
 
-// Middleware
-const auth = require('../middleware/authentication')
-
 // Controllers
 const AuthenticationController = require('../controllers/AuthenticationController')
 const SettingsController = require('../controllers/SettingsController')
@@ -16,12 +13,12 @@ const TablesController = require('../controllers/TablesController')
 const OrderController = require('../controllers/OrderController')
 const UserController = require('../controllers/UserController')
 
+// Middleware
+const auth = require('../middleware/authentication')
+
 // Policies
 const UserControllerPolicy = require('../policies/UserControllerPolicy')
 
-// const adminRoutes = require('./protected/admin')
-// const userRoutes = require('./protected/user')
-// const globalRoutes = require('./shared/global')
 router.use('/admin', require('./protected/admin'))
 router.use('/user', require('./protected/user'))
 router.use('/', require('./shared/global'))
@@ -117,26 +114,10 @@ router.get('/admin/storage/:storageId',
 router.get('/admin/storages',
 	StorageController.getAllStorages)
 
-// Get all users
-router.get('/admin/users',
-	AdminController.getAllUsers)
+// // Get all users
+// router.get('/admin/users',
+// 	AdminController.getAllUsers)
 
-// Register User
-router.post('/user',
-	upload.single('imageUpload'),
-	UserControllerPolicy.user,
-	UserController.createUser)
-
-// Create Admin
-router.post('/admin',
-	upload.single('imageUpload'),
-	UserControllerPolicy.admin,
-	UserController.createAdmin)
-
-// Get all Admins
-router.get('/admin',
-	auth.ensureAuthenticated,
-	UserController.getAllAdmins)
 
 // Get Admin by id
 router.get('/admin/:adminId',
@@ -220,8 +201,5 @@ router.post('/admin/:ownerId/table/:currentTableId/order/:orderId/reserve',
 // Get Reserved Articles by Table id
 router.get('/admin/:ownerId/table/:currentTableId/reserved-articles',
 	OrderController.getReservedArticles)
-	
-// router.post('/new-login',
-// 	AuthenticationController.login)
 
 module.exports = router

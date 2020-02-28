@@ -8,12 +8,4 @@ export default {
 	getLoginList(data) {
 		return Api().get(`login-list/${data.role}`)
 	}
-
-	// getUserLoginList() {
-	// 	return Api().get('user/login-list')
-	// },
-
-	// getAdminLoginList() {
-	// 	return Api().get('admin/login-list')
-	// }
 }

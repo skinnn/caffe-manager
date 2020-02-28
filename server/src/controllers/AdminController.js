@@ -122,25 +122,25 @@ module.exports = {
     }
   },
 
-  // Get all Users
-  async getAllUsers(req, res) {
-    try {
-      await User.find({}, function(err, users) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            users: users
-          })
-        }
-      })
-    } catch (err) {
-      console.log(err)
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of staff members.'
-      })
-    }
-  },
+  // // Get all Users
+  // async getAllUsers(req, res) {
+  //   try {
+  //     await User.find({}, function(err, users) {
+  //       if (err) {
+  //         console.log(err)
+  //       } else {
+  //         res.send({
+  //           users: users
+  //         })
+  //       }
+  //     })
+  //   } catch (err) {
+  //     console.log(err)
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the list of staff members.'
+  //     })
+  //   }
+  // },
 
   // Get User by id
   async getUserById(req, res) {
