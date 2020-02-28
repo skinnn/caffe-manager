@@ -178,66 +178,12 @@ module.exports = {
     }
 	},
 
-	// Get Admin login List - just usernames and names
-	async getAdminLoginList(req, res) {
-		try {
-			let query = {
-				roles: { $all : ['admin'] },
-				root: false
-			}
-			const admins = await User.find(query).select('-_id username name')
-			{ $all : ["sushi", "bananas"] }
-			return res.status(200).json({
-				admins: admins,
-			})
-		
-		} catch (err) {
-			console.error(err)
-			return res.status(500).send({
-				error: 'An error has occurred trying to get the admin list.'
-			})
-		}
-	},
-	
-	// // Get Admin login List - just usernames and names
-  // async getAdminLoginList(req, res) {
-  //   try {
-  //     // Find all admins except the root user/admin
-  //     let query = { root: false }
-  //     User.find(query)
-  //       .select('-_id username name')
-  //       .exec()
-  //       .then(docs => {
-  //         if (docs.length > 0) {
-  //           return res.json({
-  //             admins: docs
-  //           })
-  //         } else {
-  //           return res.send({
-	// 						admins: docs,
-  //             noAdmins: 'No admins.'
-  //           })
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.error(err)
-  //         return res.status(500).send({
-  //           error: 'An error has occurred trying to get the admin list.'
-  //         })
-  //       })
-  //   } catch (err) {
-  //     console.error(err)
-  //     return res.status(500).send({
-  //       error: 'An error has occurred trying to get the list of admins.'
-  //     })
-  //   }
-	// },
-	
-	 // Get User login List - just usernames and names
-	 async getUserLoginList(req, res) {
+	// Get User login List - just usernames and names
+	async getLoginList(req, res) {
+		const role = req.params.role || null
     try {
 			let query = {
-				roles: { $all : ['user'] }
+				roles: { $all : [role] }
 			}
 			const users = await User.find(query).select('-_id username name')
 
@@ -246,8 +192,8 @@ module.exports = {
 			})
     } catch (err) {
       console.log(err)
-      res.status(500).send({
-        error: 'An error has occurred trying to get the list of staff members.'
+      res.status(500).json({
+        error: `An error has occurred trying to get the login list for ${role}.`
       })
     }
   },

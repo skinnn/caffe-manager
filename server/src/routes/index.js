@@ -1,9 +1,5 @@
 const express = require('express')
 const router = express.Router()
-// const passport = require('passport')
-// const dateHandler = require('../controllers/getDate')
-// const fs = require('fs')
-// const path = require('path')
 const multer = require('multer')
 
 // Middleware
@@ -22,6 +18,14 @@ const UserController = require('../controllers/UserController')
 
 // Policies
 const UserControllerPolicy = require('../policies/UserControllerPolicy')
+
+// const adminRoutes = require('./protected/admin')
+// const userRoutes = require('./protected/user')
+// const globalRoutes = require('./shared/global')
+router.use('/admin', require('./protected/admin'))
+router.use('/user', require('./protected/user'))
+router.use('/', require('./shared/global'))
+
 
 // TODO: Move multer config to separate file
 // Multer storage engine
@@ -61,14 +65,6 @@ const upload = multer({
 
 // TODO: Secure endpoints so only authenticated user/admin can access them
 
-// Login
-router.post('/login',
-	AuthenticationController.login)
-	
-// Logout
-router.post('/logout',
-	AuthenticationController.logout)
-
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',
 	ArticleController.getArticlesFromSubgroup)
@@ -87,21 +83,10 @@ router.post('/admin/storage/:storageId/subgroup/create',
 router.get('/admin/storage/:storageId/subgroups',
 	ArticleSubgroupController.getSubgroupsByStorageId)
 
-// Get User login list
-router.get('/user/login-list',
-	UserController.getUserLoginList)
-
-// Get Admin login list
-router.get('/admin/login-list',
-	UserController.getAdminLoginList)
 
 // TODO: Modify to POST /reinit (route that only root user can use to flush the database and reinitialize the app )
 // router.get('/find/root',
 // 	AdminController.createRootAdmin)
-
-// Get or Create Store Settings
-// router.get('/admin/:adminId/settings',
-// 	SettingsController.getOrCreateStoreSettings)
 
 router.get('/store/settings',
 	auth.ensureAuthenticated,

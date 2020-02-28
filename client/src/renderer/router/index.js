@@ -196,8 +196,7 @@ import AdminRoutes from '@/router/Admin/AdminRoutes'
 Vue.use(VueRouter)
 
 // Assemble all routes
-var allRoutes = []
-allRoutes = allRoutes.concat(SharedRoutes, AdminRoutes)
+var allRoutes = [].concat(SharedRoutes, AdminRoutes)
 const routes = allRoutes
 
 const router = new VueRouter({

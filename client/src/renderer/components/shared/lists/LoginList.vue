@@ -44,31 +44,23 @@ export default {
 
 	mounted() {
 		if (this.$props.userType === 'admins') {
-			this.getAdminLoginList()
+			this.getLoginList('admin')
 		} else if (this.$props.userType === 'users') {
-			this.getUserLoginList()
+			this.getLoginList('user')
 		}
 	},
 
 	methods: {
-		async getAdminLoginList() {
+		async getLoginList(role) {
 			try {
-				const response = (await UserService.getAdminLoginList()).data
+				// role - 'admin' or 'user'
+				const data = { role: role }
+				const response = (await UserService.getLoginList(data)).data
 
 				if (response.admins) {
 					if (response.admins.length === 0) this.noUsers = true
 					this.loginList = response.admins
-				}
-			} catch (err) {
-				console.error(err)
-			}
-		},
-
-		async getUserLoginList() {
-			try {
-				const response = (await UserService.getUserLoginList()).data
-
-				if (response.users) {
+				} else if (response.users) {
 					if (response.users.length === 0) this.noUsers = true
 					this.loginList = response.users
 				}

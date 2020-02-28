@@ -5,11 +5,15 @@ export default {
 		return Api(token).post('user', data)
 	},
 
-	getUserLoginList() {
-		return Api().get('user/login-list')
-	},
-
-	getAdminLoginList() {
-		return Api().get('admin/login-list')
+	getLoginList(data) {
+		return Api().get(`login-list/${data.role}`)
 	}
+
+	// getUserLoginList() {
+	// 	return Api().get('user/login-list')
+	// },
+
+	// getAdminLoginList() {
+	// 	return Api().get('admin/login-list')
+	// }
 }
