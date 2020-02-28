@@ -201,7 +201,7 @@ allRoutes = allRoutes.concat(SharedRoutes, AdminRoutes)
 const routes = allRoutes
 
 const router = new VueRouter({
-	mode: 'history',
+	// mode: 'history',
 	base: process.env.BASE_URL,
 	routes: routes
 })
