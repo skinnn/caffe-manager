@@ -137,7 +137,7 @@ module.exports = {
     try {
       let query = {_id: req.params.orderId}
 
-      await Order.remove(query, function(err) {
+      await Order.deleteOne(query, function(err) {
         if (err) {
           return res.status(500).send({
             error: 'A database error has occurred trying to delete the order.'

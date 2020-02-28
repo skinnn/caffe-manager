@@ -59,7 +59,8 @@ app.use('/api', index)
 mongoose
 	.connect(config.db.uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+		useUnifiedTopology: true,
+		useFindAndModify: false, // Fixing deprecation for findOneAndUpdate() query
     useCreateIndex: true
   })
   .then(() => {

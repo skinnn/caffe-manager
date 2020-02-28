@@ -277,7 +277,7 @@ module.exports = {
         fullImgPath = dirPath + '/' + img
       }
 
-      await Admin.remove(query, function(err) {
+      await Admin.deleteOne(query, function(err) {
         if (err) {
           res.status(500).send({
             error: 'A database error has occurred trying to delete the admin.'
@@ -318,7 +318,7 @@ module.exports = {
         fullImgPath = dirPath + '/' + img
       }
 
-      await User.remove(query, function(err) {
+      await User.deleteOne(query, function(err) {
         if (err) {
           res.status(500).send({
             error: 'A database error has occurred trying to delete the user.'

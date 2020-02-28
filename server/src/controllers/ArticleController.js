@@ -212,7 +212,7 @@ module.exports = {
         fullImgPath = dirPath + '/' + img
       }
 
-      await Article.remove(query, function(err) {
+      await Article.deleteOne(query, function(err) {
         if (err) {
           res.status(500).send({
             error: 'A database error has occurred trying to delete the article.'
