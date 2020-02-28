@@ -9,7 +9,7 @@ const UserSchema = new Schema({
   //   type: String,
   //   default: 'user'
 	// },
-	userRoles: {
+	roles: {
 		type: Array,
 		default: [] // 'user', 'admin' 'anon'
 	},

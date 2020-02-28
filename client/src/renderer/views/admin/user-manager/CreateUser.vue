@@ -333,7 +333,7 @@ export default {
 				userFormData.append('userNote', this.note.value)
 				userFormData.append('userMenu', userMenu)
 				userFormData.append('createdBy', this.createdBy)
-				userFormData.append('userRoles[]', 'user')
+				userFormData.append('roles[]', 'user')
 
 				// Register User
 				const response = (await UserService.createUser(token, userFormData)).data

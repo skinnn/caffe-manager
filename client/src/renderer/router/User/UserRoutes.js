@@ -12,7 +12,10 @@ const routes = [
 	{
 		path: '/user/home',
 		name: 'user-home',
-		component: UserHome
+		component: UserHome,
+		meta: {
+			title: 'Home'
+		}
 	},
 	{
 		path: '/user/warehouse',
@@ -25,5 +28,16 @@ const routes = [
 		component: UserTables
 	}
 ]
+
+// Should always be a bool - false, or string - 'user'
+let isUserAuthRequired = config.authentication.user ? 'user' : false
+if (process.env.NODE_ENV === 'production') isUserAuthRequired = 'user'
+// Dynamically append authentication meta for all user routes
+routes.map(route => {
+	route.meta = {
+		...route.meta,
+		requiresAuth: isUserAuthRequired
+	}
+})
 
 export default routes

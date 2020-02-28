@@ -110,7 +110,6 @@ module.exports = {
 
 	// User Policy
   user(req, res, next) {
-		console.log('as: ', req.body.userRoles)
     const schema = Joi.object({
       userUsername: Joi.string()
         .min(5)
@@ -135,7 +134,7 @@ module.exports = {
       userMenu: Joi.any(),
       createdBy: Joi.any(),
       imageUpload: Joi.any(),
-      userRoles: Joi.array().items(Joi.string())
+      roles: Joi.array().items(Joi.string())
     })
 
 		const { error, value } = schema.validate(req.body)

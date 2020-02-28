@@ -23,7 +23,7 @@ module.exports = {
 						root: true,
 						username: 'admin',
 						password: '123123',
-						userRoles: ['admin']
+						roles: ['admin']
 					})
 					// Hash the password
 					bcrypt.genSalt(10, (err, salt) => {
@@ -83,8 +83,8 @@ module.exports = {
 			]
 			
       const newUser = new User({
-				userRoles: ['user'],
-				// userRoles: req.body.userRoles,
+				roles: ['user'],
+				// roles: req.body.roles,
         username: req.body.userUsername,
         password: req.body.userPassword,
         name: req.body.userName,
@@ -125,7 +125,7 @@ module.exports = {
 
       // Create new admin object
       const newAdmin = new User({
-        userRoles: ['admin'],
+        roles: ['admin'],
         root: false,
         username: req.body.username,
         password: req.body.password,
@@ -162,7 +162,7 @@ module.exports = {
 	// Get Admins
   async getAllAdmins(req, res) {
     try {
-      await User.find({ userRoles: 'admin' }, (err, admins) => {
+      await User.find({ roles: 'admin' }, (err, admins) => {
         if (err) {
           console.log(err)
         } else {
@@ -182,7 +182,7 @@ module.exports = {
 	async getAdminLoginList(req, res) {
 		try {
 			let query = {
-				userRoles: { $all : ['admin'] },
+				roles: { $all : ['admin'] },
 				root: false
 			}
 			const admins = await User.find(query).select('-_id username name')
@@ -237,7 +237,7 @@ module.exports = {
 	 async getUserLoginList(req, res) {
     try {
 			let query = {
-				userRoles: { $all : ['user'] }
+				roles: { $all : ['user'] }
 			}
 			const users = await User.find(query).select('-_id username name')
 
@@ -275,7 +275,7 @@ module.exports = {
 
   //     // Create new admin object
   //     const newAdmin = new Admin({
-  //       userRoles: ['admin'],
+  //       roles: ['admin'],
   //       root: false,
   //       username: username,
   //       password: password,

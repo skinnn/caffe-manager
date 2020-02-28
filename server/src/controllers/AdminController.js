@@ -15,7 +15,7 @@ module.exports = {
 
       // Create new admin object
       const newAdmin = new Admin({
-        userRoles: ['admin'],
+        roles: ['admin'],
         root: false,
         username: req.body.username,
         password: req.body.password,
