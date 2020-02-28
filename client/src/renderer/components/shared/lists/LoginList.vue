@@ -55,14 +55,12 @@ export default {
 			try {
 				// role - 'admin' or 'user'
 				const data = { role: role }
-				const response = (await UserService.getLoginList(data)).data
+				const res = await UserService.getLoginList(data)
+				const users = res.data.users
 
-				if (response.admins) {
-					if (response.admins.length === 0) this.noUsers = true
-					this.loginList = response.admins
-				} else if (response.users) {
-					if (response.users.length === 0) this.noUsers = true
-					this.loginList = response.users
+				if (res.status === 200) {
+					if (users.length === 0) this.noUsers = true
+					this.loginList = users
 				}
 			} catch (err) {
 				console.error(err)
