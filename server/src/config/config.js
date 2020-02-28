@@ -2,8 +2,8 @@
 require('dotenv').config()
 
 module.exports = {
-  port: process.env.PORT || 9090,
-  url: process.env.URL || '/api',
+  port: process.env.PORT || 9099,
+  baseApiURL: process.env.BASE_API_URL || '/api',
   db: {
     uri: process.env.DB_URI || 'mongodb://localhost:27017/vue-caffe'
   },

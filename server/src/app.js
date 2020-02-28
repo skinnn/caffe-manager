@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 app.use('/images', express.static(path.join(__dirname, '../images')))
 
 // Routes
-app.use('/api', index)
+app.use(`${config.baseApiURL}`, index)
 
 // Connect to a local Mongo Database
 mongoose
