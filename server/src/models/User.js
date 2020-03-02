@@ -2,74 +2,80 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
-// TODO: Modify user model similar to updated admin model, add regexes, move errors to the fields
 // TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
 const UserSchema = new Schema({
-  // userType: {
-  //   type: String,
-  //   default: 'user'
-	// },
-	roles: {
+	roles: {					// 'user', 'admin' 'anon'
 		type: Array,
-		default: [] // 'user', 'admin' 'anon'
+		default: []
 	},
   root: {
     type: Boolean,
     default: false
   },
-  username: {
+  username: {				// Required
     type: String,
-    required: true
-    // unique: true
+		required: true,
+		trim: true,
+    unique: true
   },
   name: {
-    type: String
+		type: String,
+		trim: true,
+		default: null
   },
   password: {
-    type: String,
+		type: String,
+		trim: true,
     required: true
 	},
 	email: {
 		type: String,
+		trim: true,
 		default: null
 	},
-  image: {
-    type: String
+  files: {
+		type: Array,
+		default: []
   },
-  telephone1: {
-    type: String,
-    default: null
-  },
-  telephone2: {
-    type: String,
+  phone: {
+		type: String,
+		trim: true,
     default: null
   },
   address: {
-    type: String,
+		type: String,
+		trim: true,
     default: null
 	},
-	// permissions: {
-  //   type: String,
-  //   default: null
-	// },
-	userMenu: {
+	permissions: { 		// TODO: Create permissions logic
     type: Array,
     default: []
-  },
+	},
+	// userMenu: {
+  //   type: Array,
+  //   default: []
+	// },
+	// telephone2: {
+  //   type: String,
+  //   default: null
+  // },
   note: {
-    type: String,
+		type: String,
+		trim: true,
     default: null
   },
   createdBy: {
-    type: String,
+		type: String,
+		trim: true,
     default: null
   },
-  date: {
-    type: Date,
+  created: {
+		type: Date,
+		required: true,
     default: Date.now
   },
   updated: {
-    type: String,
+    type: Date,
     default: null
   }
 })
@@ -106,7 +112,7 @@ module.exports.createAdmin = (newAdmin, callback) => {
   })
 }
 
-// module.exports.getUserByUsername = function(username, callback) {
+// module.exports.getUserByUsername = (username, callback) => {
 //   let query = {username: username}
 //   User.findOne(query, callback)
 // }
@@ -120,9 +126,18 @@ module.exports.getUserByUsername = (username) => {
 	})
 }
 
-module.exports.getUserById = function(id, callback) {
-  User.findById(id, callback)
+module.exports.getUserById = (id) => {
+	return new Promise((resolve, reject) => {
+		User.findById({ _id: id }, (err, user) => {
+			if (err) reject(err)
+			resolve(user)
+		})
+	})
 }
+
+// module.exports.getUserById = (id, callback) => {
+//   User.findById(id, callback)
+// }
 
 module.exports.compareUserPassword = (candidatePassword, hash) => {
 	return new Promise((resolve, reject) => {

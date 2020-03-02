@@ -127,11 +127,19 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
 import AdminService from '@/services/AdminService'
+import UserService from '@/services/UserService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
 	components: {
 		AdminSideMenu
 	},
+
+	computed: {
+		...mapGetters(['getUserToken', 'getUser'])
+	},
+
 	data() {
 		return {
 			userId: {
@@ -179,22 +187,22 @@ export default {
 				warehouse: false,
 				tables: false
 			},
-			createdBy: {
-				id: this.$store.state.user._id,
-				name: this.$store.state.user.name,
-				username: this.$store.state.user.username
-			},
+			createdBy: this.$store.state.user._id,
 			error: null,
 			success: null
 		}
 	},
+
 	async mounted() {
+		// TODO: Create editingAdmin state in the user store module
 		try {
-			const userId = this.userId.value
-			const response = (await AdminService.getUserById(userId)).data
-			console.log(response)
-			if (response.user) {
-				const user = response.user
+			const token = this.getUserToken
+			const data = { id: this.userId.value }
+
+			const res = await UserService.getUserById(token, data)
+
+			if (res.status === 200) {
+				const user = res.data.user
 				this.userId.value = user._id
 				this.username.value = user.username
 				this.name.value = user.name
@@ -204,11 +212,13 @@ export default {
 				this.address.value = user.address
 				this.note.value = user.note
 			}
-		} catch (error) {
+		} catch (err) {
 			this.success = null
-			this.error = error.response.data.error
+			this.error = err.response.data.error
+			console.error(err)
 		}
 	},
+
 	methods: {
 		imagePreview() {
 			const img = document.getElementById('userImage').files
@@ -223,20 +233,9 @@ export default {
 		async onSubmit() {
 			event.preventDefault()
 			try {
-				const userId = this.userId.value
-				const updatedUser = new FormData()
 				// Get image
 				let imagefile = document.querySelector('#userImage')
-				let image = imagefile.files[0]
-				// Get and append text inputs to form data
-				const username = this.username.value
-				// const password = this.password.value
-				// const password2 = this.password2.value
-				const fullName = this.name.value
-				const telephone1 = this.telephone1.value
-				const telephone2 = this.telephone2.value
-				const address = this.address.value
-				const note = this.note.value
+				let image = imagefile.files[0] || null
 				// Permisions - user menu
 				const userMenu = {
 					home: this.userMenu.home,
@@ -244,26 +243,34 @@ export default {
 					tables: this.userMenu.tables
 				}
 				// Created By
-				const createdBy = this.createdBy
-				// Append everything to form data
-				await updatedUser.append('imageUpload', image)
-				await updatedUser.append('userUsername', username)
-				await updatedUser.append('userName', fullName)
-				// await updatedUser.append('userPassword', password)
-				// await updatedUser.append('userPassword2', password2)
-				await updatedUser.append('userTelephone1', telephone1)
-				await updatedUser.append('userTelephone2', telephone2)
-				await updatedUser.append('userAddress', address)
-				await updatedUser.append('userNote', note)
-				await updatedUser.append('userMenu', userMenu)
-				await updatedUser.append('createdBy', createdBy)
+				const formData = new FormData()
+				// Get and append text inputs to form data
+				// const password = this.password.value
+				// const password2 = this.password2.value
+				formData.append('imageUpload', image)
+				formData.append('userUsername', this.username.value)
+				formData.append('userName', this.name.value)
+				// formData.append('userPassword', password)
+				// formData.append('userPassword2', password2)
+				formData.append('userTelephone1', this.telephone1.value)
+				formData.append('userTelephone2', this.telephone2.value)
+				formData.append('userAddress', this.address.value)
+				formData.append('userNote', this.note.value)
+				// formData.append('userMenu', userMenu)
+				const createdBy = this.getUser._id
+				formData.append('createdBy', createdBy)
 
-				const response = (await AdminService.updateUser(userId, updatedUser)).data
-				console.log(response)
-				this.$router.push({
-					name: 'admin-view-user',
-					params: {userId}
-				})
+				const token = this.getUserToken
+				const userId = this.userId.value
+				// const data = { id: userId, replace: formData }
+				const res = await UserService.updateUserById(token, userId, formData)
+				if (res.status === 200) {
+					const user = res.data.user
+					this.$router.push({
+						name: 'admin-view-user',
+						params: {userId}
+					})
+				}
 			} catch (error) {
 				console.log(error)
 

@@ -44,6 +44,11 @@ const upload = multer({
 	fileFilter: fileFilter
 })
 
+/* /admin middleware
+===================================================== */
+
+router.use(auth.ensureAuthenticated)
+
 /* /admin routes
 ===================================================== */
 
@@ -57,5 +62,9 @@ router.post('/',
 router.get('/',
 	auth.ensureAuthenticated,
 	UserController.getAllAdmins)
+
+// Get Admin by id
+router.get('/:id',
+	UserController.getUserById)
 
 module.exports = router

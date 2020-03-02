@@ -44,17 +44,41 @@ const upload = multer({
 	fileFilter: fileFilter
 })
 
+/* /user middleware
+===================================================== */
+
+router.use(auth.ensureAuthenticated)
+router.use((req, res, next) => {
+	console.log('user', req.user)
+	console.log('admin', req.admin)
+	next()
+})
+
 /* /user routes
 ===================================================== */
 
 // Create user
 router.post('/',
-	upload.single('imageUpload'),
+	// auth.ensureAuthenticated,
+	upload.single('profileImage'),
 	UserControllerPolicy.user,
 	UserController.createUser)
 
 // Get all users
 router.get('/',
+	// auth.ensureAuthenticated,
 	UserController.getAllUsers)
+
+// Get user by id
+router.get('/:id',
+	// auth.ensureAuthenticated,
+	UserController.getUserById)
+
+// Update user by id
+router.patch('/:id',
+	// auth.ensureAuthenticated,
+	upload.single('profileImage'),
+	// UserControllerPolicy.updateUser,
+	UserController.updateUserById)
 
 module.exports = router

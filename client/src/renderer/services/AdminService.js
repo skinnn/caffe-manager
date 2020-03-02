@@ -7,9 +7,9 @@ export default {
 	getAllAdmins(token) {
 		return Api(token).get('admin')
 	},
-	getAdminById(adminId) {
-		return Api().get(`admin/${adminId}`)
-	},
+	// getAdminById(adminId) {
+	// 	return Api().get(`admin/${adminId}`)
+	// },
 	createAdmin(token, data) {
 		return Api(token).post('admin', data)
 	},
@@ -23,9 +23,9 @@ export default {
 	getUserById(userId) {
 		return Api().get(`admin/user/${userId}`)
 	},
-	updateUser(userId, user) {
-		return Api().patch(`admin/user/${userId}`, user)
-	},
+	// updateUser(userId, user) {
+	// 	return Api().patch(`admin/user/${userId}`, user)
+	// },
 	deleteAdmin(adminId, imgPath) {
 		return Api().delete(`admin/${adminId}`, {data: { imgPath: imgPath }})
 	},

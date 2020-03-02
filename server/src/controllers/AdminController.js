@@ -68,25 +68,25 @@ module.exports = {
   //   }
   // },
 
-  // Get Admin by id
-  async getAdminById(req, res) {
-    try {
-      let query = req.params.adminId
-      await Admin.getAdminById(query, function(err, admin) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            admin: admin
-          })
-        }
-      })
-    } catch (err) {
-      res.status(500).send({
-        error: 'An error has occurred trying to get the admin data.'
-      })
-    }
-  },
+  // // Get Admin by id
+  // async getAdminById(req, res) {
+  //   try {
+  //     let query = req.params.adminId
+  //     await Admin.getAdminById(query, function(err, admin) {
+  //       if (err) {
+  //         console.log(err)
+  //       } else {
+  //         res.send({
+  //           admin: admin
+  //         })
+  //       }
+  //     })
+  //   } catch (err) {
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the admin data.'
+  //     })
+  //   }
+  // },
 
   // Update Admin by id
   async updateAdminById(req, res) {
@@ -142,62 +142,62 @@ module.exports = {
   //   }
   // },
 
-  // Get User by id
-  async getUserById(req, res) {
-    try {
-      let query = req.params.userId
-      await User.getUserById(query, function(err, user) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            user: user
-          })
-        }
-      })
-    } catch (err) {
-      res.status(500).send({
-        error: 'An error has occurred trying to get the admin data.'
-      })
-    }
-  },
+  // // Get User by id
+  // async getUserById(req, res) {
+  //   try {
+  //     let query = req.params.userId
+  //     await User.getUserById(query, function(err, user) {
+  //       if (err) {
+  //         console.log(err)
+  //       } else {
+  //         res.send({
+  //           user: user
+  //         })
+  //       }
+  //     })
+  //   } catch (err) {
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to get the admin data.'
+  //     })
+  //   }
+  // },
 
-  // Update User by id
-  async updateUser(req, res) {
-    try {
-      let query = {_id: req.params.userId}
-      let options = { upsert: true, new: true }
+  // // Update User by id
+  // async updateUser(req, res) {
+  //   try {
+  //     let query = {_id: req.params.userId}
+  //     let options = { upsert: true, new: true }
 
-      let updatedUser = {}
-      updatedUser.username = req.body.userUsername
-      updatedUser.name = req.body.userName
-      updatedUser.telephone1 = req.body.userTelephone1
-      updatedUser.telephone2 = req.body.userTelephone2
-      updatedUser.address = req.body.userAddress
-      updatedUser.note = req.body.userNote
-      updatedUser.userMenu = req.body.userMenu
-      updatedUser.createdBy = req.body.createdBy
+  //     let updatedUser = {}
+  //     updatedUser.username = req.body.userUsername
+  //     updatedUser.name = req.body.userName
+  //     updatedUser.telephone1 = req.body.userTelephone1
+  //     updatedUser.telephone2 = req.body.userTelephone2
+  //     updatedUser.address = req.body.userAddress
+  //     updatedUser.note = req.body.userNote
+  //     updatedUser.userMenu = req.body.userMenu
+  //     updatedUser.createdBy = req.body.createdBy
 
-      // If image is added create image path
-      if (req.file !== undefined && req.file !== '') {
-        updatedUser.image = req.file.path
-      }
+  //     // If image is added create image path
+  //     if (req.file !== undefined && req.file !== '') {
+  //       updatedUser.image = req.file.path
+  //     }
 
-      await User.findOneAndUpdate(query, updatedUser, options, function(err, user) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            user: user
-          })
-        }
-      })
-    } catch (err) {
-      res.status(500).send({
-        error: 'An error has occurred trying to update the user data.'
-      })
-    }
-  },
+  //     await User.findOneAndUpdate(query, updatedUser, options, function(err, user) {
+  //       if (err) {
+  //         console.log(err)
+  //       } else {
+  //         res.send({
+  //           user: user
+  //         })
+  //       }
+  //     })
+  //   } catch (err) {
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to update the user data.'
+  //     })
+  //   }
+  // },
 
   // // Get User login List - just usernames and names
   // async getUserLoginList(req, res) {

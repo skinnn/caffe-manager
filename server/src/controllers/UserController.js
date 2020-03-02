@@ -56,45 +56,44 @@ module.exports = {
   async createUser(req, res) {
 		// TODO: Check is username not already registered
     try {
-      // const isTable = req.body.isTables
-      const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
-
       // TODO: Fix User privileges
       // Create user menu
-      const userMenu = [
-        {
-          'warehouse': req.body.userMenu.warehouse,
-          'title': 'Warehouse',
-          'icon': 'storage',
-          'route': '/user/warehouse'
-        },
-        {
-          'tables': req.body.userMenu.tables,
-          'title': 'Tables',
-          'icon': 'view_carousel',
-          'route': '/user/tables'
-        },
-        {
-          'home': req.body.userMenu.home,
-          'title': 'Home',
-          'icon': 'home',
-          'route': '/user/home'
-        }
-			]
+      // const userMenu = [
+      //   {
+      //     'warehouse': req.body.userMenu.warehouse,
+      //     'title': 'Warehouse',
+      //     'icon': 'storage',
+      //     'route': '/user/warehouse'
+      //   },
+      //   {
+      //     'tables': req.body.userMenu.tables,
+      //     'title': 'Tables',
+      //     'icon': 'view_carousel',
+      //     'route': '/user/tables'
+      //   },
+      //   {
+      //     'home': req.body.userMenu.home,
+      //     'title': 'Home',
+      //     'icon': 'home',
+      //     'route': '/user/home'
+      //   }
+			// ]
+
+			const imageURL = req.file !== undefined && req.file !== '' ? req.file.path : ''
 			
       const newUser = new User({
-				roles: ['user'],
-				// roles: req.body.roles,
-        username: req.body.userUsername,
-        password: req.body.userPassword,
-        name: req.body.userName,
-        telephone1: req.body.userTelephone1,
-        telephone2: req.body.userTelephone2,
-        address: req.body.userAddress,
-        note: req.body.userNote,
-        createdBy: req.body.createdBy.id,
-        image: image,
-				userMenu: userMenu,
+				// roles: ['user'],
+				roles: req.body.roles,
+        username: req.body.username,
+        password: req.body.password,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
+        note: req.body.note,
+        createdBy: req.body.createdBy,
+        files: [imageURL]
+				// userMenu: userMenu,
 			})
 
       User.createUser(newUser, (err, user) => {
@@ -119,6 +118,7 @@ module.exports = {
 	
 	// Create Admin
   async createAdmin(req, res) {
+		// TODO: Rewrite createAdmin/createUser in one function - createUser
 		// TODO: Check is username not already registered
     try {
       const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
@@ -214,6 +214,67 @@ module.exports = {
       console.log(err)
       res.status(500).send({
         error: 'An error has occurred trying to get the list of staff members.'
+      })
+    }
+	},
+	
+	// Get User by id
+  async getUserById(req, res) {
+    try {
+      let query = req.params.id || null
+      User.getUserById(query, (err, user) => {
+        if (err) {
+					throw err
+				}
+				return res.status(200).json({
+					user: user
+				})
+      })
+    } catch (err) {
+      return res.status(500).send({
+        error: 'An error has occurred trying to get the user.'
+      })
+    }
+	},
+	
+	// Update User by id
+  async updateUserById(req, res) {
+		// TODO: Not working
+    try {
+			let query = {_id: req.body.id}
+			let options = { new: true }
+			
+			const jsonData = JSON.parse(JSON.stringify(req.body))
+			var dataToReplace = {}
+
+			for (let [key, value] of Object.entries(jsonData)) {
+				// console.log(`${key}: ${value}`)
+				if (value !== undefined && value !== null) {
+					dataToReplace[key] = value
+				}
+			}
+
+			// If image is added add image path
+      if (req.file !== undefined && req.file !== '') {
+				// TODO: This overrides the whole files Array, needs a fix
+				dataToReplace.files = [req.file.path]
+			}
+
+			console.log('final: ', dataToReplace)
+
+      User.findOneAndUpdate(query, dataToReplace, options, (err, user) => {
+        if (err) {
+					throw err
+				}
+				console.log('usr', user)
+				return res.status(200).json({
+					user: user
+				})
+      })
+    } catch (err) {
+			console.error(err)
+      return res.status(500).json({
+        error: 'An error has occurred trying to update the user data.'
       })
     }
   },

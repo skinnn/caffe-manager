@@ -16,12 +16,4 @@ router.post('/logout',
 router.get('/login-list/:role',
 	UserController.getLoginList)
 
-// // Get User login list
-// router.get('/user/login-list',
-// 	UserController.getUserLoginList)
-
-// // Get Admin login list
-// router.get('/admin/login-list',
-// 	UserController.getAdminLoginList)
-
 module.exports = router

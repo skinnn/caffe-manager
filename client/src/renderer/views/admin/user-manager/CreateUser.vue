@@ -20,7 +20,7 @@
 					class="register-user-form"
 				>
 					<h3 title="Required field">
-						Username: <span class="required-field">*</span>
+						Username <span class="required-field">*</span>
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
@@ -34,7 +34,7 @@
 					</v-flex>
 
 					<h3 title="Required field">
-						Password: <span class="required-field">*</span>
+						Password <span class="required-field">*</span>
 						<div
 							class="passwordStrengthMessage"
 							v-if="showMessage"
@@ -60,7 +60,7 @@
 					</v-flex>
 
 					<h3 title="Required field">
-						Confirm password: <span class="required-field">*</span>
+						Confirm password <span class="required-field">*</span>
 						<div
 							class="confirmPasswordMessage"
 							v-if="showMessage"
@@ -86,7 +86,7 @@
 					</v-flex>
 
 					<h3 title="Required field">
-						Full name: <span class="required-field">*</span>
+						Full name <span class="required-field">*</span>
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
@@ -98,29 +98,32 @@
 						></v-text-field>
 					</v-flex>
 
-					<h3>Telephone 1:</h3>
+					<h3 title="Required field">
+						Email
+					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
-							:error-messages="telephone1.error_message"
-							maxlength="20"
+							title="Required field"
+							:error-messages="email.error_message"
+							maxlength="30"
 							type="text"
-							v-model="telephone1.value"
+							v-model="email.value"
 							solo
 						></v-text-field>
 					</v-flex>
 
-					<h3>Telephone 2:</h3>
+					<h3>Phone</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
-							:error-messages="telephone2.error_message"
+							:error-messages="phone.error_message"
 							maxlength="20"
 							type="text"
-							v-model="telephone2.value"
+							v-model="phone.value"
 							solo
 						></v-text-field>
 					</v-flex>
 
-					<h3>Address:</h3>
+					<h3>Address</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
 							:error-messages="address.error_message"
@@ -143,7 +146,8 @@
 						></v-textarea>
 					</v-flex>
 
-					<h3 class="mt-4">Permissions</h3>
+					<!-- TODO: Set it up and working -->
+					<!-- <h3 class="mt-4">Permissions</h3>
 					<v-checkbox
 						:label="`Warehouse - ${userMenu.warehouse.toString()}`"
 						v-model="userMenu.warehouse"
@@ -151,7 +155,7 @@
 					<v-checkbox
 						:label="`Tables - ${userMenu.tables.toString()}`"
 						v-model="userMenu.tables"
-					></v-checkbox>
+					></v-checkbox> -->
 
 					<h3>Add image</h3>
 					<br>
@@ -161,7 +165,7 @@
 							@change="imagePreview()"
 							name="imageUpload"
 						>
-						<img class="previewImg" :src="profileImage.src" alt="">
+						<img class="previewImg" :src="profileImage.src" alt="Profile image">
 					</div>
 					<br>
 
@@ -216,11 +220,11 @@ export default {
 				value: '',
 				error_message: ''
 			},
-			telephone1: {
+			email: {
 				value: '',
 				error_message: ''
 			},
-			telephone2: {
+			phone: {
 				value: '',
 				error_message: ''
 			},
@@ -315,23 +319,24 @@ export default {
 				const userFormData = new FormData()
 
 				// Permisions - user menu
-				const userMenu = {
-					home: this.userMenu.home,
-					warehouse: this.userMenu.warehouse,
-					tables: this.userMenu.tables
-				}
+				// const userMenu = {
+				// 	home: this.userMenu.home,
+				// 	warehouse: this.userMenu.warehouse,
+				// 	tables: this.userMenu.tables
+				// }
 				// Created By
 				// Append everything to form data
-				userFormData.append('imageUpload', this.profileImage.file)
-				userFormData.append('userUsername', this.username.value)
-				userFormData.append('userName', this.name.value)
-				userFormData.append('userPassword', this.password.value)
+				userFormData.append('profileImage', this.profileImage.file)
+				userFormData.append('username', this.username.value)
+				userFormData.append('name', this.name.value)
+				userFormData.append('password', this.password.value)
+				userFormData.append('email', this.email.value)
 				// userFormData.append('userPassword2', password2)
-				userFormData.append('userTelephone1', this.telephone1.value)
-				userFormData.append('userTelephone2', this.telephone2.value)
-				userFormData.append('userAddress', this.address.value)
-				userFormData.append('userNote', this.note.value)
-				userFormData.append('userMenu', userMenu)
+				userFormData.append('phone', this.phone.value)
+				userFormData.append('address', this.address.value)
+				userFormData.append('note', this.note.value)
+				// TODO: Finish
+				// userFormData.append('permissions', userMenu)
 				userFormData.append('createdBy', this.createdBy)
 				userFormData.append('roles[]', 'user')
 
@@ -353,14 +358,11 @@ export default {
 					this.username.value = ''
 					this.password.value = ''
 					this.password2.value = ''
+					this.email.value = ''
 					this.name.value = ''
-					this.telephone1.value = ''
-					this.telephone2.value = ''
+					this.phone.value = ''
 					this.address.value = ''
 					this.note.value = ''
-					this.userMenu.home = true
-					this.userMenu.warehouse = false
-					this.userMenu.tables = false
 					this.profileImage.file = null
 					this.profileImage.src = ''
 					// Hide password messages
@@ -408,22 +410,13 @@ export default {
 					this.name.error_message = ''
 				}
 				// Telephone 1
-				if (error.response.data.telephone1_error) {
+				if (error.response.data.phone_error) {
 					this.success = null
 					this.info = null
-					this.error = error.response.data.telephone1_error
-					this.telephone1.error_message = error.response.data.telephone1_error
+					this.error = error.response.data.phone_error
+					this.phone.error_message = error.response.data.phone_error
 				} else {
-					this.telephone1.error_message = ''
-				}
-				// Telephone 2
-				if (error.response.data.telephone2_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.telephone2_error
-					this.telephone2.error_message = error.response.data.telephone2_error
-				} else {
-					this.telephone2.error_message = ''
+					this.phone.error_message = ''
 				}
 				// Address
 				if (error.response.data.address_error) {

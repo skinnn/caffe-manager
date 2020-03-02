@@ -114,28 +114,9 @@ router.get('/admin/storage/:storageId',
 router.get('/admin/storages',
 	StorageController.getAllStorages)
 
-// // Get all users
-// router.get('/admin/users',
-// 	AdminController.getAllUsers)
-
-
-// Get Admin by id
-router.get('/admin/:adminId',
-	AdminController.getAdminById)
-
 // Update Admin
 router.patch('/admin/:adminId',
 	AdminController.updateAdminById)
-
-// Update User
-router.patch('/admin/user/:userId',
-	upload.single('imageUpload'),
-	UserControllerPolicy.updateUser,
-	AdminController.updateUser)
-
-// Get User by id
-router.get('/admin/user/:userId',
-	AdminController.getUserById)
 
 // Create Storage
 router.post('/admin/storage/create',

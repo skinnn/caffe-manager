@@ -49,13 +49,17 @@
 </template>
 
 <script>
+// Components
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
+// Services
 import AdminService from '@/services/AdminService'
+import UserService from '@/services/UserService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
-	components: {
-		AdminSideMenu
-	},
+	components: { AdminSideMenu },
+
 	data() {
 		return {
 			admin: {},
@@ -63,10 +67,18 @@ export default {
 			success: null
 		}
 	},
+
+	computed: {
+		...mapGetters(['getUserToken'])
+	},
+
 	async mounted() {
 		try {
-			const adminId = this.$store.state.route.params.adminId
-			const response = (await AdminService.getAdminById(adminId)).data
+			// TODO: Create editingUser state in the user store module
+			const token = this.getUserToken
+			const data = { id: this.$store.state.route.params.adminId }
+			console.log('data: ', data)
+			const response = (await UserService.getUserById(token, data)).data
 
 			if (response.admin) {
 				this.admin = response.admin

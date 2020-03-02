@@ -111,29 +111,28 @@ module.exports = {
 	// User Policy
   user(req, res, next) {
     const schema = Joi.object({
-      userUsername: Joi.string()
+      username: Joi.string()
         .min(5)
         .max(15)
         .regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$'))
         .required(),
-      userPassword: Joi.string()
+      password: Joi.string()
         .regex(new RegExp('^(?=.*[0-9]+.*)[a-zA-Z0-9]{6,32}$'))
         .required(),
-      userPassword2: Joi.any()
-        .valid(Joi.ref('userPassword')),
-      userName: Joi.string()
+      password2: Joi.any()
+        .valid(Joi.ref('password')),
+      name: Joi.string()
         .min(5)
         .max(32)
         .regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$'))
         .required(),
 
-      userTelephone1: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      userTelephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      userAddress: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
-      userNote: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
-      userMenu: Joi.any(),
+      phone: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      address: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
+      email: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9]){0,35}$')),
+      note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
       createdBy: Joi.any(),
-      imageUpload: Joi.any(),
+      profileImage: Joi.any(),
       roles: Joi.array().items(Joi.string())
     })
 
@@ -141,7 +140,7 @@ module.exports = {
 
     if (error) {
       switch (error.details[0].context.key) {
-        case 'userUsername':
+        case 'username':
           console.log(error)
           res.status(400).send({
             username_error: `Username must have more than 5 characters.
@@ -150,7 +149,7 @@ module.exports = {
           })
           break
 
-        case 'userPassword':
+        case 'password':
           res.status(400).send({
             password_error: `Password must have more than 6 characters.
               <br>
@@ -160,7 +159,7 @@ module.exports = {
           })
           break
 
-        case 'userPassword2':
+        case 'password2':
           res.status(400).send({
             password2_error: 'Passwords do not match.'
           })
@@ -176,7 +175,7 @@ module.exports = {
           })
           break
 
-        case 'userTelephone1':
+        case 'phone':
           res.status(400).send({
             telephone1_error: `Telephone 1 can contain ONLY letters, numbers, dashes and plus signs.`
           })
@@ -225,34 +224,35 @@ module.exports = {
     }
 	},
 	
+	// TODO: Finish
 	// Update User policy
   updateUser(req, res, next) {
-    const schema = {
-      userUsername: Joi.string()
-        .min(5)
-        .max(15)
-        .regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$'))
-        .required(),
-      userName: Joi.string()
-        .min(5)
-        .max(32)
-        .regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$'))
-        .required(),
+    const schema = Joi.object({
+			id: Joi.string(),
+			replace: Joi.object(),
+      // username: Joi.string()
+      //   .min(5)
+      //   .max(15)
+      //   .regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$')),
+      // userName: Joi.string()
+      //   .min(5)
+      //   .max(32)
+      //   .regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$')),
 
-      userTelephone1: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      userTelephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      userAddress: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
-      userNote: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
-      userMenu: Joi.any(),
-      createdBy: Joi.any(),
-      imageUpload: Joi.any()
-    }
+      // phone: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      // userTelephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
+      // userAddress: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
+      // userNote: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
+      // userMenu: Joi.any(),
+      // createdBy: Joi.any(),
+      // imageUpload: Joi.any()
+    })
 
-    const { error, value } = Joi.validate(req.body, schema)
+    const { error, value } = schema.validate(req.body)
 
     if (error) {
       switch (error.details[0].context.key) {
-        case 'userUsername':
+        case 'username':
           res.status(400).send({
             username_error: `Username must have more than 5 characters.
               <br>
@@ -270,7 +270,7 @@ module.exports = {
           })
           break
 
-        case 'userTelephone1':
+        case 'phone':
           res.status(400).send({
             telephone1_error: `Telephone 1 can contain ONLY letters, numbers, dashes and plus signs.`
           })
