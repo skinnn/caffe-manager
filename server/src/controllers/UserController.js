@@ -231,16 +231,18 @@ module.exports = {
 		const role = req.params.role || null
     try {
 			let query = {
-				roles: { $all : [role] }
+				roles: { $all : [role] },
+				root: false // Don't return the root user
 			}
 			const users = await User.find(query).select('-_id username name')
+			console.log(users)
 
 			return res.status(200).json({
 				users: users
 			})
     } catch (err) {
       console.log(err)
-      res.status(500).json({
+      return res.status(500).json({
         error: `An error has occurred trying to get the login list for ${role}.`
       })
     }

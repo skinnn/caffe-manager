@@ -195,9 +195,8 @@ export default {
 		},
 
 		async deleteUser(user) {
-			let confirmation = confirm(
-				'Are you sure?'
-			)
+			const confirmation = confirm('Are you sure?')
+
 			if (confirmation) {
 				try {
 					const token = this.getUserToken

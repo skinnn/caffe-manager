@@ -49,14 +49,12 @@ const ensureAuthenticated = async (req, res, next) => {
 	
 	} catch (err) {
 		if (err.name === 'JsonWebTokenError' && err.message === 'jwt malformed') {
-			console.error(err)
 			return res.status(401).json({
 				success: false,
 				message: 'Access denied. Token is not valid.'
 			})
-		} else {
-			console.error(err)
 		}
+		console.error(err)
 	}
 }
 

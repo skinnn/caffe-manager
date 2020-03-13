@@ -354,20 +354,7 @@ export default {
 						this.success = null
 					}, 4000)
 
-					// Set all Values to default after successful registering
-					this.username.value = ''
-					this.password.value = ''
-					this.password2.value = ''
-					this.email.value = ''
-					this.name.value = ''
-					this.phone.value = ''
-					this.address.value = ''
-					this.note.value = ''
-					this.profileImage.file = null
-					this.profileImage.src = ''
-					// Hide password messages
-					this.showMessage = false
-					this.confirmPasswordMatched = null
+					this.resetFormFields()
 				}
 			} catch (error) {
 				console.log(error.response)
@@ -450,6 +437,23 @@ export default {
 				}
 			}
 		}
+	},
+
+	resetFormFields() {
+		// Set all Values to default after successful registering
+		this.username.value = ''
+		this.password.value = ''
+		this.password2.value = ''
+		this.email.value = ''
+		this.name.value = ''
+		this.phone.value = ''
+		this.address.value = ''
+		this.note.value = ''
+		this.profileImage.file = null
+		this.profileImage.src = ''
+		// Hide password messages
+		this.showMessage = false
+		this.confirmPasswordMatched = null
 	}
 }
 </script>
