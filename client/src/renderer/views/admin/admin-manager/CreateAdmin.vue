@@ -318,7 +318,8 @@ export default {
 					if (this.user.root === true) {
 						const adminFormData = new FormData()
 						// Append everything to form data
-						adminFormData.append('imageUpload', this.profileImage.file)
+						adminFormData.append('roles[]', 'admin')
+						adminFormData.append('profileImage', this.profileImage.file)
 						adminFormData.append('username', this.username.value)
 						adminFormData.append('password', this.password.value)
 						adminFormData.append('password2', this.password2.value)

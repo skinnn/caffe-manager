@@ -326,6 +326,7 @@ export default {
 				// }
 				// Created By
 				// Append everything to form data
+				userFormData.append('roles[]', 'user')
 				userFormData.append('profileImage', this.profileImage.file)
 				userFormData.append('username', this.username.value)
 				userFormData.append('name', this.name.value)
@@ -338,7 +339,6 @@ export default {
 				// TODO: Finish
 				// userFormData.append('permissions', userMenu)
 				userFormData.append('createdBy', this.createdBy)
-				userFormData.append('roles[]', 'user')
 
 				// Register User
 				const response = (await UserService.createUser(token, userFormData)).data

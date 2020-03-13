@@ -19,20 +19,15 @@ const auth = require('../middleware/authentication')
 // Policies
 const UserControllerPolicy = require('../policies/UserControllerPolicy')
 
-router.use('/admin', require('./protected/admin'))
-router.use('/user', require('./protected/user'))
-router.use('/', require('./shared/global'))
-
-
 // TODO: Move multer config to separate file
 // Multer storage engine
 const multerStorage = multer.diskStorage({
 	// Destination of uploaded images
-	destination: function(req, file, cb) {
+	destination: (req, file, cb) => {
 		cb(null, './images')
 	},
 	// Define image name
-	filename: function(req, file, cb) {
+	filename: (req, file, cb) => {
 		cb(null, Date.now() + '-' + file.originalname)
 	}
 })
@@ -56,6 +51,11 @@ const upload = multer({
 	},
 	fileFilter: fileFilter
 })
+
+// Routes
+router.use('/admin', require('./protected/admin'))
+router.use('/user', require('./protected/user'))
+router.use('/', require('./shared/global'))
 
 // router.use('/images', express.static(path.join(__dirname, '/../../images')))
 // console.log(path.join(__dirname, '/../../images'))
@@ -99,12 +99,12 @@ router.get('/admin/articles',
 	ArticleController.getAllArticles)
 
 // Delete Admin
-router.delete('/admin/:adminId',
-	AdminController.deleteAdmin)
+// router.delete('/admin/:adminId',
+// 	AdminController.deleteAdmin)
 
 // Delete User
-router.delete('/admin/:adminId/user/:userId',
-	AdminController.deleteUser)
+// router.delete('/admin/:adminId/user/:userId',
+// 	AdminController.deleteUser)
 
 // Get Storage by id
 router.get('/admin/storage/:storageId',

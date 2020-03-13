@@ -263,46 +263,46 @@ module.exports = {
   //   }
   // },
 
-  // Delete Admin
-  async deleteAdmin(req, res) {
-    try {
-      let query = {_id: req.params.adminId}
+  // // Delete Admin
+  // async deleteAdmin(req, res) {
+  //   try {
+  //     let query = {_id: req.params.adminId}
 
-      // Get image path
-      let img = req.body.imgPath
-      // Create full image path so it can be deleted with fs.unlink
-      let fullImgPath = ''
-      if (img !== '') {
-        let dirPath = process.cwd()
-        fullImgPath = dirPath + '/' + img
-      }
+  //     // Get image path
+  //     let img = req.body.imgPath
+  //     // Create full image path so it can be deleted with fs.unlink
+  //     let fullImgPath = ''
+  //     if (img !== '') {
+  //       let dirPath = process.cwd()
+  //       fullImgPath = dirPath + '/' + img
+  //     }
 
-      await Admin.deleteOne(query, function(err) {
-        if (err) {
-          res.status(500).send({
-            error: 'A database error has occurred trying to delete the admin.'
-          })
-        }
-        if (fullImgPath !== '') {
-          fs.unlink(fullImgPath, function(err) {
-            if (err) {
-              res.status(500).send({
-                error: 'An error has occurred trying to delete the image.'
-              })
-            }
-          })
-        }
-        res.send({
-          deleted: true,
-          success: 'Admin deleted.'
-        })
-      })
-    } catch (err) {
-      res.status(500).send({
-        error: 'An error has occurred trying to delete the admin.'
-      })
-    }
-  },
+  //     await Admin.deleteOne(query, function(err) {
+  //       if (err) {
+  //         res.status(500).send({
+  //           error: 'A database error has occurred trying to delete the admin.'
+  //         })
+  //       }
+  //       if (fullImgPath !== '') {
+  //         fs.unlink(fullImgPath, function(err) {
+  //           if (err) {
+  //             res.status(500).send({
+  //               error: 'An error has occurred trying to delete the image.'
+  //             })
+  //           }
+  //         })
+  //       }
+  //       res.send({
+  //         deleted: true,
+  //         success: 'Admin deleted.'
+  //       })
+  //     })
+  //   } catch (err) {
+  //     res.status(500).send({
+  //       error: 'An error has occurred trying to delete the admin.'
+  //     })
+  //   }
+  // },
 
   // Delete User
   async deleteUser(req, res) {

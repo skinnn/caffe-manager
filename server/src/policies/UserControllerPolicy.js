@@ -5,6 +5,7 @@ module.exports = {
   // Admin Policy
   admin(req, res, next) {
     const schema = Joi.object({
+			roles: Joi.array().items('admin'),
 			username: Joi.string()
 				.alphanum()
         .min(5)
@@ -24,7 +25,7 @@ module.exports = {
       address: Joi.string().allow('').min(0).max(35).pattern(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
       note: Joi.string().max(250).allow('').pattern(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9-@#. ]+)*$')),
       createdBy: Joi.any(),
-      imageUpload: Joi.any()
+      profileImage: Joi.any()
 		})
 
     const { error, value } = schema.validate(req.body)
@@ -111,6 +112,7 @@ module.exports = {
 	// User Policy
   user(req, res, next) {
     const schema = Joi.object({
+			roles: Joi.array().items('user'),
       username: Joi.string()
         .min(5)
         .max(15)
@@ -132,8 +134,7 @@ module.exports = {
       email: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9]){0,35}$')),
       note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
       createdBy: Joi.any(),
-      profileImage: Joi.any(),
-      roles: Joi.array().items(Joi.string())
+      profileImage: Joi.any()
     })
 
 		const { error, value } = schema.validate(req.body)
@@ -165,7 +166,7 @@ module.exports = {
           })
           break
 
-        case 'userName':
+        case 'name':
           res.status(400).send({
             name_error: `You must provide a name.
             <br>
@@ -181,25 +182,13 @@ module.exports = {
           })
           break
 
-        case 'userTelephone2':
-          res.status(400).send({
-            telephone2_error: `Telephone 2 can contain ONLY letters, numbers, dashes and plus signs.`
-          })
-          break
-
-        case 'userAddress':
+        case 'address':
           res.status(400).send({
             address_error: `Address can contain ONLY letters and numbers.`
           })
           break
 
-        case 'userMenu':
-          res.status(400).send({
-            menu_error: `You must provide user with some permissions.`
-          })
-          break
-
-        case 'userNote':
+        case 'note':
           res.status(400).send({
             note_error: `Note can contain ONLY letters, numbers and dots.`
           })
@@ -230,6 +219,7 @@ module.exports = {
     const schema = Joi.object({
 			id: Joi.string(),
 			replace: Joi.object(),
+			// TODO: Finish
       // username: Joi.string()
       //   .min(5)
       //   .max(15)
@@ -240,12 +230,10 @@ module.exports = {
       //   .regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$')),
 
       // phone: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      // userTelephone2: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      // userAddress: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
-      // userNote: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
-      // userMenu: Joi.any(),
+      // address: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
+      // note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
       // createdBy: Joi.any(),
-      // imageUpload: Joi.any()
+      // profileImage: Joi.any()
     })
 
     const { error, value } = schema.validate(req.body)

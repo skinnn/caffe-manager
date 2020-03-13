@@ -85,11 +85,11 @@ let User = module.exports = mongoose.model('User', UserSchema)
 module.exports.createUser = (newUser, callback) => {
   bcrypt.genSalt(10, (err, salt) => {
     if (err) {
-      return console.log(err)
+      throw err
     }
     bcrypt.hash(newUser.password, salt, (err, hash) => {
       if (err) {
-        console.log(err)
+        throw err
       }
       newUser.password = hash
       newUser.save(callback)
@@ -112,11 +112,6 @@ module.exports.createAdmin = (newAdmin, callback) => {
   })
 }
 
-// module.exports.getUserByUsername = (username, callback) => {
-//   let query = {username: username}
-//   User.findOne(query, callback)
-// }
-
 module.exports.getUserByUsername = (username) => {
 	return new Promise((resolve, reject) => {
 		User.findOne({ username: username }, (err, user) => {
@@ -135,10 +130,6 @@ module.exports.getUserById = (id) => {
 	})
 }
 
-// module.exports.getUserById = (id, callback) => {
-//   User.findById(id, callback)
-// }
-
 module.exports.compareUserPassword = (candidatePassword, hash) => {
 	return new Promise((resolve, reject) => {
 		bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
@@ -147,10 +138,3 @@ module.exports.compareUserPassword = (candidatePassword, hash) => {
 		})
 	})
 }
-
-// module.exports.compareUserPassword = function(candidatePassword, hash, callback) {
-//   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-//     if (err) throw err
-//     callback(null, isMatch)
-//   })
-// }

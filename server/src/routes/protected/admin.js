@@ -49,22 +49,34 @@ const upload = multer({
 
 router.use(auth.ensureAuthenticated)
 
+// Development middleware
+if (process.env.NODE_ENV === 'development') {
+	router.use((req, res, next) => {
+		console.log('user: ', req.user)
+		console.log('admin: ', req.admin)
+		next()
+	})
+}
+
 /* /admin routes
 ===================================================== */
 
 // Create Admin
 router.post('/',
-	upload.single('imageUpload'),
+	upload.single('profileImage'),
 	UserControllerPolicy.admin,
-	UserController.createAdmin)
+	UserController.createUser)
 
 // Get all Admins
 router.get('/',
-	auth.ensureAuthenticated,
 	UserController.getAllAdmins)
 
 // Get Admin by id
 router.get('/:id',
 	UserController.getUserById)
+
+// Delete Admin by id
+router.delete('/:id',
+	UserController.deleteUserById)
 
 module.exports = router

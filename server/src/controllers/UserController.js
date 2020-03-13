@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const config = require('../config/config')
 const bcrypt = require('bcryptjs')
+const fs = require('fs')
 
 module.exports = {
 
@@ -82,8 +83,7 @@ module.exports = {
 			const imageURL = req.file !== undefined && req.file !== '' ? req.file.path : ''
 			
       const newUser = new User({
-				// roles: ['user'],
-				roles: req.body.roles,
+				roles: req.body.roles.includes('admin') ? ['admin'] : ['user'],
         username: req.body.username,
         password: req.body.password,
         name: req.body.name,
@@ -115,49 +115,97 @@ module.exports = {
       })
     }
 	},
-	
-	// Create Admin
-  async createAdmin(req, res) {
-		// TODO: Rewrite createAdmin/createUser in one function - createUser
-		// TODO: Check is username not already registered
+
+	// Delete User by id
+  async deleteUserById(req, res) {
     try {
-      const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
+      let query = { _id: req.params.id }
 
-      // Create new admin object
-      const newAdmin = new User({
-        roles: ['admin'],
-        root: false,
-        username: req.body.username,
-        password: req.body.password,
-        name: req.body.name,
-        telephone1: req.body.telephone1,
-        telephone2: req.body.telephone2,
-        address: req.body.address,
-        note: req.body.note,
-        image: image,
-        createdBy: req.body.createdBy
-			})
+      // Get image path
+			let img = req.body.imgPath
+			console.log('BODY: ', req.body)
+      // Create full image path so it can be deleted with fs.unlink
+      let fullImgPath = ''
+      if (img !== '') {
+        let dirPath = process.cwd()
+        fullImgPath = dirPath + '/' + img
+			}
+			
+			// res.status(200).json({
+			// 	success: true,
+			// 	message: 'Got it.'
+			// })
 
-      User.createAdmin(newAdmin, (err, admin) => {
+      User.deleteOne(query, (err) => {
         if (err) {
-          console.error(err)
-          return res.status(400).send({
-            error: 'This username is already in use.'
-          })
-        } else {
-          return res.send({
-            admin: admin,
-            success: `You have successfully registered. ${admin.username}`
+          return res.status(500).json({
+            error: 'A database error has occurred trying to delete the admin.'
           })
         }
+        if (fullImgPath && fullImgPath !== '') {
+          fs.unlink(fullImgPath, (err) => {
+            if (err) {
+							throw err
+              // return res.status(500).json({
+              //   error: 'An error has occurred trying to delete the image.'
+              // })
+            }
+          })
+        }
+        return res.status(200).json({
+					success: true,
+          message: 'User deleted successfully.'
+        })
       })
     } catch (err) {
-      console.log(err)
-      return res.status(500).send({
-        error: 'An error has occurred trying to register the admin. Please try again.'
+      res.status(500).json({
+        error: 'An error has occurred trying to delete the admin.'
       })
     }
-	},
+  },
+	
+	// Create Admin
+  // async createAdmin(req, res) {
+	// 	// TODO: Rewrite createAdmin/createUser in one function - createUser
+	// 	// TODO: Check is username not already registered
+  //   try {
+  //     const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
+
+  //     // Create new admin object
+  //     const newAdmin = new User({
+  //       roles: ['admin'],
+  //       root: false,
+  //       username: req.body.username,
+  //       password: req.body.password,
+  //       name: req.body.name,
+  //       telephone1: req.body.telephone1,
+  //       telephone2: req.body.telephone2,
+  //       address: req.body.address,
+  //       note: req.body.note,
+  //       image: image,
+  //       createdBy: req.body.createdBy
+	// 		})
+
+  //     User.createAdmin(newAdmin, (err, admin) => {
+  //       if (err) {
+  //         console.error(err)
+  //         return res.status(400).send({
+  //           error: 'This username is already in use.'
+  //         })
+  //       } else {
+  //         return res.send({
+  //           admin: admin,
+  //           success: `You have successfully registered. ${admin.username}`
+  //         })
+  //       }
+  //     })
+  //   } catch (err) {
+  //     console.log(err)
+  //     return res.status(500).send({
+  //       error: 'An error has occurred trying to register the admin. Please try again.'
+  //     })
+  //   }
+	// },
 	
 	// Get Admins
   async getAllAdmins(req, res) {
@@ -201,18 +249,23 @@ module.exports = {
 	// Get all Users
   async getAllUsers(req, res) {
     try {
-      await User.find({}, function(err, users) {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            users: users
-          })
-        }
-      })
+			const users = await User.find({ roles: 'user' })
+			return res.status(200).json({
+				users: users
+			})
+      // User.find({}, (err, users) => {
+      //   if (err) {
+      //     throw err
+      //   } else {
+      //     return res.status(200).json({
+      //       users: users
+      //     })
+      //   }
+      // })
     } catch (err) {
       console.log(err)
-      res.status(500).send({
+      return res.status(500).json({
+				success: false,
         error: 'An error has occurred trying to get the list of staff members.'
       })
     }

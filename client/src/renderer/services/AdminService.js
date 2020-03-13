@@ -16,10 +16,10 @@ export default {
 	updateAdmin(admin) {
 		return Api().patch(`admin/${admin._id}`, admin)
 	},
-	getAllUsers(token) {
-		return Api(token).get('user')
-		// return Api().get('admin/users')
-	},
+	// getAllUsers(token) {
+	// 	return Api(token).get('user')
+	// 	// return Api().get('admin/users')
+	// },
 	getUserById(userId) {
 		return Api().get(`admin/user/${userId}`)
 	},
