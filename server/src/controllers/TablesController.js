@@ -1,7 +1,5 @@
-const passport = require('passport')
 const Table = require('../models/Table')
 const dateHandler = require('./getDate')
-const fs = require('fs')
 
 module.exports = {
 

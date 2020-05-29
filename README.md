@@ -32,8 +32,8 @@ App that makes managing a caffe/restaurant/shop/warehouse easier.
 
 ```json
 "scripts": {
-  "start": "node src/app.js",
-  "dev": "nodemon src/app.js --exec \"npm run lint && node\"",
+  "start": "node src/server.js",
+  "dev": "nodemon src/server.js --exec \"npm run lint && node\"",
   "lint": "eslint src/**/*.js"
 }
 ```

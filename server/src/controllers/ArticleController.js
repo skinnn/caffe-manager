@@ -1,4 +1,3 @@
-const passport = require('passport')
 const Article = require('../models/Article')
 const dateHandler = require('./getDate')
 const fs = require('fs')

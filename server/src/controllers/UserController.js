@@ -1,5 +1,4 @@
 const User = require('../models/User')
-const config = require('../config/config')
 const bcrypt = require('bcryptjs')
 const fs = require('fs')
 
@@ -48,8 +47,8 @@ module.exports = {
     } catch (err) {
       console.log(err)
       return res.status(500).send({
-        error: 'An error has occurred trying to fetch/create the root user.'
-      })
+				error: err
+			})
     }
 	},
 
@@ -100,8 +99,8 @@ module.exports = {
         if (err) {
           console.log(err)
           return res.status(400).send({
-            error: 'This username is already in use.'
-          })
+						error: err
+					})
         } else {
           return res.send({
             user: user,
@@ -111,8 +110,8 @@ module.exports = {
       })
     } catch (err) {
       return res.status(500).send({
-        error: 'An error has occurred trying to register the user.'
-      })
+				error: err
+			})
     }
 	},
 
@@ -139,16 +138,16 @@ module.exports = {
       User.deleteOne(query, (err) => {
         if (err) {
           return res.status(500).json({
-            error: 'A database error has occurred trying to delete the admin.'
-          })
+						error: err
+					})
         }
         if (fullImgPath && fullImgPath !== '') {
           fs.unlink(fullImgPath, (err) => {
             if (err) {
 							throw err
               // return res.status(500).json({
-              //   error: 'An error has occurred trying to delete the image.'
-              // })
+							error: err
+							// })
             }
           })
         }
@@ -159,8 +158,8 @@ module.exports = {
       })
     } catch (err) {
       res.status(500).json({
-        error: 'An error has occurred trying to delete the admin.'
-      })
+				error: err
+			})
     }
   },
 	
@@ -190,8 +189,8 @@ module.exports = {
   //       if (err) {
   //         console.error(err)
   //         return res.status(400).send({
-  //           error: 'This username is already in use.'
-  //         })
+	//           error: err
+	//         })
   //       } else {
   //         return res.send({
   //           admin: admin,
@@ -202,8 +201,8 @@ module.exports = {
   //   } catch (err) {
   //     console.log(err)
   //     return res.status(500).send({
-  //       error: 'An error has occurred trying to register the admin. Please try again.'
-  //     })
+	//       error: err
+	//     })
   //   }
 	// },
 	
@@ -221,8 +220,8 @@ module.exports = {
       })
     } catch (err) {
       res.status(500).send({
-        error: 'An error has occurred trying to get the list of admins.'
-      })
+				error: err
+			})
     }
 	},
 
@@ -243,8 +242,8 @@ module.exports = {
     } catch (err) {
       console.log(err)
       return res.status(500).json({
-        error: `An error has occurred trying to get the login list for ${role}.`
-      })
+				error: err
+			})
     }
 	},
 	
@@ -268,27 +267,31 @@ module.exports = {
       console.log(err)
       return res.status(500).json({
 				success: false,
-        error: 'An error has occurred trying to get the list of staff members.'
-      })
+				error: err
+			})
     }
 	},
 	
 	// Get User by id
   async getUserById(req, res) {
     try {
-      let query = req.params.id || null
-      User.getUserById(query, (err, user) => {
-        if (err) {
-					throw err
-				}
-				return res.status(200).json({
-					user: user
-				})
-      })
+			const query = {_id: req.params.id || null}
+			const user = await User.getUserById(query)
+			return res.status(200).json({
+				user: user
+			})
+      // User.getUserById(query, (err, user) => {
+      //  if (err) {
+			// 		throw err
+			// 	}
+			// 	return res.status(200).json({
+			// 		user: user
+			// 	})
+      // })
     } catch (err) {
       return res.status(500).send({
-        error: 'An error has occurred trying to get the user.'
-      })
+				error: err
+			})
     }
 	},
 	
@@ -329,8 +332,8 @@ module.exports = {
     } catch (err) {
 			console.error(err)
       return res.status(500).json({
-        error: 'An error has occurred trying to update the user data.'
-      })
+				error: err
+			})
     }
   },
 
@@ -374,8 +377,8 @@ module.exports = {
   //       if (err) {
   //         console.error(err)
   //         return res.status(400).send({
-  //           error: 'This username is already in use.'
-  //         })
+	// 				   error: err
+	//         })
   //       } else {
   //         return res.send({
   //           admin: admin,
@@ -386,8 +389,8 @@ module.exports = {
   //   } catch (err) {
   //     console.log(err)
   //     return res.status(500).send({
-  //       error: 'An error has occurred trying to register the admin. Please try again.'
-  //     })
+	//       error: err
+	//     })
   //   }
   // }
 	

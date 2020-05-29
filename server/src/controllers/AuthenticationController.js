@@ -20,8 +20,6 @@ module.exports = {
 	async login(req, res) {
 		try {
 			const user = await User.getUserByUsername(req.body.username)
-			// var admin = await Admin.getAdminByUsername(req.body.username)
-			// const isAdmin = user.roles.includes('admin')
 
 			if (!user) {
 				res.setHeader('Content-Type', 'application/json')
