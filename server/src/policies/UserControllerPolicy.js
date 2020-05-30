@@ -111,7 +111,6 @@ module.exports = {
 
 	// User Policy
   user(req, res, next) {
-		console.log('GOT body: ', req.body)
     const schema = Joi.object({
 			// more specific but hardcoded roles - Joi.string().valid('admin', 'user')
 			roles: Joi.array().items(Joi.string()).min(1).required().min(1),
@@ -131,9 +130,6 @@ module.exports = {
 		const { error, value } = schema.validate(req.body)
 
     if (error) {
-			// console.log('error.details: ', error.details)
-			// let errMessages = error.details
-			// return res.status(400).send(errMessages)
 			switch (error.details[0].context.key) {
 				case 'roles':
 					console.log('ROLES ERROR:', error.details)

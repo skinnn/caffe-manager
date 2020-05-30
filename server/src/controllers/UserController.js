@@ -58,7 +58,6 @@ module.exports = {
   // Create user
   async createUser(req, res, next) {
 		try {
-			console.log('REQ.BODY: ', req.body)
 			const userExist = await User.getUserByUsername(req.body.username)
 				if (userExist) {
 					return res.status(400).json({
