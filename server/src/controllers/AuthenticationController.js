@@ -1,15 +1,13 @@
 const User = require('../models/User')
-const Admin = require('../models/Admin')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
 const Login = require('../models/Login')
 
-// TODO: Sign admin and user tokens
 // Sign user
 function jwtSignUser(user) {
-  // Token expires in 1h
-  const ONE_HOUR = 60 * 60 * 24
+	// const ONE_HOUR = 60 * 60 * 24
+	// TODO: Sign only username, roles fields
   return jwt.sign(user.toJSON(), config.authentication.jwtSecret, {
     // expiresIn: ONE_HOUR
   })

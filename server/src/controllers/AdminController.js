@@ -1,5 +1,5 @@
 // Models
-const Admin = require('../models/Admin')
+// const Admin = require('../models/Admin')
 const User = require('../models/User')
 // Modules
 const bcrypt = require('bcryptjs')

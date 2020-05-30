@@ -37,15 +37,11 @@ const ensureAuthenticated = async (req, res, next) => {
 			})
 		}
 
-		// Check user roles and set it to req.user req.admin
-		const user = await User.getUserById(loginRecord.user)
-		if (user.roles.includes('admin')) {
-			req.admin = decoded || null
-		} else if (user.roles.includes('user')) {
-			req.user = decoded || null
-		}
+		// const user = await User.getUserById(loginRecord.user)
+		// Set user in the request object
+		req.user = decoded || null
 		
-		next()
+		return next()
 	
 	} catch (err) {
 		if (err.name === 'JsonWebTokenError' && err.message === 'jwt malformed') {

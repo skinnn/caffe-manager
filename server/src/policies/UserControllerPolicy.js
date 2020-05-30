@@ -36,7 +36,7 @@ module.exports = {
           res.status(400).send({
             username_error: `Username must have more than 5 characters.
               <br>
-              It can contain ONLY letters and numbers.`
+              It can contain only letters and numbers.`
           })
           break
 
@@ -44,9 +44,9 @@ module.exports = {
           res.status(400).send({
             password_error: `Password must have more than 6 characters.
               <br>
-              It can contain ONLY letters and numbers.
+              It can contain only letters and numbers.
               <br>
-              It MUST contain at least one number.`
+              It must contain at least one number.`
           })
           break
 
@@ -60,33 +60,33 @@ module.exports = {
           res.status(400).send({
             name_error: `You must provide a name.
             <br>
-            It can contain ONLY letters.
+            It can contain only letters.
             <br>
-            It MUST have more than 5 characters.`
+            It must have more than 5 characters.`
           })
           break
 
         case 'telephone1':
           res.status(400).send({
-            telephone1_error: `Telephone 1 can contain ONLY letters, numbers, dashes and plus signs.`
+            telephone1_error: `Telephone 1 can contain only letters, numbers, dashes and plus signs.`
           })
           break
 
         case 'telephone2':
           res.status(400).send({
-            telephone2_error: `Telephone 2 can contain ONLY letters, numbers, dashes and plus signs.`
+            telephone2_error: `Telephone 2 can contain only letters, numbers, dashes and plus signs.`
           })
           break
 
         case 'address':
           res.status(400).send({
-            address_error: `Address can contain ONLY letters and numbers.`
+            address_error: `Address can contain only letters and numbers.`
           })
           break
 
         case 'note':
           res.status(400).send({
-            note_error: `Note can contain ONLY letters, numbers and dots.`
+            note_error: `Note can contain only letters, numbers and dots.`
           })
           break
 
@@ -111,101 +111,101 @@ module.exports = {
 
 	// User Policy
   user(req, res, next) {
+		console.log('GOT body: ', req.body)
     const schema = Joi.object({
-			roles: Joi.array().items('user'),
-      username: Joi.string()
-        .min(5)
-        .max(15)
-        .regex(new RegExp('^(?=.*[a-zA-Z]+.*)[a-zA-Z0-9]{5,15}$'))
-        .required(),
-      password: Joi.string()
-        .regex(new RegExp('^(?=.*[0-9]+.*)[a-zA-Z0-9]{6,32}$'))
-        .required(),
-      password2: Joi.any()
-        .valid(Joi.ref('password')),
-      name: Joi.string()
-        .min(5)
-        .max(32)
-        .regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9 ]+)*$'))
-        .required(),
+			// more specific but hardcoded roles - Joi.string().valid('admin', 'user')
+			roles: Joi.array().items(Joi.string()).min(1).required().min(1),
+      username: Joi.string().min(3).max(15).alphanum().required(),
+      password: Joi.string().min(4).max(30).required(),
+      password2: Joi.string().valid(Joi.ref('password')).required(),
+      name: Joi.string().min(3).max(40).regex(/^[a-zA-Z ]*$/).required(),
 
-      phone: Joi.string().allow('').max(20).regex(new RegExp('^[a-zA-Z0-9+]+([a-zA-Z0-9- ]+)*$')),
-      address: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9 ]){0,35}$')),
-      email: Joi.string().allow('').min(0).max(35).regex(new RegExp('^([a-zA-Z0-9]){0,35}$')),
-      note: Joi.string().max(250).allow('').regex(new RegExp('^[a-zA-Z0-9]+([a-zA-Z0-9. ]+)*$')),
-      createdBy: Joi.any(),
+      phone: Joi.string().allow('').max(20).regex(/^[0-9+ ]*$/),
+      address: Joi.string().allow('').max(50).regex(/^[a-zA-Z0-9., ]*$/),
+      email: Joi.string().allow('').max(50).email({ minDomainSegments: 2, tlds: { allow: false } }),
+      note: Joi.string().max(250).allow(''),
       profileImage: Joi.any()
-    })
+		})
+		.with('password', 'password2');
 
 		const { error, value } = schema.validate(req.body)
 
     if (error) {
-      switch (error.details[0].context.key) {
-        case 'username':
-          console.log(error)
-          res.status(400).send({
-            username_error: `Username must have more than 5 characters.
-              <br>
-              It can contain ONLY letters and numbers.`
+			// console.log('error.details: ', error.details)
+			// let errMessages = error.details
+			// return res.status(400).send(errMessages)
+			switch (error.details[0].context.key) {
+				case 'roles':
+					console.log('ROLES ERROR:', error.details)
+					return res.status(400).send({
+						message: `You must specify at least one user role.`,
+						error: error
           })
-          break
+        case 'username':
+          return res.status(400).send({
+            message: `Username must have more than 3 characters.
+              <br>
+							It can contain only letters and numbers.`,
+							error: error
+          })
 
         case 'password':
-          res.status(400).send({
-            password_error: `Password must have more than 6 characters.
-              <br>
-              It can contain ONLY letters and numbers.
-              <br>
-              It MUST contain at least one number.`
+          return res.status(400).send({
+						message: `Password must have between 4 and 30 characters.`,
+						error: error
           })
-          break
 
         case 'password2':
-          res.status(400).send({
-            password2_error: 'Passwords do not match.'
+          return res.status(400).send({
+						message: 'Passwords do not match.',
+						error: error
           })
-          break
 
         case 'name':
-          res.status(400).send({
-            name_error: `You must provide a name.
+          return res.status(400).send({
+            message: `Name is required and must have 3 or more characters.
             <br>
-            It can contain ONLY letters.
-            <br>
-            It MUST have more than 5 characters.`
+						It can contain only letters.`,
+						error: error
           })
-          break
 
         case 'phone':
-          res.status(400).send({
-            telephone1_error: `Telephone 1 can contain ONLY letters, numbers, dashes and plus signs.`
+          return res.status(400).send({
+						message: `Telephone 1 can contain only letters, numbers, dashes and plus signs.`,
+						error: error
           })
-          break
 
         case 'address':
-          res.status(400).send({
-            address_error: `Address can contain ONLY letters and numbers.`
+          return res.status(400).send({
+						message: `Address can contain only letters and numbers.`,
+						error: error
           })
-          break
+					
+				case 'email':
+					return res.status(400).send({
+						message: `Email must be a valid email address.`,
+						error: error
+          })
 
         case 'note':
-          res.status(400).send({
-            note_error: `Note can contain ONLY letters, numbers and dots.`
+          return res.status(400).send({
+						message: `Note can contain only letters, numbers and dots.`,
+						error: error
           })
-          break
 
         case 'createdBy':
-          res.status(400).send({
-            created_by_error: `Created by which admin is not specified.
+          return res.status(400).send({
+            message: `Created by which admin is not specified.
               <br>
-              Please try reloading the application.`
+							Please try reloading the application.`,
+						error: error
           })
-          break
 
         default:
-          console.log(error)
-          res.status(400).send({
-            error: 'Invalid registration information.'
+          console.log('Validation error:', error)
+          return res.status(400).send({
+						message: 'Invalid registration information.',
+						error: error
           })
       }
     } else {
@@ -244,7 +244,7 @@ module.exports = {
           res.status(400).send({
             username_error: `Username must have more than 5 characters.
               <br>
-              It can contain ONLY letters and numbers.`
+              It can contain only letters and numbers.`
           })
           break
 
@@ -252,27 +252,27 @@ module.exports = {
           res.status(400).send({
             name_error: `You must provide a name.
             <br>
-            It can contain ONLY letters.
+            It can contain only letters.
             <br>
-            It MUST have more than 5 characters.`
+            It must have more than 5 characters.`
           })
           break
 
         case 'phone':
           res.status(400).send({
-            telephone1_error: `Telephone 1 can contain ONLY letters, numbers, dashes and plus signs.`
+            telephone1_error: `Telephone 1 can contain only letters, numbers, dashes and plus signs.`
           })
           break
 
         case 'userTelephone2':
           res.status(400).send({
-            telephone2_error: `Telephone 2 can contain ONLY letters, numbers, dashes and plus signs.`
+            telephone2_error: `Telephone 2 can contain only letters, numbers, dashes and plus signs.`
           })
           break
 
         case 'userAddress':
           res.status(400).send({
-            address_error: `Address can contain ONLY letters and numbers.`
+            address_error: `Address can contain only letters and numbers.`
           })
           break
 
@@ -284,7 +284,7 @@ module.exports = {
 
         case 'userNote':
           res.status(400).send({
-            note_error: `Note can contain ONLY letters, numbers and dots.`
+            note_error: `Note can contain only letters, numbers and dots.`
           })
           break
 

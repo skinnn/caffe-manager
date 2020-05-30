@@ -1,5 +1,4 @@
 const express = require('express')
-// const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const app = express()
@@ -18,8 +17,11 @@ app.use(cors({
 	credentials: true,
 	origin: 'http://localhost:9080'
 }))
+// Parse application/json
 app.use(express.json())
+// Parse application/xwww-form-urlencoded
 app.use(express.urlencoded({ extended: true }))
+
 // app.use(cookieParser())
 // Connect Flash
 // app.use(flash())
@@ -32,20 +34,16 @@ app.use(require('express-session')({
 }))
 
 // Global Variables
-app.use((req, res, next) => {
-	console.log('locals: ', res.locals)
-	next()
-//   res.locals.success_msg = req.flash('success_msg')
-//   res.locals.error_msg = req.flash('error_msg')
-//   res.locals.error = req.flash('error')
-//   next()
-})
+// app.use((req, res, next) => {
+// 	console.log('locals: ', res.locals)
+// 	next()
+// })
 
-// Static image folder
-app.use('/images', express.static(path.join(__dirname, '../images')))
+// Static assets
+// app.use('/public', express.static(path.join(__dirname, '../public')))
 
 // Mount main router
-app.use(`${config.baseApiURL}`, require('./routes/index'))
+app.use('/', require('./routes/index'))
 
 // Connect to a local Mongo Database
 mongoose

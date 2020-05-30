@@ -1,6 +1,8 @@
-const User = require('../models/User')
 const bcrypt = require('bcryptjs')
 const fs = require('fs')
+const config = require('../config/config')
+const User = require('../models/User')
+const File = require('../models/File')
 
 module.exports = {
 
@@ -19,12 +21,13 @@ module.exports = {
 
 				} else if (!admin.root) {
 					// If Root User doesn't exist create one
-					const admin = new User({
+					const defaultRoot = {
 						root: true,
-						username: 'admin',
-						password: '123123',
-						roles: ['admin']
-					})
+						roles: ['admin'],
+						username: config.rootUser.username,
+						password: config.rootUser.password,
+					}
+					const admin = new User(defaultRoot)
 					// Hash the password
 					bcrypt.genSalt(10, (err, salt) => {
 						if (err) {
@@ -53,9 +56,16 @@ module.exports = {
 	},
 
   // Create user
-  async createUser(req, res) {
-		// TODO: Check is username not already registered
-    try {
+  async createUser(req, res, next) {
+		try {
+			console.log('REQ.BODY: ', req.body)
+			const userExist = await User.getUserByUsername(req.body.username)
+				if (userExist) {
+					return res.status(400).json({
+						success: false,
+						message: `User: ${req.body.username} already exist`
+					})
+				}
       // TODO: Fix User privileges
       // Create user menu
       // const userMenu = [
@@ -79,37 +89,33 @@ module.exports = {
       //   }
 			// ]
 
-			const imageURL = req.file !== undefined && req.file !== '' ? req.file.path : ''
+			// Hash password
+			const hashedPassword = await User.hashPassword(req.body.password)
+
+			// const imageURL = req.file !== undefined && req.file !== '' ? req.file.path : ''
 			
       const newUser = new User({
-				roles: req.body.roles.includes('admin') ? ['admin'] : ['user'],
+				roles: req.body.roles,
         username: req.body.username,
-        password: req.body.password,
+        password: hashedPassword,
         name: req.body.name,
         email: req.body.email,
         phone: req.body.phone,
         address: req.body.address,
         note: req.body.note,
         createdBy: req.body.createdBy,
-        files: [imageURL]
 				// userMenu: userMenu,
 			})
 
-      User.createUser(newUser, (err, user) => {
-        if (err) {
-          console.log(err)
-          return res.status(400).send({
-						error: err
-					})
-        } else {
-          return res.send({
-            user: user,
-            success: `User: ${user.username} is successfully registered.`
-          })
-        }
-      })
+			const savedUser = await User.createUser(newUser)
+			return res.status(201).json({
+				success: true,
+				user: savedUser
+			})
     } catch (err) {
+			console.error(err)
       return res.status(500).send({
+				success: false,
 				error: err
 			})
     }
@@ -162,49 +168,6 @@ module.exports = {
 			})
     }
   },
-	
-	// Create Admin
-  // async createAdmin(req, res) {
-	// 	// TODO: Rewrite createAdmin/createUser in one function - createUser
-	// 	// TODO: Check is username not already registered
-  //   try {
-  //     const image = req.file !== undefined && req.file !== '' ? req.file.path : ''
-
-  //     // Create new admin object
-  //     const newAdmin = new User({
-  //       roles: ['admin'],
-  //       root: false,
-  //       username: req.body.username,
-  //       password: req.body.password,
-  //       name: req.body.name,
-  //       telephone1: req.body.telephone1,
-  //       telephone2: req.body.telephone2,
-  //       address: req.body.address,
-  //       note: req.body.note,
-  //       image: image,
-  //       createdBy: req.body.createdBy
-	// 		})
-
-  //     User.createAdmin(newAdmin, (err, admin) => {
-  //       if (err) {
-  //         console.error(err)
-  //         return res.status(400).send({
-	//           error: err
-	//         })
-  //       } else {
-  //         return res.send({
-  //           admin: admin,
-  //           success: `You have successfully registered. ${admin.username}`
-  //         })
-  //       }
-  //     })
-  //   } catch (err) {
-  //     console.log(err)
-  //     return res.status(500).send({
-	//       error: err
-	//     })
-  //   }
-	// },
 	
 	// Get Admins
   async getAllAdmins(req, res) {
@@ -337,61 +300,54 @@ module.exports = {
     }
   },
 
-  // // Admin Register
-  // async registerAdmin(req, res) {
-  //   try {
-  //     // console.log('FILE', req.file)
-  //     // console.log('BODY', req.body)
-  //     const username = req.body.adminUsername
-  //     const password = req.body.adminPassword
-  //     // const password2 = req.body.adminPassword2
-  //     const name = req.body.adminName
-  //     const telephone1 = req.body.telephone1
-  //     const telephone2 = req.body.telephone2
-  //     const address = req.body.address
-  //     const note = req.body.userName
-  //     const createdBy = req.body.createdBy
+	// Create attachment for a user
+  async createAttachment(req, res, next) {
+		try {
+			if (!req.query.identifier) {
+				return res.status(400).json({
+					message: 'File identifier is required.'
+				})
+			}
 
-  //     let image = ''
-  //     // If image is added create image path
-  //     if (req.file !== undefined && req.file !== '') {
-  //       image = req.file.path
-  //     }
+			const file = req.file
+			const ext = file.originalname.split('.').pop()
+			
+			const fileMeta = {
+				name: file.filename, // File name that is generated after file is uploaded
+				identifier: req.query.identifier,
+				ext: ext,
+				mime: file.mimetype,
+				size: file.size,
+				__owner: req.user._id
+			}
+			const newFile = new File(fileMeta)
 
-  //     // Create new admin object
-  //     const newAdmin = new Admin({
-  //       roles: ['admin'],
-  //       root: false,
-  //       username: username,
-  //       password: password,
-  //       name: name,
-  //       telephone1: telephone1,
-  //       telephone2: telephone2,
-  //       address: address,
-  //       note: note,
-  //       image: image,
-  //       createdBy: createdBy
-	// 		})
+			// Save uploaded file's metadata to db
+			const savedFile = await File.createFile(newFile)
 
-  //     Admin.createAdmin(newAdmin, function(err, admin) {
-  //       if (err) {
-  //         console.error(err)
-  //         return res.status(400).send({
-	// 				   error: err
-	//         })
-  //       } else {
-  //         return res.send({
-  //           admin: admin,
-  //           success: `You have successfully registered. ${admin.username}`
-  //         })
-  //       }
-  //     })
-  //   } catch (err) {
-  //     console.log(err)
-  //     return res.status(500).send({
-	//       error: err
-	//     })
-  //   }
-  // }
+			// Add new file data to user's files
+			const options = { new: true }
+			let fileToAdd = {
+				id: savedFile.id,
+				identifier: savedFile.identifier
+			}
+			const fields = {
+				$push: {
+					files: fileToAdd
+				}
+			}
+			const updatedUser = await User.findByIdAndUpdate(req.user._id, fields, options)
+
+			return res.status(201).json({
+				success: true,
+				file: savedFile,
+				updatedUser: updatedUser
+			})
+		} catch (err) {
+			// console.error(err)
+			// return res.status(500).json({ success: false, error: err })
+			return next(err)
+		}
+	}
 	
 } /* Module exports */

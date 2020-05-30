@@ -5,6 +5,10 @@ export default {
 		return Api(token).post('user', data)
 	},
 
+	createUserAttachment(token, userId, identifier, data) {
+		return Api(token).post(`user/${userId}/attachment?identifier=${identifier}`, data)
+	},
+
 	getLoginList(data) {
 		return Api().get(`login-list/${data.role}`)
 	},

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const multer = require('multer')
+const { uploadImage } = require('../../config/multer')
 
 // Controllers
 const UserController = require('../../controllers/UserController')
@@ -11,39 +11,6 @@ const UserControllerPolicy = require('../../policies/UserControllerPolicy')
 // Middleware
 const auth = require('../../middleware/authentication')
 
-// TODO: Move multer config to separate file
-// Multer storage engine
-const multerStorage = multer.diskStorage({
-	// Destination of uploaded images
-	destination: function(req, file, cb) {
-		cb(null, './images')
-	},
-	// Define image name
-	filename: function(req, file, cb) {
-		cb(null, Date.now() + '-' + file.originalname)
-	}
-})
-
-// File filter for uploading images - allow only jpg and png
-const fileFilter = (req, file, cb) => {
-	if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-		cb(null, true)
-	} else {
-		// Reject a file
-		cb(null, false)
-	}
-}
-
-// Init img upload
-const upload = multer({
-	storage: multerStorage,
-	// Max file/image size
-	limits: {
-		fileSize: 1024 * 1024 * 3
-	},
-	fileFilter: fileFilter
-})
-
 /* /admin middleware
 ===================================================== */
 
@@ -53,7 +20,7 @@ router.use(auth.ensureAuthenticated)
 if (process.env.NODE_ENV === 'development') {
 	router.use((req, res, next) => {
 		console.log('user: ', req.user)
-		console.log('admin: ', req.admin)
+		console.log('admin: ', req.user)
 		next()
 	})
 }
@@ -63,7 +30,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Create Admin
 router.post('/',
-	upload.single('profileImage'),
+	uploadImage.single('profileImage'),
 	UserControllerPolicy.admin,
 	UserController.createUser)
 

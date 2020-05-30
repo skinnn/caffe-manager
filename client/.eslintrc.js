@@ -16,6 +16,7 @@ module.exports = {
 		'html'
 	],
 	'rules': {
+		'no-trailing-spaces': ['error', { 'skipBlankLines': true }],
 		'space-before-function-paren': ['error', 'never'],
 		'no-unused-vars': 'off',
 		// allow paren-less arrow functions

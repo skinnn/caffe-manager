@@ -6,8 +6,8 @@ node_modules
 !README.md
 
 # Server
-server/images/**/*
-server/images/!.gitkeep
+server/uploads/images/*
+!server/uploads/images/.gitkeep
 
 # Client
 client/dist/electron/*

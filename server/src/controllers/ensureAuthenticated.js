@@ -13,8 +13,8 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 // TODO: Separate auth controller for user and admin
 
 // module.exports.isAdminLoggedIn = function(req, res, next) {
-//   if (req.admin.userType === 'admin') {
-//     console.log(req.admin)
+//   if (req.user.userType === 'admin') {
+//     console.log(req.user)
 //     return next()
 //   } else {
 //     res.send({
