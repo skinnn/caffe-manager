@@ -8,12 +8,6 @@ const UserController = require('../../controllers/user.controller')
 // Policies
 const UserControllerPolicy = require('../../policies/UserControllerPolicy')
 
-// Middleware
-const auth = require('../../middleware/authentication')
-
-// Authentication
-router.use(auth.ensureAuthenticated)
-
 // Development middleware
 if (process.env.NODE_ENV === 'development') {
 	router.use((req, res, next) => {

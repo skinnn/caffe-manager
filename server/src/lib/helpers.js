@@ -14,8 +14,22 @@ const checkToken = (token) => {
 				resolve({ validToken: token, decoded })
 			})
 		}
+		reject(null)
+	})
+}
 
-		throw new Error('Token is not provided.')
+// Sign user
+const jwtSignUser = (user) => {
+	const payload = {
+		roles: user.roles,
+		username: user.username
+	}
+	const secret = config.authentication.jwtSecret
+	const expiresFor = '7d' // Eg: 60, "2 days", "10h", "7d".
+	// const validNotBefore = '2 days'
+
+	return jwt.sign(payload, secret, {
+		expiresIn: expiresFor
 	})
 }
 
@@ -42,5 +56,6 @@ const getCurrentTime = () => {
 
 module.exports = {
 	checkToken,
+	jwtSignUser,
 	getCurrentTime
 }

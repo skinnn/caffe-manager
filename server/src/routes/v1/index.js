@@ -4,7 +4,7 @@ const { uploadImage } = require('../../config/multer')
 const Auth = require('../../middleware/authentication')
 
 // Controllers
-const AuthenticationController = require('../../controllers/authentication.controller')
+const AuthenticationController = require('../../controllers/login.controller')
 const SettingsController = require('../../controllers/setting.controller')
 const StorageController = require('../../controllers/storage.controller')
 const ArticleController = require('../../controllers/article.controller')
@@ -18,7 +18,7 @@ router.post('/login',
 	AuthenticationController.login)
 
 // Get Login list of users/admins - not using authentication
-router.get('/login-list/:role',
+router.get('/user/login-list',
 	UserController.getLoginList)
 
 // Authentication
@@ -30,10 +30,13 @@ router.use(Auth.ensureAuthenticated)
 router.use('/admin', require('./admin'))
 router.use('/user', require('./user'))
 router.use('/file', require('./file'))
-	
+
 // Logout
-router.post('/logout',
+router.delete('/login',
 	AuthenticationController.logout)
+	
+// router.post('/logout',
+// 	AuthenticationController.logout)
 
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',

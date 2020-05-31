@@ -8,7 +8,7 @@ export default {
 		return Api().post(`/user/${userId}/attachment?identifier=${identifier}`, data)
 	},
 	getLoginList(data) {
-		return Api().get(`/login-list/${data.role}`)
+		return Api().get(`/user/login-list?role=${data.role}`)
 	},
 	getUserById(data) {
 		return Api().get(`/user/${data.id}`)

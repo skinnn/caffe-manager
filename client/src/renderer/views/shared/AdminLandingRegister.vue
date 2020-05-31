@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import AuthenticationService from '@/services/AuthenticationService'
+import LoginService from '@/services/LoginService'
 
 export default {
 	data() {
@@ -100,7 +100,7 @@ export default {
 				adminFormData.append('createdBy', createdBy)
 
 				// Register admin
-				const response = (await AuthenticationService.registerAdmin(adminFormData)).data
+				const response = (await LoginService.registerAdmin(adminFormData)).data
 				// If registering was successful redirect to the admin list
 				if (response.admin) {
 					// Set success message and timeout

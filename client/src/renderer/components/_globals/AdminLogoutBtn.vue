@@ -9,7 +9,7 @@
 
 <script>
 // Services
-import AuthenticationService from '@/services/AuthenticationService'
+import LoginService from '@/services/LoginService'
 // Helpers
 import { mapGetters } from 'vuex'
 
@@ -22,7 +22,7 @@ export default {
 	methods: {
 		async onClick() {
 			try {
-				const res = await AuthenticationService.logout()
+				const res = await LoginService.logout()
 				// this.$router.push({
 				// 	name: 'admin-login',
 				// 	params: { loggedOutMessage: 'Logged out' }

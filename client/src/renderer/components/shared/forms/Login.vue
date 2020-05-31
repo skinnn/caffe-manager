@@ -45,7 +45,7 @@
 
 <script>
 // Services
-import AuthenticationService from '@/services/AuthenticationService'
+import LoginService from '@/services/LoginService'
 import SettingsService from '@/services/SettingsService'
 
 export default {
@@ -95,7 +95,7 @@ export default {
 			event.preventDefault()
 			try {
 				// Login
-				const loginRes = await AuthenticationService.login({
+				const loginRes = await LoginService.login({
 					username: this.username,
 					password: this.password
 				})

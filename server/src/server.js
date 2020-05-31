@@ -1,18 +1,18 @@
 const express = require('express')
 const cors = require('cors')
-const morgan = require('morgan')
-const app = express()
-const path = require('path')
+const morganLogger = require('morgan')
+const http = require('http')
 // const favicon = require('serve-favicon')
-// const cookieParser = require('cookie-parser')
-const mongoose = require('mongoose')
-const UserController = require('./controllers/user.controller')
+const Controller = require('./lib/Controller')
 
 // Master config
-const config = require('./config/config')
+const masterConfig = require('./config/config')
 
-// Middleware
-app.use(morgan('dev'))
+// Express app instance
+const app = express()
+
+// Global middleware
+app.use(morganLogger('dev'))
 app.use(cors({
 	credentials: true,
 	origin: 'http://localhost:9080'
@@ -22,45 +22,26 @@ app.use(express.json())
 // Parse application/xwww-form-urlencoded
 app.use(express.urlencoded({ extended: true }))
 
-// app.use(cookieParser())
-// Connect Flash
-// app.use(flash())
-
-// Express-session middleware
-app.use(require('express-session')({
-	secret: 'keyboard cat',
-	resave: false,
-	saveUninitialized: true
-}))
-
-// Global Variables
-// app.use((req, res, next) => {
-// 	console.log('locals: ', res.locals)
-// 	next()
-// })
-
 // Static assets
 // app.use('/public', express.static(path.join(__dirname, '../public')))
 
-// Mount main router
+// Mount main router with all routes
 app.use('/', require('./routes/index'))
 
-// Connect to a local Mongo Database
-mongoose
-	.connect(config.db.uri, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-		useFindAndModify: false, // Fixing deprecation for findOneAndUpdate() query
-		useCreateIndex: true
-	})
-	.then(() => {
-		console.log('Database connected.')
+// Boot the server
+Controller.boot(masterConfig, app).then((ctx) => {
+	// Create http or https server
+	if (ctx.api.protocol === 'https') {
+		// TODO: Finish
+		// const https = require('https')
+		// ctx.api.server = https.createServer(ctx.getSSLOptions(), app)
+	} else {
+		ctx.api.server = http.createServer(app)
+	}
 
-		// Start the server
-		app.listen(config.port, () => {
-			// Create root admin if it does not exist
-			console.log(`Listening on port: ${config.port}`)
-			UserController.createRootAdmin()
-		})
+	// Start the server
+	ctx.api.server.listen(ctx.api.port, async () => {
+		console.log(`Server started on: ${ctx.api.protocol}://${ctx.api.host}:${ctx.api.port} in ${process.env.NODE_ENV}`)
 	})
-	.catch((err) => console.error(err))
+})
+.catch(err => Controller.logError(err))

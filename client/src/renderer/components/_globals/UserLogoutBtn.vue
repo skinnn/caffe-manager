@@ -6,7 +6,7 @@
 
 <script>
 // Services
-import AuthenticationService from '@/services/AuthenticationService'
+import LoginService from '@/services/LoginService'
 // Helpers
 import { mapGetters } from 'vuex'
 
@@ -19,7 +19,7 @@ export default {
 	methods: {
 		async onClick() {
 			try {
-				const response = (await AuthenticationService.logout()).data
+				const response = (await LoginService.logout()).data
 
 				if (response.user === false) {
 					// Set user and isLoggedIn states to false

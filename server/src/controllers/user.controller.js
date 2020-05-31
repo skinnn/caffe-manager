@@ -7,17 +7,16 @@ const File = require('../models/File')
 module.exports = {
 
 	// Create root Admin if it doesn't exist
-	async createRootAdmin() {
-		try {
+	createRootAdmin() {
+		return new Promise((resolve, reject) => {
 			// Create or Update
 			let query = { root: true }
 			User.find(query, (err, admin) => {
-				if (err) {
-					throw err
-				}
+				if (err) reject(err)
 				// If Root Admin exists
 				if (admin.length > 0) {
-					return console.log('Root user already exists')
+					console.log('Root user already exists')
+					resolve(true)
 				} else if (!admin.root) {
 					// If Root User doesn't exist create one
 					const defaultRoot = {
@@ -29,26 +28,21 @@ module.exports = {
 					const admin = new User(defaultRoot)
 					// Hash the password
 					bcrypt.genSalt(10, (err, salt) => {
-						if (err) {
-							throw err
-						}
+						if (err) reject(err)
 						bcrypt.hash(admin.password, salt, (err, hash) => {
-							if (err) {
-								throw err
-							}
+							if (err) reject(err)
 							console.log('Root user created.')
 							admin.password = hash
 							// Save Root User in the database
 							admin.save()
+							resolve(admin)
 						})
 					})
 				} else {
 					console.log('An error has occurred while creating the root user.')
 				}
 			})
-		} catch (err) {
-			console.error(err)
-		}
+		})
 	},
 
 	// Create user
@@ -168,31 +162,25 @@ module.exports = {
 	async getAllAdmins(req, res) {
 		try {
 			await User.find({ roles: 'admin' }, (err, admins) => {
-				if (err) {
-					console.log(err)
-				} else {
-					res.send({
-						admins: admins
-					})
-				}
+				if (err) throw err
+				return res.status(200).json({
+					admins: admins
+				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: err
-			})
+			return next(err)
 		}
 	},
 
 	// Get User login List - just usernames and names
 	async getLoginList(req, res) {
-		const role = req.params.role || null
+		const role = req.query.role || null
 		try {
 			let query = {
 				roles: { $all: [role] },
 				root: false // Don't return the root user
 			}
 			const users = await User.find(query).select('-_id username name')
-			console.log(users)
 
 			return res.status(200).json({
 				users: users
@@ -212,21 +200,8 @@ module.exports = {
 			return res.status(200).json({
 				users: users
 			})
-			// User.find({}, (err, users) => {
-			//   if (err) {
-			//     throw err
-			//   } else {
-			//     return res.status(200).json({
-			//       users: users
-			//     })
-			//   }
-			// })
 		} catch (err) {
-			console.log(err)
-			return res.status(500).json({
-				success: false,
-				error: err
-			})
+			return next(err)
 		}
 	},
 	
@@ -238,18 +213,8 @@ module.exports = {
 			return res.status(200).json({
 				user: user
 			})
-			// User.getUserById(query, (err, user) => {
-			//  if (err) {
-			// 		throw err
-			// 	}
-			// 	return res.status(200).json({
-			// 		user: user
-			// 	})
-			// })
 		} catch (err) {
-			return res.status(500).send({
-				error: err
-			})
+			return next(err)
 		}
 	},
 	
@@ -288,10 +253,7 @@ module.exports = {
 				})
 			})
 		} catch (err) {
-			console.error(err)
-			return res.status(500).json({
-				error: err
-			})
+			return next(err)
 		}
 	},
 
