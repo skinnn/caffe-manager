@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<v-container fluid class="pt-0">
+		<v-container fluid class="container-fluid pt-0">
 			<v-app>
 				<router-view></router-view>
 			</v-app>
@@ -27,6 +27,10 @@
 
 	#app {
 		user-select: none;
+	}
+
+	.container-fluid {
+		max-height: 100vh;;
 	}
 
 	.v-list__group__header {

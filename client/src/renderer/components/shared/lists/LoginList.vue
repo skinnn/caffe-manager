@@ -78,10 +78,11 @@ export default {
 
 	.login-list {
 		list-style: none;
-		display: table;
+		display: block;
 		position: fixed;
-		min-height: 415px;
-		min-width: 430px;
+		overflow-y: auto;
+		height: 415px;
+		min-width: 350px;
 		padding: 0 10px 0 10px;
 		left: 67%;
 		border: 1px solid grey;
@@ -92,22 +93,22 @@ export default {
 			cursor: pointer;
 			list-style: none;
 			text-align: left;
-			font-size: 18px;
+			font-size: 14px;
 			margin: 10px 0 0 0;
 
 			&:hover {
 				span.user-name {
 					background-color: lighten(green, 40);
-					border-left: 2px solid green;
+					// border-bottom: 2px solid green;
 				}
 			}
 
 			span.user-name {
-				min-height: 50px;
-				background-color: lighten(green, 55);
-				padding: 10px;
+				display: inline-block;
+				padding: 10px 6px;
+				height: 40px;
 				border-radius: 10px;
-				display: table;
+				background-color: lighten(green, 55);
 			}
 		}
 

@@ -1,5 +1,5 @@
 <template>
-	<v-layout row class="mt-5">
+	<v-layout row class="login-page mt-5">
 
 		<LoginForm :heading="'User Login'" :selectedUser="selectedUser" />
 		<LoginList :userType="'users'" @userSelected="handleSelectedUser" />
@@ -32,6 +32,10 @@ export default {
 
 <style scoped lang="scss">
 
+	.login-page {
+		max-height: 100vh;
+		overflow-y: hidden;
+	}
 	.toolbar-title {
 		color: white;
 	}
