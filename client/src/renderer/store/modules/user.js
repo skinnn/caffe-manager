@@ -1,6 +1,6 @@
 var state = {
 	user: JSON.parse(localStorage.getItem('user')) || null,
-	token: JSON.parse(localStorage.getItem('token')) || null
+	token: localStorage.getItem('token') || null
 }
 
 const mutations = {
@@ -23,7 +23,7 @@ const actions = {
 
 	setToken({ commit }, token) {
 		return new Promise((resolve, reject) => {
-			localStorage.setItem('token', JSON.stringify(token))
+			localStorage.setItem('token', token)
 			commit('SET_TOKEN', token)
 			resolve(token)
 		})
@@ -63,11 +63,6 @@ const getters = {
 	isLoggedIn(state) {
 		return state.token !== null
 	}
-
-	// TODO: Implement
-	// isUserLoggedIn() {}
-	// isAdminLoggedIn() {}
-	// isTokenValid() {}
 }
 
 export default {

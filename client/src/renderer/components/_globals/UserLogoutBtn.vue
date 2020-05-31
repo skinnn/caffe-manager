@@ -13,14 +13,13 @@ import { mapGetters } from 'vuex'
 export default {
 
 	computed: {
-		...mapGetters(['getUserToken'])
+		...mapGetters([])
 	},
 
 	methods: {
 		async onClick() {
 			try {
-				const token = await this.getUserToken
-				const response = (await AuthenticationService.logout(token)).data
+				const response = (await AuthenticationService.logout()).data
 
 				if (response.user === false) {
 					// Set user and isLoggedIn states to false

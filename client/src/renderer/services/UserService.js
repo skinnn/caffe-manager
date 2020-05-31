@@ -1,31 +1,25 @@
 import Api from '@/services/Api'
 
 export default {
-	createUser(token, data) {
-		return Api(token).post('user', data)
+	createUser(data) {
+		return Api().post('/user', data)
 	},
-
-	createUserAttachment(token, userId, identifier, data) {
-		return Api(token).post(`user/${userId}/attachment?identifier=${identifier}`, data)
+	createUserAttachment(userId, identifier, data) {
+		return Api().post(`/user/${userId}/attachment?identifier=${identifier}`, data)
 	},
-
 	getLoginList(data) {
-		return Api().get(`login-list/${data.role}`)
+		return Api().get(`/login-list/${data.role}`)
 	},
-
-	getUserById(token, data) {
-		return Api(token).get(`user/${data.id}`)
+	getUserById(data) {
+		return Api().get(`/user/${data.id}`)
 	},
-
-	getAllUsers(token) {
-		return Api(token).get('user')
+	getAllUsers() {
+		return Api().get('/user')
 	},
-
-	updateUserById(token, id, data) {
-		return Api(token).patch(`user/${id}`, data)
+	updateUserById(id, data) {
+		return Api().patch(`/user/${id}`, data)
 	},
-
-	deleteUserById(token, id, imgPath) {
-		return Api(token).delete(`user/${id}`, imgPath)
+	deleteUserById(id, imgPath) {
+		return Api().delete(`/user/${id}`, imgPath)
 	}
 }

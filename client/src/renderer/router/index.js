@@ -188,7 +188,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
-import config from '@/config/config'
 // Routes
 import SharedRoutes from '@/router/Shared/SharedRoutes'
 import AdminRoutes from '@/router/Admin/AdminRoutes'
@@ -207,28 +206,6 @@ const router = new VueRouter({
 
 /* Route guards
 ======================================== */
-
-// Admin Route Guard
-// router.beforeEach((to, from, next) => {
-// 	if (to.matched.some(record => record.meta.requiresAuth !== 'admin')) {
-// 		// Routes that do not require 'admin' authentication
-// 		next()
-// 	} else {
-// 		/* Admin routes that require authentication
-// 		======================================== */
-// 		// TODO: User isAdminLoggedIn getter instead
-// 		const isLoggedIn = store.getters.isLoggedIn
-// 		const loggedInUser = store.getters.getUser
-// 		const isAdmin = loggedInUser !== null ? loggedInUser.roles.includes('admin') : false
-
-// 		if (isLoggedIn && isAdmin) {
-// 			next()
-// 		} else {
-// 			next('/forbidden')
-// 		}
-// 	}
-// })
-
 router.beforeEach((to, from, next) => {
 	/* Admin routes that require authentication
 	======================================== */
@@ -239,9 +216,9 @@ router.beforeEach((to, from, next) => {
 		const isAdmin = loggedInUser !== null ? loggedInUser.roles.includes('admin') : false
 
 		if (isLoggedIn && isAdmin) {
-			next()
+			return next()
 		} else {
-			next('/forbidden')
+			return next('/forbidden')
 		}
 
 	/* User routes that require authentication
@@ -249,20 +226,18 @@ router.beforeEach((to, from, next) => {
 	} else if (to.matched.some(record => record.meta.requiresAuth === 'user')) {
 		// TODO: Use isUserLoggedIn getter instead
 		const isLoggedIn = store.getters.isLoggedIn
-		const loggedInUser = store.getters.getLoggedInUser
+		const loggedInUser = store.getters.getUser
 		const isUser = loggedInUser !== null ? loggedInUser.roles.includes('user') : false
 
-		if (isUser && isLoggedIn) {
-			next()
+		if (isLoggedIn && isUser) {
+			return next()
 		} else {
-			next('/forbidden')
+			return next('/forbidden')
 		}
 	} else {
 		// Routes that do not require either 'user' or 'admin' authentication
-		next()
+		return next()
 	}
 })
-
-/* ======================================== */
 
 export default router

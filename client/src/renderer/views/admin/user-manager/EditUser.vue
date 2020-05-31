@@ -137,7 +137,7 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUserToken', 'getUser'])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -196,10 +196,9 @@ export default {
 	async mounted() {
 		// TODO: Create editingAdmin state in the user store module
 		try {
-			const token = this.getUserToken
 			const data = { id: this.userId.value }
 
-			const res = await UserService.getUserById(token, data)
+			const res = await UserService.getUserById(data)
 
 			if (res.status === 200) {
 				const user = res.data.user
@@ -260,10 +259,9 @@ export default {
 				const createdBy = this.getUser._id
 				formData.append('createdBy', createdBy)
 
-				const token = this.getUserToken
 				const userId = this.userId.value
 				// const data = { id: userId, replace: formData }
-				const res = await UserService.updateUserById(token, userId, formData)
+				const res = await UserService.updateUserById(userId, formData)
 				if (res.status === 200) {
 					const user = res.data.user
 					this.$router.push({

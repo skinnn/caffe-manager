@@ -16,14 +16,13 @@ import { mapGetters } from 'vuex'
 export default {
 
 	computed: {
-		...mapGetters(['getUserToken'])
+		...mapGetters([])
 	},
 
 	methods: {
 		async onClick() {
 			try {
-				const token = this.getUserToken
-				const res = await AuthenticationService.logout(token)
+				const res = await AuthenticationService.logout()
 				// this.$router.push({
 				// 	name: 'admin-login',
 				// 	params: { loggedOutMessage: 'Logged out' }

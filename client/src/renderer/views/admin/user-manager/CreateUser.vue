@@ -187,7 +187,7 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUserToken', 'getUser'])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -241,31 +241,28 @@ export default {
 		async onSubmit() {
 			event.preventDefault()
 			try {
-				const token = await this.getUserToken
 				// TODO: Finish permissions & roles
 
-				// TODO: Get token in the axios instance and send it along if its present in the localStorage
 				// Send the request
-				const response = await UserService.createUser(token, this.form.fields)
+				const response = await UserService.createUser(this.form.fields)
 				const data = response.data
-				console.log('RESPONSE: ', response)
-				console.log('DATA: ', data)
 
 				// Created successfully
 				if (response.status === 201) {
-					const attachmentResponse = await this.createUserAttachment(token)
-					console.log('attachmentResponse: ', attachmentResponse)
+					const profileImage = this.form.files.profileImage.file
+					if (profileImage) {
+						const attachmentResponse = await this.createUserAttachment(profileImage)
+					}
+					
+					this.resetFormFields()
 
 					// Set success message and timeout
 					this.error = null
 					this.info = null
-					this.success = `User with username <span style="color: blue; font-size:17px;">${data.user.username}</span>
-					 registered successfully.`
+					this.success = `User with username <span style="color: blue; font-size:17px;">${data.user.username}</span> created successfully.`
 					setTimeout(() => {
 						this.success = null
 					}, 5000)
-
-					// this.resetFormFields()
 				}
 			} catch (error) {
 				console.log(error.response.data)
@@ -277,17 +274,14 @@ export default {
 			}
 		},
 
-		async createUserAttachment(token) {
+		async createUserAttachment(profileImage) {
 			try {
 				const formData = new FormData()
-				const profileImage = this.form.files.profileImage.file
 				const identifier = 'profile_image'
 				formData.append('attachment', profileImage)
 				const userId = this.getUser._id
-				console.log('SENDING ID: ', userId)
-				console.log('SENDING FILE: ', profileImage)
 				// Upload image
-				const fileResponse = await UserService.createUserAttachment(token, userId, identifier, formData)
+				const fileResponse = await UserService.createUserAttachment(userId, identifier, formData)
 				return fileResponse
 			} catch (err) {
 				console.error(err)
@@ -338,24 +332,24 @@ export default {
 				previewImg.src = e.target.result
 			}
 			reader.readAsDataURL(file)
-		}
-	},
+		},
 
-	resetFormFields() {
-		// Set all Values to default after successful registering
-		this.form.fields.username = ''
-		this.form.fields.password = ''
-		this.form.fields.password2 = ''
-		this.form.fields.email = ''
-		this.form.fields.name = ''
-		this.form.fields.phone = ''
-		this.form.fields.address = ''
-		this.form.fields.note = ''
-		this.form.files.profileImage.file = null
-		this.form.files.profileImage.src = ''
-		// Hide password messages
-		this.showMessage = false
-		this.confirmPasswordMatched = null
+		resetFormFields() {
+			// Set all Values to default after successful registering
+			this.form.fields.username = ''
+			this.form.fields.password = ''
+			this.form.fields.password2 = ''
+			this.form.fields.email = ''
+			this.form.fields.name = ''
+			this.form.fields.phone = ''
+			this.form.fields.address = ''
+			this.form.fields.note = ''
+			this.form.files.profileImage.file = null
+			this.form.files.profileImage.src = ''
+			// Hide password messages
+			this.showMessage = false
+			this.confirmPasswordMatched = null
+		}
 	}
 }
 </script>

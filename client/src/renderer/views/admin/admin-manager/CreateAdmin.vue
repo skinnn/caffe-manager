@@ -192,7 +192,7 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUser', 'getUserToken'])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -330,9 +330,8 @@ export default {
 						adminFormData.append('note', this.note.value)
 						adminFormData.append('createdBy', this.createdBy) // ID of the user that created this admin (should always be root)
 
-						const token = this.getUserToken
 						// Create admin
-						const res = await AdminService.createAdmin(token, adminFormData)
+						const res = await AdminService.createAdmin(adminFormData)
 						// If registering was successful
 						if (res.data.admin) {
 							console.log('admin res: ', res)

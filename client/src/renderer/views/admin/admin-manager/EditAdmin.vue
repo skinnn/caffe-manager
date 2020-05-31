@@ -69,16 +69,15 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUserToken'])
+		...mapGetters([])
 	},
 
 	async mounted() {
 		try {
 			// TODO: Create editingUser state in the user store module
-			const token = this.getUserToken
 			const data = { id: this.$store.state.route.params.adminId }
 			console.log('data: ', data)
-			const response = (await UserService.getUserById(token, data)).data
+			const response = (await UserService.getUserById(data)).data
 
 			if (response.admin) {
 				this.admin = response.admin

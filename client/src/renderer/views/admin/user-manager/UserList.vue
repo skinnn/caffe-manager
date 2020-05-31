@@ -97,7 +97,7 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUserToken'])
+		...mapGetters([])
 	},
 
 	data() {
@@ -142,8 +142,7 @@ export default {
 	methods: {
 		async getUsers() {
 			try {
-				const token = this.getUserToken
-				const res = (await UserService.getAllUsers(token)).data
+				const res = (await UserService.getAllUsers()).data
 
 				// Get User list
 				if (res.users) {
@@ -199,12 +198,11 @@ export default {
 
 			if (confirmation) {
 				try {
-					const token = this.getUserToken
 					const userId = user._id
 					// TODO: Change files deleting, create file db model and upload files in separate request
 					const imgPath = user.files[0]
 					console.log(imgPath)
-					const res = await UserService.deleteUserById(token, userId, imgPath)
+					const res = await UserService.deleteUserById(userId, imgPath)
 					// If User is deleted successfully
 					if (res.status === 200) {
 						// Set success message and timeout

@@ -94,7 +94,7 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUserToken', 'getUser'])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -132,11 +132,10 @@ export default {
 	},
 
 	async mounted() {
-		const token = this.getUserToken
 		try {
 			// Get Admin list
 			// TODO: Get all admins except the Root Admin
-			const res = await AdminService.getAllAdmins(token)
+			const res = await AdminService.getAllAdmins()
 			const admins = res.data.admins
 			if (admins) {
 				const currentLoggedInAdmin = this.getUser.username
@@ -194,11 +193,10 @@ export default {
 
 			if (confirmation) {
 				try {
-					const token = this.getUserToken
 					const adminId = admin._id
 					const imgPath = admin.image
 					// TODO: Don't send the image, api should delete all relevant admin data by admin ID
-					const res = await UserService.deleteUserById(token, adminId, imgPath)
+					const res = await UserService.deleteUserById(adminId, imgPath)
 					// If Admin is deleted successfully
 					if (res.status === 200) {
 						// Set success message and timeout
