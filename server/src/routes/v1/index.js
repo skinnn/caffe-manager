@@ -4,15 +4,14 @@ const { uploadImage } = require('../../config/multer')
 const Auth = require('../../middleware/authentication')
 
 // Controllers
-const AuthenticationController = require('../../controllers/AuthenticationController')
-const SettingsController = require('../../controllers/SettingsController')
-const AdminController = require('../../controllers/AdminController')
-const StorageController = require('../../controllers/StorageController')
-const ArticleController = require('../../controllers/ArticleController')
-const ArticleSubgroupController = require('../../controllers/ArticleSubgroupController')
-const TablesController = require('../../controllers/TablesController')
-const OrderController = require('../../controllers/OrderController')
-const UserController = require('../../controllers/UserController')
+const AuthenticationController = require('../../controllers/authentication.controller')
+const SettingsController = require('../../controllers/setting.controller')
+const StorageController = require('../../controllers/storage.controller')
+const ArticleController = require('../../controllers/article.controller')
+const ArticleSubgroupController = require('../../controllers/category.controller')
+const TablesController = require('../../controllers/tables.controller')
+const OrderController = require('../../controllers/order.controller')
+const UserController = require('../../controllers/user.controller')
 
 // Login - not using authentication
 router.post('/login',
@@ -35,9 +34,6 @@ router.use('/file', require('./file'))
 // Logout
 router.post('/logout',
 	AuthenticationController.logout)
-
-
-
 
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',
@@ -77,8 +73,8 @@ router.get('/admin/storages',
 	StorageController.getAllStorages)
 
 // Update Admin
-router.patch('/admin/:adminId',
-	AdminController.updateAdminById)
+// router.patch('/admin/:adminId',
+// 	AdminController.updateAdminById)
 
 // Create Storage
 router.post('/admin/storage/create',

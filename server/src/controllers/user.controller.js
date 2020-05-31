@@ -7,25 +7,24 @@ const File = require('../models/File')
 module.exports = {
 
 	// Create root Admin if it doesn't exist
-  async createRootAdmin() {
-    try {
-      // Create or Update
-      let query = { root: true }
-      User.find(query, (err, admin) => {
-        if (err) {
+	async createRootAdmin() {
+		try {
+			// Create or Update
+			let query = { root: true }
+			User.find(query, (err, admin) => {
+				if (err) {
 					throw err
-        }
+				}
 				// If Root Admin exists
 				if (admin.length > 0) {
 					return console.log('Root user already exists')
-
 				} else if (!admin.root) {
 					// If Root User doesn't exist create one
 					const defaultRoot = {
 						root: true,
 						roles: ['admin'],
 						username: config.rootUser.username,
-						password: config.rootUser.password,
+						password: config.rootUser.password
 					}
 					const admin = new User(defaultRoot)
 					// Hash the password
@@ -46,46 +45,43 @@ module.exports = {
 				} else {
 					console.log('An error has occurred while creating the root user.')
 				}
-      })
-    } catch (err) {
-      console.log(err)
-      return res.status(500).send({
-				error: err
 			})
-    }
+		} catch (err) {
+			console.error(err)
+		}
 	},
 
-  // Create user
-  async createUser(req, res, next) {
+	// Create user
+	async createUser(req, res, next) {
 		try {
 			const userExist = await User.getUserByUsername(req.body.username)
-				if (userExist) {
-					return res.status(400).json({
-						success: false,
-						message: `User: ${req.body.username} already exist`
-					})
-				}
-      // TODO: Fix User privileges
-      // Create user menu
-      // const userMenu = [
-      //   {
-      //     'warehouse': req.body.userMenu.warehouse,
-      //     'title': 'Warehouse',
-      //     'icon': 'storage',
-      //     'route': '/user/warehouse'
-      //   },
-      //   {
-      //     'tables': req.body.userMenu.tables,
-      //     'title': 'Tables',
-      //     'icon': 'view_carousel',
-      //     'route': '/user/tables'
-      //   },
-      //   {
-      //     'home': req.body.userMenu.home,
-      //     'title': 'Home',
-      //     'icon': 'home',
-      //     'route': '/user/home'
-      //   }
+			if (userExist) {
+				return res.status(400).json({
+					success: false,
+					message: `User: ${req.body.username} already exist`
+				})
+			}
+			// TODO: Fix User privileges
+			// Create user menu
+			// const userMenu = [
+			//   {
+			//     'warehouse': req.body.userMenu.warehouse,
+			//     'title': 'Warehouse',
+			//     'icon': 'storage',
+			//     'route': '/user/warehouse'
+			//   },
+			//   {
+			//     'tables': req.body.userMenu.tables,
+			//     'title': 'Tables',
+			//     'icon': 'view_carousel',
+			//     'route': '/user/tables'
+			//   },
+			//   {
+			//     'home': req.body.userMenu.home,
+			//     'title': 'Home',
+			//     'icon': 'home',
+			//     'route': '/user/home'
+			//   }
 			// ]
 
 			// Hash password
@@ -93,16 +89,16 @@ module.exports = {
 
 			// const imageURL = req.file !== undefined && req.file !== '' ? req.file.path : ''
 			
-      const newUser = new User({
+			const newUser = new User({
 				roles: req.body.roles,
-        username: req.body.username,
-        password: hashedPassword,
-        name: req.body.name,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        note: req.body.note,
-        createdBy: req.body.createdBy,
+				username: req.body.username,
+				password: hashedPassword,
+				name: req.body.name,
+				email: req.body.email,
+				phone: req.body.phone,
+				address: req.body.address,
+				note: req.body.note,
+				createdBy: req.body.createdBy
 				// userMenu: userMenu,
 			})
 
@@ -111,28 +107,28 @@ module.exports = {
 				success: true,
 				user: savedUser
 			})
-    } catch (err) {
+		} catch (err) {
 			console.error(err)
-      return res.status(500).send({
+			return res.status(500).send({
 				success: false,
 				error: err
 			})
-    }
+		}
 	},
 
 	// Delete User by id
-  async deleteUserById(req, res) {
-    try {
-      let query = { _id: req.params.id }
+	async deleteUserById(req, res) {
+		try {
+			let query = { _id: req.params.id }
 
-      // Get image path
+			// Get image path
 			let img = req.body.imgPath
 			console.log('BODY: ', req.body)
-      // Create full image path so it can be deleted with fs.unlink
-      let fullImgPath = ''
-      if (img !== '') {
-        let dirPath = process.cwd()
-        fullImgPath = dirPath + '/' + img
+			// Create full image path so it can be deleted with fs.unlink
+			let fullImgPath = ''
+			if (img !== '') {
+				let dirPath = process.cwd()
+				fullImgPath = dirPath + '/' + img
 			}
 			
 			// res.status(200).json({
@@ -140,59 +136,59 @@ module.exports = {
 			// 	message: 'Got it.'
 			// })
 
-      User.deleteOne(query, (err) => {
-        if (err) {
-          return res.status(500).json({
+			User.deleteOne(query, (err) => {
+				if (err) {
+					return res.status(500).json({
 						error: err
 					})
-        }
-        if (fullImgPath && fullImgPath !== '') {
-          fs.unlink(fullImgPath, (err) => {
-            if (err) {
+				}
+				if (fullImgPath && fullImgPath !== '') {
+					fs.unlink(fullImgPath, (err) => {
+						if (err) {
 							throw err
-              // return res.status(500).json({
+							// return res.status(500).json({
 							error: err
 							// })
-            }
-          })
-        }
-        return res.status(200).json({
+						}
+					})
+				}
+				return res.status(200).json({
 					success: true,
-          message: 'User deleted successfully.'
-        })
-      })
-    } catch (err) {
-      res.status(500).json({
+					message: 'User deleted successfully.'
+				})
+			})
+		} catch (err) {
+			res.status(500).json({
 				error: err
 			})
-    }
-  },
+		}
+	},
 	
 	// Get Admins
-  async getAllAdmins(req, res) {
-    try {
-      await User.find({ roles: 'admin' }, (err, admins) => {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send({
-            admins: admins
-          })
-        }
-      })
-    } catch (err) {
-      res.status(500).send({
+	async getAllAdmins(req, res) {
+		try {
+			await User.find({ roles: 'admin' }, (err, admins) => {
+				if (err) {
+					console.log(err)
+				} else {
+					res.send({
+						admins: admins
+					})
+				}
+			})
+		} catch (err) {
+			res.status(500).send({
 				error: err
 			})
-    }
+		}
 	},
 
 	// Get User login List - just usernames and names
 	async getLoginList(req, res) {
 		const role = req.params.role || null
-    try {
+		try {
 			let query = {
-				roles: { $all : [role] },
+				roles: { $all: [role] },
 				root: false // Don't return the root user
 			}
 			const users = await User.find(query).select('-_id username name')
@@ -201,66 +197,66 @@ module.exports = {
 			return res.status(200).json({
 				users: users
 			})
-    } catch (err) {
-      console.log(err)
-      return res.status(500).json({
+		} catch (err) {
+			console.log(err)
+			return res.status(500).json({
 				error: err
 			})
-    }
+		}
 	},
 	
 	// Get all Users
-  async getAllUsers(req, res) {
-    try {
+	async getAllUsers(req, res) {
+		try {
 			const users = await User.find({ roles: 'user' })
 			return res.status(200).json({
 				users: users
 			})
-      // User.find({}, (err, users) => {
-      //   if (err) {
-      //     throw err
-      //   } else {
-      //     return res.status(200).json({
-      //       users: users
-      //     })
-      //   }
-      // })
-    } catch (err) {
-      console.log(err)
-      return res.status(500).json({
+			// User.find({}, (err, users) => {
+			//   if (err) {
+			//     throw err
+			//   } else {
+			//     return res.status(200).json({
+			//       users: users
+			//     })
+			//   }
+			// })
+		} catch (err) {
+			console.log(err)
+			return res.status(500).json({
 				success: false,
 				error: err
 			})
-    }
+		}
 	},
 	
 	// Get User by id
-  async getUserById(req, res) {
-    try {
+	async getUserById(req, res) {
+		try {
 			const query = {_id: req.params.id || null}
 			const user = await User.getUserById(query)
 			return res.status(200).json({
 				user: user
 			})
-      // User.getUserById(query, (err, user) => {
-      //  if (err) {
+			// User.getUserById(query, (err, user) => {
+			//  if (err) {
 			// 		throw err
 			// 	}
 			// 	return res.status(200).json({
 			// 		user: user
 			// 	})
-      // })
-    } catch (err) {
-      return res.status(500).send({
+			// })
+		} catch (err) {
+			return res.status(500).send({
 				error: err
 			})
-    }
+		}
 	},
 	
 	// Update User by id
-  async updateUserById(req, res) {
+	async updateUserById(req, res) {
 		// TODO: Not working
-    try {
+		try {
 			let query = {_id: req.body.id}
 			let options = { new: true }
 			
@@ -275,32 +271,32 @@ module.exports = {
 			}
 
 			// If image is added add image path
-      if (req.file !== undefined && req.file !== '') {
+			if (req.file !== undefined && req.file !== '') {
 				// TODO: This overrides the whole files Array, needs a fix
 				dataToReplace.files = [req.file.path]
 			}
 
 			console.log('final: ', dataToReplace)
 
-      User.findOneAndUpdate(query, dataToReplace, options, (err, user) => {
-        if (err) {
+			User.findOneAndUpdate(query, dataToReplace, options, (err, user) => {
+				if (err) {
 					throw err
 				}
 				console.log('usr', user)
 				return res.status(200).json({
 					user: user
 				})
-      })
-    } catch (err) {
+			})
+		} catch (err) {
 			console.error(err)
-      return res.status(500).json({
+			return res.status(500).json({
 				error: err
 			})
-    }
-  },
+		}
+	},
 
 	// Create attachment for a user
-  async createAttachment(req, res, next) {
+	async createAttachment(req, res, next) {
 		try {
 			if (!req.query.identifier) {
 				return res.status(400).json({

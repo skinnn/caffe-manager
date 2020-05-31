@@ -1,7 +1,7 @@
 {
 	"name": "caffe-manager-client",
-	"version": "1.0.0",
-	"description": "Caffe manager client.",
+	"version": "0.0.0",
+	"description": "Caffe manager client",
 	"main": "./dist/electron/main.js",
 	"author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",
 	"license": "MIT",

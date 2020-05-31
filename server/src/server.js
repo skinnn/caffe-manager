@@ -6,7 +6,7 @@ const path = require('path')
 // const favicon = require('serve-favicon')
 // const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
-const UserController = require('./controllers/UserController')
+const UserController = require('./controllers/user.controller')
 
 // Master config
 const config = require('./config/config')
@@ -28,9 +28,9 @@ app.use(express.urlencoded({ extended: true }))
 
 // Express-session middleware
 app.use(require('express-session')({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true
+	secret: 'keyboard cat',
+	resave: false,
+	saveUninitialized: true
 }))
 
 // Global Variables
@@ -48,19 +48,19 @@ app.use('/', require('./routes/index'))
 // Connect to a local Mongo Database
 mongoose
 	.connect(config.db.uri, {
-    useNewUrlParser: true,
+		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		useFindAndModify: false, // Fixing deprecation for findOneAndUpdate() query
-    useCreateIndex: true
-  })
-  .then(() => {
+		useCreateIndex: true
+	})
+	.then(() => {
 		console.log('Database connected.')
 
-    // Start the server
-    app.listen(config.port, () => {
+		// Start the server
+		app.listen(config.port, () => {
 			// Create root admin if it does not exist
-      console.log(`Listening on port: ${config.port}`)
+			console.log(`Listening on port: ${config.port}`)
 			UserController.createRootAdmin()
-    })
-  })
-  .catch((err) => console.error(err))
+		})
+	})
+	.catch((err) => console.error(err))

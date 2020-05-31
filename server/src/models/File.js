@@ -12,8 +12,8 @@ const FileSchema = new Schema({
 	mime: { type: String, required: true },
 	size: { type: String, required: true },
 	__owner: { type: String, required: true },
-  created: { type: Date, default: Date.now },
-  updated: { type: String, default: null }
+	created: { type: Date, default: Date.now },
+	updated: { type: String, default: null }
 })
 
 const File = module.exports = mongoose.model('File', FileSchema)

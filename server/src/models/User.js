@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
 // var fileSchema = new Schema({
-// 	_id: false, 
+// 	_id: false,
 // 	id: { type: String, required: true },
 // 	identifier: { type: String, required: true }
 // })
@@ -14,84 +14,84 @@ const UserSchema = new Schema({
 		type: Array,
 		default: ['user']
 	},
-  root: {
-    type: Boolean,
-    default: false
-  },
-  username: {				// Required
-    type: String,
+	root: {
+		type: Boolean,
+		default: false
+	},
+	username: {				// Required
+		type: String,
 		required: true,
 		trim: true,
-    unique: true
-  },
-  name: {
+		unique: true
+	},
+	name: {
 		type: String,
 		trim: true,
 		default: null
-  },
-  password: {
+	},
+	password: {
 		type: String,
 		trim: true,
-    required: true
+		required: true
 	},
 	email: {
 		type: String,
 		trim: true,
 		default: null
 	},
-  files: [{
-		_id: false, 
+	files: [{
+		_id: false,
 		id: { type: String, required: true },
 		identifier: { type: String, required: true }
 	}],
-  phone: {
+	phone: {
 		type: String,
 		trim: true,
-    default: null
-  },
-  address: {
+		default: null
+	},
+	address: {
 		type: String,
 		trim: true,
-    default: null
+		default: null
 	},
 	// TODO: Create permissions logic
 	permissions: {
-    type: Array,
-    default: []
+		type: Array,
+		default: []
 	},
 	// userMenu: {
-  //   type: Array,
-  //   default: []
+	//   type: Array,
+	//   default: []
 	// },
 	// telephone2: {
-  //   type: String,
-  //   default: null
-  // },
-  note: {
+	//   type: String,
+	//   default: null
+	// },
+	note: {
 		type: String,
 		trim: true,
-    default: null
-  },
-  createdBy: {
+		default: null
+	},
+	createdBy: {
 		type: String,
 		trim: true,
-    default: null
-  },
-  created: {
+		default: null
+	},
+	created: {
 		type: Date,
 		required: true,
-    default: Date.now
-  },
-  updated: {
-    type: Date,
-    default: null
-  }
+		default: Date.now
+	},
+	updated: {
+		type: Date,
+		default: null
+	}
 })
 
 let User = module.exports = mongoose.model('User', UserSchema)
 
-module.exports.hashPassword = async (password) => {
-	return new Promise(async (resolve, reject) => {
+module.exports.hashPassword = async(password) => {
+	return new Promise(async(resolve, reject) => {
 		bcrypt.genSalt(10, (err, salt) => {
 			if (err) reject(err)
 

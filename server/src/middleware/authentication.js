@@ -4,13 +4,13 @@ const User = require('../models/User')
 
 /**
  * Make sure that user sending the request is authenticated.
- * 
+ *
  * First check that there is a token in the headers
  * Then check that token is a valid JSON Web Token
  * Then check that there is a login record with that token.
  */
 
-const ensureAuthenticated = async (req, res, next) => {
+const ensureAuthenticated = async(req, res, next) => {
 	try {
 		let token = req.headers['authorization'] || req.headers['x-access-token'] || '' // Express headers are auto converted to lowercase
 		if (token.startsWith('Bearer')) {
@@ -18,7 +18,7 @@ const ensureAuthenticated = async (req, res, next) => {
 			token = token.split(' ')[1]
 		}
 	
-		if(!token) {
+		if (!token) {
 			return res.status(401).json({
 				success: false,
 				message: 'Access denied. Token is not provided.'
@@ -42,7 +42,6 @@ const ensureAuthenticated = async (req, res, next) => {
 		req.user = decoded || null
 		
 		return next()
-	
 	} catch (err) {
 		if (err.name === 'JsonWebTokenError' && err.message === 'jwt malformed') {
 			return res.status(401).json({

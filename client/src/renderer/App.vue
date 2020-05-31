@@ -19,7 +19,6 @@
 			AdminSideMenu,
 			UserSideMenu
 		}
-
 	}
 </script>
 
@@ -30,7 +29,7 @@
 	}
 
 	.container-fluid {
-		max-height: 100vh;;
+		max-height: 100vh;
 	}
 
 	.v-list__group__header {

@@ -1,6 +1,6 @@
 {
   "name": "caffe-manager-api",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Caffe manager REST API",
   "main": "server.js",
   "author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",

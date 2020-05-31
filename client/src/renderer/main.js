@@ -10,6 +10,8 @@ import { sync } from 'vuex-router-sync'
 // Global Components
 import AdminLogoutBtn from '@/components/_globals/AdminLogoutBtn'
 import UserLogoutBtn from '@/components/_globals/UserLogoutBtn'
+// Global mixnins
+import '@/_mixins/index.js'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false

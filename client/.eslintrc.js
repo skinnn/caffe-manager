@@ -2,21 +2,20 @@ module.exports = {
 	root: true,
 	parser: 'babel-eslint',
 	parserOptions: {
-		sourceType: 'module'
+		sourceType: 'module',
 	},
 	env: {
 		browser: true,
-		node: true
+		node: true,
 	},
 	extends: 'standard',
 	globals: {
-		__static: true
+		__static: true,
 	},
-	plugins: [
-		'html'
-	],
-	'rules': {
-		'no-trailing-spaces': ['error', { 'skipBlankLines': true }],
+	plugins: ['html'],
+	rules: {
+		'eol-last': ['error', 'never'],
+		'no-trailing-spaces': ['error', { skipBlankLines: true }],
 		'space-before-function-paren': ['error', 'never'],
 		'no-unused-vars': 'off',
 		// allow paren-less arrow functions
@@ -25,8 +24,8 @@ module.exports = {
 		'generator-star-spacing': 0,
 		// allow debugger during development
 		'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-		'brace-style': [2, '1tbs', { 'allowSingleLine': true }],
+		'brace-style': [2, '1tbs', { allowSingleLine: true }],
 		'indent': ['error', 'tab'],
-		'no-tabs': 0
-	}
+		'no-tabs': 0,
+	},
 }

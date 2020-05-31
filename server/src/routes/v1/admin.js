@@ -3,7 +3,7 @@ const router = express.Router()
 const { uploadImage } = require('../../config/multer')
 
 // Controllers
-const UserController = require('../../controllers/UserController')
+const UserController = require('../../controllers/user.controller')
 
 // Policies
 const UserControllerPolicy = require('../../policies/UserControllerPolicy')

@@ -1,8 +1,12 @@
+import Vue from 'vue'
 
-// Return current date and time
-export default {
+/**
+ * Global mixins (methods available globally)
+ */
+
+Vue.mixin({
 	methods: {
-		getCurrentTime() {
+		_getCurrentTime() {
 			let currentTime = new Date()
 			// returns the month (from 0 to 11)
 			let month = currentTime.getMonth() + 1
@@ -18,8 +22,7 @@ export default {
 			let date = day + '.' + month + '.' + year + '.' + '  -  '
 			let time = hour + 'h : ' + minutes + 'm : ' + seconds + 's'
 
-			let currentDateAndTime = date + time
-			return currentDateAndTime
+			return date + time
 		}
 	}
-}
+})
