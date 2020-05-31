@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const SettingsSchema = new Schema({
+const SettingSchema = new Schema({
+	// TODO: Add __owner field
 	type: {
 		type: String,
 		default: 'settings'
@@ -45,8 +46,8 @@ const SettingsSchema = new Schema({
 
 }, { autoIndex: false })
 
-let Settings = module.exports = mongoose.model('Settings', SettingsSchema)
+const Setting = module.exports = mongoose.model('Setting', SettingSchema)
 
-// module.exports.getSettingsByAdminId = function(adminId, callback) {
-//   Ssettings.findById(adminId, callback)
+// module.exports.getSettingByAdminId = (adminId, callback) => {
+//   Setting.findById(adminId, callback)
 // }

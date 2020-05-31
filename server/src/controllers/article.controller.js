@@ -5,10 +5,8 @@ const fs = require('fs')
 module.exports = {
 
 	// Create Article
-	async createArticle(req, res) {
+	async createArticle(req, res, next) {
 		try {
-			// console.log('FILE', req.file)
-			// console.log('BODY', req.body)
 			let article = new Article()
 			article.name = req.body.articleName
 			article.quantity = req.body.articleQuantity
@@ -19,6 +17,7 @@ module.exports = {
 			article.subgroup_name = req.body.subgroupName
 			article.subgroup_id = req.body.subgroupId
 
+			// TODO: File upload with /file endpoint
 			// If image is added create image path
 			if (req.file !== undefined && req.file !== '') {
 				article.image = req.file.path
@@ -26,133 +25,104 @@ module.exports = {
 			} else {
 				article.image = ''
 			}
+
+			// TODO: Validation with Joi
 			// Check if the name is typed and create article in the db
 			if (article.name !== '' && article.quantity !== '' && article.quantity !== 0) {
-				await article.save(function(err) {
-					if (err) {
-						console.log(err)
-						res.status(500).send({
-							error: 'A database error has occurred trying to save the article. Please try again.'
-						})
-					} else {
-						res.send({
-							created: true,
-							success: 'Article was successfully created.'
-						})
-					}
+				await article.save((err) => {
+					if (err) throw err
+						
+					return res.status(201).json({
+						created: true,
+						success: 'Article was successfully created.'
+					})
 				})
 			} else {
-				res.status(400).send({
+				res.status(400).json({
 					error: 'Article must have a name, quantity and price.'
 				})
 			}
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to create the storage.'
-			})
+			return next(err)
 		}
 	},
 
 	// Get Articles by storage id
-	async getArticlesByStorageId(req, res) {
+	async getArticlesByStorageId(req, res, next) {
 		try {
-			console.log(req.params)
 			let query = { inStorage: req.params.storageId }
+			await Article.find(query, (err, articles) => {
+				if (err) throw err
 
-			await Article.find(query, function(err, articles) {
-				if (err) {
-					res.status(500).send({
-						error: 'A database error has occurred trying to find articles. Please try again.'
-					})
-				} else {
-					res.send({
-						articles: articles
-					})
-				}
+				return res.status(200).json({
+					articles: articles
+				})
 			})
 			// await Article
 			//   .find(query)
 			//   // .sort()
 			//   .limit(20)
-			//   .exec(function(err, articles) {
+			//   .exec((err, articles) => {
 			//     if (err) {
 			//       console.log(err)
 			//     }
-			//     res.send({
+			//     res.json({
 			//       articles: articles
 			//     })
 			//   })
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to get the list of articles.'
-			})
+			return next(err)
 		}
 	},
 
 	// Get Article by id
-	async getArticleById(req, res) {
+	async getArticleById(req, res, next) {
 		try {
 			let query = req.params.articleId
-			await Article.getArticleById(query, function(err, article) {
-				if (err) {
-					console.log(err)
-				} else {
-					console.log('article found')
-					res.send({
-						article: article
-					})
-				}
+			await Article.getArticleById(query, (err, article) => {
+				if (err) throw err
+
+				return res.status(200).json({
+					article: article
+				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to get the article data.'
-			})
+			return next(err)
 		}
 	},
 
 	// Get all Articles
-	async getAllArticles(req, res) {
+	async getAllArticles(req, res, next) {
 		try {
-			await Article.find({}, function(err, articles) {
-				if (err) {
-					res.status(500).send({
-						error: 'A database error has occurred trying to find all articles. Please try again.'
-					})
-				} else {
-					res.send({
-						articles: articles
-					})
-				}
-			})
-		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to get the list of all articles.'
-			})
-		}
-	},
+			await Article.find({}, (err, articles) => {
+				if (err) throw err
 
-	// Get Articles from selected Subgroup
-	async getArticlesFromSubgroup(req, res) {
-		try {
-			let query = { subgroup_id: req.params.subgroupId }
-			await Article.find(query, function(err, articles) {
-				if (err) {
-					console.log(err)
-				}
-				res.send({
+				return res.status(200).json({
 					articles: articles
 				})
 			})
 		} catch (err) {
-			console.log(err)
-			return res.status(500).send({
-				error: 'An error has occurred trying to get the articles from this subgroup.'
+			return next(err)
+		}
+	},
+
+	// Get Articles from selected Subgroup
+	async getArticlesFromSubgroup(req, res, next) {
+		try {
+			let query = { subgroup_id: req.params.subgroupId }
+			await Article.find(query, (err, articles) => {
+				if (err) throw err
+				return res.status(200).json({
+					articles: articles
+				})
 			})
+		} catch (err) {
+			return next(err)
 		}
 	},
 
 	// Update Article by id
-	async saveArticle(req, res) {
+	async saveArticle(req, res, next) {
 		try {
 			let query = {_id: req.params.articleId}
 			let options = { upsert: true, new: true }
@@ -162,23 +132,25 @@ module.exports = {
 			article.quantity = req.body.articleQuantity
 			article.price = req.body.articlePrice
 			article.retail_price = req.body.articleRetailPrice
-			article.updated_date = await helpers.getCurrentTime()
+			article.updated_date = helpers.getCurrentTime()
 
+			// File upload with /file endpoint
 			// If image is changed update the image path
 			if (req.file !== undefined && req.file !== '') {
 				// TODO: If there is previous article image delete it from the images folder
 				article.image = req.file.path
 			}
 
+			// TODO: Validation with Joi
 			// If fields are not empty save article
 			if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
-				await Article.findOneAndUpdate(query, article, options, function(err, article) {
+				await Article.findOneAndUpdate(query, article, options, (err, article) => {
 					if (err) {
-						res.status(500).send({
+						res.status(500).json({
 							error: 'A database error has occurred trying to update the article. Please try again.'
 						})
 					} else {
-						res.send({
+						res.json({
 							saved: true,
 							article: article,
 							success: 'Article updated successfully.'
@@ -186,19 +158,17 @@ module.exports = {
 					}
 				})
 			} else {
-				res.status(500).send({
+				return res.status(500).json({
 					error: 'Article must have a name, quantity and price.'
 				})
 			}
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to update the storage data.'
-			})
+			return next(err)
 		}
 	},
 
 	// Delete Article
-	async deleteArticle(req, res) {
+	async deleteArticle(req, res, next) {
 		try {
 			let query = {_id: req.params.articleId}
 
@@ -211,30 +181,21 @@ module.exports = {
 				fullImgPath = dirPath + '/' + img
 			}
 
-			await Article.deleteOne(query, function(err) {
-				if (err) {
-					res.status(500).send({
-						error: 'A database error has occurred trying to delete the article.'
-					})
-				}
+			await Article.deleteOne(query, (err) => {
+				if (err) throw err
+					
 				if (fullImgPath !== '') {
-					fs.unlink(fullImgPath, function(err) {
-						if (err) {
-							res.status(500).send({
-								error: 'An error has occurred trying to delete the image.'
-							})
-						}
+					fs.unlink(fullImgPath, (err) => {
+						if (err) throw err
 					})
 				}
-				res.send({
+				return res.status(200).json({
 					deleted: true,
 					success: 'Article deleted.'
 				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to delete the article.'
-			})
+			return next(err)
 		}
 	}
 

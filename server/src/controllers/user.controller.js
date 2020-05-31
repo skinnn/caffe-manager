@@ -131,30 +131,20 @@ module.exports = {
 			// })
 
 			User.deleteOne(query, (err) => {
-				if (err) {
-					return res.status(500).json({
-						error: err
-					})
-				}
+				if (err) throw err
+
 				if (fullImgPath && fullImgPath !== '') {
 					fs.unlink(fullImgPath, (err) => {
-						if (err) {
-							throw err
-							// return res.status(500).json({
-							error: err
-							// })
-						}
+						if (err) throw err
+						return res.status(200).json({
+							success: true,
+							message: 'User deleted successfully.'
+						})
 					})
 				}
-				return res.status(200).json({
-					success: true,
-					message: 'User deleted successfully.'
-				})
 			})
 		} catch (err) {
-			res.status(500).json({
-				error: err
-			})
+			return next(err)
 		}
 	},
 	
@@ -186,10 +176,7 @@ module.exports = {
 				users: users
 			})
 		} catch (err) {
-			console.log(err)
-			return res.status(500).json({
-				error: err
-			})
+			return next(err)
 		}
 	},
 	
@@ -266,6 +253,7 @@ module.exports = {
 				})
 			}
 
+			// TODO: Uplaod file in the file controller, call it from here
 			const file = req.file
 			const ext = file.originalname.split('.').pop()
 			
@@ -301,8 +289,6 @@ module.exports = {
 				updatedUser: updatedUser
 			})
 		} catch (err) {
-			// console.error(err)
-			// return res.status(500).json({ success: false, error: err })
 			return next(err)
 		}
 	}

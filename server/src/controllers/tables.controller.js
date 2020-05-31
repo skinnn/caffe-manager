@@ -3,115 +3,85 @@ const Table = require('../models/Table')
 module.exports = {
 
 	// Create Table
-	async createTable(req, res) {
+	async createTable(req, res, next) {
 		try {
 			let table = new Table()
 			table.number = req.body.number
 			table.ownerId = req.body.ownerId
+			// TODO: Do validation with Joi
 			if (table.number !== '' && table.number !== undefined) {
-				await table.save(function(err) {
-					if (err) {
-						console.log(err)
-						res.status(500).send({
-							error: 'A database error has occurred trying to save the table. Please try again.'
-						})
-					} else {
-						res.send({
-							created: true,
-							success: 'Table was successfully created.'
-						})
-					}
+				await table.save((err) => {
+					if (err) throw err
+					return res.json({
+						created: true,
+						success: 'Table was successfully created.'
+					})
 				})
 			} else {
-				res.status(400).send({
+				return res.status(400).json({
 					info: 'Table not specified.'
 				})
 			}
 		} catch (err) {
-			console.log(err)
-			res.status(500).send({
-				error: 'An error has occurred trying to create the table.'
-			})
+			return next(err)
 		}
 	},
 
 	// Get Tables by owner id
-	async getTablesByOwnerId(req, res) {
+	async getTablesByOwnerId(req, res, next) {
 		try {
 			let ownerIdQuery = { ownerId: req.params.ownerId }
-			await Table.find(ownerIdQuery, function(err, tables) {
-				if (err) {
-					res.status(500).send({
-						error: 'A database error has occurred trying to find tables. Please try again.'
-					})
-				} else {
-					res.send({
-						tables: tables
-					})
-				}
+			await Table.find(ownerIdQuery, (err, tables) => {
+				if (err) throw err
+				return res.status(200).json({
+					tables: tables
+				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to get the list of your tables.'
-			})
+			return next(err)
 		}
 	},
 
 	// Get Table by id
-	async getTable(req, res) {
+	async getTable(req, res, next) {
 		try {
 			let query = { _id: req.params.tableId }
 			// console.log(`OWNER: ${ownerId}, TABLE: ${tableIdQuery}`)
-			await Table.findOne(query, function(err, table) {
-				if (err) {
-					res.status(500).send({
-						error: 'A database error has occurred trying to find the table. Please try again.'
-					})
-				} else {
-					res.send({
-						table: table
-					})
-				}
+			await Table.findOne(query, (err, table) => {
+				if (err) throw err
+				return res.status(200).json({
+					table: table
+				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to get the table data.'
-			})
+			return next(err)
 		}
 	},
 
 	// Update Table by id
-	async saveTable(req, res) {
+	async saveTable(req, res, next) {
 		try {
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to update the storage data.'
-			})
+			return next(err)
 		}
 	},
 
 	// Delete Table
-	async deleteTable(req, res) {
+	async deleteTable(req, res, next) {
 		try {
 			// console.log(`TABLE ID: ${req.params.tableId}`)
 			// console.log(`OWNER ID: ${req.params.ownerId}`)
 			const query = { _id: req.params.tableId }
 			const ownerId = req.params.ownerId
-			await Table.deleteOne(query, function(err) {
-				if (err) {
-					res.status(500).send({
-						error: 'A database error has occurred trying to delete the table.'
-					})
-				}
-				res.send({
+			await Table.deleteOne(query, (err) => {
+				if (err) throw err
+				return res.status(200).json({
 					deleted: true,
 					success: 'Table deleted.'
 				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to delete the table.'
-			})
+			return next(err)
 		}
 	}
 

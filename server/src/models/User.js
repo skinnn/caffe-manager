@@ -2,15 +2,11 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
-// var fileSchema = new Schema({
-// 	_id: false,
-// 	id: { type: String, required: true },
-// 	identifier: { type: String, required: true }
-// })
-
 // TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
+// TODO: When user is used replace __owner with user _id field
 const UserSchema = new Schema({
-	roles: {					// 'user', 'admin' 'anon'
+	// built-in roles: 'user', 'admin' 'anon'
+	roles: {
 		type: Array,
 		default: ['user']
 	},
@@ -18,7 +14,7 @@ const UserSchema = new Schema({
 		type: Boolean,
 		default: false
 	},
-	username: {				// Required
+	username: {
 		type: String,
 		required: true,
 		trim: true,

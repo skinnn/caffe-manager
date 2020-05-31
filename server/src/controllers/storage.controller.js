@@ -8,46 +8,37 @@ module.exports = {
 			let storage = new Storage()
 			storage.name = req.body.storageName
 			storage.type = req.body.type
+			// TODO: Do validation with Joi
 			// Validation
 			if (storage.name !== '' && storage.type !== '') {
-				await storage.save(function(err) {
-					if (err) {
-						return console.log(err)
-					} else {
-						return res.send({
-							saved: true,
-							success: 'Storage created.'
-						})
-					}
+				await storage.save((err) => {
+					if (err) throw err
+					return res.status(201).json({
+						saved: true,
+						success: 'Storage created.'
+					})
 				})
 			} else {
-				return res.status(400).send({
+				return res.status(400).json({
 					error: 'Please fill out all required fields.'
 				})
 			}
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to create the storage.'
-			})
+			return next(err)
 		}
 	},
 
 	// Get All Storages
 	async getAllStorages(req, res) {
 		try {
-			await Storage.find({}, function(err, storages) {
-				if (err) {
-					console.log(err)
-				} else {
-					res.send({
-						storages: storages
-					})
-				}
+			await Storage.find({}, (err, storages) => {
+				if (err) throw err
+				return res.status(200).json({
+					storages: storages
+				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to get the list of storages.'
-			})
+			return next(err)
 		}
 	},
 
@@ -55,19 +46,14 @@ module.exports = {
 	async getStorageById(req, res) {
 		try {
 			let query = req.params.storageId
-			await Storage.getStorageById(query, function(err, storage) {
-				if (err) {
-					console.log(err)
-				} else {
-					res.send({
-						storage: storage
-					})
-				}
+			await Storage.getStorageById(query, (err, storage) => {
+				if (err) throw err
+				return res.status(200).json({
+					storage: storage
+				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to get the storage data.'
-			})
+			return next(err)
 		}
 	},
 
@@ -76,19 +62,14 @@ module.exports = {
 		try {
 			let query = {_id: req.params.storageId}
 
-			await Storage.findOneAndUpdate(query, req.body, function(err, storage) {
-				if (err) {
-					console.log(err)
-				} else {
-					res.send({
-						storage: storage
-					})
-				}
+			await Storage.findOneAndUpdate(query, req.body, (err, storage) => {
+				if (err) throw err
+				return res.status(200).json({
+					storage: storage
+				})
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: 'An error has occurred trying to update the storage data.'
-			})
+			return next(err)
 		}
 	}
 

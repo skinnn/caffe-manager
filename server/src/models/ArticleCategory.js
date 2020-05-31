@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const ArticleSubgroupSchema = new Schema({
+const ArticleCategorySchema = new Schema({
+	// TODO: Add __owner field
 	name: {
 		type: String,
 		required: true
@@ -24,8 +25,8 @@ const ArticleSubgroupSchema = new Schema({
 	}
 }, { autoIndex: false })
 
-let ArticleSubgroup = module.exports = mongoose.model('ArticleSubgroup', ArticleSubgroupSchema)
+const ArticleCategory = module.exports = mongoose.model('article_category', ArticleCategorySchema)
 
 // module.exports.getSubgroupsByStorageId = function(id, callback) {
-//   ArticleSubgroup.findById(id, callback)
+//   ArticleCategory.findById(id, callback)
 // }

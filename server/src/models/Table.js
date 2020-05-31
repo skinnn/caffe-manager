@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const TableSchema = new Schema({
+	// TODO: Add __owner field
 	number: {
 		type: Number,
 		required: true,

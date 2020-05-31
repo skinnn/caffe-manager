@@ -1,36 +1,28 @@
-const StoreSettings = require('../models/Settings')
+const Setting = require('../models/Setting')
 const helpers = require('../lib/helpers')
 
 module.exports = {
 
 	// Get or Create Admin Settings if it doesn't exist
-	async getOrCreateStoreSettings(req, res) {
+	async getOrCreateStoreSettings(req, res, next) {
 		try {
 			let query = {}
 			let update = { type: 'settings' }
 			let options = { upsert: true, new: true, setDefaultsOnInsert: true }
 
-			await StoreSettings.findOneAndUpdate(query, update, options, function(err, settings) {
-				if (err) {
-					return res.status(500).send({
-						error: 'An error has occurred trying to fetch the settings.'
-					})
-				} else {
-					return res.send({
-						settings: settings
-					})
-				}
+			await Setting.findOneAndUpdate(query, update, options, (err, settings) => {
+				if (err) throw err
+				return res.status(200).json({
+					settings: settings
+				})
 			})
 		} catch (err) {
-			console.log(err)
-			return res.status(500).send({
-				error: 'An error has occurred trying to fetch the settings.'
-			})
+			return next(err)
 		}
 	},
 
 	// Update Store Settings
-	async updateStoreSettings(req, res) {
+	async updateStoreSettings(req, res, next) {
 		try {
 			let query = { type: 'settings' }
 			let options = { upsert: true, new: true }
@@ -41,8 +33,9 @@ module.exports = {
 			settings.currency = req.body.storeCurrency
 			settings.store_phone1 = req.body.storePhone1
 			settings.store_phone2 = req.body.storePhone2
-			settings.updated_date = await helpers.getCurrentTime()
+			settings.updated_date = helpers.getCurrentTime()
 
+			// TODO: File upload on /file endpoint
 			// If image is changed update the image path
 			if (req.file !== undefined && req.file !== '') {
 				// TODO: If there is previous store image delete it from the images folder
@@ -52,25 +45,17 @@ module.exports = {
 				settings.store_image = req.body.oldImage
 			}
 
-			await StoreSettings.findOneAndUpdate(query, settings, options, function(err, settings) {
-				if (err) {
-					return res.status(500).send({
-						error: 'A database error has occurred trying to update the settings. Please try again.'
-					})
-				} else {
-					return res.send({
-						saved: true,
-						settings: settings,
-						success: 'Settings updated successfully.'
-					})
-				}
+			await Setting.findOneAndUpdate(query, settings, options, (err, settings) => {
+				if (err) throw err
+				return res.status(200).json({
+					saved: true,
+					settings: settings,
+					success: 'Settings updated successfully.'
+				})
 			})
 		} catch (err) {
-			return res.status(500).send({
-				error: 'An error has occurred trying to update the settings data.'
-			})
+			return next(err)
 		}
 	}
 
-// Module Exports
-}
+} /* Module exports */

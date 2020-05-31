@@ -42,23 +42,22 @@ module.exports = {
 			login.save((err) => {
 				if (err) throw err
 
-				res.setHeader('Content-Type', 'application/json')
 				return res.json({
 					user,
 					token
 				})
 			})
 		} catch (err) {
-			next(err)
+			return next(err)
 		}
 	},
 
 	async logout(req, res, next) {
 		try {
+			// TODO: Extract token in Authentication class, use that class method here
 			const authHeader = req.headers['authorization'] || req.headers['x-access-token'] || ''
 			const token = authHeader.split(' ')[1] || ''
 			const isDeleted = await Login.deleteMany({ token: token })
-			// const loginAfter = await Login.getLoginByToken(token)
 
 			if (!isDeleted) {
 				return res.status(500).json({
@@ -70,7 +69,7 @@ module.exports = {
 				message: 'Logged out successfully.'
 			})
 		} catch (err) {
-			next(err)
+			return next(err)
 		}
 	}
 

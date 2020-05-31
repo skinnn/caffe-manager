@@ -8,8 +8,7 @@ module.exports = {
 			// TODO: Save file meta in the db
 		
 		} catch (err) {
-			// TODO: Create and use error handler
-			next(err)
+			return next(err)
 		}
 	}
 

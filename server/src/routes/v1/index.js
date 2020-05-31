@@ -44,12 +44,12 @@ router.get('/admin/subgroup/:subgroupId/articles',
 
 // Get Article Subgroups from Main Storages
 router.get('/admin/main-storages/subgroups',
-	ArticleSubgroupController.getSubgroupsFromMainStorages)
+	ArticleSubgroupController.getCategoriesFromMainStorages)
 
 // Create Article Subgroup
 router.post('/admin/storage/:storageId/subgroup/create',
 	uploadImage.single('imageUpload'),
-	ArticleSubgroupController.createArticleSubgroup)
+	ArticleSubgroupController.createArticleCategory)
 
 // Get Article Subgroup list by storage id
 router.get('/admin/storage/:storageId/subgroups',

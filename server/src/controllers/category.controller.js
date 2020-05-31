@@ -1,18 +1,16 @@
-const ArticleSubgroup = require('../models/ArticleSubgroup')
+const ArticleCategory = require('../models/ArticleCategory')
 const Storage = require('../models/Storage')
 
 module.exports = {
 
-	// Create Article Subgroup
-	async createArticleSubgroup(req, res) {
+	// Create article subgroup
+	async createArticleCategory(req, res, next) {
 		try {
-			// console.log('BODY: ', req.body)
-			// console.log('PARAMS: ', req.params)
-			// console.log('FILE: ', req.file)
-			let subgroup = new ArticleSubgroup()
+			let subgroup = {}
 			subgroup.name = req.body.subgroupName
 			subgroup.inWhichStorage = req.params.storageId
 
+			// TODO: Move file upload to POST /file endpoint
 			// If image is added create image path
 			if (req.file !== undefined && req.file !== '') {
 				subgroup.image = req.file.path
@@ -22,44 +20,42 @@ module.exports = {
 			}
 
 			// Validation
+			// TODO: Do all validation with Joi and remove it from the controller
 			if (subgroup.name !== '' && subgroup.inWhichStorage !== '') {
-				await subgroup.save(function(err) {
-					if (err) {
-						return console.log(err)
-					} else {
-						return res.send({
-							saved: true,
-							subgroup: subgroup,
-							success: 'Subgroup created.'
-						})
-					}
+				const record = new ArticleCategory(subgroup)
+				await record.save((err) => {
+					if (err) throw err
+					return res.status(201).json({
+						saved: true,
+						subgroup: subgroup,
+						success: 'Subgroup created.'
+					})
 				})
 			} else {
-				return res.status(400).send({
+				return res.status(400).json({
 					error: 'Please fill out all required fields.'
 				})
 			}
 		} catch (err) {
-			return res.status(500).send({
-				error: 'An error has occurred trying to create the subgroup.'
-			})
+			return next(err)
 		}
 	},
 
 	// Get Article Subgroups from the Main Storage/s
-	async getSubgroupsFromMainStorages(req, res) {
+	// TODO: Refactor
+	async getCategoriesFromMainStorages(req, res, next) {
 		try {
 			const getMainStorageIds = async() => {
 				const query = { type: 'Main' }
 				let storages = await Storage.find(query)
 				if (storages.length > 0) {
 					let ids = []
-					storages.forEach(function(storage) {
+					storages.forEach((storage) => {
 						ids.push(storage._id)
 					})
 					return ids
 				} else {
-					return res.status(400).send({
+					return res.status(400).json({
 						noMainStorages: true,
 						error: `There are no Main storages.`
 					})
@@ -68,13 +64,13 @@ module.exports = {
 
 			const storageIds = await getMainStorageIds()
 
-			const getAllSubgroups = async() => {
+			const getAllCategories = async () => {
 				let allSubgroups = []
 				for (let i = 0; i < storageIds.length; i++) {
 					let mainStorageId = { inWhichStorage: storageIds[i] }
-					let subgroups = await ArticleSubgroup.find(mainStorageId)
+					let subgroups = await ArticleCategory.find(mainStorageId)
 					if (subgroups.length > 0) {
-						subgroups.forEach(function(subgroup) {
+						subgroups.forEach((subgroup) => {
 							allSubgroups.push(subgroup)
 						})
 					} else {
@@ -85,62 +81,43 @@ module.exports = {
 				return allSubgroups
 			}
 
-			let result = await getAllSubgroups()
-			if (result.length > 0) {
-				res.send({
-					subgroups: result
-				})
-			} else {
-				res.status(400).send({
-					noSubgroups: true,
-					error: `There are no Subgroups in Main storage/s.`
-				})
-			}
-		} catch (err) {
-			return res.status(500).send({
-				error: 'An error has occurred trying to get the subgroups.'
+			const result = await getAllCategories()
+			return res.status(200).json({
+				subgroups: result
 			})
+		} catch (err) {
+			return next(err)
 		}
 	},
 
 	// Get Article Subgroups by storage id
-	async getSubgroupsByStorageId(req, res) {
+	async getSubgroupsByStorageId(req, res, next) {
 		try {
 			let query = { inWhichStorage: req.params.storageId }
-			await ArticleSubgroup.find(query, function(err, subgroups) {
-				if (err) {
-					return console.log(err)
-				} else {
-					return res.send({
-						subgroups: subgroups
-					})
-				}
+			await ArticleCategory.find(query, (err, subgroups) => {
+				if (err) throw err
+				return res.status(200).json({
+					subgroups: subgroups
+				})
 			})
 		} catch (err) {
-			return res.status(500).send({
-				error: 'An error has occurred trying to get the subgroups.'
-			})
+			return next(err)
 		}
 	}
 
 	// // TODO: Update Article Subgroups by id
-	// async saveStorage(req, res) {
+	// async saveStorage(req, res, next) {
 	//   try {
 	//     let query = {_id: req.params.storageId}
 	//
-	//     await Storage.findOneAndUpdate(query, req.body, function(err, storage) {
-	//       if (err) {
-	//         console.log(err)
-	//       } else {
-	//         res.send({
-	//           storage: storage
-	//         })
-	//       }
+	//     await Storage.findOneAndUpdate(query, req.body, (err, storage) => {
+	//       if (err) throw err
+//         return res.status(200).json({
+//           storage: storage
+//         })
 	//     })
 	//   } catch (err) {
-	//     res.status(500).send({
-	//       error: 'An error has occurred trying to update the storage data.'
-	//     })
+	//     return next(err)
 	//   }
 	// }
 

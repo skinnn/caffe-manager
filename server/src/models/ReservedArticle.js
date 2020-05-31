@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const reservedArticleSchema = new Schema({
+	// TODO: Add __owner field
 	name: {
 		type: String,
 		required: true
