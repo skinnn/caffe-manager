@@ -26,10 +26,17 @@
 </script>
 
 <style lang="scss">
-	@import '@/theme.scss';
-
+	// @import '@/theme.scss';
+	
+	*,
+	*::before,
+	*::after {
+		padding: 0;
+		margin: 0;
+	}
+ 
 	#app {
-		user-select: none;
+		// user-select: none;
 	}
 
 	.container-fluid {

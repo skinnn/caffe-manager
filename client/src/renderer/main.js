@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App'
 
 // Global mixnins
-import '@/_mixins/index.js'
+import './_mixins/index.js'
 
 // TODO: Move to plugins directory
 // Plugins
