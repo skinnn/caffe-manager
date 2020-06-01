@@ -49,7 +49,6 @@ import LoginService from '@/services/LoginService'
 import SettingsService from '@/services/SettingsService'
 
 export default {
-
 	props: {
 		heading: {
 			type: String,
@@ -103,9 +102,9 @@ export default {
 				// If user login is successfull
 				if (loginRes.status === 200) {
 					// Hide errors
-					this.info = null
-					this.success = null
-					this.error = null
+					this.messages.info = null
+					this.messages.success = null
+					this.messages.error = null
 
 					const user = loginRes.data.user
 					const token = loginRes.data.token
@@ -131,9 +130,9 @@ export default {
 					}
 				}
 			} catch (err) {
-				console.error(err)
-				this.success = null
-				this.error = err.response.data.error.message
+				console.log('err')
+				this.messages.success = null
+				this.messages.error = err.response.data.error.message
 			}
 		},
 

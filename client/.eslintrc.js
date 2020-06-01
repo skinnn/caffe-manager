@@ -14,7 +14,7 @@ module.exports = {
 	},
 	plugins: ['html'],
 	rules: {
-		'eol-last': ['error', 'never'],
+		'eol-last': 0,
 		'no-trailing-spaces': ['error', { skipBlankLines: true }],
 		'space-before-function-paren': ['error', 'never'],
 		'no-unused-vars': 'off',

@@ -14,7 +14,7 @@ module.exports = {
 			if (!user) {
 				return res.status(401).json({
 					error: {
-						message: 'Incorrect username or password.'
+						message: 'Incorrect username or password'
 					}
 				})
 			}
@@ -26,7 +26,7 @@ module.exports = {
 			if (!isMatch) {
 				return res.status(401).json({
 					error: {
-						message: 'Incorrect username or password..'
+						message: 'Incorrect username or password'
 					}
 				})
 			}

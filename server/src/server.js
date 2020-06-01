@@ -25,19 +25,29 @@ app.use(express.urlencoded({ extended: true }))
 // Static assets
 // app.use('/public', express.static(path.join(__dirname, '../public')))
 
-// Mount main router with all routes
-app.use('/', require('./routes/index'))
-
 // Boot the server
 Controller.boot(masterConfig, app).then((ctx) => {
 	// Create http or https server
 	if (ctx.api.protocol === 'https') {
-		// TODO: Finish
 		// const https = require('https')
 		// ctx.api.server = https.createServer(ctx.getSSLOptions(), app)
 	} else {
 		ctx.api.server = http.createServer(app)
 	}
+
+	// Mount main router with all the endpoints, mount to path specified in the master config
+	ctx.app.use(`${ctx.api.baseApiURL}`, require('./routes/index'))
+
+	// Error handler
+	// ctx.app.use((err, req, res, next) => ctx.errorHandler)
+	// ctx.app.use((err, req, res, next) => {
+	// 	console.error(err)
+	// 	return res.status(500).json({
+	// 		from: 'Error handler',
+	// 		error: err,
+	// 		stack: err.stack
+	// 	})
+	// })
 
 	// Start the server
 	ctx.api.server.listen(ctx.api.port, async () => {
