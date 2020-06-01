@@ -277,7 +277,7 @@ import ArticleService from '@/services/ArticleService'
 import TableService from '@/services/TableService'
 import ArticleSubgroupService from '@/services/ArticleSubgroupService'
 // Modules
-import uuidv1 from 'uuid/v1'
+import { v4 as uuidv4 } from 'uuid'
 import swal from 'sweetalert2'
 
 export default {
@@ -459,7 +459,7 @@ export default {
 				if (promptValue !== '' && promptValue !== 0 && promptValue !== undefined) {
 					let selectedArticle = {
 						// Create a temporary timestamp based ID for selected article
-						selectedId: uuidv1(),
+						selectedId: uuidv4(),
 						id: articleId,
 						name: articleName,
 						quantity: parseInt(promptValue, 10),

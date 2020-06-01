@@ -2,6 +2,7 @@
 	User routes - Needs to be atuhenticated as User to get
 	this assets (in production)
 */
+const config = require('../../config/config')
 
 // User components
 const UserHome = require('@/views/user/UserHome').default

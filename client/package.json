@@ -28,12 +28,12 @@
 		"jquery": "^3.3.1",
 		"material-design-icons": "^3.0.1",
 		"sweetalert2": "^7.26.28",
-		"uuid": "^3.3.2",
-		"vue": "^2.5.17",
+		"uuid": "^3.4.0",
+		"vue": "^2.5.18",
 		"vue-electron": "^1.0.6",
-		"vue-router": "^2.5.3",
-		"vuetify": "^1.1.11",
-		"vuex": "^2.5.0",
+		"vue-router": "^3.3.2",
+		"vuetify": "^1.5.24",
+		"vuex": "^3.4.0",
 		"vuex-router-sync": "^5.0.0"
 	},
 	"devDependencies": {
@@ -78,7 +78,7 @@
 		"vue-html-loader": "^1.2.4",
 		"vue-loader": "^13.0.5",
 		"vue-style-loader": "^3.0.1",
-		"vue-template-compiler": "^2.4.2",
+		"vue-template-compiler": "^2.5.18",
 		"webpack": "^3.5.2",
 		"webpack-dev-server": "^2.7.1",
 		"webpack-hot-middleware": "^2.18.2"

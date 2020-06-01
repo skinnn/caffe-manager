@@ -3,26 +3,30 @@
 		<v-container fluid class="container-fluid pt-0">
 			<v-app>
 				<router-view></router-view>
+				<GlobalNotifications :text="'Test notification'" :type="'error'" />
 			</v-app>
 		</v-container>
 	</div>
 </template>
 
 <script>
+	// Components
 	import AdminSideMenu from '@/components/admin/AdminSideMenu'
 	import UserSideMenu from '@/components/user/UserSideMenu'
-	import AdminService from '@/services/AdminService'
+	import GlobalNotifications from '@/components/notices/notifications/GlobalNotifications'
 
 	export default {
 		name: 'client',
 		components: {
 			AdminSideMenu,
-			UserSideMenu
+			UserSideMenu,
+			GlobalNotifications
 		}
 	}
 </script>
 
 <style lang="scss">
+	@import '@/theme.scss';
 
 	#app {
 		user-select: none;
