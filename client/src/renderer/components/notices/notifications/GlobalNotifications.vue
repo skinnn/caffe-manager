@@ -24,6 +24,10 @@
 				</div>
 			</li>
 		</ul>
+		<button @click="clearNotifications()">
+			Clear all
+		</button>
+		<br>
 		<button @click="addNotification({text: 'Added notification..', type: 'error'})">
 			Add
 		</button>
@@ -31,6 +35,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 // Modules
 import { v4 as uuidv4 } from 'uuid'
 
@@ -48,11 +53,13 @@ export default {
 		},
 		timeout: {
 			type: Number,
-			default: 0 // time for which notification is deleted, in seconds
+			default: 10 // time for which notification is deleted, in seconds
 		}
 	},
 
 	computed: {
+		...mapGetters(['getNotifications']),
+		
 		fadeOutMs() {
 			return {
 				'--fadeout-miliseconds': this.options.fadeOutTime + 'ms'
@@ -77,10 +84,15 @@ export default {
 		}
 	},
 
-	mounted() {
+	async mounted() {
+		// TODO: Write some tests
 		let nots = [{text: 'Warning:', type: 'warning'}, {text: 'Info:', type: 'info'}, {text: 'Success:', type: 'success'}]
 		nots.push({text: 'Error: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sit repudiandae aliquam vero sunt ex hic quas ipsum nulla? Repellat, eum.', type: 'error', timeout: 2})
-		nots.forEach((n) => this.addNotification(n))
+		nots.forEach((n) => {
+			for (let i = 0; i <= 3; i++) {
+				this.addNotification(n)
+			}
+		})
 	},
 
 	methods: {
@@ -91,7 +103,10 @@ export default {
 				id: id,
 				timeout: this.options.timeout ? setTimeout(() => this.removeNotificationById(id), this.options.timeout) : null
 			}
-			// TODO: Add notification to app state
+
+			// Add notification to app state
+			this.$store.dispatch('addNotification', notifObj)
+			// Remove notification
 			this.notifications.push(notifObj)
 		},
 
@@ -99,21 +114,33 @@ export default {
 			var el = this.$refs.notificationList.querySelector(`li[data-id="${id}"]`)
 			el.classList.remove('fade-in')
 			el.classList.add('fade-out')
+			let counter = 100
 			
-			// TODO: Remove notification from app state
-
-			// Wait for fadeout/slideout and then remove el from the dom
-			setTimeout(() => {
-				let i = this.notifications.length
-				while (i--) {
-					if (this.notifications[i].id === id) {
+			this.notifications.forEach((notif, index) => {
+				setTimeout(() => {
+					if (notif.id === id) {
 						// Clear notification's timeout so it doesnt fire after el from DOM is deleted
-						clearTimeout(this.notifications[i].timeout)
-						// Remove notification
-						this.notifications.splice(i, 1)
+						clearTimeout(notif.timeout)
+						// Remove notification from app state
+						this.$store.dispatch('removeNotification', id)
+						// Remove notification from UI
+						this.notifications.splice(index, 1)
 					}
-				}
-			}, 400)
+				}, counter)
+				counter += 300
+			})
+		},
+
+		clearNotifications() {
+			// Clear notifications from the state
+			this.$store.dispatch('clearNotifications')
+			let counter = 300
+
+			// Remove notifications from the UI
+			this.notifications.forEach((notif, index) => {
+				setTimeout(() => this.removeNotificationById(notif.id), counter)
+				counter += 300
+			})
 		},
 
 		getIconFromType(type) {
