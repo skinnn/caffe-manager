@@ -66,7 +66,7 @@ export default {
 			options: {
 				timeoutSeconds: 3,
 				fadeOutTime: 500,
-				autoClear: false
+				autoClear: true
 			}
 		}
 	},
@@ -218,6 +218,7 @@ export default {
 					margin-right: 8px;
 
 					.autoclear-state {
+						font-weight: 600;
 						background-color: rgba(255, 255, 255, 0.5);
 					}
 				}
