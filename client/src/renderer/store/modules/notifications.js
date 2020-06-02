@@ -1,10 +1,13 @@
+import { GlobalNotificationEvent } from '@/lib/Events'
+
 const state = {
 	notifications: JSON.parse(localStorage.getItem('notifications')) || []
 }
 
 const mutations = {
 	ADD_NOTIFICATION(state, notification) {
-		state.notifications.push(notification)
+		let newNotif = new GlobalNotificationEvent(notification)
+		state.notifications.push(newNotif)
 		localStorage.setItem('notifications', JSON.stringify(state.notifications))
 	},
 	REMOVE_NOTIFICATION(state, id) {
@@ -23,9 +26,14 @@ const actions = {
 	},
 	removeNotification({ commit }, id) {
 		commit('REMOVE_NOTIFICATION', id)
+		// Remove from localStorage
+		// let localNotifs = JSON.parse(localStorage.getItem('notifications'))
+		// localNotifs.forEach((notif, index) => notif.id === id ? localNotifs.splice(index, 1) : null)
+		// localStorage.setItem('notifications', JSON.stringify(localNotifs))
 	},
 	clearNotifications({ commit }) {
 		commit('CLEAR_NOTIFICATIONS')
+		// localStorage.setItem('notifications', [])
 	}
 }
 

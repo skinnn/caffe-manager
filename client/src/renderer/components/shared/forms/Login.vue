@@ -43,8 +43,6 @@
 // Services
 import LoginService from '@/services/LoginService'
 import SettingsService from '@/services/SettingsService'
-// Custom events
-import { GlobalNotificationEvent } from '@/lib/Events'
 
 export default {
 	props: {
@@ -77,7 +75,7 @@ export default {
 		}
 	},
 
-	created() {
+	mounted() {
 		let msg = this.$route.params.loggedOutMessage
 		if (msg) this.handleLoggingOut(msg)
 	},
@@ -95,10 +93,10 @@ export default {
 				// If user login is successfull
 				if (loginRes.status === 200) {
 					// Success notification
-					this.$eventBus.publish(new GlobalNotificationEvent({
-						text: 'Logged in successfully.',
+					this.$store.dispatch('addNotification', {
+						text: 'Logged in successfully',
 						type: 'success'
-					}))
+					})
 
 					const user = loginRes.data.user
 					const token = loginRes.data.token
@@ -125,10 +123,10 @@ export default {
 				}
 			} catch (err) {
 				// Error notification
-				this.$eventBus.publish(new GlobalNotificationEvent({
+				this.$store.dispatch('addNotification', {
 					text: err.response.data.error.message,
 					type: 'error'
-				}))
+				})
 			}
 		},
 
@@ -140,10 +138,11 @@ export default {
 
 		handleLoggingOut(logoutMsg) {
 			// Error notification
-			this.$eventBus.publish(new GlobalNotificationEvent({
+			this.$store.dispatch('addNotification', {
 				text: logoutMsg,
 				type: 'success'
-			}))
+			})
+			console.log(this.$refs)
 			this.$refs.inputUsername.focus()
 		}
 	}

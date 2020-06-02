@@ -14,6 +14,7 @@ module.exports = {
 	},
 	plugins: ['html'],
 	rules: {
+		'no-unused-expressions': 0,
 		'no-useless-constructor': 0,
 		'eol-last': 0,
 		'no-trailing-spaces': ['error', { skipBlankLines: true }],

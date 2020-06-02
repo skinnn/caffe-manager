@@ -24,10 +24,11 @@ class GlobalNotificationEvent {
 	 * @param	{String}							 notification.type 	[error, warning, success, info]
 	 **/
 	constructor(notification) {
-		this.text = notification.text
-		this.type = notification.type
+		this.text = notification.text || ''
+		this.type = notification.type || 'info'
 
 		this.id = uuidv4()
+		this.created = new Date().toISOString()
 	}
 }
 

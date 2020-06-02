@@ -4,7 +4,7 @@ import App from './App'
 // Global mixnins
 import './_mixins/index.js'
 
-// TODO: Move to plugins directory
+// TODO: Move to /plugins directory
 // Plugins
 import EventBus from './plugins/event-bus.js'
 import 'material-design-icons/iconfont/material-icons.css'
@@ -12,7 +12,7 @@ import axios from 'axios'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.css'
 import router from './router'
-import store from './store/index'
+import store from './store'
 import { sync } from 'vuex-router-sync'
 
 // Global Components
@@ -22,10 +22,9 @@ import UserLogoutBtn from '@/components/_globals/UserLogoutBtn'
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 
-Vue.use(EventBus)
+// Vue.use(EventBus)
 Vue.use(Vuetify)
 Vue.http = Vue.prototype.$http = axios
-Vue.eventBus = Vue.prototype.$eventBus = EventBus
 
 // Register Global Components
 Vue.component('adminLogoutBtn', AdminLogoutBtn)

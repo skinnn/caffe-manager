@@ -30,9 +30,9 @@ function createWindow() {
 		minWidth: 1400,
 		center: true,
 		useContentSize: true,
-		// fullscreen: true,
+		fullscreen: true,
 		icon: iconPath,
-		resizable: false,
+		resizable: true,
 		webPreferences: {
 			nodeIntegration: true
 		}

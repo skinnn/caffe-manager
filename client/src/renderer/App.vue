@@ -41,6 +41,30 @@
 		// user-select: none;
 	}
 
+	:root {
+	--sidebar-main-bg: rgba(51, 51, 51, 0.97);
+}
+
+	/* Global scrollbar */
+	::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}/* Track */
+	::-webkit-scrollbar-track {
+		background: #f1f1f1; 
+	}
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+		background: rgba(51, 51, 51, 0.2); 
+		border-radius: 20px;
+		padding-left: 3px;
+	}
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+		/* background: #555; */
+		background: rgba(51, 51, 51, 0.6); 
+	}
+
 	.container-fluid {
 		max-height: 100vh;
 	}

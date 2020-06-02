@@ -1,7 +1,12 @@
 <template>
-	<div class="app-notification-wrapper">
-		<!-- TODO: Create store statte for notifications/errors/warnings	 -->
-		<ul ref="notificationList">
+	<div
+		v-if="notifications.length"
+		class="app-notification-wrapper"
+	>
+		<ul
+			class="notification-list"
+			ref="notificationList"
+		>
 			<li
 				v-for="notification in notifications"
 				:key="notification.id" class="notification-wrapper"
@@ -23,70 +28,66 @@
 				</div>
 			</li>
 		</ul>
-		<button @click="clearNotifications()">
-			Clear all
-		</button>
-		<br>
-		<button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
+		<div class="bottom-bar">
+			<button @click="clearNotifications()" class="btn-clear-all">
+				Clear all
+			</button>
+		</div>
+		<!-- <button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
 			Add notification
-		</button>
+		</button> -->
 	</div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { v4 as uuidv4 } from 'uuid'
-// Events
-import { GlobalNotificationEvent } from '@/lib/Events'
 
 export default {
 	name: 'GlobalNotifications',
-	props: {
-		text: {
-			type: String,
-			default: ''
-		},
-		type: {
-			type: String,
-			// success, info, warning, error
-			defalt: 'info'
-		},
-		time: {
-			type: Number,
-			default: 10 // time for which notification is deleted, in seconds
-		}
-	},
-
 	computed: {
 		...mapGetters(['getNotifications']),
-		
 		fadeOutMs() {
 			return {
 				'--fadeout-miliseconds': this.options.fadeOutTime + 'ms'
 			}
+		},
+		notifications() {
+			return this.getNotifications
 		}
 	},
 
 	data() {
 		return {
-			notifications: [],
-
-			notification: {
-				text: this.$props.text,
-				type: this.$props.type,
-				time: this.$props.time
-			},
-
+			timers: [],
 			options: {
-				timeout: 5000,
-				fadeOutTime: 500
+				timeout: 3,
+				fadeOutTime: 500,
+				useTimeout: false
 			}
 		}
 	},
 
-	created() {
-		// register an event handler
-		this.$eventBus.listen(GlobalNotificationEvent, (notification) => this.handleNotificationEvent(notification))
+	watch: {
+		notifications(newNotifications, oldNotifications) {
+			// TODO: After scrolling, maybe add an animation/effect on the newest added notification
+			var newestNotification
+			if (newNotifications.length > 0) newestNotification = newNotifications[0]
+			else newestNotification = newNotifications.slice().sort((a, b) => new Date() - new Date(a.created))[0]
+
+			if (this.options.useTimeout && newNotifications && newNotifications.length) {
+				// Timeout to remove the notification
+				let removeAfterSeconds = this.options.timeout * 1000
+				setTimeout(() => this.removeNotificationById(newestNotification.id), removeAfterSeconds)
+			}
+
+			// Scroll to bottom after notification is added
+			setTimeout(() => {
+				let list = this.$refs.notificationList
+				// If there is a list in the DOM (not hidden), scroll to the bottom
+				list ? list.scrollTop = list.scrollHeight : null
+			}, 400)
+		}
 	},
 
 	mounted() {
@@ -96,66 +97,38 @@ export default {
 	},
 
 	methods: {
-		handleNotificationEvent(notification) {
-			this.addNotification(notification)
-		},
-
 		addNotification(notification) {
-			let id = uuidv4()
-			const notifObj = {
-				...notification,
-				id: id,
-				timeout: setTimeout(() => this.removeNotificationById(id), this.options.timeout)
-			}
-
 			// Add notification to app state
-			this.$store.dispatch('addNotification', notifObj)
-			// Remove notification
-			this.notifications.push(notifObj)
+			this.$store.dispatch('addNotification', notification)
 		},
 
 		removeNotificationById(id) {
 			// Add fade out effect
-			var el = this.$refs.notificationList.querySelector(`li[data-id="${id}"]`)
-			el.classList.remove('fade-in')
-			el.classList.add('fade-out')
-			
-			// Remove notification from the UI
-			let len = this.notifications.length
-			for (let i = len; i > 0; i--) {
-				let index = i - 1
-				if (this.notifications[index].id === id) {
-					setTimeout(() => {
-						el.remove()
-						if (this.notifications[index] && this.notifications[index].timeout) clearTimeout(this.notifications[index].timeout)
-						// Remove notification from app state
-						this.$store.dispatch('removeNotification', id)
-						// Remove notification from UI
-						this.notifications.splice(index, 1)
-					}, this.options.fadeOutTime)
-				}
-			}
+			var el = this.$refs.notificationList ? this.$refs.notificationList.querySelector(`li[data-id="${id}"]`) : null
+			el ? el.classList.remove('fade-in') : null
+			el ? el.classList.add('fade-out') : null
+
+			setTimeout(() => {
+				this.$store.dispatch('removeNotification', id)
+			}, this.options.fadeOutTime)
 		},
 
 		clearNotifications() {
-			// Clear notifications from the state
-			this.$store.dispatch('clearNotifications')
-
+			// Fade-out animation
 			let domEls = this.$refs.notificationList.getElementsByTagName('li')
 			for (var j = 0; j < domEls.length; j++) {
 				domEls[j].classList.remove('fade-in')
 				domEls[j].classList.add('fade-out')
 			}
 
+			// for (let i = 0; i <= this.notifications.length; i++) {
+			// 	console.log(this.notifications[i])
+			// 	if (this.notifications[i]) clearInterval(this.notifications[i].timeout)
+			// }
+
+			// Clear notifications from the state
 			setTimeout(() => {
-				// Remove notifications
-				let len = this.notifications.length
-				for (let i = len; i > 0; i--) {
-					let index = i - 1
-					// Clear timeout first
-					clearTimeout(this.notifications[index].timeout)
-					this.notifications.splice([index], 1)
-				}
+				this.$store.dispatch('clearNotifications')
 			}, this.options.fadeOutTime)
 		},
 
@@ -175,19 +148,40 @@ export default {
 
 <style lang="scss" scoped>
 	.app-notification-wrapper {
+		display: flex;
+		flex-direction: column;
 		position: fixed;
 		right: 0;
 		bottom: 0;
+		
+		max-height: 100vh;
 		width: 450px;
-		padding: 10px;
+		padding: 5px 0 8px 0;
 		background-color: rgba(255, 255, 255, 0.7);
 		border-radius: 10px;
 		z-index: 9;
 
 		ul {
-			padding: 0 0;
+			padding: 0 5px 5px 5px;
 			margin: 0 0;
+			overflow-y: auto;
+			overflow-x: hidden;
 			list-style: none;
+		}
+
+		.bottom-bar {
+			padding-top: 5px;
+			text-align: right;
+
+			.btn-clear-all {
+				padding: 5px;
+				max-width: 50%;
+				margin: 0 0 0 auto;
+				padding: 3px 10px;
+				border-radius: 5px;
+				background-color: rgba(21, 80, 255, 0.9);
+				color: #fff;
+			}
 		}
 
 		.fade-in {
