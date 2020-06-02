@@ -29,13 +29,16 @@
 			</li>
 		</ul>
 		<div class="bottom-bar">
+			<button @click="handleAutoClear()" class="btn-autoclear">
+				Auto clear <span class="autoclear-state">{{ options.autoClear ? 'ON' : 'OFF' }}</span>
+			</button>
 			<button @click="clearNotifications()" class="btn-clear-all">
 				Clear all
 			</button>
+			<!-- <button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
+				Add notification
+			</button> -->
 		</div>
-		<!-- <button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
-			Add notification
-		</button> -->
 	</div>
 </template>
 
@@ -61,9 +64,9 @@ export default {
 		return {
 			timers: [],
 			options: {
-				timeout: 3,
+				timeoutSeconds: 3,
 				fadeOutTime: 500,
-				useTimeout: false
+				autoClear: false
 			}
 		}
 	},
@@ -75,10 +78,12 @@ export default {
 			if (newNotifications.length > 0) newestNotification = newNotifications[0]
 			else newestNotification = newNotifications.slice().sort((a, b) => new Date() - new Date(a.created))[0]
 
-			if (this.options.useTimeout && newNotifications && newNotifications.length) {
+			// Set auto-clear
+			if (this.options.autoClear && newNotifications && newNotifications.length) {
 				// Timeout to remove the notification
-				let removeAfterSeconds = this.options.timeout * 1000
-				setTimeout(() => this.removeNotificationById(newestNotification.id), removeAfterSeconds)
+				let timeout = setTimeout(() => this.removeNotificationById(newestNotification.id), this.options.timeoutSeconds * 1000)
+				// Add timeout to array so it can be cleared
+				this.addTimer(newestNotification.id, timeout)
 			}
 
 			// Scroll to bottom after notification is added
@@ -121,25 +126,47 @@ export default {
 				domEls[j].classList.add('fade-out')
 			}
 
-			// for (let i = 0; i <= this.notifications.length; i++) {
-			// 	console.log(this.notifications[i])
-			// 	if (this.notifications[i]) clearInterval(this.notifications[i].timeout)
-			// }
-
 			// Clear notifications from the state
 			setTimeout(() => {
 				this.$store.dispatch('clearNotifications')
 			}, this.options.fadeOutTime)
 		},
 
-		getIconFromType(type) {
+		handleAutoClear() {
+			// TODO: Save this state in localStorage/profileSettings
+			this.options.autoClear = !this.options.autoClear
+			// On
+			if (this.options.autoClear) {
+				// Reset timers
+				this.timers = []
+				this.notifications.forEach((el) => {
+					let timeout = setTimeout(() => this.removeNotificationById(el.id), this.options.timeoutSeconds * 1000)
+					// Add timeout to array so it can be cleared
+					this.addTimer(el.id, timeout)
+				})
+			// Off
+			} else {
+				this.timers.forEach((el) => el.timeout ? clearTimeout(el.timeout) : null)
+				// Reset timers
+				this.timers = []
+			}
+		},
+
+		addTimer(id, timeout) {
+			this.timers.push({
+				timeout: timeout,
+				id: id
+			})
+		},
+
+		getIconFromType(notificationType) {
 			const icons = {
 				'success': 'check_circle',
 				'error': 'error',
 				'warning': 'warning',
 				'info': 'info'
 			}
-			return icons[type] || 'warning'
+			return icons[notificationType] || 'warning'
 		}
 	}
 
@@ -173,14 +200,27 @@ export default {
 			padding-top: 5px;
 			text-align: right;
 
-			.btn-clear-all {
-				padding: 5px;
-				max-width: 50%;
-				margin: 0 0 0 auto;
-				padding: 3px 10px;
-				border-radius: 5px;
-				background-color: rgba(21, 80, 255, 0.9);
-				color: #fff;
+			button {
+				font-size: 12px;
+				outline: none;
+
+				&.btn-clear-all {
+					padding: 5px;
+					max-width: 50%;
+					margin: 0 0 0 auto;
+					padding: 3px 10px;
+					border-radius: 5px;
+					background-color: rgba(21, 80, 255, 0.9);
+					color: #fff;
+				}
+
+				&.btn-autoclear {
+					margin-right: 8px;
+
+					.autoclear-state {
+						background-color: rgba(255, 255, 255, 0.5);
+					}
+				}
 			}
 		}
 
@@ -244,6 +284,10 @@ export default {
 			i {
 				margin: 0;
 				padding: 0;
+
+				&:hover {
+					color: #fff;
+				}
 			}
 		}
 

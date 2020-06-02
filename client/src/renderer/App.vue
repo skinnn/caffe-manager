@@ -36,6 +36,10 @@
 		padding: 0;
 		margin: 0;
 	}
+
+	*:focus {
+		outline: none;
+	}
  
 	#app {
 		// user-select: none;
