@@ -13,7 +13,6 @@
 					:type="notification.type"
 					:class="['notification', notification.type]"
 				>
-
 					<span class="message">
 						<i class="type-icon material-icons">{{ getIconFromType(notification.type) }}</i>
 						{{ notification.text }}
@@ -48,10 +47,10 @@ export default {
 		},
 		type: {
 			type: String,
-			// success, info, warning or error
+			// success, info, warning, error
 			defalt: 'info'
 		},
-		timeout: {
+		time: {
 			type: Number,
 			default: 10 // time for which notification is deleted, in seconds
 		}
@@ -74,25 +73,20 @@ export default {
 			notification: {
 				text: this.$props.text,
 				type: this.$props.type,
-				time: this.$props.timeout
+				time: this.$props.time
 			},
 
 			options: {
-				timeout: this.$props.timeout * 1000, // Convert milliseconds to seconds
+				timeout: 5000,
 				fadeOutTime: 500
 			}
 		}
 	},
 
-	async mounted() {
+	mounted() {
 		// TODO: Write some tests
-		let nots = [{text: 'Warning:', type: 'warning'}, {text: 'Info:', type: 'info'}, {text: 'Success:', type: 'success'}]
-		nots.push({text: 'Error: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sit repudiandae aliquam vero sunt ex hic quas ipsum nulla? Repellat, eum.', type: 'error', timeout: 2})
-		nots.forEach((n) => {
-			for (let i = 0; i <= 3; i++) {
-				this.addNotification(n)
-			}
-		})
+		// let nots = [{text: 'Error..', type: 'error'}, {text: 'Warning..', type: 'warning'}, {text: 'Info..', type: 'info'}, {text: 'Success..', type: 'success'}]
+		// nots.forEach(notif => this.addNotification(notif))
 	},
 
 	methods: {
@@ -101,7 +95,7 @@ export default {
 			const notifObj = {
 				...notification,
 				id: id,
-				timeout: this.options.timeout ? setTimeout(() => this.removeNotificationById(id), this.options.timeout) : null
+				timeout: setTimeout(() => this.removeNotificationById(id), this.options.timeout)
 			}
 
 			// Add notification to app state
@@ -111,36 +105,39 @@ export default {
 		},
 
 		removeNotificationById(id) {
+			// Add fade out effect
 			var el = this.$refs.notificationList.querySelector(`li[data-id="${id}"]`)
 			el.classList.remove('fade-in')
 			el.classList.add('fade-out')
-			let counter = 100
 			
-			this.notifications.forEach((notif, index) => {
-				setTimeout(() => {
-					if (notif.id === id) {
-						// Clear notification's timeout so it doesnt fire after el from DOM is deleted
-						clearTimeout(notif.timeout)
+			// Remove notification from the UI
+			let len = this.notifications.length
+			for (let i = len; i > 0; i--) {
+				let index = i - 1
+				if (this.notifications[index].id === id) {
+					setTimeout(() => {
+						el.remove()
+						if (this.notifications[index] && this.notifications[index].timeout) clearTimeout(this.notifications[index].timeout)
 						// Remove notification from app state
 						this.$store.dispatch('removeNotification', id)
 						// Remove notification from UI
 						this.notifications.splice(index, 1)
-					}
-				}, counter)
-				counter += 300
-			})
+					}, index * 300)
+				}
+			}
 		},
 
 		clearNotifications() {
 			// Clear notifications from the state
 			this.$store.dispatch('clearNotifications')
-			let counter = 300
-
-			// Remove notifications from the UI
-			this.notifications.forEach((notif, index) => {
-				setTimeout(() => this.removeNotificationById(notif.id), counter)
-				counter += 300
-			})
+			// Remove notifications
+			let len = this.notifications.length
+			for (let i = len; i > 0; i--) {
+				let index = i - 1
+				// Clear timeout first
+				clearTimeout(this.notifications[index].timeout)
+				this.notifications.splice([index], 1)
+			}
 		},
 
 		getIconFromType(type) {
