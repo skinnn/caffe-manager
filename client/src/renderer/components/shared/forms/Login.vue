@@ -24,10 +24,6 @@
 						label="Password:"
 						outline
 					></v-text-field>
-					<div class="error-msg" v-if="messages.error" v-html="messages.error" />
-					<div class="success-msg" v-if="messages.success" v-html="messages.success" />
-					<div class="info-msg" v-if="messages.info" v-html="messages.info" />
-					<div class="msg-placeholder" v-if="!messages.info && !messages.success && !messages.error" />
 					<br>
 					<v-btn
 						class="green login-button"
@@ -47,6 +43,8 @@
 // Services
 import LoginService from '@/services/LoginService'
 import SettingsService from '@/services/SettingsService'
+// Custom events
+import { GlobalNotificationEvent } from '@/lib/Events'
 
 export default {
 	props: {
@@ -63,13 +61,7 @@ export default {
 	data() {
 		return {
 			username: '',
-			password: '',
-			// Messages
-			messages: {
-				error: null,
-				success: null,
-				info: null
-			}
+			password: ''
 		}
 	},
 
@@ -85,8 +77,9 @@ export default {
 		}
 	},
 
-	mounted() {
-		if (this.$route.params.loggedOutMessage) this.handleLoggingOut()
+	created() {
+		let msg = this.$route.params.loggedOutMessage
+		if (msg) this.handleLoggingOut(msg)
 	},
 
 	methods: {
@@ -101,10 +94,11 @@ export default {
 
 				// If user login is successfull
 				if (loginRes.status === 200) {
-					// Hide errors
-					this.messages.info = null
-					this.messages.success = null
-					this.messages.error = null
+					// Success notification
+					this.$eventBus.publish(new GlobalNotificationEvent({
+						text: 'Logged in successfully.',
+						type: 'success'
+					}))
 
 					const user = loginRes.data.user
 					const token = loginRes.data.token
@@ -130,9 +124,11 @@ export default {
 					}
 				}
 			} catch (err) {
-				console.log('err')
-				this.messages.success = null
-				this.messages.error = err.response.data.error.message
+				// Error notification
+				this.$eventBus.publish(new GlobalNotificationEvent({
+					text: err.response.data.error.message,
+					type: 'error'
+				}))
 			}
 		},
 
@@ -142,11 +138,12 @@ export default {
 			this.$refs.inputPassword.focus()
 		},
 
-		handleLoggingOut() {
-			this.messages.success = this.$route.params.loggedOutMessage
-			setTimeout(() => {
-				this.messages.success = null
-			}, 3000)
+		handleLoggingOut(logoutMsg) {
+			// Error notification
+			this.$eventBus.publish(new GlobalNotificationEvent({
+				text: logoutMsg,
+				type: 'success'
+			}))
 			this.$refs.inputUsername.focus()
 		}
 	}

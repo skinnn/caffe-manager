@@ -3,7 +3,7 @@
 		<v-container fluid class="container-fluid pt-0">
 			<v-app>
 				<router-view></router-view>
-				<GlobalNotifications :text="'Test notification'" :type="'error'" />
+				<GlobalNotifications />
 			</v-app>
 		</v-container>
 	</div>
@@ -13,7 +13,9 @@
 	// Components
 	import AdminSideMenu from '@/components/admin/AdminSideMenu'
 	import UserSideMenu from '@/components/user/UserSideMenu'
-	import GlobalNotifications from '@/components/notices/notifications/GlobalNotifications'
+	import GlobalNotifications from '@/components/notices/GlobalNotifications'
+	// Events
+	import { GlobalNotificationEvent } from '@/lib/Events'
 
 	export default {
 		name: 'client',

@@ -27,16 +27,17 @@
 			Clear all
 		</button>
 		<br>
-		<button @click="addNotification({text: 'Added notification..', type: 'error'})">
-			Add
+		<button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
+			Add notification
 		</button>
 	</div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-// Modules
 import { v4 as uuidv4 } from 'uuid'
+// Events
+import { GlobalNotificationEvent } from '@/lib/Events'
 
 export default {
 	name: 'GlobalNotifications',
@@ -83,6 +84,11 @@ export default {
 		}
 	},
 
+	created() {
+		// register an event handler
+		this.$eventBus.listen(GlobalNotificationEvent, (notification) => this.handleNotificationEvent(notification))
+	},
+
 	mounted() {
 		// TODO: Write some tests
 		// let nots = [{text: 'Error..', type: 'error'}, {text: 'Warning..', type: 'warning'}, {text: 'Info..', type: 'info'}, {text: 'Success..', type: 'success'}]
@@ -90,6 +96,10 @@ export default {
 	},
 
 	methods: {
+		handleNotificationEvent(notification) {
+			this.addNotification(notification)
+		},
+
 		addNotification(notification) {
 			let id = uuidv4()
 			const notifObj = {
@@ -122,7 +132,7 @@ export default {
 						this.$store.dispatch('removeNotification', id)
 						// Remove notification from UI
 						this.notifications.splice(index, 1)
-					}, index * 300)
+					}, this.options.fadeOutTime)
 				}
 			}
 		},
@@ -130,14 +140,23 @@ export default {
 		clearNotifications() {
 			// Clear notifications from the state
 			this.$store.dispatch('clearNotifications')
-			// Remove notifications
-			let len = this.notifications.length
-			for (let i = len; i > 0; i--) {
-				let index = i - 1
-				// Clear timeout first
-				clearTimeout(this.notifications[index].timeout)
-				this.notifications.splice([index], 1)
+
+			let domEls = this.$refs.notificationList.getElementsByTagName('li')
+			for (var j = 0; j < domEls.length; j++) {
+				domEls[j].classList.remove('fade-in')
+				domEls[j].classList.add('fade-out')
 			}
+
+			setTimeout(() => {
+				// Remove notifications
+				let len = this.notifications.length
+				for (let i = len; i > 0; i--) {
+					let index = i - 1
+					// Clear timeout first
+					clearTimeout(this.notifications[index].timeout)
+					this.notifications.splice([index], 1)
+				}
+			}, this.options.fadeOutTime)
 		},
 
 		getIconFromType(type) {
