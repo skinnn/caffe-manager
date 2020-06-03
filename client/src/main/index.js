@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
+import path from 'path'
 
 /**
  * Set `__static` path to static files in production
@@ -11,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 // Icon path
-let iconPath = process.cwd() + '/static/logo/caffe_manager_256x256.ico'
+let iconPath = path.join(__static, '/logo/caffe_manager_256x256.ico')
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
@@ -40,7 +41,7 @@ function createWindow() {
 
 	mainWindow.loadURL(winURL)
 
-	mainWindow.on('close', function(e) {
+	mainWindow.on('close', (e) => {
 		// Prompt the user before quitting with yes or no
 		var choice = require('electron').dialog.showMessageBox(this,
 			{
@@ -53,6 +54,17 @@ function createWindow() {
 			e.preventDefault()
 		}
 	})
+
+	mainWindow.webContents.session.clearCache()
+
+	mainWindow.webContents.on('did-frame-finish-load', () => {
+		mainWindow.webContents.openDevTools()
+	})
+
+	mainWindow.on('ready', (e) => {
+		mainWindow.getCurrentWindow().openDevTools()
+	})
+	
 } /* createWindow */
 
 app.on('ready', createWindow)

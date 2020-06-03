@@ -13,4 +13,4 @@ server/uploads/images/*
 client/dist/electron/*
 client/dist/web/*
 client/build/*
-client/!build/icons
+!client/build/icons
