@@ -38,7 +38,7 @@ export default {
 					if (isLoggedOut && isSettingsRemoved) {
 						// Redirect to admin login page and send success msg
 						this.$router.push({
-							name: 'admin-login',
+							name: 'login',
 							params: { loggedOutMessage: 'Logged out' }
 						})
 					}

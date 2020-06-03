@@ -5,10 +5,6 @@
 				<v-toolbar-title class="toolbar-title">{{ $props.heading }}</v-toolbar-title>
 			</v-toolbar>
 			<div class="register-page pl-4 pr-4 pb-3 pt-4">
-				<router-link to="/admin-login"><v-btn color="blue">Admin Login</v-btn></router-link>
-				<!-- <router-link to="/admin/landingpage/register"><v-btn color="blue">Admin Register</v-btn></router-link> -->
-				<router-link to="/"><v-btn color="blue">User Login</v-btn></router-link>
-
 				<v-form @submit="onSubmit">
 					<v-text-field
 						type="text"
@@ -111,14 +107,22 @@ export default {
 					const res = await SettingsService.getOrCreateStoreSettings(user._id)
 					if (res.data.settings) {
 						// Set Settings in the Vuex Store
-						var isSettingsSet = await this.$store.dispatch('setSettings', res.data.settings)
+						var settingsLoaded = await this.$store.dispatch('setSettings', res.data.settings)
 					}
 
-					if (isLoggedIn && isSettingsSet) {
-						// Redirect to the Admin Home page
-						this.$router.push({
-							name: 'admin-home'
-						})
+					if (isLoggedIn && settingsLoaded) {
+						// Redirect admin/root user to admin dashboard
+						if (user.roles.includes('admin') || user.roles.includes('root')) {
+							return this.$router.push({
+								name: 'admin-home'
+							})
+
+						// Redirect user to user dashboard
+						} else if (user.roles.includes('user')) {
+							return this.$router.push({
+								name: 'user-home'
+							})
+						}
 					}
 				}
 			} catch (err) {
@@ -142,7 +146,6 @@ export default {
 				text: logoutMsg,
 				type: 'success'
 			})
-			console.log(this.$refs)
 			this.$refs.inputUsername.focus()
 		}
 	}

@@ -3,7 +3,7 @@
  */
 
 // Load env variables
-const env = require('dotenv').config()
+const env = require('dotenv').config().parsed
 
 module.exports = {
 	host: 'localhost',

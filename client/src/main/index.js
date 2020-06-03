@@ -55,16 +55,10 @@ function createWindow() {
 		}
 	})
 
-	mainWindow.webContents.session.clearCache()
-
 	mainWindow.webContents.on('did-frame-finish-load', () => {
 		mainWindow.webContents.openDevTools()
 	})
 
-	mainWindow.on('ready', (e) => {
-		mainWindow.getCurrentWindow().openDevTools()
-	})
-	
 } /* createWindow */
 
 app.on('ready', createWindow)
