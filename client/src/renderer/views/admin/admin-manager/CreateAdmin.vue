@@ -9,7 +9,7 @@
 						<h1 class="heading">
 							Create Admin
 						</h1>
-						<admin-logout-btn />
+						<LogoutBtn />
 				</div>
 			</v-flex>
 
@@ -192,7 +192,7 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUser', 'getUserToken'])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -318,7 +318,8 @@ export default {
 					if (this.user.root === true) {
 						const adminFormData = new FormData()
 						// Append everything to form data
-						adminFormData.append('imageUpload', this.profileImage.file)
+						adminFormData.append('roles[]', 'admin')
+						adminFormData.append('profileImage', this.profileImage.file)
 						adminFormData.append('username', this.username.value)
 						adminFormData.append('password', this.password.value)
 						adminFormData.append('password2', this.password2.value)
@@ -329,9 +330,8 @@ export default {
 						adminFormData.append('note', this.note.value)
 						adminFormData.append('createdBy', this.createdBy) // ID of the user that created this admin (should always be root)
 
-						const token = this.getUserToken
 						// Create admin
-						const res = await AdminService.createAdmin(token, adminFormData)
+						const res = await AdminService.createAdmin(adminFormData)
 						// If registering was successful
 						if (res.data.admin) {
 							console.log('admin res: ', res)

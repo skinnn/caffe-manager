@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const LoginSchema = new Schema({
-  user: {
-    type: String,
-    required: true
+	user: {
+		type: String,
+		required: true
 	},
 	username: {
 		type: String,
@@ -18,14 +18,14 @@ const LoginSchema = new Schema({
 		type: String,
 		required: true
 	},
-  created: {
-    type: Date,
-    default: Date.now
-  },
-  updated: {
-    type: String,
-    default: ''
-  }
+	created: {
+		type: Date,
+		default: Date.now
+	},
+	updated: {
+		type: String,
+		default: ''
+	}
 
 })
 

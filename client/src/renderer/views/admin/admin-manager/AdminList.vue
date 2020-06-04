@@ -7,7 +7,7 @@
 			<v-flex>
 				<div class="admin-header">
 					<h1 class="heading">Admins</h1>
-					<admin-logout-btn />
+					<LogoutBtn />
 				</div>
 			</v-flex>
 
@@ -84,6 +84,7 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
 import AdminService from '@/services/AdminService'
+import UserService from '@/services/UserService'
 // Helpers
 import { mapGetters } from 'vuex'
 
@@ -93,7 +94,7 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUserToken', 'getUser'])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -131,11 +132,10 @@ export default {
 	},
 
 	async mounted() {
-		const token = this.getUserToken
 		try {
 			// Get Admin list
 			// TODO: Get all admins except the Root Admin
-			const res = await AdminService.getAllAdmins(token)
+			const res = await AdminService.getAllAdmins()
 			const admins = res.data.admins
 			if (admins) {
 				const currentLoggedInAdmin = this.getUser.username
@@ -196,12 +196,12 @@ export default {
 					const adminId = admin._id
 					const imgPath = admin.image
 					// TODO: Don't send the image, api should delete all relevant admin data by admin ID
-					const response = (await AdminService.deleteAdmin(adminId, imgPath)).data
+					const res = await UserService.deleteUserById(adminId, imgPath)
 					// If Admin is deleted successfully
-					if (response.deleted) {
+					if (res.status === 200) {
 						// Set success message and timeout
 						this.error = null
-						this.success = response.success
+						this.success = res.data.message
 						setTimeout(() => {
 							this.success = null
 						}, 3000)

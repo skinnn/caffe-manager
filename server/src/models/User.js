@@ -2,113 +2,138 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 
-// TODO: Modify user model similar to updated admin model, add regexes, move errors to the fields
 // TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
+// TODO: When user is used replace __owner with user _id field
 const UserSchema = new Schema({
-  // userType: {
-  //   type: String,
-  //   default: 'user'
-	// },
-	userRoles: {
+	// built-in roles: 'user', 'admin' 'anon'
+	roles: {
 		type: Array,
-		default: [] // 'user', 'admin' 'anon'
+		default: ['user']
 	},
-  root: {
-    type: Boolean,
-    default: false
-  },
-  username: {
-    type: String,
-    required: true
-    // unique: true
-  },
-  name: {
-    type: String
-  },
-  password: {
-    type: String,
-    required: true
+	root: {
+		type: Boolean,
+		default: false
+	},
+	username: {
+		type: String,
+		required: true,
+		trim: true,
+		unique: true
+	},
+	name: {
+		type: String,
+		trim: true,
+		default: null
+	},
+	password: {
+		type: String,
+		trim: true,
+		required: true
 	},
 	email: {
 		type: String,
+		trim: true,
 		default: null
 	},
-  image: {
-    type: String
-  },
-  telephone1: {
-    type: String,
-    default: null
-  },
-  telephone2: {
-    type: String,
-    default: null
-  },
-  address: {
-    type: String,
-    default: null
+	files: [{
+		_id: false,
+		id: { type: String, required: true },
+		identifier: { type: String, required: true }
+	}],
+	phone: {
+		type: String,
+		trim: true,
+		default: null
 	},
-	// permissions: {
-  //   type: String,
-  //   default: null
+	address: {
+		type: String,
+		trim: true,
+		default: null
+	},
+	// TODO: Create permissions logic
+	permissions: {
+		type: Array,
+		default: []
+	},
+	// userMenu: {
+	//   type: Array,
+	//   default: []
 	// },
-	userMenu: {
-    type: Array,
-    default: []
-  },
-  note: {
-    type: String,
-    default: null
-  },
-  createdBy: {
-    type: String,
-    default: null
-  },
-  date: {
-    type: Date,
-    default: Date.now
-  },
-  updated: {
-    type: String,
-    default: null
-  }
+	// telephone2: {
+	//   type: String,
+	//   default: null
+	// },
+	note: {
+		type: String,
+		trim: true,
+		default: null
+	},
+	createdBy: {
+		type: String,
+		trim: true,
+		default: null
+	},
+	created: {
+		type: Date,
+		required: true,
+		default: Date.now
+	},
+	updated: {
+		type: Date,
+		default: null
+	}
 })
 
 let User = module.exports = mongoose.model('User', UserSchema)
 
-module.exports.createUser = (newUser, callback) => {
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) {
-      return console.log(err)
-    }
-    bcrypt.hash(newUser.password, salt, (err, hash) => {
-      if (err) {
-        console.log(err)
-      }
-      newUser.password = hash
-      newUser.save(callback)
-    })
-  })
+module.exports.hashPassword = async(password) => {
+	return new Promise(async(resolve, reject) => {
+		bcrypt.genSalt(10, (err, salt) => {
+			if (err) reject(err)
+
+			bcrypt.hash(password, salt, (err, hash) => {
+				if (err) reject(err)
+				resolve(hash)
+			})
+		})
+	})
+}
+module.exports.compareUserPassword = (candidatePassword, hash) => {
+	return new Promise((resolve, reject) => {
+		bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+			if (err) reject(err)
+			resolve(isMatch)
+		})
+	})
 }
 
-module.exports.createAdmin = (newAdmin, callback) => {
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) {
-      throw err
-    }
-    bcrypt.hash(newAdmin.password, salt, (err, hash) => {
-      if (err) {
-        throw err
-      }
-      newAdmin.password = hash
-      newAdmin.save(callback)
-    })
-  })
+module.exports.createUser = (user) => {
+	return new Promise((resolve, reject) => {
+		if (user.roles && user.roles.includes('root')) {
+			let err = new Error('Creating a root user is not allowed')
+			err.name = 'ForbiddenError'
+			reject(err)
+		}
+		User.create(user, (err, doc) => {
+			if (err) reject(err)
+			resolve(doc)
+		})
+	})
 }
 
-// module.exports.getUserByUsername = function(username, callback) {
-//   let query = {username: username}
-//   User.findOne(query, callback)
+// module.exports.createAdmin = (newAdmin, callback) => {
+//   bcrypt.genSalt(10, (err, salt) => {
+//     if (err) {
+//       throw err
+//     }
+//     bcrypt.hash(newAdmin.password, salt, (err, hash) => {
+//       if (err) {
+//         throw err
+//       }
+//       newAdmin.password = hash
+//       newAdmin.save(callback)
+//     })
+//   })
 // }
 
 module.exports.getUserByUsername = (username) => {
@@ -120,22 +145,11 @@ module.exports.getUserByUsername = (username) => {
 	})
 }
 
-module.exports.getUserById = function(id, callback) {
-  User.findById(id, callback)
-}
-
-module.exports.compareUserPassword = (candidatePassword, hash) => {
+module.exports.getUserById = (id) => {
 	return new Promise((resolve, reject) => {
-		bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+		User.findById({ _id: id }, (err, user) => {
 			if (err) reject(err)
-			resolve(isMatch)
+			resolve(user)
 		})
 	})
 }
-
-// module.exports.compareUserPassword = function(candidatePassword, hash, callback) {
-//   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
-//     if (err) throw err
-//     callback(null, isMatch)
-//   })
-// }

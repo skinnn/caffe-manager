@@ -1,15 +1,23 @@
 import Vue from 'vue'
-import axios from 'axios'
+import App from './App'
 
+// Global mixnins
+import './_mixins/index.js'
+
+// TODO: Move to /plugins directory
+// Plugins
+import EventBus from './plugins/event-bus.js'
+import 'material-design-icons/iconfont/material-icons.css'
+import axios from 'axios'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.css'
-import App from './App'
 import router from './router'
-import store from './store/index'
+import store from './store'
 import { sync } from 'vuex-router-sync'
+
 // Global Components
-import AdminLogoutBtn from '@/components/_globals/AdminLogoutBtn'
-import UserLogoutBtn from '@/components/_globals/UserLogoutBtn'
+// import AdminLogoutBtn from '@/components/_globals/AdminLogoutBtn'
+import LogoutBtn from '@/components/_globals/LogoutBtn'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
@@ -17,9 +25,8 @@ Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.http = Vue.prototype.$http = axios
 
-// Register Global Components
-Vue.component('adminLogoutBtn', AdminLogoutBtn)
-Vue.component('userLogoutBtn', UserLogoutBtn)
+// Global Components
+Vue.component('LogoutBtn', LogoutBtn)
 
 // Sync store and router
 sync(store, router)

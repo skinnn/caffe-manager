@@ -1,35 +1,35 @@
 /*
 	Admin routes - Need to be atuhenticated as Admin to get
-	this assets (if in production)
+	this assets (in production)
 */
-
+import config from '@/config/config'
 // Admin Components
-const AdminDashboard = require('@/views/admin/AdminDashboard').default
-const AdminTaxes = require('@/views/admin/AdminTaxes').default
+import AdminDashboard from '@/views/admin/AdminDashboard'
+import AdminTaxes from '@/views/admin/AdminTaxes'
 // Settings
-const Settings = require('@/views/admin/settings/Settings').default
-const EditSettings = require('@/views/admin/settings/EditSettings').default
+import Settings from '@/views/admin/settings/Settings'
+import EditSettings from '@/views/admin/settings/EditSettings'
 // Storage-Manager
-const AdminViewSubgroup = require('@/views/admin/storage-manager/ViewArticleSubgroup').default
-const AdminEditStorage = require('@/views/admin/storage-manager/EditStorage').default
-const AdminStorageList = require('@/views/admin/storage-manager/StorageList').default
-const AdminArticleSubgroupList = require('@/views/admin/storage-manager/ArticleSubgroupList').default
-const AdminCreateStorage = require('@/views/admin/storage-manager/CreateStorage').default
-const AdminCreateArticle = require('@/views/admin/storage-manager/CreateArticle').default
-const AdminEditArticle = require('@/views/admin/storage-manager/EditArticle').default
+import AdminViewSubgroup from '@/views/admin/storage-manager/ViewArticleSubgroup'
+import AdminEditStorage from '@/views/admin/storage-manager/EditStorage'
+import AdminStorageList from '@/views/admin/storage-manager/StorageList'
+import AdminArticleSubgroupList from '@/views/admin/storage-manager/ArticleSubgroupList'
+import AdminCreateStorage from '@/views/admin/storage-manager/CreateStorage'
+import AdminCreateArticle from '@/views/admin/storage-manager/CreateArticle'
+import AdminEditArticle from '@/views/admin/storage-manager/EditArticle'
 // Table-Manager
-const AdminCurrentTable = require('@/views/admin/table-manager/AdminCurrentTable').default
-const AdminTableList = require('@/views/admin/table-manager/AdminTableList').default
+import AdminCurrentTable from '@/views/admin/table-manager/AdminCurrentTable'
+import AdminTableList from '@/views/admin/table-manager/AdminTableList'
 // Admin-Manager
-const AdminCreateAdmin = require('@/views/admin/admin-manager/CreateAdmin').default
-const AdminViewAdmin = require('@/views/admin/admin-manager/ViewAdmin').default
-const AdminEditAdmin = require('@/views/admin/admin-manager/EditAdmin').default
-const AdminAdminList = require('@/views/admin/admin-manager/AdminList').default
+import AdminCreateAdmin from '@/views/admin/admin-manager/CreateAdmin'
+import AdminViewAdmin from '@/views/admin/admin-manager/ViewAdmin'
+import AdminEditAdmin from '@/views/admin/admin-manager/EditAdmin'
+import AdminAdminList from '@/views/admin/admin-manager/AdminList'
 // User-Manager
-const AdminCreateUser = require('@/views/admin/user-manager/CreateUser').default
-const AdminUserList = require('@/views/admin/user-manager/UserList').default
-const AdminEditUser = require('@/views/admin/user-manager/EditUser').default
-const AdminViewUser = require('@/views/admin/user-manager/ViewUser').default
+import AdminCreateUser from '@/views/admin/user-manager/CreateUser'
+import AdminUserList from '@/views/admin/user-manager/UserList'
+import AdminEditUser from '@/views/admin/user-manager/EditUser'
+import AdminViewUser from '@/views/admin/user-manager/ViewUser'
 
 // Admin Routes
 const routes = [
@@ -37,8 +37,10 @@ const routes = [
 		path: '/admin/home',
 		name: 'admin-home',
 		component: AdminDashboard,
-		// TODO: Each route needs to be protected with requiresLogin meta
-		meta: { requiresLogin: true }
+		meta: {
+			title: 'Home'
+		}
+		// TODO: Each route needs to be protected with requiresAuth meta
 	},
 	{
 		path: '/admin/user/create',
@@ -141,5 +143,16 @@ const routes = [
 		component: AdminEditArticle
 	}
 ]
+
+// Should always be a bool - false, or string - 'admin'
+let isAdminAuthRequired = config.authentication.admin ? 'admin' : false
+if (process.env.NODE_ENV === 'production') isAdminAuthRequired = 'admin'
+// Dynamically append authentication meta for all admin routes
+routes.map(route => {
+	route.meta = {
+		...route.meta,
+		requiresAuth: isAdminAuthRequired
+	}
+})
 
 export default routes

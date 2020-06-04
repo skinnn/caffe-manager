@@ -12,7 +12,7 @@
 						</v-btn>
 						Edit Store Settings
 					</h1>
-					<admin-logout-btn />
+					<LogoutBtn />
 				</div>
 			</v-flex>
 

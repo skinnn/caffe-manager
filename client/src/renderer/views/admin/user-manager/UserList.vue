@@ -7,7 +7,7 @@
 			<v-flex>
 				<div class="admin-header">
 						<h1 class="heading">Staff Members</h1>
-						<admin-logout-btn />
+						<LogoutBtn />
 				</div>
 			</v-flex>
 
@@ -87,11 +87,19 @@
 import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
 import AdminService from '@/services/AdminService'
+import UserService from '@/services/UserService'
+// Helpers
+import { mapGetters } from 'vuex'
 
 export default {
 	components: {
 		AdminSideMenu
 	},
+
+	computed: {
+		...mapGetters([])
+	},
+
 	data() {
 		return {
 			users: [],
@@ -126,34 +134,36 @@ export default {
 			info: null
 		}
 	},
-	async mounted() {
-		try {
-			const response = (await AdminService.getAllUsers()).data
 
-			// Get User list
-			if (response.users) {
-				const users = this.users
-				// Add user in the users array
-				response.users.forEach(function(user) {
-					users.push(user)
-				})
-
-				// Handle pagination
-				let l = this.users.length
-				let s = this.pagination.itemsPerPage
-				this.pagination.totalPages = Math.floor(l / s)
-				let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
-				let end = start + this.pagination.itemsPerPage
-				// Set Displayed Articles
-				this.displayedUsers = this.users.slice(start, end)
-			}
-		} catch (error) {
-			this.success = null
-			this.error = error.response.data.error
-			console.log(error)
-		}
+	mounted() {
+		this.getUsers()
 	},
+
 	methods: {
+		async getUsers() {
+			try {
+				const res = (await UserService.getAllUsers()).data
+
+				// Get User list
+				if (res.users) {
+					this.users = res.users
+
+					// Handle pagination
+					let l = this.users.length
+					let s = this.pagination.itemsPerPage
+					this.pagination.totalPages = Math.floor(l / s)
+					let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+					let end = start + this.pagination.itemsPerPage
+					// Set Displayed Articles
+					this.displayedUsers = this.users.slice(start, end)
+				}
+			} catch (error) {
+				this.success = null
+				this.error = error.response.data.error
+				console.log(error)
+			}
+		},
+
 		changePagination() {
 			let l = this.users.length
 			let s = this.pagination.itemsPerPage
@@ -165,15 +175,11 @@ export default {
 			console.log(this.pagination.itemsPerPage)
 		},
 
-		async pageChanged() {
-			try {
-				let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
-				let end = start + this.pagination.itemsPerPage
-				// Change Displayed Articles
-				this.displayedAdmins = this.admins.slice(start, end)
-			} catch (error) {
-				console.log(error)
-			}
+		pageChanged() {
+			let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+			let end = start + this.pagination.itemsPerPage
+			// Change Displayed Articles
+			this.displayedUsers = this.users.slice(start, end)
 		},
 
 		viewUser(userId) {
@@ -188,33 +194,29 @@ export default {
 		},
 
 		async deleteUser(user) {
-			let confirmation = confirm(
-				'Are you sure?'
-			)
+			const confirmation = confirm('Are you sure?')
+
 			if (confirmation) {
 				try {
-					const adminId = this.adminId
 					const userId = user._id
-					const imgPath = user.image
-					const response = (await AdminService.deleteUser(adminId, userId, imgPath)).data
+					// TODO: Change files deleting, create file db model and upload files in separate request
+					const imgPath = user.files[0]
+					console.log(imgPath)
+					const res = await UserService.deleteUserById(userId, imgPath)
 					// If User is deleted successfully
-					if (response.deleted) {
+					if (res.status === 200) {
 						// Set success message and timeout
 						this.error = null
-						this.success = response.success
+						this.success = res.data.message
 						setTimeout(() => {
 							this.success = null
 						}, 3000)
 
 						// Reset User list after deleting
-						const ress = (await AdminService.getAllUsers()).data
-						if (ress.users) {
-							this.users = []
-							const users = this.users
-							ress.users.forEach(function(user) {
-								users.push(user)
-							})
-						}
+						const filteredUsers = this.users.filter(user => user._id !== userId)
+						this.users = filteredUsers
+						// this.displayedAdmins = filteredUsers
+						this.pageChanged()
 					}
 				} catch (error) {
 					this.success = null

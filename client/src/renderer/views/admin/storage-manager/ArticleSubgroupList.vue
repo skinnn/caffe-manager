@@ -7,7 +7,7 @@
 				<v-flex>
 					<div class="admin-header">
 							<h1 class="heading">{{storageName}} - Subgroups</h1>
-							<admin-logout-btn />
+							<LogoutBtn />
 					</div>
 				</v-flex>
 

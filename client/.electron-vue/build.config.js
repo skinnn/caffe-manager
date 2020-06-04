@@ -5,6 +5,7 @@ const path = require('path')
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-packager.html
  */
 module.exports = {
+	productName: 'Caffe Manager',
   arch: 'x64',
   asar: true,
   dir: path.join(__dirname, '../'),

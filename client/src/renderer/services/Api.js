@@ -1,31 +1,21 @@
 import axios from 'axios'
 
-let apiUrl
+// TODO: Load env variables from the config file
 
-// TODO: Create config file and load env variables from there
-
-// Set api url depending on the environment
-if (process.env.NODE_ENV === 'development') {
-	apiUrl = process.env.DEV_URL
-} else if (process.env.NODE_ENV === 'production') {
-	apiUrl = process.env.PROD_URL
-}
-
-/*
-	Instance used for sending all requests
-
-	@param {Object} token - Holds token which is
-	used to populate the Authorization header
+/**
+	Axios instance used for sending all the requests from the client.
 */
 
-export default (token) => {
+export default () => {
+	const token = localStorage.getItem('token') || null
+
 	const options = {
-		baseURL: apiUrl,
+		baseURL: process.env.NODE_ENV === 'development' ? process.env.DEV_URL : process.env.PROD_URL,
 		timeout: 0, // 0 is unlimited timeout
 		crossDomain: true
 	}
 
-	// If token is passed, add Authorization header
+	// If token is found, add Authorization header
 	if (token) {
 		options.headers = {
 			'Authorization': `Bearer ${token}`
@@ -39,9 +29,3 @@ export default (token) => {
 
 	return instance
 }
-
-// export default () => {
-// 	return axios.create({
-// 		baseURL: apiUrl
-// 	})
-// }

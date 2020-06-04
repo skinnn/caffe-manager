@@ -12,7 +12,7 @@
 								Edit
 							</v-btn>
 						</h1>
-						<admin-logout-btn />
+						<LogoutBtn />
 				</div>
 			</v-flex>
 

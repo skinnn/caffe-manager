@@ -1,8 +1,8 @@
 /*
 	User routes - Needs to be atuhenticated as User to get
-	this assets (if in production)
+	this assets (in production)
 */
-
+const config = require('../../config/config')
 
 // User components
 const UserHome = require('@/views/user/UserHome').default
@@ -13,7 +13,10 @@ const routes = [
 	{
 		path: '/user/home',
 		name: 'user-home',
-		component: UserHome
+		component: UserHome,
+		meta: {
+			title: 'Home'
+		}
 	},
 	{
 		path: '/user/warehouse',
@@ -26,5 +29,16 @@ const routes = [
 		component: UserTables
 	}
 ]
+
+// Should always be a bool - false, or string - 'user'
+let isUserAuthRequired = config.authentication.user ? 'user' : false
+if (process.env.NODE_ENV === 'production') isUserAuthRequired = 'user'
+// Dynamically append authentication meta for all user routes
+routes.map(route => {
+	route.meta = {
+		...route.meta,
+		requiresAuth: isUserAuthRequired
+	}
+})
 
 export default routes

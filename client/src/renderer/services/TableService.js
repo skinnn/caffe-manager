@@ -10,9 +10,6 @@ export default {
 	getTable(ownerId, currentTableId) {
 		return Api().get(`/admin/${ownerId}/table/${currentTableId}`)
 	},
-	// saveTable(tableId) {
-	//   return Api().patch(``)
-	// },
 	deleteTable(ownerId, tableId) {
 		return Api().delete(`/admin/${ownerId}/table/${tableId}`)
 	}

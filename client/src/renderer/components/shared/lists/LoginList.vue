@@ -44,33 +44,23 @@ export default {
 
 	mounted() {
 		if (this.$props.userType === 'admins') {
-			this.getAdminLoginList()
+			this.getLoginList('admin')
 		} else if (this.$props.userType === 'users') {
-			this.getUserLoginList()
+			this.getLoginList('user')
 		}
 	},
 
 	methods: {
-		async getAdminLoginList() {
+		async getLoginList(role) {
 			try {
-				const response = (await UserService.getAdminLoginList()).data
+				// role - 'admin' or 'user'
+				const data = { role: role }
+				const res = await UserService.getLoginList(data)
+				const users = res.data.users
 
-				if (response.admins) {
-					if (response.admins.length === 0) this.noUsers = true
-					this.loginList = response.admins
-				}
-			} catch (err) {
-				console.error(err)
-			}
-		},
-
-		async getUserLoginList() {
-			try {
-				const response = (await UserService.getUserLoginList()).data
-
-				if (response.users) {
-					if (response.users.length === 0) this.noUsers = true
-					this.loginList = response.users
+				if (res.status === 200) {
+					if (users.length === 0) this.noUsers = true
+					this.loginList = users
 				}
 			} catch (err) {
 				console.error(err)
@@ -88,10 +78,11 @@ export default {
 
 	.login-list {
 		list-style: none;
-		display: table;
+		display: block;
 		position: fixed;
-		min-height: 415px;
-		min-width: 430px;
+		overflow-y: auto;
+		height: 415px;
+		min-width: 350px;
 		padding: 0 10px 0 10px;
 		left: 67%;
 		border: 1px solid grey;
@@ -102,22 +93,22 @@ export default {
 			cursor: pointer;
 			list-style: none;
 			text-align: left;
-			font-size: 18px;
+			font-size: 14px;
 			margin: 10px 0 0 0;
 
 			&:hover {
 				span.user-name {
 					background-color: lighten(green, 40);
-					border-left: 2px solid green;
+					// border-bottom: 2px solid green;
 				}
 			}
 
 			span.user-name {
-				min-height: 50px;
-				background-color: lighten(green, 55);
-				padding: 10px;
+				display: inline-block;
+				padding: 10px 6px;
+				height: 40px;
 				border-radius: 10px;
-				display: table;
+				background-color: lighten(green, 55);
 			}
 		}
 

@@ -1,32 +1,75 @@
 <template>
 	<div id="app">
-		<v-container fluid class="pt-0">
+		<v-container fluid class="container-fluid pt-0">
 			<v-app>
 				<router-view></router-view>
+				<GlobalNotifications />
 			</v-app>
 		</v-container>
 	</div>
 </template>
 
 <script>
+	// Components
 	import AdminSideMenu from '@/components/admin/AdminSideMenu'
 	import UserSideMenu from '@/components/user/UserSideMenu'
-	import AdminService from '@/services/AdminService'
+	import GlobalNotifications from '@/components/notices/GlobalNotifications'
 
 	export default {
 		name: 'client',
 		components: {
 			AdminSideMenu,
-			UserSideMenu
+			UserSideMenu,
+			GlobalNotifications
 		}
-
 	}
 </script>
 
 <style lang="scss">
+	// @import '@/theme.scss';
+	
+	*,
+	*::before,
+	*::after {
+		padding: 0;
+		margin: 0;
+	}
 
+	*:focus {
+		outline: none;
+	}
+ 
 	#app {
-		user-select: none;
+		// user-select: none;
+	}
+
+	:root {
+	--sidebar-main-bg: rgba(51, 51, 51, 0.97);
+}
+
+	/* Global scrollbar */
+	::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}/* Track */
+	::-webkit-scrollbar-track {
+		background: #f1f1f1; 
+	}
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+		background: rgba(51, 51, 51, 0.2); 
+		border-radius: 20px;
+		padding-left: 3px;
+	}
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+		/* background: #555; */
+		background: rgba(51, 51, 51, 0.6); 
+	}
+
+	.container-fluid {
+		max-height: 100vh;
+		padding: 0 0;
 	}
 
 	.v-list__group__header {

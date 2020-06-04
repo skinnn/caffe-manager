@@ -9,7 +9,7 @@
 						<h1 class="heading">
 							Create Article
 						</h1>
-						<admin-logout-btn />
+						<LogoutBtn />
 				</div>
 			</v-flex>
 

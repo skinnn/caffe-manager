@@ -2,23 +2,15 @@ node_modules
 !.gitkeep
 *.log
 *.txt
-TODO.md
+*.md
+!README.md
 
 # Server
-server/node_modules
-server/node_modules/*
-server/images/*.png
-server/images/*.jpg
-server/images/*.gif
-server/images/*.svg
-server/images/!.gitkeep
+server/uploads/images/*
+!server/uploads/images/.gitkeep
 
 # Client
-client/node_modules
-client/node_modules/*
 client/dist/electron/*
 client/dist/web/*
 client/build/*
-client/!build/icons
-client/npm-debug.log
-client/npm-debug.log.*
+!client/build/icons

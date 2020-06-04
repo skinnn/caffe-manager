@@ -9,7 +9,7 @@
 						<h1 class="heading">
 							Create Staff Member Account
 						</h1>
-						<admin-logout-btn />
+						<LogoutBtn />
 				</div>
 			</v-flex>
 
@@ -20,21 +20,20 @@
 					class="register-user-form"
 				>
 					<h3 title="Required field">
-						Username: <span class="required-field">*</span>
+						Username <span class="required-field">*</span>
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
 							title="Required field"
-							:error-messages="username.error_message"
 							maxlength="15"
 							type="text"
-							v-model="username.value"
+							v-model="form.fields.username"
 							solo
 						></v-text-field>
 					</v-flex>
 
 					<h3 title="Required field">
-						Password: <span class="required-field">*</span>
+						Password <span class="required-field">*</span>
 						<div
 							class="passwordStrengthMessage"
 							v-if="showMessage"
@@ -49,18 +48,16 @@
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
-							@input="analyzePasswordStrength(password.value), isPasswordConfirmed(password2.value)"
-							:success-messages="password.success_message"
-							:error-messages="password.error_message"
+							@input="analyzePasswordStrength(form.fields.password), isPasswordConfirmed(form.fields.password2)"
 							maxlength="32"
 							type="password"
-							v-model="password.value"
+							v-model="form.fields.password"
 							solo
 						></v-text-field>
 					</v-flex>
 
 					<h3 title="Required field">
-						Confirm password: <span class="required-field">*</span>
+						Confirm password <span class="required-field">*</span>
 						<div
 							class="confirmPasswordMessage"
 							v-if="showMessage"
@@ -75,58 +72,55 @@
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
-							@input="isPasswordConfirmed(password2.value)"
-							:success-messages="password2.success_message"
-							:error-messages="password2.error_message"
+							@input="isPasswordConfirmed(form.fields.password2)"
 							maxlength="32"
 							type="password"
-							v-model="password2.value"
+							v-model="form.fields.password2"
 							solo
 						></v-text-field>
 					</v-flex>
 
 					<h3 title="Required field">
-						Full name: <span class="required-field">*</span>
+						Full name <span class="required-field">*</span>
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
-							:error-messages="name.error_message"
 							maxlength="32"
 							type="text"
-							v-model="name.value"
+							v-model="form.fields.name"
 							solo
 						></v-text-field>
 					</v-flex>
 
-					<h3>Telephone 1:</h3>
+					<h3 title="Required field">
+						Email
+					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
-							:error-messages="telephone1.error_message"
+							title="Required field"
+							maxlength="30"
+							type="text"
+							v-model="form.fields.email"
+							solo
+						></v-text-field>
+					</v-flex>
+
+					<h3>Phone</h3>
+					<v-flex xs12 sm8 d-flex>
+						<v-text-field
 							maxlength="20"
 							type="text"
-							v-model="telephone1.value"
+							v-model="form.fields.phone"
 							solo
 						></v-text-field>
 					</v-flex>
 
-					<h3>Telephone 2:</h3>
+					<h3>Address</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
-							:error-messages="telephone2.error_message"
-							maxlength="20"
-							type="text"
-							v-model="telephone2.value"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3>Address:</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							:error-messages="address.error_message"
 							maxlength="35"
 							type="text"
-							v-model="address.value"
+							v-model="form.fields.address"
 							solo
 						></v-text-field>
 					</v-flex>
@@ -134,16 +128,16 @@
 					<h3>Note:</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-textarea
-							:error-messages="note.error_message"
 							maxlength="250"
 							type="text"
-							v-model="note.value"
+							v-model="form.fields.note"
 							placeholder="Write a short note about the person.."
 							outline
 						></v-textarea>
 					</v-flex>
 
-					<h3 class="mt-4">Permissions</h3>
+					<!-- TODO: Set it up and test -->
+					<!-- <h3 class="mt-4">Permissions</h3>
 					<v-checkbox
 						:label="`Warehouse - ${userMenu.warehouse.toString()}`"
 						v-model="userMenu.warehouse"
@@ -151,7 +145,7 @@
 					<v-checkbox
 						:label="`Tables - ${userMenu.tables.toString()}`"
 						v-model="userMenu.tables"
-					></v-checkbox>
+					></v-checkbox> -->
 
 					<h3>Add image</h3>
 					<br>
@@ -161,7 +155,7 @@
 							@change="imagePreview()"
 							name="imageUpload"
 						>
-						<img class="previewImg" :src="profileImage.src" alt="">
+						<img class="previewImg" :src="form.files.profileImage.src" alt="Profile image">
 					</div>
 					<br>
 
@@ -193,68 +187,50 @@ export default {
 	},
 
 	computed: {
-		...mapGetters(['getUserToken'])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
 		return {
-			username: {
-				value: '',
-				error_message: ''
+			form: {
+				fields: {
+					// TODO: Create multiselect for choosing roles istead of hardcoded value user
+					roles: ['user'],
+					username: 'jdoe1',
+					password: '123123',
+					password2: '123123',
+					name: 'John Doe',
+					email: 'jdoe@test.com',
+					phone: '+1 123 123 13',
+					address: 'Some st. 1312 1233',
+					note: 'Short user note...'
+					// TODO: Get userMenu/permissions from the API
+					// userMenu: {
+					// 	home: true, // Default is that all users have home page
+					// 	warehouse: false,
+					// 	tables: false
+					// },
+				},
+				files: {
+					profileImage: {
+						src: null,
+						file: null
+					}
+				}
 			},
-			password: {
-				value: '',
-				success_message: '',
-				error_message: ''
-			},
-			password2: {
-				value: '',
-				success_message: '',
-				error_message: ''
-			},
-			name: {
-				value: '',
-				error_message: ''
-			},
-			telephone1: {
-				value: '',
-				error_message: ''
-			},
-			telephone2: {
-				value: '',
-				error_message: ''
-			},
-			address: {
-				value: '',
-				error_message: ''
-			},
-			note: {
-				value: '',
-				error_message: ''
-			},
-			userMenu: {
-				home: true, // Default is that all users have home page
-				warehouse: false,
-				tables: false
-			},
-			profileImage: {
-				src: null,
-				file: null
-			},
-			createdBy: this.$store.state.user._id,
 
 			showMessage: false,
-			// Password Strength - default
+			// Password strength
 			passwordStrength: 'weak',
 			passwordStrengthText: '',
-			// Is Password Confirmed - default
+			// Is password confirmed
 			confirmPasswordMatched: false,
 			isPasswordConfirmedText: '',
-			// TODO: Centralize regexes/form policies, create helpers
-			// Password Regexes ( Password Strength )
+			// TODO: Centralize regexes/form policies, constants, create helpers
+			// Password regexes ( password strength )
 			strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
 			mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'),
-			// Messages
+			// Form messages
 			info: null,
 			error: null,
 			success: null
@@ -262,6 +238,56 @@ export default {
 	},
 
 	methods: {
+		async onSubmit() {
+			event.preventDefault()
+			try {
+				// TODO: Finish permissions & roles
+
+				// Send the request
+				const response = await UserService.createUser(this.form.fields)
+				const data = response.data
+
+				// Created successfully
+				if (response.status === 201) {
+					const profileImage = this.form.files.profileImage.file
+					if (profileImage) {
+						const attachmentResponse = await this.createUserAttachment(profileImage)
+					}
+					
+					this.resetFormFields()
+
+					// Set success message and timeout
+					this.error = null
+					this.info = null
+					this.success = `User with username <span style="color: blue; font-size:17px;">${data.user.username}</span> created successfully.`
+					setTimeout(() => {
+						this.success = null
+					}, 5000)
+				}
+			} catch (error) {
+				console.log(error.response.data)
+
+				// Display form error message
+				this.error = error.response.data.message
+				this.info = null
+				this.success = null
+			}
+		},
+
+		async createUserAttachment(profileImage) {
+			try {
+				const formData = new FormData()
+				const identifier = 'profile_image'
+				formData.append('attachment', profileImage)
+				const userId = this.getUser._id
+				// Upload image
+				const fileResponse = await UserService.createUserAttachment(userId, identifier, formData)
+				return fileResponse
+			} catch (err) {
+				console.error(err)
+			}
+		},
+
 		analyzePasswordStrength(password) {
 			if (this.strongRegex.test(password)) {
 				this.passwordStrength = 'strong'
@@ -286,7 +312,7 @@ export default {
 			if (password === '') {
 				this.confirmPasswordMatched = null
 				this.isPasswordConfirmedText = ''
-			} else if (password === this.password.value) {
+			} else if (password === this.form.fields.password) {
 				this.confirmPasswordMatched = true
 				this.isPasswordConfirmedText = 'Passwords match'
 			} else {
@@ -298,9 +324,9 @@ export default {
 		imagePreview() {
 			const file = event.target.files[0]
 			// Set selected image
-			this.profileImage.file = file
+			this.form.files.profileImage.file = file
 			// Preview selected image
-			const previewImg = this.profileImage
+			const previewImg = this.form.files.profileImage
 			var reader = new FileReader()
 			reader.onload = function(e) {
 				previewImg.src = e.target.result
@@ -308,154 +334,21 @@ export default {
 			reader.readAsDataURL(file)
 		},
 
-		async onSubmit() {
-			event.preventDefault()
-			const token = await this.getUserToken
-			try {
-				const userFormData = new FormData()
-
-				// Permisions - user menu
-				const userMenu = {
-					home: this.userMenu.home,
-					warehouse: this.userMenu.warehouse,
-					tables: this.userMenu.tables
-				}
-				// Created By
-				// Append everything to form data
-				userFormData.append('imageUpload', this.profileImage.file)
-				userFormData.append('userUsername', this.username.value)
-				userFormData.append('userName', this.name.value)
-				userFormData.append('userPassword', this.password.value)
-				// userFormData.append('userPassword2', password2)
-				userFormData.append('userTelephone1', this.telephone1.value)
-				userFormData.append('userTelephone2', this.telephone2.value)
-				userFormData.append('userAddress', this.address.value)
-				userFormData.append('userNote', this.note.value)
-				userFormData.append('userMenu', userMenu)
-				userFormData.append('createdBy', this.createdBy)
-				userFormData.append('userRoles[]', 'user')
-
-				// Register User
-				const response = (await UserService.createUser(token, userFormData)).data
-
-				// If registering was successful
-				if (response.user) {
-					// Set success message and timeout
-					this.error = null
-					this.info = null
-					this.success = `User with username <span style="color: blue; font-size:17px;">${this.username.value}</span>
-					 registered successfully.`
-					setTimeout(() => {
-						this.success = null
-					}, 4000)
-
-					// Set all Values to default after successful registering
-					this.username.value = ''
-					this.password.value = ''
-					this.password2.value = ''
-					this.name.value = ''
-					this.telephone1.value = ''
-					this.telephone2.value = ''
-					this.address.value = ''
-					this.note.value = ''
-					this.userMenu.home = true
-					this.userMenu.warehouse = false
-					this.userMenu.tables = false
-					this.profileImage.file = null
-					this.profileImage.src = ''
-					// Hide password messages
-					this.showMessage = false
-					this.confirmPasswordMatched = null
-				}
-			} catch (error) {
-				console.log(error.response)
-
-				// Form Messages - Error/Success
-				// Username
-				if (error.response.data.username_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.username_error
-					this.username.error_message = error.response.data.username_error
-				} else {
-					this.username.error_message = ''
-				}
-				// Password
-				if (error.response.data.password_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.password_error
-					this.password.error_message = error.response.data.password_error
-				} else {
-					this.password.error_message = ''
-				}
-				// Confirm Password
-				if (error.response.data.password2_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.password2_error
-					this.password2.error_message = error.response.data.password2_error
-				} else {
-					this.password2.error_message = ''
-				}
-				// Full Name
-				if (error.response.data.name_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.name_error
-					this.name.error_message = error.response.data.name_error
-				} else {
-					this.name.error_message = ''
-				}
-				// Telephone 1
-				if (error.response.data.telephone1_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.telephone1_error
-					this.telephone1.error_message = error.response.data.telephone1_error
-				} else {
-					this.telephone1.error_message = ''
-				}
-				// Telephone 2
-				if (error.response.data.telephone2_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.telephone2_error
-					this.telephone2.error_message = error.response.data.telephone2_error
-				} else {
-					this.telephone2.error_message = ''
-				}
-				// Address
-				if (error.response.data.address_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.address_error
-					this.address.error_message = error.response.data.address_error
-				} else {
-					this.address.error_message = ''
-				}
-				// Note
-				if (error.response.data.note_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.note_error
-					this.note.error_message = error.response.data.note_error
-				} else {
-					this.note.error_message = ''
-				}
-				// User Menu - Privileges
-				if (error.response.data.menu_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.menu_error
-				}
-				// Created By
-				if (error.response.data.created_by_error) {
-					this.success = null
-					this.info = null
-					this.error = error.response.data.created_by_error
-				}
-			}
+		resetFormFields() {
+			// Set all Values to default after successful registering
+			this.form.fields.username = ''
+			this.form.fields.password = ''
+			this.form.fields.password2 = ''
+			this.form.fields.email = ''
+			this.form.fields.name = ''
+			this.form.fields.phone = ''
+			this.form.fields.address = ''
+			this.form.fields.note = ''
+			this.form.files.profileImage.file = null
+			this.form.files.profileImage.src = ''
+			// Hide password messages
+			this.showMessage = false
+			this.confirmPasswordMatched = null
 		}
 	}
 }
