@@ -21,7 +21,7 @@
 						</div>
 					</h1>
 					<!-- ./ Current Table Heading -->
-					<admin-logout-btn />
+					<LogoutBtn />
 				</div>
 			</v-flex>
 

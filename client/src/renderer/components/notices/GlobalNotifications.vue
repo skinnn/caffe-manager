@@ -1,43 +1,49 @@
 <template>
-	<div
-		v-if="notifications.length"
-		class="app-notification-wrapper"
-	>
-		<ul
-			class="notification-list"
-			ref="notificationList"
+	<div class="global-notifications">
+		<div
+			ref="notificationsWrapper"
+			:class="['notifications-wrapper', showNotifications ? 'animation-notification-panel-in' : 'animation-notification-panel-out']"
+			:style="fadeOutMs"
 		>
-			<li
-				v-for="notification in notifications"
-				:key="notification.id" class="notification-wrapper"
-				:data-id="notification.id"
-				:class="['fade-in']"
-				:style="fadeOutMs"
+			<button @click="toggleNotifications()" class="btn-toggle-notifications">
+				<div v-if="notifications.length" class="notification-count">{{ notifications.length }}</div>
+				<i class="material-icons">notifications</i>
+			</button>
+			<ul
+				class="notification-list"
+				ref="notificationList"
 			>
-				<div
-					:type="notification.type"
-					:class="['notification', notification.type]"
+				<li
+					v-for="notification in notifications"
+					:key="notification.id" class="notification-wrapper"
+					:data-id="notification.id"
+					:class="['animation-notification-in']"
 				>
-					<span class="message">
-						<i class="type-icon material-icons">{{ getIconFromType(notification.type) }}</i>
-						{{ notification.text }}
-					</span>
-					<button @click="removeNotificationById(notification.id)" type="button" class="btn-remove">
-						<v-icon right>cancel</v-icon>
+					<div
+						:type="notification.type"
+						:class="['notification', notification.type]"
+					>
+						<span class="message">
+							<i class="type-icon material-icons">{{ getIconFromType(notification.type) }}</i>
+							<span v-html="notification.text"></span>
+						</span>
+						<button @click="removeNotificationById(notification.id)" type="button" class="btn-remove">
+							<v-icon right>cancel</v-icon>
+						</button>
+					</div>
+				</li>
+				<div class="bottom-bar">
+					<button @click="handleAutoClear()" class="btn-autoclear">
+						Auto clear <span class="autoclear-state">{{ options.autoClear ? 'ON' : 'OFF' }}</span>
 					</button>
+					<button @click="clearNotifications()" class="btn-clear-all">
+						Clear all
+					</button>
+					<!-- <button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
+						Add notification
+					</button> -->
 				</div>
-			</li>
-		</ul>
-		<div class="bottom-bar">
-			<button @click="handleAutoClear()" class="btn-autoclear">
-				Auto clear <span class="autoclear-state">{{ options.autoClear ? 'ON' : 'OFF' }}</span>
-			</button>
-			<button @click="clearNotifications()" class="btn-clear-all">
-				Clear all
-			</button>
-			<!-- <button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
-				Add notification
-			</button> -->
+			</ul>
 		</div>
 	</div>
 </template>
@@ -62,6 +68,7 @@ export default {
 
 	data() {
 		return {
+			showNotifications: false,
 			timers: [],
 			options: {
 				timeoutSeconds: 3,
@@ -75,8 +82,19 @@ export default {
 		notifications(newNotifications, oldNotifications) {
 			// TODO: After scrolling, maybe add an animation/effect on the newest added notification
 			var newestNotification
-			if (newNotifications.length > 0) newestNotification = newNotifications[0]
-			else newestNotification = newNotifications.slice().sort((a, b) => new Date() - new Date(a.created))[0]
+			if (newNotifications.length > 0) {
+				newestNotification = newNotifications[0]
+
+				// Show panel if there are notifications
+				this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-out')
+				this.$refs.notificationsWrapper.classList.add('animation-notification-panel-in')
+			} else {
+				newestNotification = newNotifications.slice().sort((a, b) => new Date() - new Date(a.created))[0]
+
+				// Hide panel if there is 0 notifications
+				this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-in')
+				this.$refs.notificationsWrapper.classList.add('animation-notification-panel-out')
+			}
 
 			// Set auto-clear
 			if (this.options.autoClear && newNotifications && newNotifications.length) {
@@ -110,8 +128,8 @@ export default {
 		removeNotificationById(id) {
 			// Add fade out effect
 			var el = this.$refs.notificationList ? this.$refs.notificationList.querySelector(`li[data-id="${id}"]`) : null
-			el ? el.classList.remove('fade-in') : null
-			el ? el.classList.add('fade-out') : null
+			el ? el.classList.remove('animation-notification-in') : null
+			el ? el.classList.add('animation-notification-out') : null
 
 			setTimeout(() => {
 				this.$store.dispatch('removeNotification', id)
@@ -119,11 +137,11 @@ export default {
 		},
 
 		clearNotifications() {
-			// Fade-out animation
+			// animation-notification-out animation
 			let domEls = this.$refs.notificationList.getElementsByTagName('li')
 			for (var j = 0; j < domEls.length; j++) {
-				domEls[j].classList.remove('fade-in')
-				domEls[j].classList.add('fade-out')
+				domEls[j].classList.remove('animation-notification-in')
+				domEls[j].classList.add('animation-notification-out')
 			}
 
 			// Clear notifications from the state
@@ -159,6 +177,18 @@ export default {
 			})
 		},
 
+		toggleNotifications() {
+			this.showNotifications = !this.showNotifications
+
+			if (this.showNotifications) {
+				this.$refs.notificationsWrapper.classList.add('animation-notification-panel-in')
+				this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-out')
+			} else {
+				this.$refs.notificationsWrapper.classList.add('animation-notification-panel-out')
+				this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-in')
+			}
+		},
+
 		getIconFromType(notificationType) {
 			const icons = {
 				'success': 'check_circle',
@@ -174,26 +204,58 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	.app-notification-wrapper {
+	$notificaion-wrapper-width: 450px;
+
+	.notifications-wrapper {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		position: fixed;
 		right: 0;
 		bottom: 0;
 		
+		width: $notificaion-wrapper-width;
 		max-height: 100vh;
-		width: 450px;
 		padding: 5px 0 8px 0;
-		background-color: rgba(255, 255, 255, 0.7);
+		background-color: rgba(255, 255, 255, 0);
 		border-radius: 10px;
 		z-index: 9;
 
 		ul {
+			width: 450px;
 			padding: 0 5px 5px 5px;
 			margin: 0 0;
 			overflow-y: auto;
 			overflow-x: hidden;
 			list-style: none;
+
+			.notification-wrapper {
+				display: flex;
+				width: 100%;
+				position: relative;
+				right: 0;
+				margin: 5px 0;
+				opacity: 1;
+				color: #fff;
+
+				.notification {
+					position: relative;
+					width: 100%;
+					margin-left: auto;
+					margin-right: 0;
+					padding: 16px;
+					border-radius: 5px;
+
+					.message {
+						display: flex;
+						max-width: 96%;
+						font-size: 13px;
+						margin-right: 20px;
+						text-align: left;
+						vertical-align: middle;
+						// letter-spacing: 0.05em;
+					}
+				}
+			}
 		}
 
 		.bottom-bar {
@@ -221,48 +283,6 @@ export default {
 						font-weight: 600;
 						background-color: rgba(255, 255, 255, 0.5);
 					}
-				}
-			}
-		}
-
-		.fade-in {
-			animation: fadeIn 1s,
-								 slideFromLeft 200ms;
-			animation-fill-mode: forwards;
-			// animation-delay: 2s;
-		}
-
-		.fade-out {
-			animation: fadeOut var(--fadeout-miliseconds),
-								 slideToRight var(--fadeout-miliseconds);
-			animation-fill-mode: forwards;
-		}
-
-		.notification-wrapper {
-			display: flex;
-			position: relative;
-			right: 0;
-			margin: 5px 0;
-			opacity: 1;
-			color: #fff;
-			display: block;
-
-			.notification {
-				position: relative;
-				width: 100%;
-				margin-left: auto;
-				margin-right: 0;
-				padding: 16px;
-				border-radius: 5px;
-
-				.message {
-					display: flex;
-					max-width: 96%;
-					font-size: 13px;
-					margin-right: 20px;
-					text-align: left;
-					vertical-align: middle;
-					// letter-spacing: 0.05em;
 				}
 			}
 		}
@@ -300,6 +320,79 @@ export default {
 		.info {}
 		.warning {}
 
+	}
+
+	.btn-toggle-notifications {
+		position: absolute;
+		bottom: 0;
+		left: -35px;
+		height: 50px;
+
+		&:hover {
+			
+		}
+
+		.notification-count {
+			position: absolute;
+			top: 9px;
+			right: 13px;
+			min-width: 14px;
+			height: 14px;
+			background-color: red;
+			padding: 0 2px;
+			color: #fff;
+			border-radius: 7px;
+			font-size: 10px;
+			vertical-align: middle;
+			text-align: center;
+		}
+	}
+
+	/**
+	 *	Animations and transitions	
+	 */
+
+	 	/* Notification panel */
+		.animation-notification-panel-in {
+			animation: notificationPanelSlideFromLeft 400ms;
+			animation-fill-mode: forwards;
+		}
+		.animation-notification-panel-out {
+			animation: notificationPanelSlideToRight 400ms;
+			animation-fill-mode: forwards;
+		}
+
+		/* Single notification */
+		.animation-notification-out {
+			animation: fadeOut var(--fadeout-miliseconds),
+								slideToRight var(--fadeout-miliseconds);
+			animation-fill-mode: forwards;
+		}
+		.animation-notification-in {
+			animation: fadeIn 1s,
+								 slideFromLeft 200ms;
+			animation-fill-mode: forwards;
+			// animation-delay: 2s;
+		}
+
+		@keyframes notificationPanelSlideToRight {
+			0% {
+				right: 0;
+			}
+			100% {
+				// right: -30%;
+				right: -$notificaion-wrapper-width;
+			}
+		}
+		@keyframes notificationPanelSlideFromLeft {
+			0% {
+				right: -100%;
+			}
+			100% {
+				right: 0;
+			}
+		}
+
 		@keyframes slideFromLeft {
 			0% {
 				right: -100%;
@@ -327,18 +420,8 @@ export default {
 			}
 		}
 
-		// @keyframes fadeOut {
-		// 	0% {
-		// 		opacity: 1;
-		// 	}
-		// 	100% {
-		// 		opacity: 0;
-		// 	}
-		// }
-
 		@keyframes fadeOut {
 			0% { opacity: 1; }
 			100% { opacity: 0; }
 		}
-	}
 </style>

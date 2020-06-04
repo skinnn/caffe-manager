@@ -16,19 +16,17 @@ import store from './store'
 import { sync } from 'vuex-router-sync'
 
 // Global Components
-import AdminLogoutBtn from '@/components/_globals/AdminLogoutBtn'
-import UserLogoutBtn from '@/components/_globals/UserLogoutBtn'
+// import AdminLogoutBtn from '@/components/_globals/AdminLogoutBtn'
+import LogoutBtn from '@/components/_globals/LogoutBtn'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 
-// Vue.use(EventBus)
 Vue.use(Vuetify)
 Vue.http = Vue.prototype.$http = axios
 
-// Register Global Components
-Vue.component('adminLogoutBtn', AdminLogoutBtn)
-Vue.component('userLogoutBtn', UserLogoutBtn)
+// Global Components
+Vue.component('LogoutBtn', LogoutBtn)
 
 // Sync store and router
 sync(store, router)

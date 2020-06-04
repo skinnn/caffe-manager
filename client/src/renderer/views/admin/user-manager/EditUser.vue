@@ -9,7 +9,7 @@
 						<h1 class="heading">
 							Edit User: {{name.value}}
 						</h1>
-						<admin-logout-btn />
+						<LogoutBtn />
 				</div>
 			</v-flex>
 

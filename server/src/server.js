@@ -40,14 +40,6 @@ Controller.boot(masterConfig, app).then((ctx) => {
 
 	// Error handler
 	ctx.app.use((err, req, res, next) => ctx.errorHandler)
-	// ctx.app.use((err, req, res, next) => {
-	// 	console.error(err)
-	// 	return res.status(500).json({
-	// 		from: 'Error handler',
-	// 		error: err,
-	// 		stack: err.stack
-	// 	})
-	// })
 
 	// Start the server
 	ctx.api.server.listen(ctx.api.port, async () => {

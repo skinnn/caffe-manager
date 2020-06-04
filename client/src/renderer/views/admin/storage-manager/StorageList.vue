@@ -7,7 +7,7 @@
 				<v-flex>
 					<div class="admin-header">
 							<h1 class="heading">Storage List</h1>
-							<admin-logout-btn />
+							<LogoutBtn />
 					</div>
 				</v-flex>
 

@@ -1,6 +1,8 @@
 /**
-* Notification object holding data about the notification.
-* @typedef 	{Object} 	GlobalNotification
-* @property	{String} 	text 		[Text of the notification]
-* @property	{String} 	type		[Type of the notification; error, warning, success, info]
-**/
+ * Notification object holding data about the notification.
+ * @typedef 	{Object} 	AppNotification
+ * 
+ * @property	{String} 	text 		[Notification text]
+ * @property	{String} 	type		[error, warning, success, info]
+ * @property	{String} 	owner		[ID of the notification owner]
+ **/

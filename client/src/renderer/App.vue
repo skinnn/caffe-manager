@@ -14,8 +14,6 @@
 	import AdminSideMenu from '@/components/admin/AdminSideMenu'
 	import UserSideMenu from '@/components/user/UserSideMenu'
 	import GlobalNotifications from '@/components/notices/GlobalNotifications'
-	// Events
-	import { GlobalNotificationEvent } from '@/lib/Events'
 
 	export default {
 		name: 'client',
@@ -71,6 +69,7 @@
 
 	.container-fluid {
 		max-height: 100vh;
+		padding: 0 0;
 	}
 
 	.v-list__group__header {

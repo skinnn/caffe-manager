@@ -14,10 +14,11 @@ module.exports = {
 	},
 	plugins: ['html'],
 	rules: {
+		'no-padded-blocks': 0,
+		'no-trailing-spaces': 0,
 		'no-unused-expressions': 0,
 		'no-useless-constructor': 0,
 		'eol-last': 0,
-		'no-trailing-spaces': ['error', { skipBlankLines: true }],
 		'space-before-function-paren': ['error', 'never'],
 		'no-unused-vars': 'off',
 		// allow paren-less arrow functions

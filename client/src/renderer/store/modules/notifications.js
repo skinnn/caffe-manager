@@ -1,4 +1,4 @@
-import { GlobalNotificationEvent } from '@/lib/Events'
+import { Notification } from '@/lib/Notification'
 
 const state = {
 	notifications: JSON.parse(localStorage.getItem('notifications')) || []
@@ -6,7 +6,7 @@ const state = {
 
 const mutations = {
 	ADD_NOTIFICATION(state, notification) {
-		let newNotif = new GlobalNotificationEvent(notification)
+		let newNotif = new Notification(notification)
 		state.notifications.push(newNotif)
 		localStorage.setItem('notifications', JSON.stringify(state.notifications))
 	},

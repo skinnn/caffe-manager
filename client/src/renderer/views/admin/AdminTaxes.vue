@@ -7,7 +7,7 @@
 			<v-flex>
 				<div class="admin-header">
 						<h1 class="heading">Taxes</h1>
-						<admin-logout-btn />
+						<LogoutBtn />
 				</div>
 
 				<v-flex class="admin-container">
