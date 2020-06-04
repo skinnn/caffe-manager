@@ -7,14 +7,12 @@ const checkToken = (token) => {
 	return new Promise((resolve, reject) => {
 		if (token) {
 			jwt.verify(token, secret, (err, decoded) => {
-				if (err) {
-					reject(err)
-				}
+				if (err) resolve({ validToken: false, decoded: null })
 
 				resolve({ validToken: token, decoded })
 			})
 		}
-		reject(null)
+		reject(false)
 	})
 }
 

@@ -61,15 +61,15 @@ class Controller {
 			'UnsupportedError': 415,
 			'UnprocessableError': 422
 		}
-		res.statusCode = statusCodeMap[err.name] ? statusCodeMap[err.name] : 400
-
+		const statusCode = statusCodeMap[err.name] ? statusCodeMap[err.name] : 400
 		let errObj = {}
 		err.name ? errObj.name = err.name : null
 		err.message ? errObj.message = err.message : null
-		errObj.stack = process.env.NODE_ENV !== 'production' ? err.stack : null
+		// Stack is only returned in development mode
+		errObj.stack = process.env.NODE_ENV === 'development' ? err.stack : null
 		
 		Controller.logError(err)
-		return res.json(errObj)
+		return res.status(statusCode).send(errObj)
 	}
 
 	static modify(obj, newObj) {

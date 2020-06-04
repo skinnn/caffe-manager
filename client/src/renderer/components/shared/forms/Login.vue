@@ -101,6 +101,7 @@ export default {
 						user,
 						token
 					}
+
 					const isLoggedIn = await this.$store.dispatch('loginUser', data)
 
 					// Get or Create Settings
@@ -126,9 +127,10 @@ export default {
 					}
 				}
 			} catch (err) {
+				console.log(err.response.data)
 				// Error notification
 				this.$store.dispatch('addNotification', {
-					text: err.response.data.error.message,
+					text: err.response.data.message,
 					type: 'error'
 				})
 			}

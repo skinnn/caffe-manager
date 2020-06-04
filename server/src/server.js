@@ -39,7 +39,7 @@ Controller.boot(masterConfig, app).then((ctx) => {
 	ctx.app.use(`${ctx.api.baseApiURL}`, require('./routes/index'))
 
 	// Error handler
-	ctx.app.use((err, req, res, next) => ctx.errorHandler)
+	ctx.app.use((err, req, res, next) => ctx.errorHandler(err, req, res, next))
 
 	// Start the server
 	ctx.api.server.listen(ctx.api.port, async () => {
