@@ -215,19 +215,22 @@
 												<li
 													v-for="reservedArticle in reservedArticles"
 													:key="reservedArticle.id"
-													v-if="order._id === reservedArticle.inWhichOrder"
 													class="reservedArticleLi"
 												>
-													<span class="reservedArticleName">
-														{{reservedArticle.name}}
-													</span>
-													<v-badge class="reservedArticleQuantity">
-														<span slot="badge">{{reservedArticle.quantity}}</span>
-													</v-badge>
-													<span class="reservedArticlePrice">
-														{{reservedArticle.total_price}}
-														<span>{{settings.currency}}</span>
-													</span>
+													<div
+														v-if="order._id === reservedArticle.inWhichOrder"
+													>
+														<span class="reservedArticleName">
+															{{reservedArticle.name}}
+														</span>
+														<v-badge class="reservedArticleQuantity">
+															<span slot="badge">{{reservedArticle.quantity}}</span>
+														</v-badge>
+														<span class="reservedArticlePrice">
+															{{reservedArticle.total_price}}
+															<span>{{settings.currency}}</span>
+														</span>
+													</div>
 												</li>
 											</ul>
 										</div>
