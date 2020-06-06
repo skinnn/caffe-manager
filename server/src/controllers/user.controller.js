@@ -263,7 +263,7 @@ module.exports = {
 				ext: ext,
 				mime: file.mimetype,
 				size: file.size,
-				__owner: req.user._id
+				__owner: req.user.id
 			}
 			const newFile = new File(fileMeta)
 
@@ -281,7 +281,7 @@ module.exports = {
 					files: fileToAdd
 				}
 			}
-			const updatedUser = await User.findByIdAndUpdate(req.user._id, fields, options)
+			const updatedUser = await User.findByIdAndUpdate(req.user.id, fields, options)
 
 			return res.status(201).json({
 				success: true,

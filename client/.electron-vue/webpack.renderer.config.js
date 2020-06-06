@@ -70,11 +70,11 @@ let rendererConfig = {
             extractCSS: process.env.NODE_ENV === 'production',
             loaders: {
               sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader'
-            }
+              scss: 'vue-style-loader!css-loader!sass-loader?data=@import "./src/renderer/sass/global.scss";'
+						}
           }
         }
-      },
+			},
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         use: {

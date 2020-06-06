@@ -21,20 +21,15 @@ function developerMenuItem(app, mainWindow) {
 				label: 'Developer Tools',
 				role: 'toggleDevTools'
 			},
-			// {
-			// 	label: 'About',
-			// 	click() {
-			// 		dialog.showMessageBox(mainWindow, {
-			// 			type: 'info',
-			// 			title: 'About',
-			// 			message: `Caffe Manager`,
-			// 			detail: `
-			// 				Version: ${app.getVersion()}
-			// 				Path: ${app.getAppPath()}
-			// 			`
-			// 		})
-			// 	}
-			// },
+			{
+				label: 'Reload',
+				role: 'reload'
+			},
+			{
+				label: 'Force Reload',
+				role: 'forceReload'
+			},
+			{ type: 'separator' },
 			{
 				label: 'About',
 				accelerator: 'Shift + Alt + A',
@@ -42,11 +37,11 @@ function developerMenuItem(app, mainWindow) {
 					app.showAboutPanel()
 				}
 			},
-			{ type: 'separator' },
 			{
 				label: 'CPU and Memory',
 				click() {
 					const metrics = app.getAppMetrics()
+					let metricsArr = []
 					metrics.forEach((m) => {
 						metricsArr.push(`
 							CPU type: ${m.type}

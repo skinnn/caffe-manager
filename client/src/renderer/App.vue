@@ -26,8 +26,6 @@
 </script>
 
 <style lang="scss">
-	// @import '@/theme.scss';
-	
 	*,
 	*::before,
 	*::after {

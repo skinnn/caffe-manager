@@ -65,7 +65,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-	$blue-color: rgb(1, 39, 193);
 
 	.login-list {
 		display: block;
@@ -90,16 +89,9 @@ export default {
 				color: #fff;
 				margin: 5px 0;
 
-				// display: table;
-				// margin: 10px 0 0 0;
-				// padding: 10px 6px;
-				// height: 40px;
-				// border-radius: 5px;
-				// background-color: #333;
-
 				&:hover {
 					span.user-name {
-						// background-color: #333;
+						text-decoration: underline;
 					}
 				}
 
