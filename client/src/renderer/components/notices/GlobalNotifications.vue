@@ -99,7 +99,7 @@ export default {
 			// Set auto-clear
 			if (this.options.autoClear && newNotifications && newNotifications.length) {
 				// Timeout to remove the notification
-				let timeout = setTimeout(() => this.removeNotificationById(newestNotification.id), this.options.timeoutSeconds * 1000)
+				let timeout = setTimeout(() => this.removeNotificationById(newestNotification.id), newestNotification.timeout * 1000)
 				// Add timeout to array so it can be cleared
 				this.addTimer(newestNotification.id, timeout)
 			}
@@ -158,7 +158,7 @@ export default {
 				// Reset timers
 				this.timers = []
 				this.notifications.forEach((el) => {
-					let timeout = setTimeout(() => this.removeNotificationById(el.id), this.options.timeoutSeconds * 1000)
+					let timeout = setTimeout(() => this.removeNotificationById(el.id), el.timeout * 1000)
 					// Add timeout to array so it can be cleared
 					this.addTimer(el.id, timeout)
 				})

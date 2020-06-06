@@ -1,4 +1,4 @@
-import { Notification } from '@/lib/Notification'
+import Notification from '../../lib/Notification'
 
 const state = {
 	notifications: JSON.parse(localStorage.getItem('notifications')) || []
