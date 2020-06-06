@@ -1,6 +1,6 @@
 {
 	"name": "caffe-manager-client",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Caffe manager client",
 	"main": "./dist/electron/main.js",
 	"author": "Nikola Jovanovic <nikola.devbusiness@gmail.com> (https://github.com/skinnn)",

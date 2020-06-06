@@ -121,7 +121,7 @@ export default {
 
 	methods: {
 		addNotification(notification) {
-			// Add notification to app state
+			// Add notification to the store
 			this.$store.dispatch('addNotification', notification)
 		},
 

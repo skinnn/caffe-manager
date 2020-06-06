@@ -2,7 +2,7 @@
 	<v-layout row class="mt-5">
 
 		<LoginForm :heading="'Login'" :selectedUser="selectedUser" />
-		<LoginList :userType="'admins'" @userSelected="handleSelectedUser" />
+		<LoginList :userType="'user'" @userSelected="handleSelectedUser" />
 		
 	</v-layout>
 </template>
