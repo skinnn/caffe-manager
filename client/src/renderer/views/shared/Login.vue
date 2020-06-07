@@ -1,10 +1,8 @@
 <template>
-	<v-layout row class="mt-5">
-
+	<div class="login-page">
 		<LoginForm :heading="'Login'" :selectedUser="selectedUser" />
 		<LoginList :userType="'user'" @userSelected="handleSelectedUser" />
-		
-	</v-layout>
+	</div>
 </template>
 
 <script>
@@ -29,6 +27,13 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-
+<style lang="scss">
+	.login-page {
+		width: 100%;
+		height: 100%;
+		
+		.login-box {
+			margin-top: 6%;
+		}
+	}
 </style>

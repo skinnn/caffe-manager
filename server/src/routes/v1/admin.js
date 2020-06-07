@@ -16,15 +16,6 @@ const auth = require('../../middleware/authentication')
 
 router.use(auth.ensureAuthenticated)
 
-// Development middleware
-if (process.env.NODE_ENV === 'development') {
-	router.use((req, res, next) => {
-		console.log('user: ', req.user)
-		console.log('admin: ', req.user)
-		next()
-	})
-}
-
 /* /admin routes
 ===================================================== */
 

@@ -43,8 +43,6 @@ const ensureAuthenticated = async (req, res, next) => {
 
 		req.user = decoded || null
 		req.user.id = loginRecord.user
-
-		console.log(decoded)
 		return next()
 	} catch (err) {
 		return next(err)

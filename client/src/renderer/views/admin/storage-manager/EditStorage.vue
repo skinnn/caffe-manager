@@ -44,6 +44,7 @@ export default {
 	components: {
 		AdminSideMenu
 	},
+
 	data() {
 		return {
 			storage: {},
@@ -51,6 +52,7 @@ export default {
 			success: null
 		}
 	},
+	
 	async mounted() {
 		try {
 			const storageId = this.$store.state.route.params.storageId
@@ -64,6 +66,7 @@ export default {
 			this.error = error.response.data.error
 		}
 	},
+
 	methods: {
 		async saveStorage(storageId) {
 			try {

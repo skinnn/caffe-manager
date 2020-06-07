@@ -78,6 +78,12 @@ export default {
 		}
 	},
 
+	mounted() {
+		// TODO: Write some tests
+		// let nots = [{text: 'Error..', type: 'error'}, {text: 'Warning..', type: 'warning'}, {text: 'Info..', type: 'info'}, {text: 'Success..', type: 'success'}]
+		// nots.forEach(notif => this.addNotification(notif))
+	},
+
 	watch: {
 		notifications(newNotifications, oldNotifications) {
 			// TODO: After scrolling, maybe add an animation/effect on the newest added notification
@@ -86,14 +92,14 @@ export default {
 				newestNotification = newNotifications[0]
 
 				// Show panel if there are notifications
-				this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-out')
-				this.$refs.notificationsWrapper.classList.add('animation-notification-panel-in')
+				// this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-out')
+				// this.$refs.notificationsWrapper.classList.add('animation-notification-panel-in')
 			} else {
 				newestNotification = newNotifications.slice().sort((a, b) => new Date() - new Date(a.created))[0]
 
 				// Hide panel if there is 0 notifications
-				this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-in')
-				this.$refs.notificationsWrapper.classList.add('animation-notification-panel-out')
+				// this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-in')
+				// this.$refs.notificationsWrapper.classList.add('animation-notification-panel-out')
 			}
 
 			// Set auto-clear
@@ -111,12 +117,6 @@ export default {
 				list ? list.scrollTop = list.scrollHeight : null
 			}, 400)
 		}
-	},
-
-	mounted() {
-		// TODO: Write some tests
-		// let nots = [{text: 'Error..', type: 'error'}, {text: 'Warning..', type: 'warning'}, {text: 'Info..', type: 'info'}, {text: 'Success..', type: 'success'}]
-		// nots.forEach(notif => this.addNotification(notif))
 	},
 
 	methods: {
@@ -179,7 +179,6 @@ export default {
 
 		toggleNotifications() {
 			this.showNotifications = !this.showNotifications
-
 			if (this.showNotifications) {
 				this.$refs.notificationsWrapper.classList.add('animation-notification-panel-in')
 				this.$refs.notificationsWrapper.classList.remove('animation-notification-panel-out')
@@ -191,12 +190,12 @@ export default {
 
 		getIconFromType(notificationType) {
 			const icons = {
-				'success': 'check_circle',
-				'error': 'error',
-				'warning': 'warning',
-				'info': 'info'
+				success: 'check_circle',
+				error: 'error',
+				warning: 'warning',
+				info: 'info'
 			}
-			return icons[notificationType] || 'warning'
+			return icons[notificationType]
 		}
 	}
 
@@ -204,8 +203,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	$notificaion-wrapper-width: 450px;
-
 	.notifications-wrapper {
 		display: flex;
 		flex-direction: row;
@@ -214,15 +211,19 @@ export default {
 		bottom: 0;
 		
 		width: $notificaion-wrapper-width;
+		height: 100%;
 		max-height: 100vh;
-		padding: 5px 0 8px 0;
-		background-color: rgba(255, 255, 255, 0);
-		border-radius: 10px;
+		background-color: rgba(255, 255, 255, 1);
+		border-left: 1px solid grey;
+		border-radius: 0px;
 		z-index: 9;
 
 		ul {
+			position: absolute;
+			bottom: 0;
+			left: 0;
 			width: 450px;
-			padding: 0 5px 5px 5px;
+			padding: 0 5px 0 5px;
 			margin: 0 0;
 			overflow-y: auto;
 			overflow-x: hidden;
@@ -233,7 +234,7 @@ export default {
 				width: 100%;
 				position: relative;
 				right: 0;
-				margin: 5px 0;
+				margin: 5px 0 0 0;
 				opacity: 1;
 				color: #fff;
 
@@ -252,14 +253,13 @@ export default {
 						margin-right: 20px;
 						text-align: left;
 						vertical-align: middle;
-						// letter-spacing: 0.05em;
 					}
 				}
 			}
 		}
 
 		.bottom-bar {
-			padding-top: 5px;
+			padding: 8px;
 			text-align: right;
 
 			button {
@@ -281,7 +281,6 @@ export default {
 
 					.autoclear-state {
 						font-weight: 600;
-						background-color: rgba(255, 255, 255, 0.5);
 					}
 				}
 			}
@@ -317,9 +316,16 @@ export default {
 		.error {
 			background-color: #ff5252;
 		}
-		.info {}
-		.warning {}
+		.success {
+			background-color: $success;
+		}
 
+		.info {
+			background-color: $info;
+		}
+		.warning {
+			background-color: $warning;
+		}
 	}
 
 	.btn-toggle-notifications {
@@ -329,7 +335,8 @@ export default {
 		height: 50px;
 
 		&:hover {
-			
+			color: $blue-color;
+			transition: color 250ms ease-in-out;
 		}
 
 		.notification-count {

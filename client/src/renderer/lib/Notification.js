@@ -6,14 +6,14 @@ import './typedefs'
  * Produced by: store/modules/notifications.js	
  * Consumed by: App.vue
  **/
-export default class Notification {
+class AppNotification {
 	/**
-	 * @param	{AppNotification}	 	notification
-	 * @param	{String}	 					notification.text						[Notification text]
-	 * @param	{String}	 					notification.type						[error, warning, success, info]
-	 * @param	{String}	 					notification.owner					[ID of the notification owner/user]
-	 * @param	{String}	 					notification.shouldTimeout	[Should notification be removed after some time, default is true]
-	 * @param	{Number}	 					notification.timeout				[For how many seconds it should be removed, default is 4]
+	 * @param	{CustomNotification}	notification
+	 * @param	{String}	 						notification.text						[Notification text]
+	 * @param	{String}	 						notification.type						[error, warning, success, info]
+	 * @param	{String}	 						notification.owner					[ID of the notification owner/user]
+	 * @param	{String}	 						notification.shouldTimeout	[Should notification be removed after some time, default is true]
+	 * @param	{Number}	 						notification.timeout				[For how many seconds it should be removed, default is 4]
 	 **/
 
 	constructor(notification) {
@@ -28,3 +28,5 @@ export default class Notification {
 		this.created = new Date().toISOString()
 	}
 }
+
+export default AppNotification

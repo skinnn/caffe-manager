@@ -1,6 +1,6 @@
 /**
  * Notification object holding data about the notification.
- * @typedef 	{Object} 	AppNotification
+ * @typedef 	{Object} 		CustomNotification
  * 
  * @property	{String} 		text 							[Notification text]
  * @property	{String} 		type							[error, warning, success, info]

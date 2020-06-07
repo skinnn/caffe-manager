@@ -6,7 +6,6 @@ const Auth = require('../../middleware/authentication')
 // Controllers
 const AuthenticationController = require('../../controllers/login.controller')
 const SettingsController = require('../../controllers/setting.controller')
-const StorageController = require('../../controllers/storage.controller')
 const ArticleController = require('../../controllers/article.controller')
 const ArticleSubgroupController = require('../../controllers/category.controller')
 const TablesController = require('../../controllers/tables.controller')
@@ -30,14 +29,12 @@ router.use(Auth.ensureAuthenticated)
 router.use('/admin', require('./admin'))
 router.use('/user', require('./user'))
 router.use('/file', require('./file'))
+router.use('/storage', require('./storage'))
 
 // Logout
 router.delete('/login',
 	AuthenticationController.logout)
 	
-// router.post('/logout',
-// 	AuthenticationController.logout)
-
 // Get Articles from Subgroup
 router.get('/admin/subgroup/:subgroupId/articles',
 	ArticleController.getArticlesFromSubgroup)
@@ -45,15 +42,6 @@ router.get('/admin/subgroup/:subgroupId/articles',
 // Get Article Subgroups from Main Storages
 router.get('/admin/main-storages/subgroups',
 	ArticleSubgroupController.getCategoriesFromMainStorages)
-
-// Create Article Subgroup
-router.post('/admin/storage/:storageId/subgroup/create',
-	uploadImage.single('imageUpload'),
-	ArticleSubgroupController.createArticleCategory)
-
-// Get Article Subgroup list by storage id
-router.get('/admin/storage/:storageId/subgroups',
-	ArticleSubgroupController.getSubgroupsByStorageId)
 
 router.get('/store/settings',
 	SettingsController.getOrCreateStoreSettings)
@@ -67,30 +55,6 @@ router.patch('/admin/:adminId/settings',
 router.get('/admin/articles',
 	ArticleController.getAllArticles)
 
-// Get Storage by id
-router.get('/admin/storage/:storageId',
-	StorageController.getStorageById)
-
-// Get all Storages
-router.get('/admin/storages',
-	StorageController.getAllStorages)
-
-// Update Admin
-// router.patch('/admin/:adminId',
-// 	AdminController.updateAdminById)
-
-// Create Storage
-router.post('/admin/storage/create',
-	StorageController.createStorage)
-
-// Update Storage
-router.patch('/storage/:storageId',
-	StorageController.saveStorage)
-
-// Get Articles by storage id
-router.get('/admin/storage/:storageId/articles',
-	ArticleController.getArticlesByStorageId)
-
 // Delete Article
 router.delete('/article/:articleId',
 	ArticleController.deleteArticle)
@@ -99,10 +63,6 @@ router.delete('/article/:articleId',
 router.post('/admin/article/create',
 	uploadImage.single('imageUpload'),
 	ArticleController.createArticle)
-
-// Get Article by id
-router.get('/admin/storage/:storageId/article/:articleId',
-	ArticleController.getArticleById)
 
 // Update Article
 router.patch('/article/:articleId',

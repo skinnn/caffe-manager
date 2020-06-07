@@ -68,10 +68,12 @@ export default {
 
 	.login-list {
 		display: block;
-		position: relative;
-		left: 4%;
+		position: fixed;
+		top: 5%;
+		right: 4%;
 		height: 415px;
-		min-width: 350px;
+		min-width: 300px;
+		max-width: 20%;
 		padding: 10px 10px;
 		overflow-y: auto;
 		border: 1px solid grey;
@@ -97,8 +99,9 @@ export default {
 
 				span.user-name {
 					display: inline-block;
-					padding: 10px 6px;
+					width: 100%;
 					height: 40px;
+					padding: 10px 10px;
 					border-radius: 5px;
 					background-color: #333;
 				}

@@ -102,16 +102,12 @@ module.exports = {
 				user: savedUser
 			})
 		} catch (err) {
-			console.error(err)
-			return res.status(500).send({
-				success: false,
-				error: err
-			})
+			return next()
 		}
 	},
 
 	// Delete User by id
-	async deleteUserById(req, res) {
+	async deleteUserById(req, res, next) {
 		try {
 			let query = { _id: req.params.id }
 
@@ -149,7 +145,7 @@ module.exports = {
 	},
 	
 	// Get Admins
-	async getAllAdmins(req, res) {
+	async getAllAdmins(req, res, next) {
 		try {
 			await User.find({ roles: 'admin' }, (err, admins) => {
 				if (err) throw err
@@ -163,7 +159,7 @@ module.exports = {
 	},
 
 	// Get User login List - just usernames and names
-	async getLoginList(req, res) {
+	async getLoginList(req, res, next) {
 		const role = req.query.role || null
 		try {
 			let query = {
@@ -181,7 +177,7 @@ module.exports = {
 	},
 	
 	// Get all Users
-	async getAllUsers(req, res) {
+	async getAllUsers(req, res, next) {
 		try {
 			const users = await User.find({ roles: 'user' })
 			return res.status(200).json({
@@ -193,7 +189,7 @@ module.exports = {
 	},
 	
 	// Get User by id
-	async getUserById(req, res) {
+	async getUserById(req, res, next) {
 		try {
 			const query = {_id: req.params.id || null}
 			const user = await User.getUserById(query)
@@ -206,7 +202,7 @@ module.exports = {
 	},
 	
 	// Update User by id
-	async updateUserById(req, res) {
+	async updateUserById(req, res, next) {
 		// TODO: Not working
 		try {
 			let query = {_id: req.body.id}

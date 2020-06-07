@@ -1,4 +1,4 @@
-import Notification from '../../lib/Notification'
+import AppNotification from '../../lib/Notification'
 
 const state = {
 	notifications: JSON.parse(localStorage.getItem('notifications')) || []
@@ -6,7 +6,7 @@ const state = {
 
 const mutations = {
 	ADD_NOTIFICATION(state, notification) {
-		let newNotif = new Notification(notification)
+		let newNotif = new AppNotification(notification)
 		state.notifications.push(newNotif)
 		localStorage.setItem('notifications', JSON.stringify(state.notifications))
 	},

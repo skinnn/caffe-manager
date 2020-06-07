@@ -3,7 +3,7 @@ const Storage = require('../models/Storage')
 module.exports = {
 
 	// Create Storage
-	async createStorage(req, res) {
+	async createStorage(req, res, next) {
 		try {
 			let storage = new Storage()
 			storage.name = req.body.storageName
@@ -29,7 +29,7 @@ module.exports = {
 	},
 
 	// Get All Storages
-	async getAllStorages(req, res) {
+	async getAllStorages(req, res, next) {
 		try {
 			await Storage.find({}, (err, storages) => {
 				if (err) throw err
@@ -43,7 +43,7 @@ module.exports = {
 	},
 
 	// Get Storage by id
-	async getStorageById(req, res) {
+	async getStorageById(req, res, next) {
 		try {
 			let query = req.params.storageId
 			await Storage.getStorageById(query, (err, storage) => {
@@ -58,7 +58,7 @@ module.exports = {
 	},
 
 	// Update Storage by id
-	async saveStorage(req, res) {
+	async saveStorage(req, res, next) {
 		try {
 			let query = {_id: req.params.storageId}
 

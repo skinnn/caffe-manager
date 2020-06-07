@@ -1,38 +1,45 @@
 <template>
-	<v-flex xs5 offset-xs3>
-		<div class="white elevation-5">
-			<v-toolbar class="black toolbar" flat dense>
-				<v-toolbar-title class="toolbar-title">{{ $props.heading }}</v-toolbar-title>
-			</v-toolbar>
-			<div class="register-page pl-4 pr-4 pb-3 pt-4">
-				<v-form @submit="onSubmit">
-					<v-text-field
-						type="text"
-						v-model="username"
-						ref="inputUsername"
-						label="Username:"
-						outline
-					></v-text-field>
-					<v-text-field
-						type="password"
-						v-model="password"
-						ref="inputPassword"
-						label="Password:"
-						outline
-					></v-text-field>
-					<br>
-					<v-btn
-						class="green login-button"
-						block
-						type="submit"
-					>
-						Login
-					</v-btn>
-				</v-form>
-			</div>
-
+	<!--<div class="login-box white elevation-5">
+		 <v-toolbar class="black toolbar" flat dense>
+			<v-toolbar-title class="toolbar-title">{{ $props.heading }}</v-toolbar-title>
+		</v-toolbar>
+		<div class="pl-4 pr-4 pb-3 pt-4">
+			<v-form @submit="postLogin">
+				<v-text-field
+					type="text"
+					v-model="username"
+					ref="inputUsername"
+					label="Username:"
+					outline
+				></v-text-field>
+				<v-text-field
+					type="password"
+					v-model="password"
+					ref="inputPassword"
+					label="Password:"
+					outline
+				></v-text-field>
+				<br>
+				<v-btn
+					class="green login-button"
+					block
+					type="submit"
+				>
+					Login
+				</v-btn>
+			</v-form>
 		</div>
-	</v-flex>
+	</div> -->
+	<div class="login-box">
+		<header>
+			<h2>{{ $props.heading }}</h2>
+		</header>
+		<main>
+			<input type="text" v-model="username" ref="inputUsername" placeholder="Username"><br>
+			<input type="password" v-model="password" ref="inputPassword" placeholder="Password"><br>
+			<button @click="postLogin()">Login</button>
+		</main>
+	</div>
 </template>
 
 <script>
@@ -59,15 +66,9 @@ export default {
 		}
 	},
 
-	computed: {
-		setUsername() {
-			return this.$props.selectedUser
-		}
-	},
-
 	watch: {
-		setUsername(val) {
-			this.username = val.username
+		selectedUser(user) {
+			this.handleSelectedUser(user)
 		}
 	},
 
@@ -77,7 +78,7 @@ export default {
 	},
 
 	methods: {
-		async onSubmit() {
+		async postLogin() {
 			event.preventDefault()
 			try {
 				// Login
@@ -127,7 +128,12 @@ export default {
 					}
 				}
 			} catch (err) {
-				console.log(err.response.data)
+				// let myNotification = new Notification('Title', {
+				// 	body: 'Lorem Ipsum Dolor Sit Amet'
+				// })
+				// myNotification.onclick = () => {
+				// 	console.log('Notification clicked')
+				// }
 				// Error notification
 				this.$store.dispatch('addNotification', {
 					text: err.response.data.message,
@@ -156,12 +162,107 @@ export default {
 
 <style scoped lang="scss">
 
-	.toolbar-title {
-		color: white;
+.login-box {
+	max-width: 350px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #276270;
+	// background-color: $blue-color;
+	border-radius: 5px;
+
+	header {
+		padding: 15px 30px;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+	}
+	header h2 {
+		text-align: center;
+		color: #fff;
+	}
+	header h2 small {
+		font-size: 16px;
+		opacity: 0.5;
 	}
 
-	.msg-placeholder {
-		height: 36px;
+	main {
+		padding: 20px 30px;
+
+		input[type='text'],
+		input[type='password'] {
+			width: 100%;
+			font-size: 15px;
+			padding: 5px 10px;
+			margin-bottom: 14px;
+			border-radius: 5px;
+
+			color: #fff;
+			border: none;
+			border-radius: 0;
+			border-bottom: 1px solid #333;
+			background-color: #276270;
+			transition: background-color 150ms ease-in-out;
+		}
+		input[type='text']::placeholder,
+		input[type='password']::placeholder {
+			color: rgba(255, 255, 255, 0.8);
+			font-weight: 400;
+			font-size: 14px;
+		}
+		input[type='text']:focus,
+		input[type='password']:focus {
+			outline: none;
+			color: #333;
+			background-color: #fff;
+			border-top-left-radius: 5px;
+			border-top-right-radius: 5px;
+		}
+
+		button {
+			width: 100%;
+			margin: 20px 0 0 0;
+			padding: 5px 25px;
+			color: #fff;
+			font-size: 16px;
+			background-color: #333;
+			border: none;
+			border: 1px solid #fff;
+			border-radius: 5px;
+			transition: background-color 200ms ease-in-out;
+			cursor: pointer;
+		}
+		button:hover {
+			background-color: #333;
+		}
+
+		.remember-wrapper {
+			margin-top: 10px;
+		}
+		.remember-wrapper input[type='checkbox'] {
+			display: inline-block;
+			vertical-align: middle;
+		}
+		.remember-wrapper label {
+			font-size: 12px;
+			color: #f4f4f4;
+			font-weight:600;
+			height: 100%;
+			vertical-align: middle;
+		}
 	}
 
+	.message {
+		display: block;
+		max-width: 350px;
+		padding: 10px 10px;
+		margin: 15px auto 0 auto;
+		text-align: center;
+		font-size: 14px;
+		background-color: red;
+		color: #fff;
+		border-radius: 5px;
+	}
+	.message:empty {
+		display: none;
+	}
+}
 </style>
