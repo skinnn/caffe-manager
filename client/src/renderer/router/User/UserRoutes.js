@@ -1,6 +1,5 @@
 /*
-	User routes - Needs to be atuhenticated as User to get
-	this assets (in production)
+	User routes - Needs to be atuhenticated as User to get this assets
 */
 const config = require('../../config/config')
 

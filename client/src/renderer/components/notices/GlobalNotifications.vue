@@ -1,49 +1,47 @@
 <template>
-	<div class="global-notifications">
-		<div
-			ref="notificationsWrapper"
-			:class="['notifications-wrapper', showNotifications ? 'animation-notification-panel-in' : 'animation-notification-panel-out']"
-			:style="fadeOutMs"
+	<div
+		ref="notificationsWrapper"
+		:class="['notifications-wrapper', 'animation-notification-panel-hidden']"
+		:style="fadeOutMs"
+	>
+		<button @click="toggleNotifications()" class="btn-toggle-notifications">
+			<div v-if="notifications.length" class="notification-count">{{ notifications.length }}</div>
+			<i class="material-icons">notifications</i>
+		</button>
+		<ul
+			class="notification-list"
+			ref="notificationList"
 		>
-			<button @click="toggleNotifications()" class="btn-toggle-notifications">
-				<div v-if="notifications.length" class="notification-count">{{ notifications.length }}</div>
-				<i class="material-icons">notifications</i>
-			</button>
-			<ul
-				class="notification-list"
-				ref="notificationList"
+			<li
+				v-for="notification in notifications"
+				:key="notification.id" class="notification-wrapper"
+				:data-id="notification.id"
+				:class="['animation-notification-in']"
 			>
-				<li
-					v-for="notification in notifications"
-					:key="notification.id" class="notification-wrapper"
-					:data-id="notification.id"
-					:class="['animation-notification-in']"
+				<div
+					:type="notification.type"
+					:class="['notification', notification.type]"
 				>
-					<div
-						:type="notification.type"
-						:class="['notification', notification.type]"
-					>
-						<span class="message">
-							<i class="type-icon material-icons">{{ getIconFromType(notification.type) }}</i>
-							<span v-html="notification.text"></span>
-						</span>
-						<button @click="removeNotificationById(notification.id)" type="button" class="btn-remove">
-							<v-icon right>cancel</v-icon>
-						</button>
-					</div>
-				</li>
-				<div class="bottom-bar">
-					<button @click="handleAutoClear()" class="btn-autoclear">
-						Auto clear <span class="autoclear-state">{{ options.autoClear ? 'ON' : 'OFF' }}</span>
+					<span class="message">
+						<i class="type-icon material-icons">{{ getIconFromType(notification.type) }}</i>
+						<span v-html="notification.text"></span>
+					</span>
+					<button @click="removeNotificationById(notification.id)" type="button" class="btn-remove">
+						<v-icon right>cancel</v-icon>
 					</button>
-					<button @click="clearNotifications()" class="btn-clear-all">
-						Clear all
-					</button>
-					<!-- <button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
-						Add notification
-					</button> -->
 				</div>
-			</ul>
+			</li>
+		</ul>
+		<div class="bottom-bar">
+			<button @click="handleAutoClear()" class="btn-autoclear">
+				Auto clear <span class="autoclear-state">{{ options.autoClear ? 'ON' : 'OFF' }}</span>
+			</button>
+			<button @click="clearNotifications()" class="btn-clear-all">
+				Clear all
+			</button>
+			<!-- <button @click="addNotification({text: 'Notification test..', type: 'success'})" class="btn blue">
+				Add notification
+			</button> -->
 		</div>
 	</div>
 </template>
@@ -54,6 +52,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 export default {
 	name: 'GlobalNotifications',
+	
 	computed: {
 		...mapGetters(['getNotifications']),
 		fadeOutMs() {
@@ -210,19 +209,20 @@ export default {
 		right: 0;
 		bottom: 0;
 		
-		width: $notificaion-wrapper-width;
-		height: 100%;
-		max-height: 100vh;
+		width: $notificaion-panel-width;
+		height: $notificaion-panel-height;
 		background-color: rgba(255, 255, 255, 1);
 		border-left: 1px solid grey;
-		border-radius: 0px;
-		z-index: 9;
+		border-top: 1px solid grey;
+		border-radius: 5px;
+		z-index: 3;
 
 		ul {
 			position: absolute;
-			bottom: 0;
+			bottom: $notificaion-panel-menu-height;
 			left: 0;
 			width: 450px;
+			height: $notificaion-panel-messages-height;
 			padding: 0 5px 0 5px;
 			margin: 0 0;
 			overflow-y: auto;
@@ -259,6 +259,11 @@ export default {
 		}
 
 		.bottom-bar {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			height: $notificaion-panel-menu-height;
+			width: 100%;
 			padding: 8px;
 			text-align: right;
 
@@ -368,6 +373,9 @@ export default {
 			animation: notificationPanelSlideToRight 400ms;
 			animation-fill-mode: forwards;
 		}
+		.animation-notification-panel-hidden {
+			right: -$notificaion-panel-width;
+		}
 
 		/* Single notification */
 		.animation-notification-out {
@@ -387,8 +395,7 @@ export default {
 				right: 0;
 			}
 			100% {
-				// right: -30%;
-				right: -$notificaion-wrapper-width;
+				right: -$notificaion-panel-width;
 			}
 		}
 		@keyframes notificationPanelSlideFromLeft {

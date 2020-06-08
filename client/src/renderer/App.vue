@@ -1,24 +1,22 @@
 <template>
 	<div id="app">
-		<v-container fluid class="container-fluid pt-0">
-			<v-app>
+		<!-- <v-container fluid class="container-fluid pt-0"> -->
+			<!-- <v-app> -->
 				<router-view></router-view>
-				<GlobalNotifications />
-			</v-app>
-		</v-container>
+				<!-- <GlobalNotifications /> -->
+			<!-- </v-app> -->
+		<!-- </v-container> -->
 	</div>
 </template>
 
 <script>
 	// Components
-	import AdminSideMenu from '@/components/admin/AdminSideMenu'
 	import UserSideMenu from '@/components/user/UserSideMenu'
 	import GlobalNotifications from '@/components/notices/GlobalNotifications'
 
 	export default {
 		name: 'client',
 		components: {
-			AdminSideMenu,
 			UserSideMenu,
 			GlobalNotifications
 		}
@@ -26,24 +24,9 @@
 </script>
 
 <style lang="scss">
-	*,
-	*::before,
-	*::after {
-		padding: 0;
-		margin: 0;
-	}
-
-	*:focus {
-		outline: none;
-	}
- 
 	#app {
 		// user-select: none;
 	}
-
-	:root {
-	--sidebar-main-bg: rgba(51, 51, 51, 0.97);
-}
 
 	/* Global scrollbar */
 	::-webkit-scrollbar {

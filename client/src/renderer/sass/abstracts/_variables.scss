@@ -1,14 +1,32 @@
 // Colors
-$blue-color: #1c75bc; // Blue from the logo
-$color-red: rgb(224, 61, 61);
-
-// Sidebar
-$sb-width: 260px;
-
-// Notifications
-$notificaion-wrapper-width: 450px;
+$blue-color: rgb(28, 117, 188); // Blue from the logo
+$dark-color: rgb(51, 51, 51);
+$red-color: rgb(235, 41, 41);
 
 $error: #ff5252;
 $success: #4caf50;
 $warning: #fb8c00;
 $info: #2196f3;
+
+// Z Indexes
+$dashbaord-sb-zindex: 2;
+$dashboard-pageview-zindex: 2;
+$dashboard-topbar-zindex: 3;
+
+// Sidebar
+$dashboard-sb-base-width: 220px;
+$dashboard-sb-footer-height: 30px;
+$dashboard-sb-height: calc(100vh - #{$dashboard-sb-footer-height});
+
+$dashboard-sb-main-bg: $dark-color;
+$dashboard-sb-link-color: rgb(255, 255, 255);
+$dashboard-sb-link-active-color: $blue-color !important;
+// Page View
+$dashboard-pageview-width: calc(100% - #{$dashboard-sb-base-width});
+$dashboard-pageview-topbar-height: 50px;
+
+// Notifications
+$notificaion-panel-menu-height: 8vh;
+$notificaion-panel-messages-height: 60vh;
+$notificaion-panel-height: calc(#{$notificaion-panel-messages-height} + #{$notificaion-panel-menu-height});
+$notificaion-panel-width: 450px;

@@ -1,11 +1,8 @@
 /*
-	Shared routes - don't need to be authenticated to get
-	this assets (in production)
+	Shared routes - don't need to be authenticated to get this assets
 */
 
-const Login = require('@/views/shared/Login').default
-// TODO: Delete AdminLandingRegister page for production
-const AdminLandingRegister = require('@/views/shared/AdminLandingRegister').default
+import Login from '@/views/shared/Login'
 
 const routes = [
 	{

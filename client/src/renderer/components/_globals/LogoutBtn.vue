@@ -1,10 +1,11 @@
 <template>
-	<v-btn
+	<button
 		@click="onClick"
-		class="logout-btn pink"
+		class="btn logout-btn"
 	>
+		<font-awesome-icon :icon="['fas', 'sign-out-alt']" class="icon" />
 		Logout
-	</v-btn>
+	</button>
 </template>
 
 <script>
@@ -12,8 +13,15 @@
 import LoginService from '@/services/LoginService'
 // Helpers
 import { mapGetters } from 'vuex'
+// Font awesome icons
+import { library, dom } from '@fortawesome/fontawesome-svg-core'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faSignOutAlt)
+dom.watch()
 
 export default {
+	name: 'LogoutBtn',
 
 	computed: {
 		...mapGetters([])
@@ -36,7 +44,7 @@ export default {
 					this.$store.dispatch('setActivePage', null)
 
 					if (isLoggedOut && isSettingsRemoved) {
-						// Redirect to admin login page and send success msg
+						// Redirect to login page
 						this.$router.push({
 							name: 'login',
 							params: { loggedOutMessage: 'Logged out' }
@@ -56,11 +64,20 @@ export default {
 <style scoped lang="scss">
 
 .logout-btn {
-	margin-right: 10px;
-	position: fixed;
-	top: 25px;
-	left: 91%;
-	color: white;
+	padding: 5px 10px;
+	border: 1px solid #fff;
+	font-weight: 600;
+	color: #fff;
+
+	&:hover {
+		color: $red-color;
+		border-color: $red-color;
+	}
+
+	.icon {
+		color: inherit;
+		margin-right: 8px;
+	}
 }
 
 </style>
