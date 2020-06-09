@@ -34,10 +34,8 @@
 </template>
 
 <script>
-// Components
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
-import AdminService from '@/services/AdminService'
+import UserService from '@/services/UserService'
 
 export default {
 	components: {
@@ -52,8 +50,10 @@ export default {
 	},
 	async mounted() {
 		try {
-			const userId = this.$store.state.route.params.userId
-			const response = (await AdminService.getUserById(userId)).data
+			// const userId = this.$store.state.route.params.userId
+			const userId = this.$route.params.userId
+			console.log('USERID: ', userId)
+			const response = (await UserService.getUserById(userId)).data
 
 			if (response.user) {
 				this.user = response.user

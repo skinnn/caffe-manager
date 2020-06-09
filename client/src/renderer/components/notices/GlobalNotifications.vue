@@ -81,6 +81,7 @@ export default {
 		// TODO: Write some tests
 		// let nots = [{text: 'Error..', type: 'error'}, {text: 'Warning..', type: 'warning'}, {text: 'Info..', type: 'info'}, {text: 'Success..', type: 'success'}]
 		// nots.forEach(notif => this.addNotification(notif))
+		this.clearAll()
 	},
 
 	watch: {
@@ -152,7 +153,11 @@ export default {
 		handleAutoClear() {
 			// TODO: Save this state in localStorage/profileSettings
 			this.options.autoClear = !this.options.autoClear
-			// On
+			this.clearAll()
+		},
+
+		clearAll() {
+			// If On
 			if (this.options.autoClear) {
 				// Reset timers
 				this.timers = []
@@ -161,7 +166,7 @@ export default {
 					// Add timeout to array so it can be cleared
 					this.addTimer(el.id, timeout)
 				})
-			// Off
+			// If Off
 			} else {
 				this.timers.forEach((el) => el.timeout ? clearTimeout(el.timeout) : null)
 				// Reset timers
@@ -203,8 +208,8 @@ export default {
 
 <style lang="scss" scoped>
 	.notifications-wrapper {
-		display: flex;
-		flex-direction: row;
+		// display: flex;
+		// flex-direction: row;
 		position: fixed;
 		right: 0;
 		bottom: 0;
@@ -218,6 +223,9 @@ export default {
 		z-index: 3;
 
 		ul {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
 			position: absolute;
 			bottom: $notificaion-panel-menu-height;
 			left: 0;

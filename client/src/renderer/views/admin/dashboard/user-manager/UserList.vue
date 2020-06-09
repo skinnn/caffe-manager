@@ -44,15 +44,15 @@
 						dark
 					>
 						<template slot="items" slot-scope="props">
-							<td class="td text-xs-left" @click="viewUser(props.item.id)">
+							<td class="td text-xs-left" @click="viewUser(props.item._id)">
 								<img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
 							</td>
-							<td class="td text-xs-left" @click="viewUser(props.item.id)">
+							<td class="td text-xs-left" @click="viewUser(props.item._id)">
 								<span class="admin-name">
 									{{ props.item.name }}
 								</span>
 							</td>
-							<td class="td text-xs-left" @click="viewUser(props.item.id)">
+							<td class="td text-xs-left" @click="viewUser(props.item._id)">
 								<span class="admin-username">
 									{{ props.item.username }}
 								</span>
@@ -179,8 +179,9 @@ export default {
 			this.displayedUsers = this.users.slice(start, end)
 		},
 
-		viewUser(userId) {
-			this.$router.push({name: 'admin-view-user', params: { userId }})
+		viewUser(userId, item) {
+			console.log('props.item: ', item)
+			this.$router.push({name: 'admin-view-user', params: { userId: userId }})
 		},
 
 		editUserPage(userId) {

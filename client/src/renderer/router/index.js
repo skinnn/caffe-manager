@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
 		if (isLoggedIn && isAdmin) {
 			return next()
 		} else {
-			return next('/forbidden')
+			return next('/login')
 		}
 
 	/* User routes that require authentication
@@ -45,11 +45,25 @@ router.beforeEach((to, from, next) => {
 		if (isLoggedIn && isUser) {
 			return next()
 		} else {
-			return next('/forbidden')
+			return next('/login')
 		}
 	} else {
 		// Routes that do not require either 'user' or 'admin' authentication
 		return next()
+	}
+})
+
+// If user is navigating to login page and is still logged in, stop navigation
+router.beforeEach((to, from, next) => {
+	if (to.name === 'login' || to.path === '/login') {
+		const isLoggedIn = store.getters.isLoggedIn
+		if (isLoggedIn) {
+			return next(false)
+		} else { 
+			return next(true)
+		}
+	} else {
+		return next(true)
 	}
 })
 

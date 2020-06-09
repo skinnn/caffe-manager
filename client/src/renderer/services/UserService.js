@@ -10,8 +10,8 @@ export default {
 	getLoginList(data) {
 		return Api().get(`/user/login-list?role=${data.role}`)
 	},
-	getUserById(data) {
-		return Api().get(`/user/${data.id}`)
+	getUserById(id) {
+		return Api().get(`/user/${id}`)
 	},
 	getAllUsers() {
 		return Api().get('/user')

@@ -14,11 +14,10 @@ import LoginService from '@/services/LoginService'
 // Helpers
 import { mapGetters } from 'vuex'
 // Font awesome icons
-import { library, dom } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faSignOutAlt)
-dom.watch()
 
 export default {
 	name: 'LogoutBtn',
@@ -39,11 +38,9 @@ export default {
 				if (res.status === 200) {
 					// Clear store and local storage data
 					const isLoggedOut = await this.$store.dispatch('logoutUser', null)
-					const isSettingsRemoved = await this.$store.dispatch('setSettings', null)
-					// TODO: Change logic for active page and side navigation
-					this.$store.dispatch('setActivePage', null)
 
-					if (isLoggedOut && isSettingsRemoved) {
+					// First logout user and then navigate
+					if (isLoggedOut) {
 						// Redirect to login page
 						this.$router.push({
 							name: 'login',

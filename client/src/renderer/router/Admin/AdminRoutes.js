@@ -50,7 +50,7 @@ const routes = [
 				path: 'home',
 				name: 'admin-home',
 				component: Index,
-				meta: { title: 'Home' }
+				meta: { title: 'Dashboard' }
 			},
 			{
 				path: 'user/create',
@@ -88,26 +88,26 @@ const routes = [
 				component: AdminCurrentTable,
 				meta: { title: 'Current table' }
 			},
+			// {
+			// 	path: '/admin/list',
+			// 	name: 'admin-admin-list',
+			// 	component: AdminAdminList,
+			// 	meta: { title: 'Admin list' }
+			// },
 			{
-				path: '-list',
-				name: 'admin-admin-list',
-				component: AdminAdminList,
-				meta: { title: 'Admin list' }
-			},
-			{
-				path: 'user-list',
+				path: 'user/list',
 				name: 'admin-user-list',
 				component: AdminUserList,
 				meta: { title: 'User list' }
 			},
+			// {
+			// 	path: 'admin/:adminId',
+			// 	name: 'admin-view-admin',
+			// 	component: AdminViewAdmin,
+			// 	meta: { title: 'View admin' }
+			// },
 			{
-				path: ':adminId',
-				name: 'admin-view-admin',
-				component: AdminViewAdmin,
-				meta: { title: 'View admin' }
-			},
-			{
-				path: ':userId',
+				path: 'user/:userId',
 				name: 'admin-view-user',
 				component: AdminViewUser,
 				meta: { title: 'View user' }
@@ -138,7 +138,7 @@ const routes = [
 				meta: { title: 'Edit user' }
 			},
 			{
-				path: 'storage-list',
+				path: 'storage/list',
 				name: 'admin-storage-list',
 				component: AdminStorageList,
 				meta: { title: 'Storage list' }

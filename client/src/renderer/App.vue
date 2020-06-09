@@ -1,10 +1,11 @@
 <template>
 	<div id="app">
 		<!-- <v-container fluid class="container-fluid pt-0"> -->
-			<!-- <v-app> -->
+			<!-- TODO: Remove when vuetify is removed -->
+			<v-app>
 				<router-view></router-view>
 				<!-- <GlobalNotifications /> -->
-			<!-- </v-app> -->
+			</v-app>
 		<!-- </v-container> -->
 	</div>
 </template>
@@ -19,6 +20,17 @@
 		components: {
 			UserSideMenu,
 			GlobalNotifications
+		},
+
+		created() {
+			process.env.NODE_ENV === 'production' ? this.init() : null
+		},
+
+		methods: {
+			init() {
+				this.$store.dispatch('logoutUser')
+				this.$router.push('login')
+			}
 		}
 	}
 </script>

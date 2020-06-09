@@ -58,7 +58,7 @@
         <div id="applicantsDropdown" class="collapse" aria-labelledby="applicantsDropdown" data-parent="#applicantsDropdown">
           <div class="py-2 collapse-inner">
             <!-- <h6 class="collapse-header">Storage manager</h6> -->
-            <router-link to="/admin/storage-list" class="collapse-item">
+            <router-link to="/admin/storage/list" class="collapse-item">
 							<font-awesome-icon :icon="['fas', 'list-ul']" class="icon" style=""/>
 							Storage list
 						</router-link>
@@ -93,7 +93,7 @@
         <div id="usersDropdown" class="collapse" aria-labelledby="usersDropdown" data-parent="#usersDropdown">
           <div class="py-2 collapse-inner">
             <!-- <h6 class="collapse-header">User manager</h6> -->
-            <router-link to="/admin/user-list" class="collapse-item">
+            <router-link to="/admin/user/list" class="collapse-item">
 							<font-awesome-icon :icon="['fas', 'list-ul']" class="icon" style=""/>
 							User list
 						</router-link>            
@@ -177,11 +177,10 @@
 
 <script>
 // Font Awesome icons
-import { library, dom } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChartBar, faChartArea, faCog, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChartBar, faChartArea, faCog, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt)
-dom.watch()
 
 export default {
 	name: 'AdminSidebar',

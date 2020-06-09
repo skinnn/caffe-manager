@@ -1,78 +1,77 @@
 <template>
 	<div class="admin-list">
-		<!-- <v-layout column class="right-side">
-			<v-flex>
-				<div class="admin-header">
-					<h1 class="heading">Admins</h1>
-					<LogoutBtn />
-				</div>
-			</v-flex> -->
+	<!-- <v-layout column class="right-side">
+		<v-flex>
+			<div class="admin-header">
+				<h1 class="heading">Admins</h1>
+				<LogoutBtn />
+			</div>
+		</v-flex> -->
 
-			<v-flex class="admin-container">
-				<!-- Display messages -->
-				<div class="error-msg" v-if="error" v-html="error" />
-				<div class="success-msg" v-if="success" v-html="success" />
-				<div class="info-msg" v-if="info" v-html="info" />
+		<v-flex class="admin-container">
+			<!-- Display messages -->
+			<div class="error-msg" v-if="error" v-html="error" />
+			<div class="success-msg" v-if="success" v-html="success" />
+			<div class="info-msg" v-if="info" v-html="info" />
 
-				<!-- TODO: Add animation for fetching/displaying admins possibly with Scroll Reveal -->
-				<!-- List of all admins in the db -->
-				<div class="list-of-admins">
+			<!-- TODO: Add animation for fetching/displaying admins possibly with Scroll Reveal -->
+			<!-- List of all admins in the db -->
+			<div class="list-of-admins">
 
-					<v-select
-						v-model="pagination.itemsPerPage"
-						:items="pagination.selectItemsPerPage"
-						@change="changePagination"
-						label="Items per page"
-						class="pagination-items-per-page"
-						required
-					></v-select>
+				<v-select
+					v-model="pagination.itemsPerPage"
+					:items="pagination.selectItemsPerPage"
+					@change="changePagination"
+					label="Items per page"
+					class="pagination-items-per-page"
+					required
+				></v-select>
 
-					<v-pagination
-						v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
-						v-model="pagination.currentPage"
-						:length="pagination.totalPages"
-						@input="pageChanged"
-					></v-pagination>
+				<v-pagination
+					v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+					v-model="pagination.currentPage"
+					:length="pagination.totalPages"
+					@input="pageChanged"
+				></v-pagination>
 
-					<v-data-table
-						:headers="headers"
-						:items="displayedAdmins"
-						hide-actions
-						class="elevation-1"
-						dark
-					>
-						<template slot="items" slot-scope="props">
-							<td class="td text-xs-left">
-								<img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
-							</td>
-							<td class="td text-xs-left">
-								<span class="admin-name">
-									{{ props.item.name }}
-								</span>
-							</td>
-							<td class="td text-xs-left">
-								<span class="admin-username">
-									{{ props.item.username }}
-								</span>
-							</td>
-							<td class="td text-xs-center">
-								<v-btn @click="editAdminPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
-								<v-btn @click="deleteAdmin(props.item)" class="delete-btn white">Delete</v-btn>
-							</td>
-						</template>
-					</v-data-table>
+				<v-data-table
+					:headers="headers"
+					:items="displayedAdmins"
+					hide-actions
+					class="elevation-1"
+					dark
+				>
+					<template slot="items" slot-scope="props">
+						<td class="td text-xs-left">
+							<img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
+						</td>
+						<td class="td text-xs-left">
+							<span class="admin-name">
+								{{ props.item.name }}
+							</span>
+						</td>
+						<td class="td text-xs-left">
+							<span class="admin-username">
+								{{ props.item.username }}
+							</span>
+						</td>
+						<td class="td text-xs-center">
+							<v-btn @click="editAdminPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
+							<v-btn @click="deleteAdmin(props.item)" class="delete-btn white">Delete</v-btn>
+						</td>
+					</template>
+				</v-data-table>
 
-					<v-pagination
-						v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
-						v-model="pagination.currentPage"
-						:length="pagination.totalPages"
-						@input="pageChanged"
-					></v-pagination>
+				<v-pagination
+					v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+					v-model="pagination.currentPage"
+					:length="pagination.totalPages"
+					@input="pageChanged"
+				></v-pagination>
 
-				</div>
+			</div>
 
-			</v-flex>
-		</v-layout>
+		</v-flex>
 	</div>
 </template>
 

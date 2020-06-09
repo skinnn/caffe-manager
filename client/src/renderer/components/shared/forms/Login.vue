@@ -64,12 +64,6 @@ export default {
 
 				// If user login is successfull
 				if (loginRes.status === 200) {
-					// Success notification
-					this.$store.dispatch('addNotification', {
-						text: 'Logged in successfully',
-						type: 'success'
-					})
-
 					const user = loginRes.data.user
 					const token = loginRes.data.token
 					// Set user in the Vuex Store
@@ -115,13 +109,21 @@ export default {
 		},
 
 		handleLoggingOut(logoutMsg) {
-			this.showMessage('success', logoutMsg)
 			this.$refs.inputUsername.focus()
+			this.showMessage('success', logoutMsg)
+			setTimeout(() => {
+				this.hideMessage()
+			}, 3000)
 		},
 
 		showMessage(type, text) {
-			this.$refs.messageEl.classList = 'message ' + type
+			this.$refs.messageEl.classList = `message ${type}` 
 			this.message = text
+		},
+
+		hideMessage() {
+			this.$refs.messageEl.classList = 'message'
+			this.message = ''
 		}
 	}
 }
@@ -232,11 +234,13 @@ export default {
 
 	.error {
 		color: $error;
+		background-color: #fff !important;
 		border: 1px solid $error;
 	}
 
 	.success {
 		color: $success;
+		background-color: #fff !important;
 		border: 1px solid $success
 	}
 }

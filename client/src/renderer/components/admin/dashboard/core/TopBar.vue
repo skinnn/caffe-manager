@@ -1,42 +1,51 @@
 <template>
-	<div id="topBar">
-		<nav class="navbar navbar-dark navbar-expand-lg p-0">
-			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/dashboard">{{payload.title}}</a>
+	<header id="topBar">
+		<nav class="navbar navbar-dark navbar-expand-lg">
+			<div class="left">
+				<BackBtn />
+				<p class="location">{{ $route.path }}</p>
+			</div>
+			<div class="middle">
+				<h2 class="page-heading">
+					{{ $route.meta.title }}
+				</h2>
+			</div>
 			<!-- <input class="form-control form-control-dark w-50 mr-auto ml-2" type="text" placeholder="Search" aria-label="Search"> -->
-			<ul class="navbar-nav px-3">
-				<li class="nav-item text-nowrap">
-					<a class="nav-link disabled" href="#">
-						<font-awesome-icon :icon="['fas', 'user-tie']" class="icon" />
-						<!-- TODO: Display logged in user's username -->
-						{{ user.username }}
-					</a>
-				</li>
-				<!-- <li class="nav-item text-nowrap">
-					<a class="nav-link" href="docs">API Docs</a>
-				</li> -->
-				<li class="nav-item text-nowrap">
-					<LogoutBtn />
-					<!-- <a class="nav-link">Log out</a> -->
-				</li>
-			</ul>
+			<div class="right">
+				<ul class="navbar-nav">
+					<li class="nav-item text-nowrap">
+						<a class="nav-link disabled" href="#">
+							<font-awesome-icon :icon="['fas', 'user-tie']" class="icon" />
+							<!-- TODO: Display logged in user's username -->
+							{{ user.username }}
+						</a>
+					</li>
+					<!-- <li class="nav-item text-nowrap">
+						<a class="nav-link" href="docs">API Docs</a>
+					</li> -->
+					<li class="nav-item text-nowrap">
+						<LogoutBtn />
+					</li>
+				</ul>
+			</div>
 		</nav>
-	</div>
+	</header>
 </template>
 
 <script>
 // Components
 import LogoutBtn from '@/components/_globals/LogoutBtn'
+import BackBtn from '@/components/_globals/BackBtn'
 // Helpers
 import { mapGetters } from 'vuex'
 // Font awesome icons
-import { library, dom } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faUserTie } from '@fortawesome/free-solid-svg-icons'
 library.add(faUserTie)
-dom.watch()
 
 export default {
 	name: 'DashboardTopBar',
-	components: { LogoutBtn },
+	components: { LogoutBtn, BackBtn },
 
 	props: {
 		payload: { type: Object }
@@ -54,13 +63,12 @@ export default {
 
 	created() {
 		this.user = this.getUser
-		console.log(this.user)
 	}
 }
 </script>
 
 <style lang="scss">
-	#topBar {
+	header#topBar {
 		position: absolute;
 		top: 0;
     left: 0;
@@ -70,22 +78,53 @@ export default {
 		z-index: $dashboard-topbar-zindex;
 
 		background-color: #000;
-		border-color: blue !important;
+		border-left: 1px solid #fff;
 		
 		nav {
 			display: flex;
 			justify-content: space-between;
 			height: 100%;
 			align-items: center;
+			padding: 0 20px;
 
-			ul {
+			.left {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				height: 100%;
 
-				li.nav-item {
-					&:not(:last-child) {
-						margin-right: 15px;
+				.location {
+					margin-left: 20px;
+					font-size: 12px;
+					color: $blue-color;
+					align-self: center;
+				}
+			}
+
+			.middle {
+
+				h2.page-heading {
+					margin-left: 30px;
+					color: #fff;
+					font-size: 26px;
+				}
+			}
+
+			.right {
+
+				ul.navbar-nav {
+
+					li.nav-item {
+						&:not(:last-child) {
+							margin-right: 15px;
+						}
 					}
 				}
 			}
+		}
+
+		.icon {
+			margin-right: 5px;
 		}
 	}
 </style>

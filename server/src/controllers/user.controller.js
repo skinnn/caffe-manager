@@ -191,8 +191,7 @@ module.exports = {
 	// Get User by id
 	async getUserById(req, res, next) {
 		try {
-			const query = {_id: req.params.id || null}
-			const user = await User.getUserById(query)
+			const user = await User.getUserById(req.params.id)
 			return res.status(200).json({
 				user: user
 			})
