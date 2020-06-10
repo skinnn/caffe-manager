@@ -42,14 +42,14 @@ export default {
 	],
 	data() {
 		return {
-			ownerId: this.$store.state.admin._id,
+			user_id: this.$store.state.admin._id,
 			tableList: []
 		}
 	},
 	async mounted() {
 		try {
 			// Get Table list
-			var allTables = (await TableService.getTablesByOwnerId(this.ownerId)).data
+			var allTables = (await TableService.getTablesByuser_id(this.user_id)).data
 			// If Tables are fetched successfully
 			if (allTables.tables) {
 				const tableList = this.tableList
@@ -70,8 +70,8 @@ export default {
 		async getTable(tableId) {
 			try {
 				// console.log('tableid: ', tableId)
-				// console.log('owner id: ', this.ownerId)
-				const response = (await TableService.getTable(this.ownerId, tableId)).data
+				// console.log('owner id: ', this.user_id)
+				const response = (await TableService.getTable(this.user_id, tableId)).data
 				if (response.table) {
 					this.currentTable = response.table
 				}
@@ -98,7 +98,7 @@ export default {
 				})
 				if (tablePrompt.value !== '' && tablePrompt.value !== null) {
 					this.newTable.number = tablePrompt.value
-					this.newTable.ownerId = this.ownerId
+					this.newTable.user_id = this.user_id
 					// Create Table
 					const response = (await TableService.createTable(this.newTable)).data
 					// If table is successfully created
@@ -112,7 +112,7 @@ export default {
 						}, 3000)
 
 						// Reset Table list after creating new table
-						const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
+						const ress = (await TableService.getTablesByuser_id(this.user_id)).data
 						if (ress.tables) {
 							let tables = this.tableList = []
 							ress.tables.forEach(function(table) {

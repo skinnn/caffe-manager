@@ -271,7 +271,7 @@ export default {
 					&::before {
 						content: '';
 						position: absolute;
-						left: 8px;
+						left: 17px;
 						top: 0;
 						height: 100%;
 						width: 3px;

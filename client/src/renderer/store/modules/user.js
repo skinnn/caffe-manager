@@ -45,7 +45,6 @@ const actions = {
 			const isUserRemoved = context.dispatch('setUser', null)
 			const isTokenRemoved = context.dispatch('setToken', '')
 			const areNotificationsRemoved = context.dispatch('clearNotifications')
-			const areSettingsRemoved = context.dispatch('setSettings', null)
 
 			if (isUserRemoved && isTokenRemoved) resolve(true)
 			else reject(new Error('Could not remove user and token'))

@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
 		// TODO: Use isAdminLoggedIn getter instead
 		const isLoggedIn = store.getters.isLoggedIn
 		const loggedInUser = store.getters.getUser
-		const isAdmin = loggedInUser !== null ? loggedInUser.roles.includes('admin') : false
+		const isAdmin = loggedInUser !== null ? loggedInUser.roles.includes('admin') || loggedInUser.roles.includes('root') : false
 
 		if (isLoggedIn && isAdmin) {
 			return next()
@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
 	}
 })
 
-// If user is navigating to login page and is still logged in, stop navigation
+// If user is navigating to login page and is already logged in, stop navigation
 router.beforeEach((to, from, next) => {
 	if (to.name === 'login' || to.path === '/login') {
 		const isLoggedIn = store.getters.isLoggedIn

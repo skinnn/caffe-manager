@@ -1,5 +1,5 @@
 const { checkToken } = require('../lib/helpers')
-const Login = require('../models/Login')
+const Login = require('../api/v1/auth/auth.model')
 
 /**
  * Make sure that user sending the request is authenticated.

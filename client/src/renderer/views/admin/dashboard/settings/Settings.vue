@@ -54,7 +54,7 @@
 						</h2>
 						<h2>
 							<span class="info-left">Last time updated: </span>
-							<span class="info-right">{{settings.updated_date}}</span>
+							<span class="info-right">{{settings.updated}}</span>
 						</h2>
 					</div>
 				</div>
@@ -66,14 +66,11 @@
 
 <script>
 // Components
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
+import StoreService from '@/services/StoreService'
 // Helpers
 import { mapGetters } from 'vuex'
 
 export default {
-	components: {
-		// AdminSideMenu
-	},
 
 	computed: {
 		...mapGetters(['getSettings'])
@@ -81,15 +78,7 @@ export default {
 
 	data() {
 		return {
-			settings: {
-				store_name: this.$store.state.settings.store_name,
-				store_address: this.$store.state.settings.store_address,
-				store_phone1: this.$store.state.settings.store_phone1,
-				store_phone2: this.$store.state.settings.store_phone2,
-				store_image: this.$store.state.settings.store_image,
-				currency: this.$store.state.settings.currency,
-				updated_date: this.$store.state.settings.updated_date
-			},
+			settings: {},
 			error: null,
 			success: null,
 			info: null
@@ -97,7 +86,13 @@ export default {
 	},
 
 	created() {
-		console.log(this.$store)
+		// console.log(this.$store)
+
+		// TODO: Get settings from the api
+		// const res = await StoreService.createStore(user._id)
+		// if (res.data.settings) {
+		// 	var settingsLoaded = await this.$store.dispatch('setSettings', res.data.settings)
+		// }
 	},
 
 	methods: {

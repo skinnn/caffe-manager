@@ -16,7 +16,6 @@
 	import GlobalNotifications from '@/components/notices/GlobalNotifications'
 
 	export default {
-		name: 'client',
 		components: {
 			UserSideMenu,
 			GlobalNotifications

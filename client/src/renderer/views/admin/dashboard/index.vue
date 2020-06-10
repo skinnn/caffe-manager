@@ -8,7 +8,7 @@
 			<p>Telephone 1: <span class="info-data">{{admin_info.telephone1}}</span></p>
 			<p>Telephone 2: <span class="info-data">{{admin_info.telephone2}}</span></p>
 			<p>Address: <span class="info-data">{{admin_info.address}}</span></p>
-			<p>Last time updated: <span class="info-data">{{admin_info.updated_date}}</span></p>
+			<p>Last time updated: <span class="info-data">{{admin_info.updated}}</span></p>
 		</div>
 	</div>
 </template>
@@ -25,9 +25,9 @@ export default {
 				telephone1: this.$store.state.user.telephone1,
 				telephone2: this.$store.state.user.telephone2,
 				address: this.$store.state.user.address,
-				updated_date: this.$store.state.user.updated_date
+				updated: this.$store.state.user.updated
 			},
-			ownerId: this.$store.state.user._id,
+			user_id: this.$store.state.user._id,
 			error: null,
 			success: null,
 			info: null

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const UserController = require('../controllers/user.controller')
+const UserController = require('../api/v1/user/user.controller')
 
 class Controller {
 	constructor(api, app) {
@@ -16,7 +16,6 @@ class Controller {
 		// Controller.modify(Controller.api, masterConfig)
 		Controller.api = masterConfig
 		Controller.app = app
-		
 		try {
 			await Controller.bootActions()
 			Controller.api.db.conn = mongoose.connection.db
@@ -29,18 +28,35 @@ class Controller {
 
 	static async bootActions() {
 		try {
+			await this.connectDB()
+			await this.insertInitialData()
+		} catch (err) {
+			throw err
+		}
+	}
+
+	static async connectDB() {
+		try {
 			// Connect to a local MongoDB
 			await mongoose
 				.connect(Controller.api.db.uri, {
 					useNewUrlParser: true,
 					useUnifiedTopology: true,
 					useFindAndModify: false, // Fixing deprecation for findOneAndUpdate() query
-					useCreateIndex: true
+					autoIndex: false
+					// useCreateIndex: true
 				})
 			console.log('MongoDB connected')
+		} catch (err) {
+			throw err
+		}
+	}
 
+	static async insertInitialData() {
+		try {
 			// Create root admin if it does not exist
 			await UserController.createRootAdmin()
+		
 		} catch (err) {
 			throw err
 		}

@@ -67,9 +67,9 @@ export default {
 			newTable: {
 				number: '',
 				// TODO: Add owner name and username
-				ownerId: ''
+				user_id: ''
 			},
-			ownerId: this.$store.state.admin._id,
+			user_id: this.$store.state.admin._id,
 			// Messages
 			error: null,
 			success: null,
@@ -79,7 +79,7 @@ export default {
 	async mounted() {
 		try {
 			// Get Table list
-			const response = (await TableService.getTablesByOwnerId(this.ownerId)).data
+			const response = (await TableService.getTablesByuser_id(this.user_id)).data
 
 			// If Tables are fetched successfully
 			if (response.tables) {
@@ -99,7 +99,7 @@ export default {
 		// Whenever current table changes, fetch the orders from that table
 		currentTable: async function() {
 			try {
-				const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+				const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
 				console.log(ordersResponse)
 				// Reset Order list each time new table is selected
 				const orders = this.currentTableOrders = []
@@ -120,7 +120,7 @@ export default {
 	methods: {
 		async getTable(tableId) {
 			try {
-				const response = (await TableService.getTable(this.ownerId, tableId)).data
+				const response = (await TableService.getTable(this.user_id, tableId)).data
 				if (response.table) {
 					// this.currentTable = response.table
 					this.$router.push({
@@ -151,7 +151,7 @@ export default {
 				})
 				if (tablePrompt.value !== '' && tablePrompt.value !== null) {
 					this.newTable.number = tablePrompt.value
-					this.newTable.ownerId = this.$store.state.admin._id
+					this.newTable.user_id = this.$store.state.admin._id
 					// Create Table
 					const response = (await TableService.createTable(this.newTable)).data
 					console.log(response)
@@ -166,7 +166,7 @@ export default {
 						}, 3000)
 
 						// Reset Table list after creating new table
-						const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
+						const ress = (await TableService.getTablesByuser_id(this.user_id)).data
 						if (ress.tables) {
 							this.tables = []
 							const tables = this.tables

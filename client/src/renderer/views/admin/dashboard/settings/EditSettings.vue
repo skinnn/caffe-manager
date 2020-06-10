@@ -73,7 +73,7 @@
 							<v-text-field
 								readonly
 								type="text"
-								:value="this.$store.state.settings.updated_date"
+								:value="this.$store.state.settings.updated"
 								solo
 							></v-text-field>
 						</v-flex>
@@ -113,10 +113,8 @@
 </template>
 
 <script>
-// Components
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
-import SettingsService from '@/services/SettingsService'
+import StoreService from '@/services/StoreService'
 
 export default {
 	components: {
@@ -137,8 +135,8 @@ export default {
 	},
 	async mounted() {
 		try {
-			let adminId = this.ownerId
-			const response = (await SettingsService.getOrCreateStoreSettings(adminId)).data
+			let adminId = this.user_id
+			const response = (await StoreService.createStore(adminId)).data
 			if (response.settings) {
 				this.settings = response.settings
 			}
@@ -161,7 +159,7 @@ export default {
 		async updateSettings() {
 			try {
 				// Get Admin id
-				const adminId = this.ownerId
+				const adminId = this.user_id
 				// Create form data
 				const settingsFormData = new FormData()
 				// Get new image
@@ -185,7 +183,7 @@ export default {
 				settingsFormData.append('oldImage', oldImage)
 
 				// Update Settings
-				const response = (await SettingsService.updateAdminSettings(adminId, settingsFormData)).data
+				const response = (await StoreService.updateStore(adminId, settingsFormData)).data
 				// If successfully updated the settings
 				if (response.saved) {
 					// Update Settings in the Vuex Store

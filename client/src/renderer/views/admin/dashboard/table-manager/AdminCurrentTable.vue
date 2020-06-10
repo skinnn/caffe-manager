@@ -305,12 +305,12 @@ export default {
 			currentTable: null,
 			currentTableOrders: [],
 			tableList: [],
-			ownerId: this.$store.state.admin._id,
+			user_id: this.$store.state.admin._id,
 			newOrderName: '',
 			newTable: {
 				number: '',
 				// TODO: Add owner name and username
-				ownerId: ''
+				user_id: ''
 			},
 			// Messages
 			error: null,
@@ -322,14 +322,14 @@ export default {
 		try {
 			// Get Current Table
 			const currentTableId = this.$store.state.route.params.tableId
-			var currentTable = (await TableService.getTable(this.ownerId, currentTableId)).data
+			var currentTable = (await TableService.getTable(this.user_id, currentTableId)).data
 			// If Current Table is fetched successfully
 			if (currentTable.table) {
 				this.currentTable = currentTable.table
 			}
 
 			// Get Table list
-			var allTables = (await TableService.getTablesByOwnerId(this.ownerId)).data
+			var allTables = (await TableService.getTablesByuser_id(this.user_id)).data
 			// If Tables are fetched successfully
 			if (allTables.tables) {
 				const tableList = this.tableList
@@ -342,7 +342,7 @@ export default {
 			// Get Reserved Articles by Current Table id
 			let sendData = {
 				currentTableId: this.currentTable._id,
-				ownerId: this.ownerId
+				user_id: this.user_id
 			}
 			var resArticles = (await OrderService.getReservedArticles(sendData)).data
 			// If Reserved Articles are fetched successfully
@@ -369,7 +369,7 @@ export default {
 		// Whenever current table changes, fetch the data
 		currentTable: async function() {
 			try {
-				const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+				const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
 				console.log(ordersResponse)
 				// Reset Order list each time new table is selected
 				const orders = this.currentTableOrders = []
@@ -388,7 +388,7 @@ export default {
 			// Reset Reserved Articles by Current Table id
 			let sendData = {
 				currentTableId: this.currentTable._id,
-				ownerId: this.ownerId
+				user_id: this.user_id
 			}
 			var resArticles = (await OrderService.getReservedArticles(sendData)).data
 			// If Reserved Articles are fetched successfully
@@ -483,7 +483,7 @@ export default {
 		},
 		async getTable(tableId) {
 			try {
-				const response = (await TableService.getTable(this.ownerId, tableId)).data
+				const response = (await TableService.getTable(this.user_id, tableId)).data
 				if (response.table) {
 					this.currentTable = response.table
 				}
@@ -518,7 +518,7 @@ export default {
 				})
 				if (tablePrompt.value !== '' && tablePrompt.value !== null) {
 					this.newTable.number = tablePrompt.value
-					this.newTable.ownerId = this.$store.state.admin._id
+					this.newTable.user_id = this.$store.state.admin._id
 					// Create Table
 					const response = (await TableService.createTable(this.newTable)).data
 					// If table is successfully created
@@ -532,7 +532,7 @@ export default {
 						}, 3000)
 
 						// Reset Table list after creating new table
-						const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
+						const ress = (await TableService.getTablesByuser_id(this.user_id)).data
 						if (ress.tables) {
 							let tables = this.tableList = []
 							ress.tables.forEach(function(table) {
@@ -568,7 +568,7 @@ export default {
 				if (this.selectedArticles.length > 0) {
 					const orderData = {
 						selectedArticles: this.selectedArticles,
-						ownerId: this.ownerId,
+						user_id: this.user_id,
 						currentTableId: this.currentTable._id,
 						orderId: this.currentOrderId
 					}
@@ -623,7 +623,7 @@ export default {
 			// Reset Reserved Articles by Current Table id
 			let sendData = {
 				currentTableId: this.currentTable._id,
-				ownerId: this.ownerId
+				user_id: this.user_id
 			}
 			var resArticles = (await OrderService.getReservedArticles(sendData)).data
 			// If Reserved Articles are fetched successfully
@@ -731,14 +731,14 @@ export default {
 			try {
 				let orderName = this.newOrderName
 				if (orderName !== '' && orderName !== undefined) {
-					const currentOrderResponse = (await OrderService.createOrder(this.ownerId, currentTableId, {
+					const currentOrderResponse = (await OrderService.createOrder(this.user_id, currentTableId, {
 						newOrderName: orderName
 					})).data
 
 					// If order is saved successfully
 					if (currentOrderResponse.saved) {
 						// Reset current table order list whenever new order is created
-						const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+						const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
 						const orders = this.currentTableOrders = [] // Reset each time order is created
 						// Add orders in the orders array
 						await ordersResponse.orders.forEach(function(order) {
@@ -793,13 +793,13 @@ export default {
 				})
 				// If Prompt is Confirmed
 				if (deleteOrderPrompt.value) {
-					const response = (await OrderService.deleteOrder(this.ownerId, orderId, currentTableId)).data
+					const response = (await OrderService.deleteOrder(this.user_id, orderId, currentTableId)).data
 					console.log(response)
 
 					// If Order is deleted successfully
 					if (response.deleted) {
 						// Reset Order list
-						const ordersResponse = (await OrderService.getOrdersByTableId(this.ownerId, this.currentTable._id)).data
+						const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
 						if (ordersResponse.orders) {
 							const orders = this.currentTableOrders = [] // Reset each time order is created
 							// Add orders in the orders array
@@ -826,7 +826,7 @@ export default {
 		},
 		async deleteTable(tableId) {
 			try {
-				const response = (await TableService.deleteTable(this.ownerId, tableId)).data
+				const response = (await TableService.deleteTable(this.user_id, tableId)).data
 				if (response.deleted) {
 					this.error = null
 					this.success = response.success
@@ -835,7 +835,7 @@ export default {
 					}, 3000)
 
 					// Reset Table list after deleting
-					const ress = (await TableService.getTablesByOwnerId(this.ownerId)).data
+					const ress = (await TableService.getTablesByuser_id(this.user_id)).data
 					if (ress.tables) {
 						let tables = this.tableList = []
 						ress.tables.forEach(function(table) {

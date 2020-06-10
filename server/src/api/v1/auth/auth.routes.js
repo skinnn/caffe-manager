@@ -1,0 +1,18 @@
+const express = require('express')
+const router = express.Router()
+const Auth = require('../../../middleware/authentication')
+
+const AuthController = require('./auth.controller')
+
+// Login - not using authentication middleware
+router.post('/login',
+	AuthController.login)
+
+// Authentication
+router.use(Auth.ensureAuthenticated)
+	
+// Logout
+router.delete('/login',
+AuthController.logout)
+
+module.exports = router

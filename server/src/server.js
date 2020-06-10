@@ -36,7 +36,7 @@ Controller.boot(masterConfig, app).then((ctx) => {
 	}
 
 	// Mount main router with all the endpoints, mount to path specified in the master config
-	ctx.app.use(`${ctx.api.baseApiURL}`, require('./routes/index'))
+	ctx.app.use(`${ctx.api.baseApiURL}`, require('./api/index'))
 
 	// Error handler
 	ctx.app.use((err, req, res, next) => ctx.errorHandler(err, req, res, next))

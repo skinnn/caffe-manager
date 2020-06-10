@@ -48,7 +48,7 @@
 						<label>Last time updated:</label>
 						<v-text-field
 							type="text"
-							v-model="article.updated_date"
+							v-model="article.updated"
 							outline
 							readonly
 						></v-text-field>

@@ -18,8 +18,7 @@
 
 <script>
 // Services
-import LoginService from '@/services/LoginService'
-import SettingsService from '@/services/SettingsService'
+import AuthService from '@/services/AuthService'
 
 export default {
 	props: {
@@ -57,7 +56,7 @@ export default {
 			event.preventDefault()
 			try {
 				// Login
-				const loginRes = await LoginService.login({
+				const loginRes = await AuthService.login({
 					username: this.username,
 					password: this.password
 				})
@@ -74,14 +73,7 @@ export default {
 
 					const isLoggedIn = await this.$store.dispatch('loginUser', data)
 
-					// Get or Create Settings
-					const res = await SettingsService.getOrCreateStoreSettings(user._id)
-					if (res.data.settings) {
-						// Set Settings in the Vuex Store
-						var settingsLoaded = await this.$store.dispatch('setSettings', res.data.settings)
-					}
-
-					if (isLoggedIn && settingsLoaded) {
+					if (isLoggedIn) {
 						// Redirect admin/root user to admin dashboard
 						if (user.roles.includes('admin') || user.roles.includes('root')) {
 							return this.$router.push({
