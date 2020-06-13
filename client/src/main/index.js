@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 // Icon path
-let iconPath = path.join(__static, '/logo/caffe_manager_256x256.ico')
+let iconPath = path.join(__static, '/logo/caffe_manager_256x256.png')
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
