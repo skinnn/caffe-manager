@@ -1,53 +1,40 @@
-const bcrypt = require('bcryptjs')
 const fs = require('fs')
-const config = require('../../../config/config')
+const path = require('path')
+
+const Controller = require('../../../lib/Controller')
+const FileController = require('../file/file.controller')
+
 const User = require('./user.model')
 const File = require('../file/file.model')
+// const UserSchema = require('./user.schema')
+const UserJSONSchema = require('./user.jsonschema.json')
 
-module.exports = {
-
-	// Create root Admin if it doesn't exist
-	createRootAdmin() {
-		return new Promise((resolve, reject) => {
-			// Create or Update
-			// let query = { root: true }
-			let query = { roles: 'root' }
-			User.find(query, (err, admin) => {
-				if (err) reject(err)
-				// If Root Admin exists
-				if (admin.length > 0) {
-					console.log('Root user already exists')
-					resolve(true)
-				} else if (!admin.root) {
-					// If Root User doesn't exist create one
-					const defaultRoot = {
-						roles: ['root'],
-						username: config.rootUser.username,
-						password: config.rootUser.password
-					}
-					const admin = new User(defaultRoot)
-					// Hash the password
-					bcrypt.genSalt(10, (err, salt) => {
-						if (err) reject(err)
-						bcrypt.hash(admin.password, salt, (err, hash) => {
-							if (err) reject(err)
-							console.log('Root user created.')
-							admin.password = hash
-							// Save Root User in the database
-							admin.save()
-							resolve(admin)
-						})
-					})
-				} else {
-					console.log('An error has occurred while creating the root user.')
-				}
-			})
-		})
-	},
+class UserController extends Controller {
 
 	// Create user
-	async createUser(req, res, next) {
+	static async createUser(req, res, next) {
 		try {
+			console.log('BODY: ', req.body)
+			// Validate to Joi schema
+			// const { error, value } = await UserSchema.create(req.body)
+			// if (error) return next(error)
+			// Validate to JSON schema
+
+			// const valid = Controller.ajv.validate(UserJSONSchema, req.body)
+			// const errorMessage = Controller.formatSchemaErrors(Controller.ajv.errors)
+			// if (!valid) {
+			// 	return res.status(400).json({
+			// 		message: errorMessage
+			// 	})
+			// }
+
+			const error = Controller.validateToSchema(UserJSONSchema, req.body)
+			if (error) {
+				return res.status(400).json({
+					message: error
+				})
+			}
+
 			const userExist = await User.getUserByUsername(req.body.username)
 			if (userExist) {
 				return res.status(400).json({
@@ -55,59 +42,29 @@ module.exports = {
 					message: `User: ${req.body.username} already exist`
 				})
 			}
-			// TODO: Fix User privileges
-			// Create user menu
-			// const userMenu = [
-			//   {
-			//     'warehouse': req.body.userMenu.warehouse,
-			//     'title': 'Warehouse',
-			//     'icon': 'storage',
-			//     'route': '/user/warehouse'
-			//   },
-			//   {
-			//     'tables': req.body.userMenu.tables,
-			//     'title': 'Tables',
-			//     'icon': 'view_carousel',
-			//     'route': '/user/tables'
-			//   },
-			//   {
-			//     'home': req.body.userMenu.home,
-			//     'title': 'Home',
-			//     'icon': 'home',
-			//     'route': '/user/home'
-			//   }
-			// ]
 
 			// Hash password
-			const hashedPassword = await User.hashPassword(req.body.password)
+			const hash = await User.hashPassword(req.body.password)
 
 			// const imageURL = req.file !== undefined && req.file !== '' ? req.file.path : ''
 			
-			const newUser = new User({
-				roles: req.body.roles,
-				username: req.body.username,
-				password: hashedPassword,
-				name: req.body.name,
-				email: req.body.email,
-				phone: req.body.phone,
-				address: req.body.address,
-				note: req.body.note,
-				createdBy: req.body.createdBy
-				// userMenu: userMenu,
-			})
+			let newUser = new User(req.body)
+			newUser.password = hash
+			newUser.created_by = req.user.id
 
 			const savedUser = await User.createUser(newUser)
+
 			return res.status(201).json({
 				success: true,
 				user: savedUser
 			})
 		} catch (err) {
-			return next()
+			return next(err)
 		}
-	},
+	}
 
 	// Delete User by id
-	async deleteUserById(req, res, next) {
+	static async deleteUserById(req, res, next) {
 		try {
 			let query = { _id: req.params.id }
 
@@ -142,10 +99,10 @@ module.exports = {
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 	
 	// Get Admins
-	async getAllAdmins(req, res, next) {
+	static async getAllAdmins(req, res, next) {
 		try {
 			await User.find({ roles: 'admin' }, (err, admins) => {
 				if (err) throw err
@@ -156,10 +113,10 @@ module.exports = {
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
 	// Get User login List - just usernames and names
-	async getLoginList(req, res, next) {
+	static async getLoginList(req, res, next) {
 		const role = req.query.role || null
 		try {
 			let query = {
@@ -174,10 +131,10 @@ module.exports = {
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 	
 	// Get all Users
-	async getAllUsers(req, res, next) {
+	static async getAllUsers(req, res, next) {
 		try {
 			const users = await User.find({ roles: 'user' })
 			return res.status(200).json({
@@ -186,10 +143,10 @@ module.exports = {
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 	
 	// Get User by id
-	async getUserById(req, res, next) {
+	static async getUserById(req, res, next) {
 		try {
 			const user = await User.getUserById(req.params.id)
 			return res.status(200).json({
@@ -198,10 +155,10 @@ module.exports = {
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 	
 	// Update User by id
-	async updateUserById(req, res, next) {
+	static async updateUserById(req, res, next) {
 		// TODO: Not working
 		try {
 			let query = {_id: req.body.id}
@@ -237,10 +194,10 @@ module.exports = {
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
 	// Create attachment for a user
-	async createAttachment(req, res, next) {
+	static async createAttachment(req, res, next) {
 		try {
 			if (!req.query.identifier) {
 				return res.status(400).json({
@@ -248,44 +205,66 @@ module.exports = {
 				})
 			}
 
-			// TODO: Uplaod file in the file controller, call it from here
 			const file = req.file
-			const ext = file.originalname.split('.').pop()
+			const identifier = req.query.identifier
+			const userId = req.params.id
+			// Save uploaded file's metadata in the db
+			const savedFile = await FileController.saveFileMeta(file, identifier, userId)
+
+			// Add new file id to user's files array
+			const user = await User.findById(userId)
+			user.files.push(savedFile.id)
+			await user.save()
+
+			// const qUser = await User.findById(userId).populate('files')
 			
-			const fileMeta = {
-				name: file.filename, // File name that is generated after file is uploaded
-				identifier: req.query.identifier,
-				ext: ext,
-				mime: file.mimetype,
-				size: file.size,
-				user_id: req.user.id
-			}
-			const newFile = new File(fileMeta)
-
-			// Save uploaded file's metadata to db
-			const savedFile = await File.createFile(newFile)
-
-			// Add new file data to user's files
-			const options = { new: true }
-			let fileToAdd = {
-				id: savedFile.id,
-				identifier: savedFile.identifier
-			}
-			const fields = {
-				$push: {
-					files: fileToAdd
-				}
-			}
-			const updatedUser = await User.findByIdAndUpdate(req.user.id, fields, options)
-
 			return res.status(201).json({
-				success: true,
-				file: savedFile,
-				updatedUser: updatedUser
+				file: savedFile
 			})
 		} catch (err) {
 			return next(err)
 		}
 	}
-	
-} /* Module exports */
+
+	// TODO: Get user attachment
+	// GET /user/:id/attachment
+
+	// Create attachment for a user
+	static async getAttachment(req, res, next) {
+		try {
+			if (!req.queryParsed.match.identifier) {
+				let err = new Error('Query string parameter: "identifier" for the attachment is not specified.')
+				err.name = 'BadRequestError'
+				throw err
+			}
+			const id = req.params.id || null
+			// const identifier = req.query.identifier || null
+			const match = req.queryParsed.match
+			match.user_id = id
+			console.log('req.queryParsed: ', req.queryParsed)
+			// TODO: Add to get user
+			// const user = await User.findById(id).populate('files')
+			// console.log('USER WITH FILES: ', user)
+			const file = await File.findOne(match)
+			const fileName = file ? file.name : ''
+			// const fullPath = path.join(Controller.api.uploads.imagesDirectory, fileName)
+			const fullPath = path.join(Controller.api.uploads.imagesDirectory, fileName)
+
+			return res.status(200).sendFile(fullPath)
+		} catch (err) {
+			return next(err)
+		}
+	}
+
+	static async getAttachmentById(req, res, next) {
+		const id = req.params.id || ''
+
+		const file = await File.findById(id)
+		console.log('FILE: ', file)
+		const fileName = file ? file.name : ''
+		const fullPath = path.join(Controller.api.uploads.imagesDirectory, fileName)
+		return res.status(200).sendFile(fullPath)
+	}
+}
+
+module.exports = UserController

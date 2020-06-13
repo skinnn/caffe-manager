@@ -4,22 +4,25 @@ const { uploadImage } = require('../../../config/multer')
 
 // Controllers
 const UserController = require('./user.controller')
-
-// Policies
-const UserControllerPolicy = require('../../../policies/UserControllerPolicy')
+const FileController = require('../file/file.controller')
 
 /* Base: /user
 ===================================================== */
 
-// TODO: First validation and then image upload
+
 // Upload user attachment
 router.post('/:id/attachment',
 	uploadImage.single('attachment'),
 	UserController.createAttachment)
+// Get user attachment by query param identifier
+router.get('/:id/attachment',
+	UserController.getAttachment)
+// Get user attachment by id
+router.get('/attachment/:id',
+	UserController.getAttachmentById)
 
 // Create user
 router.post('/',
-	UserControllerPolicy.user,
 	UserController.createUser)
 
 // Get all users
@@ -33,7 +36,6 @@ router.get('/:id',
 // Update user by id
 router.patch('/:id',
 	uploadImage.single('profileImage'),
-	// UserControllerPolicy.updateUser,
 	UserController.updateUserById)
 
 // Delete User by id

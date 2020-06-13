@@ -89,7 +89,7 @@ export default {
 		// console.log(this.$store)
 
 		// TODO: Get settings from the api
-		// const res = await StoreService.createStore(user._id)
+		// const res = await StoreService.createStore(user.id)
 		// if (res.data.settings) {
 		// 	var settingsLoaded = await this.$store.dispatch('setSettings', res.data.settings)
 		// }

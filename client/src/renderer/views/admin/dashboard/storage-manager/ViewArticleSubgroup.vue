@@ -5,10 +5,10 @@
 				<div class="admin-header">
 						<h1 class="heading">
 							{{subgroup.name}}
-							<v-btn @click="createArticlePage(storage._id, subgroup._id, subgroup.name)" class="green">
+							<v-btn @click="createArticlePage(storage.id, subgroup.id, subgroup.name)" class="green">
 								Add Article
 							</v-btn>
-							<v-btn @click="editArticleSubgroupPage(storage._id, subgroup._id)" class="yellow">
+							<v-btn @click="editArticleSubgroupPage(storage.id, subgroup.id)" class="yellow">
 								Edit
 							</v-btn>
 						</h1>
@@ -24,7 +24,7 @@
 
 				<!-- Storage data-->
 					<h3>Storage info:</h3>
-					<p>STORAGE ID: {{storage._id}} </p>
+					<p>STORAGE ID: {{storage.id}} </p>
 
 					<v-select
 						v-model="pagination.itemsPerPage"
@@ -75,8 +75,8 @@
 									</span>
 								</td>
 								<td class="td text-xs-right">
-									<v-btn @click="editArticlePage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
-									<v-btn @click="deleteArticle(props.item._id, props.item)" class="delete-btn white">Delete</v-btn>
+									<v-btn @click="editArticlePage(props.item.id)" class="edit-btn yellow">Edit</v-btn>
+									<v-btn @click="deleteArticle(props.item.id, props.item)" class="delete-btn white">Delete</v-btn>
 								</td>
 							</template>
 						</v-data-table>
@@ -98,7 +98,7 @@ export default {
 	data() {
 		return {
 			subgroup: {
-				_id: this.$store.state.route.params.subgroup._id,
+				_id: this.$store.state.route.params.subgroup.id,
 				name: this.$store.state.route.params.subgroup.name
 			},
 			displayedArticles: [],
@@ -140,7 +140,7 @@ export default {
 	},
 	async mounted() {
 		try {
-			console.log('Subgroup _id: ', this.subgroup._id)
+			console.log('Subgroup _id: ', this.subgroup.id)
 			console.log('Subgroup name: ', this.subgroup.name)
 			let storageId = this.storageId
 			// Get Storage data
@@ -150,7 +150,7 @@ export default {
 			}
 
 			// Get Articles from the selected Subgroup
-			const res = (await ArticleService.getArticlesBySubgroupId(this.subgroup._id)).data
+			const res = (await ArticleService.getArticlesBySubgroupId(this.subgroup.id)).data
 			console.log('ArticlesBySubgroupId: ', res)
 
 			if (res.articles) {

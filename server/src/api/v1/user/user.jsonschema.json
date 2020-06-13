@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "User",
+	"type": "object",
+	"description": "User schema.",
+	"additionalProperties": false,
+	"required": ["username", "password", "name"],
+  "properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "ID",
+			"description": "Unique ID of the user.",
+			"type": "string"
+		},
+    "roles": {
+			"$id": "#/properties/roles",
+			"title": "Roles",
+      "description": "Roles of the user, used to define CRUD access and permissions.",
+			"type": "array",
+			"items": {
+				"type": "string",
+				"enum": ["admin", "user"]
+			},
+			"minItems": 1,
+			"uniqueItems": true
+    },
+    "username": {
+			"$id": "#/properties/username",
+			"title": "Username",
+      "description": "Username of the user, used to log in.",
+			"type": "string",
+			"minLength": 3,
+  		"maxLength": 30
+    },
+    "password": {
+			"$id": "#/properties/password",
+			"title": "Password",
+			"description": "User's password.",
+			"type": "string",
+			"minLength": 4,
+  		"maxLength": 30
+		},
+		"password2": {
+			"$id": "#/properties/password2",
+			"title": "Confirm password",
+      "description": "Confirmation password, must be the same as password field.",
+			"type": "string",
+			"const": {
+        "$data": "1/password"
+      }
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"title": "Full name",
+      "description": "Person's name.",
+			"type": "string",
+			"minLength": 3
+    },
+		"phone": {
+			"$id": "#/properties/phone",
+			"title": "Phone number",
+      "description": "Person's phone number.",
+      "type": "string"
+    },
+		"address": {
+			"$id": "#/properties/address",
+			"title": "Address",
+      "description": "Person's address.",
+			"type": "string"
+    },
+		"email": {
+			"$id": "#/properties/email",
+			"title": "Email",
+      "description": "Person's email.",
+			"type": "string",
+			"format": "email"
+    },
+		"note": {
+			"$id": "#/properties/note",
+			"title": "Note",
+      "description": "Descrption or note about the user.",
+			"type": "string",
+			"maxLength": 255
+    },
+		"files": {
+			"$id": "#/properties/files",
+			"title": "Files",
+      "description": "Array of file IDs belonging to the user.",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+    }
+  }
+}

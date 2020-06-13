@@ -12,10 +12,10 @@
 			<!-- Single Table Li -->
 			<li
 				v-for="table in this.tableList"
-				:key="table._id"
-				@click="getTable(table._id)"
+				:key="table.id"
+				@click="getTable(table.id)"
 				class="liSingleTable"
-				v-bind:class="{ 'activeTable' : currentTable._id === table._id }"
+				v-bind:class="{ 'activeTable' : currentTable.id === table.id }"
 			>
 				<span class="singleTableNumber">{{table.number}}</span>
 			</li>
@@ -42,7 +42,7 @@ export default {
 	],
 	data() {
 		return {
-			user_id: this.$store.state.admin._id,
+			user_id: this.$store.state.admin.id,
 			tableList: []
 		}
 	},

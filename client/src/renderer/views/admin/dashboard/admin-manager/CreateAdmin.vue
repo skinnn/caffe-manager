@@ -240,7 +240,7 @@ export default {
 				file: null,
 				src: ''
 			},
-			createdBy: this.$store.state.user._id,
+			createdBy: this.$store.state.user.id,
 			showMessage: false,
 			// Password Strength - default
 			passwordStrength: 'weak',

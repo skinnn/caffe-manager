@@ -52,7 +52,7 @@ module.exports = {
 				if (storages.length > 0) {
 					let ids = []
 					storages.forEach((storage) => {
-						ids.push(storage._id)
+						ids.push(storage.id)
 					})
 					return ids
 				} else {

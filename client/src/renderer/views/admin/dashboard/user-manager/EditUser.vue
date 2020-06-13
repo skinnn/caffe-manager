@@ -184,7 +184,7 @@ export default {
 				warehouse: false,
 				tables: false
 			},
-			createdBy: this.$store.state.user._id,
+			createdBy: this.$store.state.user.id,
 			error: null,
 			success: null
 		}
@@ -199,7 +199,7 @@ export default {
 
 			if (res.status === 200) {
 				const user = res.data.user
-				this.userId.value = user._id
+				this.userId.value = user.id
 				this.username.value = user.username
 				this.name.value = user.name
 				this.image.value = user.image
@@ -253,7 +253,7 @@ export default {
 				formData.append('userAddress', this.address.value)
 				formData.append('userNote', this.note.value)
 				// formData.append('userMenu', userMenu)
-				const createdBy = this.getUser._id
+				const createdBy = this.getUser.id
 				formData.append('createdBy', createdBy)
 
 				const userId = this.userId.value

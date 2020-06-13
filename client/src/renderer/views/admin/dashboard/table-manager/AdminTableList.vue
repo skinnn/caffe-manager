@@ -21,8 +21,8 @@
 						<ul v-if="!articleMenu" id="listOfTables" class="listOfTables collection">
 							<li
 								v-for="table in this.tables"
-								:key="table._id"
-								@click="getTable(table._id)"
+								:key="table.id"
+								@click="getTable(table.id)"
 								class="liSingleTable"
 							>
 								<div class="singleTableNumber">{{table.number}}</div>
@@ -69,7 +69,7 @@ export default {
 				// TODO: Add owner name and username
 				user_id: ''
 			},
-			user_id: this.$store.state.admin._id,
+			user_id: this.$store.state.admin.id,
 			// Messages
 			error: null,
 			success: null,
@@ -99,7 +99,7 @@ export default {
 		// Whenever current table changes, fetch the orders from that table
 		currentTable: async function() {
 			try {
-				const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
+				const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable.id)).data
 				console.log(ordersResponse)
 				// Reset Order list each time new table is selected
 				const orders = this.currentTableOrders = []
@@ -151,7 +151,7 @@ export default {
 				})
 				if (tablePrompt.value !== '' && tablePrompt.value !== null) {
 					this.newTable.number = tablePrompt.value
-					this.newTable.user_id = this.$store.state.admin._id
+					this.newTable.user_id = this.$store.state.admin.id
 					// Create Table
 					const response = (await TableService.createTable(this.newTable)).data
 					console.log(response)

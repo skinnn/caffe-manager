@@ -3,6 +3,7 @@
  */
 
 // Load env variables
+const path = require('path')
 const env = require('dotenv').config().parsed
 
 module.exports = {
@@ -23,6 +24,10 @@ module.exports = {
 		enabled: env.AUTH_ENABLED || true,
 		jwtSecret: env.JWT_SECRET || 'secret',
 		sessionSecret: env.JWT_SECRET || 'session_secret'
+	},
+	uploads: {
+		directory: path.join(__dirname, '../../uploads'),
+		imagesDirectory: path.join(__dirname, '../../uploads/images')
 	},
 
 	server: null

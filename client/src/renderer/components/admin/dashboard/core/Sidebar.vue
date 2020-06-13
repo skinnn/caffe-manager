@@ -286,7 +286,7 @@ export default {
 			.router-link-active {
 				color: $dashboard-sb-link-active-color;
 				background-color: rgba(255, 255, 255, 0.9);
-				border-radius: 15px;
+				border-radius: 20px;
 				transition: background-color 200ms ease-out;
 
 				.nav-item-name {
@@ -309,6 +309,7 @@ export default {
 
 				.collapse-item {
 					display: block;
+					margin-left: 10px;
 					padding: 5px 5px 5px 12px;
 					color: rgba($dashboard-sb-link-color, 0.8); //asd
 

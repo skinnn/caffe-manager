@@ -124,7 +124,7 @@ export default {
 		return {
 			settings: {},
 			currentStoreImage: this.$store.state.settings.store_image,
-			adminId: this.$store.state.admin._id,
+			adminId: this.$store.state.admin.id,
 			select: {
 				currency: ['$', '€', 'RSD']
 			},

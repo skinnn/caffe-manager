@@ -44,21 +44,21 @@
 						dark
 					>
 						<template slot="items" slot-scope="props">
-							<td class="td text-xs-left" @click="viewUser(props.item._id)">
+							<td class="td text-xs-left" @click="viewUser(props.item.id)">
 								<img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
 							</td>
-							<td class="td text-xs-left" @click="viewUser(props.item._id)">
+							<td class="td text-xs-left" @click="viewUser(props.item.id)">
 								<span class="admin-name">
 									{{ props.item.name }}
 								</span>
 							</td>
-							<td class="td text-xs-left" @click="viewUser(props.item._id)">
+							<td class="td text-xs-left" @click="viewUser(props.item.id)">
 								<span class="admin-username">
 									{{ props.item.username }}
 								</span>
 							</td>
 							<td class="td text-xs-center">
-								<v-btn @click="editUserPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
+								<v-btn @click="editUserPage(props.item.id)" class="edit-btn yellow">Edit</v-btn>
 								<v-btn @click="deleteUser(props.item)" class="delete-btn white">Delete</v-btn>
 							</td>
 						</template>
@@ -101,7 +101,7 @@ export default {
 		return {
 			users: [],
 			displayedUsers: [],
-			adminId: this.$store.state.user._id,
+			adminId: this.$store.state.user.id,
 			headers: [
 				{
 					text: 'Image',
@@ -196,7 +196,7 @@ export default {
 
 			if (confirmation) {
 				try {
-					const userId = user._id
+					const userId = user.id
 					// TODO: Change files deleting, create file db model and upload files in separate request
 					const imgPath = user.files[0]
 					console.log(imgPath)
@@ -211,7 +211,7 @@ export default {
 						}, 3000)
 
 						// Reset User list after deleting
-						const filteredUsers = this.users.filter(user => user._id !== userId)
+						const filteredUsers = this.users.filter(user => user.id !== userId)
 						this.users = filteredUsers
 						// this.displayedAdmins = filteredUsers
 						this.pageChanged()

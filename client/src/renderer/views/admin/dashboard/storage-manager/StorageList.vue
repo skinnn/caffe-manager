@@ -18,8 +18,8 @@
 						<v-list two-line>
 							<v-list-tile
 								v-for="storage in this.storages"
-								:key="storage._id"
-								@click="viewSubgroups(storage._id, storage.name)"
+								:key="storage.id"
+								@click="viewSubgroups(storage.id, storage.name)"
 							>
 
 								<v-list-tile-action>

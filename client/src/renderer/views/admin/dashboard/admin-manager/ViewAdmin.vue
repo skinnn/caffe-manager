@@ -5,7 +5,7 @@
 				<div class="admin-header">
 						<h1 class="heading">
 							Admin: {{admin.name}}
-							<v-btn @click="editAdmin(admin._id)" class="yellow">
+							<v-btn @click="editAdmin(admin.id)" class="yellow">
 								Edit
 							</v-btn>
 						</h1>
@@ -20,7 +20,7 @@
 
 				<div class="admin-info">
 					<p>Username: {{admin.username}}</p>
-					<p>ID: {{admin._id}}</p>
+					<p>ID: {{admin.id}}</p>
 					<p>Full name: {{admin.name}}</p>
 				</div>
 

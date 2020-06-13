@@ -28,8 +28,7 @@ const FileSchema = new Schema({
 		required: true
 	},
 	user_id: {
-		type: mongoose.Schema.Types.ObjectId,
-		required: true,
+		type: Schema.Types.ObjectId,
 		ref: 'User'
 	},
 	created: { type: Date, default: Date.now },

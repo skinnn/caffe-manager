@@ -9,12 +9,12 @@ const OrderSchema = new Schema({
 		required: true
 	},
 	table_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'Table'
 	},
 	user_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'User'
 	},

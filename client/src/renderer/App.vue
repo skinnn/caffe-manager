@@ -22,7 +22,8 @@
 		},
 
 		created() {
-			process.env.NODE_ENV === 'production' ? this.init() : null
+			// process.env.NODE_ENV === 'production' ? this.init() : null
+			this.init()
 		},
 
 		methods: {

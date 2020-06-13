@@ -5,7 +5,7 @@
 				<div class="admin-header">
 						<h1 class="heading">
 							Edit Storage: {{storage.name}}
-							<v-btn @click="saveStorage(storage._id)" class="yellow">
+							<v-btn @click="saveStorage(storage.id)" class="yellow">
 								Save
 							</v-btn>
 						</h1>

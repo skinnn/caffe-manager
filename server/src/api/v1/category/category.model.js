@@ -12,17 +12,17 @@ const ArticleCategorySchema = new Schema({
 		default: null
 	},
 	storage_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'Storage'
 	},
 	parent_category: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'Article_Category'
 	},
 	child_categories: [{
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'Article_Category'
 	}],

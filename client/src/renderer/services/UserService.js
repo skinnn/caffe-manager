@@ -4,7 +4,7 @@ export default {
 	createUser(data) {
 		return Api().post('/user', data)
 	},
-	createUserAttachment(userId, identifier, data) {
+	uploadUserAttachment(userId, identifier, data) {
 		return Api().post(`/user/${userId}/attachment?identifier=${identifier}`, data)
 	},
 	getLoginList(data) {

@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const { uploadImage } = require('../../../config/multer')
 
 // Controllers
 const FileController = require('./file.controller')
@@ -11,14 +10,12 @@ const FileController = require('./file.controller')
 /* Base: /file
 ===================================================== */
 
-// TODO: First validation and then file upload
-// Create user
-router.post('/', // types: [image]
-	// TODO: File metadata fields validation with Joi
-	// FileControllerPolicy.createImage,
-	uploadImage.single('file'),
-	FileController.createFile)
+// TODO: Get file meta by id
+// router.get('/:id',
+// 	FileController.getFileMetaById)
 
-// router.get('/')
+// TODO: Get file meta
+// GET /files/:id
+// GET /files?identifier=profile_image
 
 module.exports = router

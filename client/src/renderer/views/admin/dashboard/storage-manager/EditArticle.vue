@@ -14,7 +14,7 @@
 
 				<div class="admin-edit-storage">
 					<v-form
-						@submit.prevent="saveArticle(article._id)"
+						@submit.prevent="saveArticle(article.id)"
 						enctype="multipart/form-data"
 					>
 						<label>Name:</label>

@@ -9,7 +9,7 @@ const TableSchema = new Schema({
 		unique: true
 	},
 	user_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'User'
 	},

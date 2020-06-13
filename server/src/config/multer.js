@@ -9,8 +9,8 @@ const multerImageStorage = multer.diskStorage({
 	},
 	// Define image name
 	filename: (req, file, cb) => {
-		// TODO: Use uuid
-		cb(null, Date.now() + '-' + file.originalname)
+		// TODO: Use uuid + Date.now()
+		cb(null, Date.now() + '_' + file.originalname)
 	}
 })
 

@@ -11,7 +11,7 @@ const ArticleSchema = new Schema({
 		required: true
 	},
 	storage_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'Storage'
 	},
@@ -40,7 +40,7 @@ const ArticleSchema = new Schema({
 		default: null
 	},
 	article_categories: [{
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'Article_Category'
 	}],
@@ -53,7 +53,7 @@ const ArticleSchema = new Schema({
 		default: null
 	},
 	user_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'User'
 	},

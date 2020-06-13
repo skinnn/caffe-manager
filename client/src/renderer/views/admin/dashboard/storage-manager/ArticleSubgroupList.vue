@@ -20,7 +20,7 @@
 						<v-list two-line>
 							<v-list-tile
 								v-for="subgroup in this.subgroups"
-								:key="subgroup._id"
+								:key="subgroup.id"
 								@click="viewArticleSubgroup(subgroup, storageId)"
 							>
 

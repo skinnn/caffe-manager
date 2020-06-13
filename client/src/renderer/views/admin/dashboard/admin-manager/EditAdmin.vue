@@ -33,7 +33,7 @@
 					></v-text-field>
 
 					<v-btn
-						@click="onClick(admin._id)"
+						@click="onClick(admin.id)"
 						class="yellow"
 					>
 						Save

@@ -242,13 +242,14 @@ export default {
 
 				// Send the request
 				const response = await UserService.createUser(this.form.fields)
-				const data = response.data
+				// const data = response.data
+				const user = response.data.user
 
 				// Created successfully
 				if (response.status === 201) {
 					const profileImage = this.form.files.profileImage.file
 					if (profileImage) {
-						const attachmentResponse = await this.createUserAttachment(profileImage)
+						const attachmentResponse = await this.createUserAttachment(user.id, profileImage)
 					}
 					
 					this.resetFormFields()
@@ -256,7 +257,7 @@ export default {
 					// Set success message and timeout
 					this.error = null
 					this.info = null
-					this.success = `User with username <span style="color: blue; font-size:17px;">${data.user.username}</span> created successfully.`
+					this.success = `User with username <span style="color: blue; font-size:17px;">${user.username}</span> created successfully.`
 					setTimeout(() => {
 						this.success = null
 					}, 5000)
@@ -271,14 +272,13 @@ export default {
 			}
 		},
 
-		async createUserAttachment(profileImage) {
+		async createUserAttachment(userId, profileImage) {
 			try {
 				const formData = new FormData()
 				const identifier = 'profile_image'
 				formData.append('attachment', profileImage)
-				const userId = this.getUser._id
 				// Upload image
-				const fileResponse = await UserService.createUserAttachment(userId, identifier, formData)
+				const fileResponse = await UserService.uploadUserAttachment(userId, identifier, formData)
 				return fileResponse
 			} catch (err) {
 				console.error(err)

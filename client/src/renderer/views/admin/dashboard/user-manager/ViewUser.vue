@@ -5,7 +5,7 @@
 				<div class="admin-header">
 						<h1 class="heading">
 							User: {{user.name}}
-							<v-btn @click="editUser(user._id)" class="yellow">
+							<v-btn @click="editUser(user.id)" class="yellow">
 								Edit
 							</v-btn>
 						</h1>
@@ -20,7 +20,7 @@
 
 				<div class="user-info">
 					<p>Username: {{user.username}}</p>
-					<p>ID: {{user._id}}</p>
+					<p>ID: {{user.id}}</p>
 					<p>Full name: {{user.name}}</p>
 
 					<!-- TODO: Should list all the Tables from this user -->

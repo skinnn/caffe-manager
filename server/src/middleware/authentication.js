@@ -33,16 +33,15 @@ const ensureAuthenticated = async (req, res, next) => {
 		}
 	
 		// Check that there is a login record with this token
-		const loginRecord = await Login.findOne({ token: validToken })
-		if (!loginRecord) {
-			return res.status(401).json({
-				name: 'UnauthorizedError',
-				message: 'Access denied' // No login record
-			})
-		}
+		// const loginRecord = await Login.findOne({ token: validToken })
+		// if (!loginRecord) {
+		// 	return res.status(401).json({
+		// 		name: 'UnauthorizedError',
+		// 		message: 'Access denied' // No login record
+		// 	})
+		// }
 
 		req.user = decoded || null
-		req.user.id = loginRecord.user
 		return next()
 	} catch (err) {
 		return next(err)

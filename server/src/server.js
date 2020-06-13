@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const morganLogger = require('morgan')
 const http = require('http')
+const path = require('path')
 // const favicon = require('serve-favicon')
 const Controller = require('./lib/Controller')
 
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // Static assets
 // app.use('/public', express.static(path.join(__dirname, '../public')))
+app.use(express.static(path.join(__dirname, '../uploads')))
 
 // Boot the server
 Controller.boot(masterConfig, app).then((ctx) => {
@@ -35,7 +37,7 @@ Controller.boot(masterConfig, app).then((ctx) => {
 		ctx.api.server = http.createServer(app)
 	}
 
-	// Mount main router with all the endpoints, mount to path specified in the master config
+	// Mount main router with all the endpoints and middlewares (mount to path specified in the master config)
 	ctx.app.use(`${ctx.api.baseApiURL}`, require('./api/index'))
 
 	// Error handler

@@ -17,7 +17,7 @@ module.exports = {
 				await order.save((err) => {
 					if (err) throw err
 					return res.status(201).json({
-						orderId: order._id,
+						orderId: order.id,
 						name: order.name,
 						saved: true,
 						success: 'Order created.'

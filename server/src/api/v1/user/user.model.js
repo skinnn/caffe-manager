@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 
 // TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
 // TODO: When user is used replace user_id with user _id field
@@ -36,12 +36,7 @@ const UserSchema = new Schema({
 		default: null
 	},
 	files: [{
-		// _id: false,
-		// id: { type: String, required: true },
-		// identifier: { type: String, required: true }
-
-		// TODO: Implement
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'File'
 	}],
@@ -50,14 +45,14 @@ const UserSchema = new Schema({
 		default: null
 	},
 	created_by: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'User'
 	},
 	updated_by: {
-		type: mongoose.Schema.Types.ObjectId,
-		required: true,
-		ref: 'User'
+		type: mongoose.Types.ObjectId,
+		ref: 'User',
+		default: null
 	},
 	created: { type: Date, default: Date.now },
 	updated: { type: Date,	default: null }
@@ -65,8 +60,8 @@ const UserSchema = new Schema({
 
 const User = module.exports = mongoose.model('User', UserSchema)
 
-module.exports.hashPassword = async(password) => {
-	return new Promise(async(resolve, reject) => {
+module.exports.hashPassword = async (password) => {
+	return new Promise((resolve, reject) => {
 		bcrypt.genSalt(10, (err, salt) => {
 			if (err) reject(err)
 

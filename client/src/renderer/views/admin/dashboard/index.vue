@@ -27,7 +27,7 @@ export default {
 				address: this.$store.state.user.address,
 				updated: this.$store.state.user.updated
 			},
-			user_id: this.$store.state.user._id,
+			user_id: this.$store.state.user.id,
 			error: null,
 			success: null,
 			info: null

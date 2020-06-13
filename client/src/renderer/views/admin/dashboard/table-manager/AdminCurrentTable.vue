@@ -9,7 +9,7 @@
 						<v-btn @click="goBack" class="goBackBtn blue" fab>
 							<v-icon>view_carousel</v-icon>
 						</v-btn>
-						<v-btn @click="deleteTable(currentTable._id)" class="delete-btn pink">
+						<v-btn @click="deleteTable(currentTable.id)" class="delete-btn pink">
 							Delete
 						</v-btn>
 						Table
@@ -39,7 +39,7 @@
 							<ul class="selectedArticleList">
 								<li
 									v-for="article in this.selectedArticles"
-									:key="article._id"
+									:key="article.id"
 									class="selectedArticleLi"
 								>
 									<span class="selectedArticleName">
@@ -60,8 +60,8 @@
 							<!-- TODO: Display Article Subgroups > Articles - instead of listing all articles -->
 							<li
 								v-for="subgroup in this.articleSubgroups"
-								:key="subgroup._id"
-								@click="openArticleSubgroup(subgroup._id, subgroup.name)"
+								:key="subgroup.id"
+								@click="openArticleSubgroup(subgroup.id, subgroup.name)"
 								class="singleSubgroupLi"
 							>
 								<img
@@ -106,7 +106,7 @@
 							<ul class="selectedArticleList">
 								<li
 									v-for="article in this.selectedArticles"
-									:key="article._id"
+									:key="article.id"
 									class="selectedArticleLi"
 								>
 									<span class="selectedArticleName">
@@ -128,8 +128,8 @@
 							<!-- Current Subgroup Article List -->
 							<li
 								v-for="article in this.currentSubgroup.articleList"
-								:key="article._id"
-								@click="selectArticle(article.name, article._id, article.price)"
+								:key="article.id"
+								@click="selectArticle(article.name, article.id, article.price)"
 								class="currentSubgroupArticleLi"
 							>
 								<img
@@ -172,7 +172,7 @@
 								outline
 							></v-text-field>
 							<v-btn
-								@click="createOrder(currentTable._id)"
+								@click="createOrder(currentTable.id)"
 								>
 									New Order
 									<v-icon>add</v-icon>
@@ -184,19 +184,19 @@
 							<ul class="order-list">
 								<li
 									v-for="order in this.currentTableOrders"
-									:key="order._id"
+									:key="order.id"
 									class="singleOrderLi"
 								>
 									<div class="singleOrderDiv">
 										<div class="orderHeading">
 											<span class="orderName">{{order.name}}</span>
 											<hr >
-											<v-btn @click="deleteOrder(order._id, currentTable._id)" class="deleteOrderBtn" small fab>
+											<v-btn @click="deleteOrder(order.id, currentTable.id)" class="deleteOrderBtn" small fab>
 												<v-icon>delete</v-icon>
 											</v-btn>
 											<v-btn
 												class="openSubgroupListMenuBtn"
-												@click="openSubgroupListMenu(order._id, order.name)"
+												@click="openSubgroupListMenu(order.id, order.name)"
 											>
 												Add article
 											</v-btn>
@@ -215,7 +215,7 @@
 													class="reservedArticleLi"
 												>
 													<div
-														v-if="order._id === reservedArticle.inWhichOrder"
+														v-if="order.id === reservedArticle.inWhichOrder"
 													>
 														<span class="reservedArticleName">
 															{{reservedArticle.name}}
@@ -246,10 +246,10 @@
 							<!-- Single Table Li -->
 							<li
 								v-for="table in this.tableList"
-								:key="table._id"
-								@click="getTable(table._id)"
+								:key="table.id"
+								@click="getTable(table.id)"
 								class="liSingleTable"
-								v-bind:class="{ 'activeTable' : currentTable._id === table._id }"
+								v-bind:class="{ 'activeTable' : currentTable.id === table.id }"
 							>
 								<span class="singleTableNumber">{{table.number}}</span>
 							</li>
@@ -305,7 +305,7 @@ export default {
 			currentTable: null,
 			currentTableOrders: [],
 			tableList: [],
-			user_id: this.$store.state.admin._id,
+			user_id: this.$store.state.admin.id,
 			newOrderName: '',
 			newTable: {
 				number: '',
@@ -341,7 +341,7 @@ export default {
 
 			// Get Reserved Articles by Current Table id
 			let sendData = {
-				currentTableId: this.currentTable._id,
+				currentTableId: this.currentTable.id,
 				user_id: this.user_id
 			}
 			var resArticles = (await OrderService.getReservedArticles(sendData)).data
@@ -369,7 +369,7 @@ export default {
 		// Whenever current table changes, fetch the data
 		currentTable: async function() {
 			try {
-				const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
+				const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable.id)).data
 				console.log(ordersResponse)
 				// Reset Order list each time new table is selected
 				const orders = this.currentTableOrders = []
@@ -387,7 +387,7 @@ export default {
 
 			// Reset Reserved Articles by Current Table id
 			let sendData = {
-				currentTableId: this.currentTable._id,
+				currentTableId: this.currentTable.id,
 				user_id: this.user_id
 			}
 			var resArticles = (await OrderService.getReservedArticles(sendData)).data
@@ -518,7 +518,7 @@ export default {
 				})
 				if (tablePrompt.value !== '' && tablePrompt.value !== null) {
 					this.newTable.number = tablePrompt.value
-					this.newTable.user_id = this.$store.state.admin._id
+					this.newTable.user_id = this.$store.state.admin.id
 					// Create Table
 					const response = (await TableService.createTable(this.newTable)).data
 					// If table is successfully created
@@ -569,7 +569,7 @@ export default {
 					const orderData = {
 						selectedArticles: this.selectedArticles,
 						user_id: this.user_id,
-						currentTableId: this.currentTable._id,
+						currentTableId: this.currentTable.id,
 						orderId: this.currentOrderId
 					}
 					// Reserve Selected Articles
@@ -622,7 +622,7 @@ export default {
 			}
 			// Reset Reserved Articles by Current Table id
 			let sendData = {
-				currentTableId: this.currentTable._id,
+				currentTableId: this.currentTable.id,
 				user_id: this.user_id
 			}
 			var resArticles = (await OrderService.getReservedArticles(sendData)).data
@@ -738,7 +738,7 @@ export default {
 					// If order is saved successfully
 					if (currentOrderResponse.saved) {
 						// Reset current table order list whenever new order is created
-						const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
+						const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable.id)).data
 						const orders = this.currentTableOrders = [] // Reset each time order is created
 						// Add orders in the orders array
 						await ordersResponse.orders.forEach(function(order) {
@@ -799,7 +799,7 @@ export default {
 					// If Order is deleted successfully
 					if (response.deleted) {
 						// Reset Order list
-						const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable._id)).data
+						const ordersResponse = (await OrderService.getOrdersByTableId(this.user_id, this.currentTable.id)).data
 						if (ordersResponse.orders) {
 							const orders = this.currentTableOrders = [] // Reset each time order is created
 							// Add orders in the orders array

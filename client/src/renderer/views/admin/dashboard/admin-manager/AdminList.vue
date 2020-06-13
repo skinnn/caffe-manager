@@ -56,7 +56,7 @@
 							</span>
 						</td>
 						<td class="td text-xs-center">
-							<v-btn @click="editAdminPage(props.item._id)" class="edit-btn yellow">Edit</v-btn>
+							<v-btn @click="editAdminPage(props.item.id)" class="edit-btn yellow">Edit</v-btn>
 							<v-btn @click="deleteAdmin(props.item)" class="delete-btn white">Delete</v-btn>
 						</td>
 					</template>
@@ -189,7 +189,7 @@ export default {
 
 			if (confirmation) {
 				try {
-					const adminId = admin._id
+					const adminId = admin.id
 					const imgPath = admin.image
 					// TODO: Don't send the image, api should delete all relevant admin data by admin ID
 					const res = await UserService.deleteUserById(adminId, imgPath)
@@ -203,7 +203,7 @@ export default {
 						}, 3000)
 
 						// Reset Admin list after deleting
-						const filteredAdmins = this.admins.filter(admin => admin._id !== adminId)
+						const filteredAdmins = this.admins.filter(admin => admin.id !== adminId)
 						this.admins = filteredAdmins
 						// this.displayedAdmins = filteredAdmins
 						this.pageChanged()

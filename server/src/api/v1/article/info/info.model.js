@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const ArticleInfoSchema = new Schema({
 	article_id: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'Article'
 	},
@@ -20,7 +20,7 @@ const ArticleInfoSchema = new Schema({
 		default: null
 	},
 	updated_by: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: Schema.Types.ObjectId,
 		required: true,
 		ref: 'User'
 	},

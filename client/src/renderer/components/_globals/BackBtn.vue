@@ -16,20 +16,12 @@ export default {
 
 	data() {
 		return {
-			lastRoute: null
+			9: null
 		}
 	},
 
 	watch: {
 		$route() {
-			// if (this.$route.query.canNavigate === false) {
-			// 	event.preventDefault()
-			// 	this.$refs.button.classList.add('disabled')
-			// 	return
-			// } else {
-			// 	this.$refs.button.classList.remove('disabled')
-			// 	return
-			// }
 			this.$refs.button.classList.remove('disabled')
 		}
 	},
@@ -46,16 +38,6 @@ export default {
 				console.log('this.$route: ', this.$route.name)
 				this.$refs.button.classList.add('disabled')
 			}
-
-			// console.log('query: ', this.$route.query)
-			// if (this.$route.query.canNavigate === false) {
-			// 	console.log('hit')
-			// 	this.$refs.button.classList.add('disabled')
-			// 	return
-			// } else {
-			// 	this.$refs.button.classList.remove('disabled')
-			// 	return
-			// }
 		}
 	}
 }

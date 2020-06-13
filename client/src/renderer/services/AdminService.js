@@ -11,7 +11,7 @@ export default {
 		return Api().post('/admin', data)
 	},
 	updateAdmin(admin) {
-		return Api().patch(`/admin/${admin._id}`, admin)
+		return Api().patch(`/admin/${admin.id}`, admin)
 	},
 	getUserById(userId) {
 		return Api().get(`/admin/user/${userId}`)
