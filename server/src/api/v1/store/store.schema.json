@@ -10,7 +10,7 @@
 			"roles": ["admin"]
 		},
 		"read": {
-			"roles": ["admin"],
+			"roles": ["admin", "user"],
 			"owner": true
 		},
 		"update": {

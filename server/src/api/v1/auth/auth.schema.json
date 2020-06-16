@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Authentication",
+	"type": "object",
+	"description": "Authentication schema",
+	"additionalProperties": false,
+	"required": [],
+	"access": {
+		"create": {
+			"roles": ["admin", "user"]
+		},
+		"read": {
+			"roles": ["admin", "user"],
+			"owner": true
+		},
+		"update": {
+			"roles": ["admin", "user"],
+			"owner": true
+		},
+		"delete": {
+			"roles": ["admin", "user"],
+			"owner": true
+		}
+	},
+  "properties": {}
+}

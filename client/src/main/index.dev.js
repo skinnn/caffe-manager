@@ -22,7 +22,7 @@ require('electron').app.on('ready', () => {
 			console.log(`Added Extension: ${extension.name}`)
 		})
     .catch(err => {
-      console.log('Unable to install `vue-devtools`: \n', err)
+      console.log(`Unable to install ${extension.name}: \n`, err)
 		})		
 })
 

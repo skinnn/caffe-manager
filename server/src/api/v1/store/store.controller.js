@@ -38,12 +38,6 @@ class StoreController extends Controller {
 
 	static async getAllStores(req, res, next) {
 		try {
-			// TODO: Get access schema and then check
-			if (!req.user.roles.includes('admin') && !req.user.roles.includes('root')) {
-				let err = new Error('Forbidden')
-				err.name = 'ForbiddenError'
-				throw err
-			}
 			let fields = {}
 			for (const fieldName in req.queryParsed.fields) {
 				fields[fieldName] = req.queryParsed.fields[fieldName] ? 1 : 0
@@ -58,10 +52,7 @@ class StoreController extends Controller {
 				return res.status(200).json({
 					stores: stores
 				})
-
-			}	else {
-				let err = new Error('Forbidden'); err.name = 'ForbiddenError'; throw err
-			}	
+			}
 		} catch (err) {
 			return next(err)
 		}

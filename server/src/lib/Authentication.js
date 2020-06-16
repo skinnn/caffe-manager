@@ -67,7 +67,7 @@ class Authentication extends Controller {
 					if (authorized) return next()
 					else {
 						let err = new Error('Invalid permission')
-						err.name = 'UnauthorizedError'
+						err.name = 'ForbiddenError'
 						throw err
 					}
 				}

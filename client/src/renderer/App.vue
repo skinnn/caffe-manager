@@ -21,13 +21,13 @@
 
 		created() {
 			// process.env.NODE_ENV === 'production' ? this.init() : null
-			this.init()
+			// this.init()
 		},
 
 		methods: {
 			init() {
 				this.$store.dispatch('logoutUser')
-				// this.$router.push('login')
+				this.$router.push('login')
 			}
 		}
 	}

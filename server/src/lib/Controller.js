@@ -117,43 +117,48 @@ class Controller {
 	static validateOwnership(req, records) {
 		var authorized = false
 		if (!Array.isArray(records)) throw new Error('Not an array')
-		if (!records.length) return true
+		if (!records.length) return authorized = true
 		// if (req.user.roles.includes('root')) return authorized = true
 		const schema = Controller.api.schemas[req.resource]
 
 		// If owner in access schema is true, check record ownership
 		if (schema.access[req.operation].owner === true) {
-			// Create
-			if (req.operation === 'create') {
-				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
-				if (req.user.id === userId) authorized = true
-
 			// Update
-			} if (req.operation === 'update') {
+			if (req.operation === 'update') {
 				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
-				if (req.user.id === userId) authorized = true
+				if (req.user.id === userId) return authorized = true
 			
 			// Delete
-			} if (req.operation === 'delete') {
+			} else if (req.operation === 'delete') {
 				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
-				if (req.user.id === userId) authorized = true
+				if (req.user.id === userId) return authorized = true
 
 			// Read
-			} if (req.operation === 'read') {
+			} else if (req.operation === 'read') {
 				for (let i = 0; i < records.length; i++) {
 					const userId = req.operation === 'user' ? records[i].id : Controller.getUserId(records[i].user_id)
-					if (req.user.id === userId) authorized = true
+					if (req.user.id === userId) return authorized = true
 				}
 			}
 
 		// If owner in access schema is false, authorize the req
 		} else if (schema.access[req.operation].owner === false) {
-			authorized = true
+			return authorized = true
+
+		// Owner field not set in access schema
 		} else {
+			console.log(`Access owner field not set for operation: ${req.operation}, access schema: `, schema.access)
 			authorized = false
-			console.log(`Access owner field not set for operation: ${req.operation}, access: `, access)
 		}
-		return authorized
+
+		if (authorized) return true
+		else {
+			authorized = false
+			let err = new Error('Invalid permission')
+			err.name = 'ForbiddenError'
+			console.log(`${req.user.username} is not an owner of: `, )
+			throw err
+		}
 	}
 
 	static getUserId(userIdField) {
