@@ -11,12 +11,12 @@ const OrderSchema = new Schema({
 	table_id: {
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'Table'
+		ref: 'table'
 	},
 	user_id: {
 		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'User'
+		ref: 'user',
+		required: true
 	},
 	// articles: [ArticleSchema],
 	created: { type: Date, default: Date.now },
@@ -24,7 +24,7 @@ const OrderSchema = new Schema({
 
 })
 
-let Order = module.exports = mongoose.model('Order', OrderSchema)
+let Order = module.exports = mongoose.model('order', OrderSchema)
 
 // Get Orders by Table IDs
 module.exports.getOrdersByTableIds = (location, callback) => {

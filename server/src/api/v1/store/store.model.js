@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const StoreSchema = new Schema({
 	name: {
 		type: String,
-		default: null
+		required: true
 	},
 	address: {
 		type: String,
@@ -18,18 +18,22 @@ const StoreSchema = new Schema({
 		type: String,
 		default: null
 	},
-	logo_url: {
-		type: String,
+	files: {
+		type: Array,
+		default: []
+	},
+	user_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'user',
+		required: true
+	},
+	updated_by: {
+		type: Schema.Types.ObjectId,
+		ref: 'user',
 		default: null
 	},
-	currency: {
-		type: String,
-		default: null
-	},
-	create: { type: Date, default: Date.now },
+	created: { type: Date, default: Date.now },
 	updated: { type: String, default: null }
 })
 
-module.exports = StoreSchema
-
-const Store = module.exports = mongoose.model('Store', StoreSchema)
+const Store = module.exports = mongoose.model('store', StoreSchema)

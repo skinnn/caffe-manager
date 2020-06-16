@@ -29,33 +29,33 @@
 				</router-link>
 			</li>
 
-			<!-- Settings -->
+			<!-- Store -->
 			<li class="nav-item">
-				<router-link to="/admin/settings" class="nav-link collapsed">
-					<font-awesome-icon :icon="['fas', 'cog']" class="icon" />
-          <span class="nav-item-name">Settings</span>
+				<router-link to="/admin/store" class="nav-link collapsed">
+					<font-awesome-icon :icon="['fas', 'store']" class="icon" />
+          <span class="nav-item-name">Store</span>
 				</router-link>
 			</li>
 
 			<!-- Warehouse -->
 			<li class="nav-item">
-        <a @click="handleDropdownToggle('applicants')" 
-					:class="[!dropdowns.applicants ? 'not-active-dropdown-link' : 'active-dropdown-link', 'nav-link', 'collapsed']"
+        <a @click="handleDropdownToggle('warehouse')" 
+					:class="[!dropdowns.warehouse ? 'not-active-dropdown-link' : 'active-dropdown-link', 'nav-link', 'collapsed']"
 					href="#" 
 					data-toggle="collapse" 
-					data-target="#applicantsDropdown" 
+					data-target="#warehouseDropdown" 
 					aria-expanded="true" 
-					aria-controls="applicantsDropdown"
+					aria-controls="warehouseDropdown"
 				>
           <font-awesome-icon :icon="['fas', 'warehouse']" class="icon" /> 
 					<span class="nav-item-name">Warehouse</span>
 					<div 
-						:class="[!dropdowns.applicants ? 'active-dropdown' : 'not-active-dropdown', 'dropdown-arrow-icon']"
+						:class="[!dropdowns.warehouse ? 'active-dropdown' : 'not-active-dropdown', 'dropdown-arrow-icon']"
 					>
 						<font-awesome-icon :icon="['fas', 'angle-right']" />
 					</div>
         </a>
-        <div id="applicantsDropdown" class="collapse" aria-labelledby="applicantsDropdown" data-parent="#applicantsDropdown">
+        <div id="warehouseDropdown" class="collapse" aria-labelledby="warehouseDropdown" data-parent="#warehouseDropdown">
           <div class="py-2 collapse-inner">
             <!-- <h6 class="collapse-header">Storage manager</h6> -->
             <router-link to="/admin/storage/list" class="collapse-item">
@@ -107,23 +107,23 @@
 
 			<!-- Taxes -->
 			<li class="nav-item">
-        <a @click="handleDropdownToggle('events')" 
-					:class="[!dropdowns.events ? 'not-active-dropdown-link' : 'active-dropdown-link', 'nav-link', 'collapsed']"
+        <a @click="handleDropdownToggle('taxes')" 
+					:class="[!dropdowns.taxes ? 'not-active-dropdown-link' : 'active-dropdown-link', 'nav-link', 'collapsed']"
 					href="#" 
 					data-toggle="collapse" 
-					data-target="#eventsDropdown" 
+					data-target="#taxesDropdown" 
 					aria-expanded="true" 
-					aria-controls="eventsDropdown"
+					aria-controls="taxesDropdown"
 				>
           <font-awesome-icon :icon="['fas', 'chart-area']" class="icon" />
 					<span class="nav-item-name">Taxes</span>
 					<div 
-						:class="[!dropdowns.events ? 'active-dropdown' : 'not-active-dropdown', 'dropdown-arrow-icon']"
+						:class="[!dropdowns.taxes ? 'active-dropdown' : 'not-active-dropdown', 'dropdown-arrow-icon']"
 					>
 						<font-awesome-icon  :icon="['fas', 'angle-right']" />
 					</div>
         </a>
-        <div id="eventsDropdown" class="collapse" aria-labelledby="eventsDropdown" data-parent="#eventsDropdown">
+        <div id="taxesDropdown" class="collapse" aria-labelledby="taxesDropdown" data-parent="#taxesDropdown">
           <div class="py-2 collapse-inner">
             <!-- <h6 class="collapse-header">Tax manager</h6> -->
 						<router-link to="/admin/taxes/graph" class="collapse-item">
@@ -178,9 +178,9 @@
 <script>
 // Font Awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faChartBar, faChartArea, faCog, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
+import { faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faChartBar, faChartArea, faCog, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt)
+library.add(faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt)
 
 export default {
 	name: 'AdminSidebar',
@@ -188,10 +188,9 @@ export default {
 	data() {
 		return {
 			dropdowns: {
-				applicants: false,
+				warehouse: false,
 				users: false,
-				events: false,
-				travel: false
+				taxes: false
 			}
 		}
 	},
@@ -204,14 +203,12 @@ export default {
 
 	methods: {
 		handleDropdownToggle(which) {
-			if (which === 'applicants') {
-				this.dropdowns.applicants = !this.dropdowns.applicants
+			if (which === 'warehouse') {
+				this.dropdowns.warehouse = !this.dropdowns.warehouse
 			} else if (which === 'users') {
 				this.dropdowns.users = !this.dropdowns.users
-			} else if (which === 'events') {
-				this.dropdowns.events = !this.dropdowns.events
-			} else if (which === 'travel') {
-				this.dropdowns.travel = !this.dropdowns.travel
+			} else if (which === 'taxes') {
+				this.dropdowns.taxes = !this.dropdowns.taxes
 			}
 		}
 	}
@@ -264,7 +261,7 @@ export default {
 		.nav-item {
 
 			.collapsing,
-			.collapse.show {
+			.collapse {
 
 				.collapse-inner {
 
@@ -311,7 +308,7 @@ export default {
 					display: block;
 					margin-left: 10px;
 					padding: 5px 5px 5px 12px;
-					color: rgba($dashboard-sb-link-color, 0.8); //asd
+					color: rgba($dashboard-sb-link-color, 1); //asd
 
 					&.router-link-active {
 						color: rgba($dashboard-sb-link-color, 1); //asd
@@ -327,11 +324,10 @@ export default {
 				color: rgba($dashboard-sb-link-color, 1);
 
 				&:hover {
-					color: rgba(255, 255, 255, 1);
+					color: rgba(255, 255, 255, 0.7);
 				}
 
 				.nav-item-name {
-					font-size: 15px;
 				}
 			}
 

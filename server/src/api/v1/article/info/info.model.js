@@ -5,7 +5,7 @@ const ArticleInfoSchema = new Schema({
 	article_id: {
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'Article'
+		ref: 'article'
 	},
 	tax_rate: {
 		type: Number,
@@ -22,11 +22,11 @@ const ArticleInfoSchema = new Schema({
 	updated_by: {
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'User'
+		ref: 'user'
 	},
 	created: { type: Date, default: Date.now },
 	updated: { type: Date, default: null }
 
 })
 
-const ArticleInfo = module.exports = mongoose.model('Article_Info', ArticleInfoSchema)
+const ArticleInfo = module.exports = mongoose.model('article_Info', ArticleInfoSchema)

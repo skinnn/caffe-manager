@@ -7,8 +7,8 @@ const path = require('path')
 const env = require('dotenv').config().parsed
 
 module.exports = {
-	host: 'localhost',
 	protocol: 'http',
+	host: 'localhost',
 	port: env.PORT || 9090,
 	baseApiURL: env.BASE_API_URL || '/api',
 
@@ -30,5 +30,6 @@ module.exports = {
 		imagesDirectory: path.join(__dirname, '../../uploads/images')
 	},
 
-	server: null
+	server: null,
+	schemas: null
 }

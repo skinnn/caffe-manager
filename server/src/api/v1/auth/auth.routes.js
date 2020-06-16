@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const Auth = require('../../../middleware/authentication')
+const Authentication = require('../../../lib/Authentication')
 
 const AuthController = require('./auth.controller')
 
@@ -9,7 +9,7 @@ router.post('/login',
 	AuthController.login)
 
 // Authentication
-router.use(Auth.ensureAuthenticated)
+router.use(Authentication.ensureAuthenticated)
 	
 // Logout
 router.delete('/login',

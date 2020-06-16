@@ -13,7 +13,7 @@ const ArticleSchema = new Schema({
 	storage_id: {
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'Storage'
+		ref: 'storage'
 	},
 	visible: {
 		type: Boolean,
@@ -42,7 +42,7 @@ const ArticleSchema = new Schema({
 	article_categories: [{
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'Article_Category'
+		ref: 'article_category'
 	}],
 	image_url: {
 		type: String,
@@ -54,8 +54,8 @@ const ArticleSchema = new Schema({
 	},
 	user_id: {
 		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'User'
+		ref: 'user',
+		required: true
 	},
 	created: { type: Date, default: Date.now },
 	updated: { type: Date, default: null },

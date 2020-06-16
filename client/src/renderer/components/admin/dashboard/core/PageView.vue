@@ -25,7 +25,7 @@ export default {
 		width: 100%;
     height: calc(100vh - #{$dashboard-pageview-topbar-height});
 		max-height: 100vh;
-		padding: 20px 20px;
+		padding: 20px 20px 0 20px;
 		overflow-y: auto;
 		overflow-x: hidden;
 		background-color: #f4f4f4;

@@ -7,14 +7,13 @@ const FileController = require('../file/file.controller')
 const User = require('./user.model')
 const File = require('../file/file.model')
 // const UserSchema = require('./user.schema')
-const UserJSONSchema = require('./user.jsonschema.json')
+const UserJSONSchema = require('./user.schema.json')
 
 class UserController extends Controller {
 
 	// Create user
 	static async createUser(req, res, next) {
 		try {
-			console.log('BODY: ', req.body)
 			// Validate to Joi schema
 			// const { error, value } = await UserSchema.create(req.body)
 			// if (error) return next(error)
@@ -28,6 +27,9 @@ class UserController extends Controller {
 			// 	})
 			// }
 
+			console.log('BODY: ', req.body)
+
+			// Validate to JSON schema
 			const error = Controller.validateToSchema(UserJSONSchema, req.body)
 			if (error) {
 				return res.status(400).json({
@@ -46,8 +48,6 @@ class UserController extends Controller {
 			// Hash password
 			const hash = await User.hashPassword(req.body.password)
 
-			// const imageURL = req.file !== undefined && req.file !== '' ? req.file.path : ''
-			
 			let newUser = new User(req.body)
 			newUser.password = hash
 			newUser.created_by = req.user.id

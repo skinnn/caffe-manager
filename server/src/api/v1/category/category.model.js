@@ -14,17 +14,17 @@ const ArticleCategorySchema = new Schema({
 	storage_id: {
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'Storage'
+		ref: 'storage'
 	},
 	parent_category: {
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'Article_Category'
+		ref: 'article_category'
 	},
 	child_categories: [{
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'Article_Category'
+		ref: 'article_category'
 	}],
 	description: {
 		type: String,
@@ -34,4 +34,4 @@ const ArticleCategorySchema = new Schema({
 	updated: { type: Date, default: null	}
 })
 
-const ArticleCategory = module.exports = mongoose.model('Article_Category', ArticleCategorySchema)
+const ArticleCategory = module.exports = mongoose.model('article_category', ArticleCategorySchema)

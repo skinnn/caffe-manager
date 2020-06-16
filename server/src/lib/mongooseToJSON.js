@@ -1,5 +1,5 @@
 /**
- * Helper to normalize ID
+ * Helper to normalize record ID
  */
 const normalizeId = (ret) => {
   // if (ret._id && typeof ret._id === 'object' && ret._id.toString) {
@@ -62,10 +62,10 @@ const toJSON = (schema) => {
       //   removePrivatePaths(ret, schema)
       // }
 
-      // // Remove version
-      // if (schema.options.removeVersion !== false) {
-      //   removeVersion(ret)
-      // }
+      // Remove version
+      if (schema.options.removeVersion !== false) {
+        removeVersion(ret)
+      }
 
       // Normalize ID
       if (schema.options.normalizeId !== false) {

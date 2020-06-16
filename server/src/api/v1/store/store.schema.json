@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Store",
+	"type": "object",
+	"description": "Store schema",
+	"additionalProperties": false,
+	"required": ["name"],
+	"access": {
+		"create": {
+			"roles": ["admin"]
+		},
+		"read": {
+			"roles": ["admin"],
+			"owner": true
+		},
+		"update": {
+			"roles": ["admin"],
+			"owner": true
+		},
+		"delete": {
+			"roles": ["admin"],
+			"owner": true
+		}
+	},
+  "properties": {
+    "name": {
+			"$id": "#/properties/name",
+			"title": "Name",
+      "description": "Store name",
+			"type": "string",
+			"minLength": 3
+		},
+    "address": {
+			"$id": "#/properties/address",
+			"title": "Address",
+      "description": "Store address",
+			"type": "string"
+    },
+    "phone_1": {
+			"$id": "#/properties/phone_1",
+			"title": "Phone 1",
+			"description": "Store phone 1",
+			"type": "string"
+		},
+		"phone_2": {
+			"$id": "#/properties/phone_2",
+			"title": "Phone 2",
+			"description": "Store phone 2",
+			"type": "string"
+		},
+		"files": {
+			"$id": "#/properties/files",
+			"title": "Files",
+			"description": "Array of file IDs related to the store",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	}
+}

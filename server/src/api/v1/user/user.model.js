@@ -38,7 +38,7 @@ const UserSchema = new Schema({
 	files: [{
 		type: Schema.Types.ObjectId,
 		required: true,
-		ref: 'File'
+		ref: 'file'
 	}],
 	note: {
 		type: String,
@@ -46,19 +46,19 @@ const UserSchema = new Schema({
 	},
 	created_by: {
 		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'User'
+		ref: 'user',
+		required: true
 	},
 	updated_by: {
 		type: mongoose.Types.ObjectId,
-		ref: 'User',
+		ref: 'user',
 		default: null
 	},
 	created: { type: Date, default: Date.now },
 	updated: { type: Date,	default: null }
 })
 
-const User = module.exports = mongoose.model('User', UserSchema)
+const User = module.exports = mongoose.model('user', UserSchema)
 
 module.exports.hashPassword = async (password) => {
 	return new Promise((resolve, reject) => {

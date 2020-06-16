@@ -7,23 +7,26 @@ const StorageSchema = new Schema({
 		type: String,
 		required: true
 	},
-	// TODO: Only - 'Main' - storage is the storage from which Articles
-	// get listed in the Article Menu and bill is printed
 	types: [{
 		type: String,
 		required: true,
-		enum: ['main', 'secondary']
+		enum: ['main', 'secondary'] // TODO: Move to schema
 	}],
+	// TODO: Only active storages get listed in the Article/Order menu
+	active: {
+		type: Boolean,
+		default: true
+	},
 	user_id: {
 		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'User'
+		ref: 'user',
+		required: true
 	},
 	created: { type: Date, default: Date.now },
 	updated: { type: Date, default: null }
 })
 
-let Storage = module.exports = mongoose.model('Storage', StorageSchema)
+let Storage = module.exports = mongoose.model('storage', StorageSchema)
 
 module.exports.getStorageById = function(id, callback) {
 	Storage.findById(id, callback)

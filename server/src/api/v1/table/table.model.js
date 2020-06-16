@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const TableSchema = new Schema({
-	// TODO: Add user_id field
 	number: {
 		type: Number,
 		required: true,
@@ -10,21 +9,15 @@ const TableSchema = new Schema({
 	},
 	user_id: {
 		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'User'
+		ref: 'user',
+		required: true
 	},
 	active: {
 		type: Boolean,
 		default: false
 	},
-	date: {
-		type: Date,
-		default: Date.now
-	},
-	updated: {
-		type: String,
-		default: ''
-	}
+	date: { type: Date, default: Date.now },
+	updated: { type: Date, default: null }
 })
 
-let Table = module.exports = mongoose.model('Table', TableSchema)
+const Table = module.exports = mongoose.model('table', TableSchema)

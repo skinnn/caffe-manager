@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const Auth = require('../../middleware/authentication')
+const Authentication = require('../../lib/Authentication')
 
 // Controllers
 const Controller = require('../../lib/Controller')
@@ -14,10 +14,7 @@ router.get('/user/login-list',
 router.use('/auth', require('./auth/auth.routes'))
 
 // Authentication middleware
-router.use(Auth.ensureAuthenticated)
-
-// Main API middleware
-router.use(Controller.middleware)
+router.use(Authentication.ensureAuthenticated)
 
 // Endpoints which require authenticated user
 router.use('/user', require('./user/user.routes'))

@@ -1,9 +1,14 @@
 const mongoose = require('mongoose')
 const mongooseToJSON = require('./mongooseToJSON')
+const fs = require('fs')
+const path = require('path')
+const Ajv = require('ajv')
+const { toBoolean, isEmptyObject, filesFromDir } = require('../lib/helpers')
+
 // Transform _id to id for every mongoose schema
 mongoose.plugin(mongooseToJSON)
-const Ajv = require('ajv')
-const { toBoolean, isEmptyObject } = require('../lib/helpers')
+// Dont pluralize collection names
+mongoose.pluralize(null)
 
 // Models
 const User = require('../api/v1/user/user.model')
@@ -26,6 +31,7 @@ class Controller {
 		Controller.api = masterConfig
 		Controller.app = app
 		Controller.ajv = new Ajv({ allErrors: true, $data: true })
+		Controller.api.schemas = Controller.getEndpointSchemas()
 		try {
 			await Controller.bootActions()
 
@@ -67,7 +73,6 @@ class Controller {
 		try {
 			// Create root admin if it does not exist
 			await Controller.createRootAdmin()
-		
 		} catch (err) {
 			throw err
 		}
@@ -109,6 +114,59 @@ class Controller {
 		})
 	}
 
+	static validateOwnership(req, records) {
+		var authorized = false
+		if (!Array.isArray(records)) throw new Error('Not an array')
+		if (!records.length) return true
+		// if (req.user.roles.includes('root')) return authorized = true
+		const schema = Controller.api.schemas[req.resource]
+
+		// If owner in access schema is true, check record ownership
+		if (schema.access[req.operation].owner === true) {
+			// Create
+			if (req.operation === 'create') {
+				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
+				if (req.user.id === userId) authorized = true
+
+			// Update
+			} if (req.operation === 'update') {
+				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
+				if (req.user.id === userId) authorized = true
+			
+			// Delete
+			} if (req.operation === 'delete') {
+				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
+				if (req.user.id === userId) authorized = true
+
+			// Read
+			} if (req.operation === 'read') {
+				for (let i = 0; i < records.length; i++) {
+					const userId = req.operation === 'user' ? records[i].id : Controller.getUserId(records[i].user_id)
+					if (req.user.id === userId) authorized = true
+				}
+			}
+
+		// If owner in access schema is false, authorize the req
+		} else if (schema.access[req.operation].owner === false) {
+			authorized = true
+		} else {
+			authorized = false
+			console.log(`Access owner field not set for operation: ${req.operation}, access: `, access)
+		}
+		return authorized
+	}
+
+	static getUserId(userIdField) {
+		let userId
+
+		if (userIdField && userIdField.id) {
+			userId = userIdField.id
+		} else {
+			userId = userIdField
+		}
+		return userId
+	}
+
 	static validateToSchema(modelSchema, record) {
 		const valid = Controller.ajv.validate(modelSchema, record)
 		const errorMessage = Controller.formatSchemaErrors(Controller.ajv.errors)
@@ -138,14 +196,19 @@ class Controller {
 
 	/**
 	 * Application-level middleware.
-	 * Called before each endpoint which requires user authentication.
+	 * Triggered on each incoming request to the application.
 	 * @param 	{Object} 		req 		The request object
 	 * @param 	{Object} 		res 		The response object
 	 * @param 	{function} 	next 		The callback to the next program handler 
 	 */
 	static async middleware(req, res, next) {
 		try {
+			res.setHeader('X-Powered-By', 'Caffe Manager')
+
 			await Controller.handleQueryStringsFromRequest(req)
+			req.urlParsed = new URL(req.url, [Controller.api.protocol, '://', req.headers.host].join(''))
+			// Get resource name from URL - /api/<resource_name>
+			req.resource = req.urlParsed.pathname.split('/')[1].toLowerCase()			
 			return next()
 		} catch (err) {
 			return next(err)
@@ -164,13 +227,13 @@ class Controller {
 			req.queryParsed = {}
 			if (isEmptyObject(req.query)) resolve(true)
 
-			var limit = 0, fields = {}, sort = {}, match = {}, include = {}
+			var limit = 0, fields = {}, sort = {}, match = {}, include = {}, token = null
 			if (req.query.limit) limit = parseInt(req.query.limit)
 			if (req.query.fields) fields = req.query.fields
 			if (req.query.sort) sort = req.query.sort
-				// TODO: Add support for query strings - [include]
 			if (req.query.match) match = req.query.match
-			// if (req.query.include) include = req.query.include
+			if (req.query.include) include = req.query.include
+			if (req.query.token) token = req.query.token
 
 			// Sort
 			for (let field in sort) {
@@ -200,13 +263,51 @@ class Controller {
 				}
 			}
 
+			// Include
+			if (include) {
+				if (include === 'user') include = 'user_id'
+				if (include === 'file') include = 'files'
+			}
+
 			req.queryParsed.limit = limit
 			req.queryParsed.fields = fields
 			req.queryParsed.sort = sort
 			req.queryParsed.match = match
 			req.queryParsed.include = include
+			req.queryParsed.token = token
 			resolve(true)
 		})
+	}
+	
+	static getEndpointSchemas() {
+		try {
+			const apiDir = path.join(__dirname, '../api')
+			const jsonSchemas = filesFromDir(apiDir, '.schema.json')
+			const parsedSchemas = {}
+			for (let i = 0; i < jsonSchemas.length; i++) {
+				const schemaParsed = JSON.parse(fs.readFileSync(jsonSchemas[i].path, 'utf8'));
+				// Controller.api.schemas[jsonSchemas[i].name] = schemaParsed
+				const name = jsonSchemas[i].name.split('.')[0]
+				parsedSchemas[name] = schemaParsed
+			}
+			return parsedSchemas
+		} catch (err) {
+			throw err
+		}
+	}
+	
+	static getCRUDFromMethod(method) {
+    switch (method.toUpperCase()) {
+      case 'GET':
+        return 'read'
+      case 'POST':
+        return 'create'
+      case 'PATCH':
+      case 'PUT':
+        return 'update'
+      case 'DELETE':
+        return 'delete'
+    }
 	}
 
 	static errorHandler(err, req, res, next) {

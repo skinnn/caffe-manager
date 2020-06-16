@@ -12,8 +12,7 @@ const FileSchema = new Schema({
 	// Tells for which purpose the file is used, e.g for profile picture [profile_picture]
 	identifier: {
 		type: String,
-		required: true,
-		enum: ['profile_image'],
+		required: true
 	},
 	ext: {
 		type: String,
@@ -29,13 +28,14 @@ const FileSchema = new Schema({
 	},
 	user_id: {
 		type: Schema.Types.ObjectId,
-		ref: 'User'
+		ref: 'user',
+		required: true
 	},
 	created: { type: Date, default: Date.now },
 	updated: { type: String, default: null },
 })
 
-const File = (module.exports = mongoose.model('File', FileSchema))
+const File = (module.exports = mongoose.model('file', FileSchema))
 
 module.exports.createFile = (file) => {
 	return new Promise((resolve, reject) => {

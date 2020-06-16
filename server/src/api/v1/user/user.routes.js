@@ -9,7 +9,6 @@ const FileController = require('../file/file.controller')
 /* Base: /user
 ===================================================== */
 
-
 // Upload user attachment
 router.post('/:id/attachment',
 	uploadImage.single('attachment'),

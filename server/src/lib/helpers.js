@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const path = require('path')
 const config = require('../config/config.js')
 
 const secret = config.authentication.jwtSecret
@@ -71,16 +73,66 @@ const toBoolean = (value) => {
  * @param 	{Object} 	obj	 [Object to be evaluated]
  * @return	{Boolean}			 [Returns boolean true or false]
  */
-const isEmptyObject = obj => {
+const isEmptyObject = (obj) => {
 	if (!obj) throw new Error('Value not specified')
 	if (obj && obj.constructor !== Object || obj === null) throw new TypeError('The provided value is not of type Object')
 	return obj && obj.constructor === Object && Object.keys(obj).length === 0
+}
+
+/**
+ * Checks if 2 arrays have at least 1 common element
+ * @param 	{Array} 		arr1 		[First array, should be a bigger one for better performance]
+ * @param 	{Array} 		arr2 		[Second array]
+ * @return 	{Boolean}						[Returns a boolean true or false]
+ */
+const haveCommonElements = (arr1, arr2) => {
+	if (!arr1 || !arr2) throw new Error('Both arrays must be specified')
+	const arr1Set = new Set(arr1)
+	return arr2.some(el => arr1Set.has(el))
+}
+
+/**
+ * 
+ * @param {String} 	startPath 	[Directory path from where to search]
+ * @param {*} 			filter 			[Filter - file name or extension to match]
+ * @return 											[Returns array of objects with file names and paths]
+ */
+const filesFromDir = (startPath, filter) => {
+	const allFiles = []
+	
+	const fromDir = (startPath, filter) => {
+		if (!fs.existsSync(startPath)) {
+			return console.log('Directory not found: ', startPath)
+		}
+
+		var files = fs.readdirSync(startPath)
+		for (var i=0; i < files.length; i++) {
+			var filename = path.join(startPath, files[i])
+			var stat = fs.lstatSync(filename)
+
+			// Recurse
+			if (stat.isDirectory()) fromDir(filename, filter)
+			else if (filename.indexOf(filter) >= 0) {
+				// console.log('-- found: ', filename)
+				
+				allFiles.push({
+					name: filename.split('/').pop(),
+					path: filename
+				})
+			}
+		}
+	}
+
+	fromDir(startPath, filter)
+	return allFiles
 }
 
 module.exports = {
 	checkToken,
 	jwtSignUser,
 	toBoolean,
-	isEmptyObject
+	isEmptyObject,
+	haveCommonElements,
+	filesFromDir
 	// getCurrentTime
 }

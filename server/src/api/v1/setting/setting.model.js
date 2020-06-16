@@ -1,41 +1,26 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const StoreSettingsSchema = new Schema({
+const SettingStoreSchema = new Schema({
 	// TODO: Add user_id field
 	type: {
 		type: String,
 		default: null
 	},
-	name: {
+	setting_id: {
 		type: String,
 		default: null
 	},
-	address: {
-		type: String,
-		default: null
+	user_id: {
+		type: Schema.Types.ObjectId,
+		ref: 'user',
+		required: true
 	},
-	phone_1: {
-		type: String,
-		default: null
-	},
-	phone_2: {
-		type: String,
-		default: null
-	},
-	logo_url: {
-		type: String,
-		default: null
-	},
-	currency: {
-		type: String,
-		default: null
-	},
-	create: { type: Date, default: Date.now },
+	created: { type: Date, default: Date.now },
 	updated: { type: String, default: null }
 })
 
-module.exports = StoreSettingsSchema
+module.exports = SettingStoreSchema = mongoose.model('setting_store', SettingStoreSchema)
 
 // const Setting = module.exports = mongoose.model('Setting', SettingSchema)
 
