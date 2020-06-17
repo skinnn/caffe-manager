@@ -4,7 +4,6 @@ module.exports = {
 
 	// Create user policy
 	create(body) {
-		console.log('BODY: ', body)
 		const schema = Joi.object({
 			roles: Joi.array().items(Joi.string()).min(1).required(),
 			username: Joi.string().min(3).max(15).alphanum().required(),

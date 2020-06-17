@@ -11,12 +11,6 @@ const normalizeId = (ret) => {
   if (typeof ret._id !== 'undefined') {
     delete ret._id
 	}
-	
-	// if (ret._id) {
-	// 	console.log('DA')
-	// 	ret.id = ret._id.toString()
-	// 	delete ret._id
-	// }
 }
 
 /**
@@ -63,7 +57,6 @@ const toJSON = (schema) => {
       // }
 
 			// Remove version
-			console.log(schema.options.removeVersion)
       if (schema.options.removeVersion !== false) {
         removeVersion(ret)
       }

@@ -188,16 +188,6 @@ class Controller {
 	}
 
 	static getOwnerId(userIdField) {
-		// console.log('TYPEOF: ', typeof userIdField.id)
-		// console.log('DDDD: ', userIdField.id.toString())
-
-		// if (typeof userIdField === 'object') {
-		// 	return userIdField.toString()
-		// } else if (typeof userIdField === 'string') {
-		// 	return userIdField
-		// }
-
-
 		let ownerId
 		// If user_id field is populated with the user record instead of just id (object)
 		if (userIdField && userIdField.id) {
