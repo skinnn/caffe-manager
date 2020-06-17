@@ -53,18 +53,19 @@ router.beforeEach((to, from, next) => {
 	}
 })
 
-// If user is navigating to login page and is already logged in, stop navigation
-router.beforeEach((to, from, next) => {
-	if (to.name === 'login' || to.path === '/login') {
-		const isLoggedIn = store.getters.isLoggedIn
-		if (isLoggedIn) {
-			return next(false)
-		} else { 
-			return next(true)
-		}
-	} else {
-		return next(true)
-	}
-})
+// // TODO: Handle
+// // If user is navigating to login page and is already logged in, stop navigation
+// router.beforeEach((to, from, next) => {
+// 	if (to.name === 'login' || to.path === '/login') {
+// 		const isLoggedIn = store.getters.isLoggedIn
+// 		if (isLoggedIn) {
+// 			return next(false)
+// 		} else { 
+// 			return next(true)
+// 		}
+// 	} else {
+// 		return next(true)
+// 	}
+// })
 
 export default router

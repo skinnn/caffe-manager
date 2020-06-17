@@ -1,15 +1,24 @@
 const helpers = require('../../../lib/helpers')
 
+const Controller = require('../../../lib/Controller')
 const User = require('../user/user.model')
 const Login = require('./auth.model')
+const AuthJSONSchema = require('./auth.schema.json')
 
-module.exports = {
+class AuthController extends Controller {
 
-	async login(req, res, next) {
+	static async login(req, res, next) {
 		res.setHeader('Content-Type', 'application/json')
 		try {
-			// console.log('SESSION: ', req.session)
-			const user = await User.getUserByUsername(req.body.username)
+			// Validate to JSON schema
+			const error = Controller.validateToSchema(AuthJSONSchema, req.body)
+			if (error) {
+				return res.status(400).json({
+					message: error
+				})
+			}
+
+			const user = await User.findOne({ username: req.body.username })
 
 			if (!user) {
 				return res.status(401).json({
@@ -18,7 +27,6 @@ module.exports = {
 			}
 
 			const candidatePassword = req.body.password
-			// const isMatch = await Admin.compareAdminPassword(candidatePassword, user.password)
 			const isMatch = await User.compareUserPassword(candidatePassword, user.password)
 
 			if (!isMatch) {
@@ -35,38 +43,43 @@ module.exports = {
 				token: token
 			})
 
-			login.save((err) => {
-				if (err) throw err
+			await login.save()
 
-				return res.json({
-					user,
-					token
-				})
-			})
-		} catch (err) {
-			return next(err)
-		}
-	},
-
-	async logout(req, res, next) {
-		try {
-			// TODO: Extract token in Authentication class, use that class method here
-			const authHeader = req.headers['authorization'] || req.headers['x-access-token'] || ''
-			const token = authHeader.split(' ')[1] || ''
-			const isDeleted = await Login.deleteMany({ token: token })
-
-			if (!isDeleted) {
-				return res.status(500).json({
-					message: 'An error occurred while trying to delete the login record.'
-				})
+			req.authorized = true
+			res.locals = {
+				status: 200,
+				json: {
+					user: user,
+					token: token
+				}
 			}
-
-			return res.status(200).json({
-				message: 'Logged out successfully.'
-			})
+			return next()
 		} catch (err) {
 			return next(err)
 		}
 	}
 
-} /* Module exports */
+	static async logout(req, res, next) {
+		try {
+			// TODO: Extract token in Authentication class, use that class method here
+			const authHeader = req.headers['authorization'] || req.headers['x-access-token'] || ''
+			const token = authHeader.split(' ')[1] || ''
+			const query = { token: token }
+
+			const loginRecord = await Login.findOne(query)
+
+			Controller.validateOwnership(req, loginRecord)
+
+			res.locals.status = 200
+			res.locals.json = {
+				message: 'Logged out successfully'
+			}
+			return next()
+		} catch (err) {
+			return next(err)
+		}
+	}
+
+}
+
+module.exports = AuthController

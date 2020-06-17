@@ -20,7 +20,6 @@ const checkToken = (token) => {
 
 // Sign user
 const jwtSignUser = (user) => {
-	console.log('signing: ', user)
 	const payload = {
 		id: user.id,
 		roles: user.roles,
@@ -93,9 +92,9 @@ const haveCommonElements = (arr1, arr2) => {
 
 /**
  * 
- * @param {String} 	startPath 	[Directory path from where to search]
- * @param {*} 			filter 			[Filter - file name or extension to match]
- * @return 											[Returns array of objects with file names and paths]
+ * @param 	{String} 	startPath 	[Directory path from where to search]
+ * @param 	{*} 			filter 			[Filter - file name or extension to match]
+ * @return 	{Array}								[Returns an array of objects with file names and paths]
  */
 const filesFromDir = (startPath, filter) => {
 	const allFiles = []

@@ -29,41 +29,30 @@ class Authentication extends Controller {
 				// Proceed since anonymous can access this resource & operation
 				return next()
 			} else {
+				let unauthorizedError = new Error('Access denied'); unauthorizedError.name = 'UnauthorizedError';
+
 				let token = req.headers['authorization'] || req.headers['x-access-token'] || '' // Express headers are auto converted to lowercase
 				if (token.startsWith('Bearer')) {
 					// Get only token from the string
 					token = token.split(' ')[1]
 				}
-			
-				if (!token) {
-					let err = new Error('Access denied') // Token not present
-					err.name = 'UnauthorizedError'
-					throw err
-				}
+				if (!token) throw unauthorizedError
 				
 				// TODO: Save token and decoded user in cache, check cache first
 				const { validToken, decoded } = await checkToken(token)
-				if (!validToken) {
-					let err = new Error('Access denied') // Token malformed/not valid
-					err.name = 'UnauthorizedError'
-					throw err
-				}
+				if (!validToken || !decoded) throw unauthorizedError
 			
 				// TODO: Save login in cache, check cache first
 				// Check that there is a login record with this token
 				const loginRecord = await Login.findOne({ token: validToken })
-				if (!loginRecord) {
-					let err = new Error('Access denied') // No login record
-					err.name = 'UnauthorizedError'
-					throw err
-				}
+				if (!loginRecord) throw unauthorizedError
 
 				req.user = decoded || null
 
 				// If it's root user continue, otherwise check user permissions
 				if (req.user.roles.includes('root')) return next()
 				else {
-					const authorized = await Authentication.checkPermissions(req, schema)
+					const authorized = Authentication.checkPermissions(req, schema)
 					if (authorized) return next()
 					else {
 						let err = new Error('Invalid permission')
@@ -78,29 +67,17 @@ class Authentication extends Controller {
 	}
 
 	// Check privileges/permissions of user sending the request
-	static async checkPermissions(req, schema) {
+	static checkPermissions(req, schema) {
 		var authorized = false
+		if (!req.user) return authorized = false
 		if (Array.isArray(req.user.roles) && req.user.roles.length <= 0) req.user.roles = ['anon']
 
 		console.log(`Requested operation ${req.operation.toUpperCase()} on protected endpoint: ${req.resource} `)
+		
 		const hasRole = haveCommonElements(schema.access[req.operation].roles, req.user.roles)
-
-		// // If its not root, authorize the request only if user is the
-		// // record owner && owner flag is true
-		// if (hasRole) {
-		// 	if (schema.access[operation].owner === true) {
-		// 		// const isOwner = req.user.id === record.user_id
-		// 		if (isOwner) authorized = true
-		// 	} if (schema.access[operation].owner === false) {
-		// 		authorized = false
-		// 	} else {
-		// 		authorized = false
-		// 	}
-
-		// } else authorized = false
-		// return authorized
 		if (hasRole) authorized = true
 		else authorized = false
+
 		return authorized
 	}
 }

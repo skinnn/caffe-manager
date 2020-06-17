@@ -62,9 +62,12 @@ class StoreController extends Controller {
 		try {
 			const store = await Store.findById(req.params.id)
 
-			return res.status(200).json({
-				store: store
-			})
+			Controller.validateOwnership(req, store)
+			if (req.authorized) {
+				return res.status(200).json({
+					store: store
+				})
+			}
 		} catch (err) {
 			return next(err)
 		}

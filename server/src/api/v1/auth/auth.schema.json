@@ -4,23 +4,38 @@
 	"type": "object",
 	"description": "Authentication schema",
 	"additionalProperties": false,
-	"required": [],
+	"required": ["username", "password"],
 	"access": {
 		"create": {
-			"roles": ["admin", "user"]
+			"roles": ["admin", "user", "anon"]
 		},
 		"read": {
-			"roles": ["admin", "user"],
-			"owner": true
+			"roles": ["admin"],
+			"owner": false
 		},
 		"update": {
-			"roles": ["admin", "user"],
-			"owner": true
+			"roles": ["admin"],
+			"owner": false
 		},
 		"delete": {
 			"roles": ["admin", "user"],
 			"owner": true
 		}
 	},
-  "properties": {}
+  "properties": {
+		"username": {
+			"$id": "#/properties/username",
+			"title": "Username",
+      "description": "User's username",
+			"type": "string",
+			"minLength": 1
+		},
+		"password": {
+			"$id": "#/properties/password",
+			"title": "Password",
+      "description": "User's password",
+			"type": "string",
+			"minLength": 1
+		}
+	}
 }

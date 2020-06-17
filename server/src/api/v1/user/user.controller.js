@@ -14,21 +14,6 @@ class UserController extends Controller {
 	// Create user
 	static async createUser(req, res, next) {
 		try {
-			// Validate to Joi schema
-			// const { error, value } = await UserSchema.create(req.body)
-			// if (error) return next(error)
-			// Validate to JSON schema
-
-			// const valid = Controller.ajv.validate(UserJSONSchema, req.body)
-			// const errorMessage = Controller.formatSchemaErrors(Controller.ajv.errors)
-			// if (!valid) {
-			// 	return res.status(400).json({
-			// 		message: errorMessage
-			// 	})
-			// }
-
-			console.log('BODY: ', req.body)
-
 			// Validate to JSON schema
 			const error = Controller.validateToSchema(UserJSONSchema, req.body)
 			if (error) {
@@ -52,12 +37,14 @@ class UserController extends Controller {
 			newUser.password = hash
 			newUser.created_by = req.user.id
 
-			const savedUser = await User.createUser(newUser)
+			const createdUser = await User.createUser(newUser)
 
-			return res.status(201).json({
-				success: true,
-				user: savedUser
-			})
+			res.locals = {
+				status: 201,
+				json: { user: createdUser }
+			}
+			
+			return next()
 		} catch (err) {
 			return next(err)
 		}
@@ -68,66 +55,59 @@ class UserController extends Controller {
 		try {
 			let query = { _id: req.params.id }
 
-			// Get image path
-			let img = req.body.imgPath
-			console.log('BODY: ', req.body)
-			// Create full image path so it can be deleted with fs.unlink
-			let fullImgPath = ''
-			if (img !== '') {
-				let dirPath = process.cwd()
-				fullImgPath = dirPath + '/' + img
-			}
-			
-			// res.status(200).json({
-			// 	success: true,
-			// 	message: 'Got it.'
-			// })
-
-			User.deleteOne(query, (err) => {
-				if (err) throw err
-
-				if (fullImgPath && fullImgPath !== '') {
-					fs.unlink(fullImgPath, (err) => {
-						if (err) throw err
-						return res.status(200).json({
-							success: true,
-							message: 'User deleted successfully.'
-						})
-					})
-				}
-			})
-		} catch (err) {
-			return next(err)
-		}
-	}
-	
-	// Get Admins
-	static async getAllAdmins(req, res, next) {
-		try {
-			await User.find({ roles: 'admin' }, (err, admins) => {
-				if (err) throw err
-				return res.status(200).json({
-					admins: admins
+			const userToDelete = await User.findOne(query)
+			if (!userToDelete) {
+				return res.status(404).json({
+					message: 'User not found'
 				})
-			})
+			}
+
+			Controller.validateOwnership(req, userToDelete)
+
+			const deletedUser = await User.deleteOne(query)
+
+			// Remove user files if any (both attachments and user file meta)
+			if (userToDelete.files.length > 0) {
+				userToDelete.files.forEach((file) => {
+					// TODO: Get file meta
+					// TODO: Remove file
+					// fs.unlink(absoluteFilePath)
+					// TODO: Write a test which adds a user and attachment and then deletes it
+				})
+			}
+
+			res.locals = {
+				status: 200,
+				json: {
+					message: 'User deleted successfully',
+					user: deletedUser
+				}
+			}
+
+			return next()
 		} catch (err) {
 			return next(err)
 		}
 	}
 
 	// Get User login List - just usernames and names
-	static async getLoginList(req, res, next) {
-		const role = req.query.role || null
+	static async getUsersByRole(req, res, next) {
 		try {
+			const role = req.query.role || null
+			// Dont allow querying for the root user
+			if (role.includes('root')) role = null
 			let query = {
-				roles: { $all: [role] },
-				root: false // Don't return the root user
+				roles: { $all: [role] }
 			}
 			const users = await User.find(query).select('-_id username name')
 
-			return res.status(200).json({
-				users: users
-			})
+			req.authorized = true
+			res.locals = {
+				status: 200,
+				json: { users: users }
+			}
+			return next()
+		
 		} catch (err) {
 			return next(err)
 		}
@@ -149,9 +129,15 @@ class UserController extends Controller {
 	static async getUserById(req, res, next) {
 		try {
 			const user = await User.getUserById(req.params.id)
-			return res.status(200).json({
-				user: user
-			})
+
+			Controller.validateOwnership(req, user)
+
+			res.locals = {
+				status: 200,
+				json: { user: user }
+			}
+
+			return next()
 		} catch (err) {
 			return next(err)
 		}
@@ -164,6 +150,7 @@ class UserController extends Controller {
 			let query = {_id: req.body.id}
 			let options = { new: true }
 			
+			// TODO: Remove parsing if not needed
 			const jsonData = JSON.parse(JSON.stringify(req.body))
 			var dataToReplace = {}
 
@@ -174,23 +161,18 @@ class UserController extends Controller {
 				}
 			}
 
-			// If image is added add image path
-			if (req.file !== undefined && req.file !== '') {
-				// TODO: This overrides the whole files Array, needs a fix
-				dataToReplace.files = [req.file.path]
+			const user = await User.findOne(query)
+
+			Controller.validateOwnership(req, user)
+
+			const updatedUser = await User.findOneAndUpdate(query, dataToReplace, options)
+
+			res.locals = {
+				status: 200,
+				json: { user: updatedUser }
 			}
-
-			console.log('final: ', dataToReplace)
-
-			User.findOneAndUpdate(query, dataToReplace, options, (err, user) => {
-				if (err) {
-					throw err
-				}
-				console.log('usr', user)
-				return res.status(200).json({
-					user: user
-				})
-			})
+			
+			return next()
 		} catch (err) {
 			return next(err)
 		}
@@ -209,18 +191,19 @@ class UserController extends Controller {
 			const identifier = req.query.identifier
 			const userId = req.params.id
 			// Save uploaded file's metadata in the db
-			const savedFile = await FileController.saveFileMeta(file, identifier, userId)
+			const fileMeta = await FileController.saveFileMeta(file, identifier, userId)
 
 			// Add new file id to user's files array
 			const user = await User.findById(userId)
-			user.files.push(savedFile.id)
+			user.files.push(fileMeta.id)
 			await user.save()
 
 			// const qUser = await User.findById(userId).populate('files')
-			
-			return res.status(201).json({
-				file: savedFile
-			})
+
+			res.locals = {
+				status: 201
+			}
+			return next()			
 		} catch (err) {
 			return next(err)
 		}
@@ -241,16 +224,15 @@ class UserController extends Controller {
 			// const identifier = req.query.identifier || null
 			const match = req.queryParsed.match
 			match.user_id = id
-			console.log('req.queryParsed: ', req.queryParsed)
-			// TODO: Add to get user
-			// const user = await User.findById(id).populate('files')
-			// console.log('USER WITH FILES: ', user)
 			const file = await File.findOne(match)
-			const fileName = file ? file.name : ''
-			// const fullPath = path.join(Controller.api.uploads.imagesDirectory, fileName)
-			const fullPath = path.join(Controller.api.uploads.imagesDirectory, fileName)
 
-			return res.status(200).sendFile(fullPath)
+			Controller.validateOwnership(req, file)
+
+			res.locals = {
+				status: 200,
+				file: file
+			}
+			return next()
 		} catch (err) {
 			return next(err)
 		}
@@ -260,10 +242,17 @@ class UserController extends Controller {
 		const id = req.params.id || ''
 
 		const file = await File.findById(id)
-		console.log('FILE: ', file)
-		const fileName = file ? file.name : ''
-		const fullPath = path.join(Controller.api.uploads.imagesDirectory, fileName)
-		return res.status(200).sendFile(fullPath)
+		if (!file) {
+			return res.sendStatus(404)
+		}
+
+		Controller.validateOwnership(req, file)
+
+		res.locals = {
+			status: 200,
+			file: file
+		}
+		return next()
 	}
 }
 

@@ -1,14 +1,14 @@
 const mongoose = require('mongoose')
 const mongooseToJSON = require('./mongooseToJSON')
-const fs = require('fs')
-const path = require('path')
-const Ajv = require('ajv')
-const { toBoolean, isEmptyObject, filesFromDir } = require('../lib/helpers')
-
 // Transform _id to id for every mongoose schema
 mongoose.plugin(mongooseToJSON)
 // Dont pluralize collection names
 mongoose.pluralize(null)
+
+const fs = require('fs')
+const path = require('path')
+const Ajv = require('ajv')
+const { toBoolean, isEmptyObject, filesFromDir } = require('../lib/helpers')
 
 // Models
 const User = require('../api/v1/user/user.model')
@@ -114,62 +114,98 @@ class Controller {
 		})
 	}
 
+	static responseHandler(req, res, next) {
+		// Access create operation doesn't have owner field
+		if (req.operation === 'create') req.authorized = true
+		if (!req.authorized) return res.sendStatus(401)
+
+		const status = res.locals.status || 200
+
+		// JSON response
+		if (res.locals.json) {
+			return res.status(status).json(res.locals.json)
+
+		// File response
+		} else if (res.locals.file) {
+			const fileName = res.locals.file.name
+			const directory = Controller.api.uploads.imagesDirectory
+			const fullPath = path.join(directory, fileName)
+			return res.status(status).sendFile(fullPath)
+
+		} else {
+			return res.sendStatus(status)
+		}
+	}
+
+	/**
+	 * Validate ownership of the record.
+	 * @param 	{Object} 					req 			[Request object (with attached: user, resource and CRUD operation)]
+	 * @param 	{Array.<Object>} 	records 	[Array of records (objects) to be validated for ownership]
+	 * @return 	{Boolean}										[Returns boolean true or false]
+	 */
 	static validateOwnership(req, records) {
-		var authorized = false
-		if (!Array.isArray(records)) throw new Error('Not an array')
-		if (!records.length) return authorized = true
-		// if (req.user.roles.includes('root')) return authorized = true
+		req.authorized = false
+		
+		// if (!Array.isArray(records)) throw new TypeError(records, ` is not an array`)
+		if (!records) throw new Error('Records are not defined: ', records)
+		if (records && !Array.isArray(records)) records = [records]
+		if (req.user.roles.includes('root')) return req.authorized = true
+
 		const schema = Controller.api.schemas[req.resource]
+		const ownerFlag = schema.access[req.operation].owner === true
+		let forbiddenError = new Error('Invalid permission'); forbiddenError.name = 'ForbiddenError'
 
-		// If owner in access schema is true, check record ownership
-		if (schema.access[req.operation].owner === true) {
-			// Update
-			if (req.operation === 'update') {
-				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
-				if (req.user.id === userId) return authorized = true
-			
-			// Delete
-			} else if (req.operation === 'delete') {
-				const userId = req.operation === 'user' ? records[0].id : Controller.getUserId(records[i].user_id)
-				if (req.user.id === userId) return authorized = true
+		// If operation is not create and owner in access schema is true, check record ownership
+		if (req.operation !== 'create' && ownerFlag) {
 
-			// Read
-			} else if (req.operation === 'read') {
-				for (let i = 0; i < records.length; i++) {
-					const userId = req.operation === 'user' ? records[i].id : Controller.getUserId(records[i].user_id)
-					if (req.user.id === userId) return authorized = true
+			for (let i = 0; i < records.length; i++) {
+				// Check if record owner matches user id
+				const ownerId = req.resource === 'user' ? Controller.getOwnerId(records[i].id) : Controller.getOwnerId(records[i].user_id)
+				console.log('req.user.id: ', req.user.id)
+				console.log('ownerId: ', ownerId)
+				if (req.user.id === ownerId) req.authorized = true
+				else {
+					req.authorized = false
+					break;
 				}
 			}
 
 		// If owner in access schema is false, authorize the req
 		} else if (schema.access[req.operation].owner === false) {
-			return authorized = true
+			req.authorized = true
 
 		// Owner field not set in access schema
 		} else {
-			console.log(`Access owner field not set for operation: ${req.operation}, access schema: `, schema.access)
-			authorized = false
+			console.log(`Access owner field is not set for:\nResource: ${req.resource}\nOperation: ${req.operation}\nAccess schema:\n`, schema.access)
+			req.authorized = false
 		}
 
-		if (authorized) return true
+		if (req.authorized) return req.authorized
 		else {
-			authorized = false
-			let err = new Error('Invalid permission')
-			err.name = 'ForbiddenError'
-			console.log(`${req.user.username} is not an owner of: `, )
-			throw err
+			console.log(`User: ${req.user.username} (${req.user.id}) is not the owner of these record/s:\n`, records)
+			throw forbiddenError
 		}
 	}
 
-	static getUserId(userIdField) {
-		let userId
+	static getOwnerId(userIdField) {
+		// console.log('TYPEOF: ', typeof userIdField.id)
+		// console.log('DDDD: ', userIdField.id.toString())
 
+		// if (typeof userIdField === 'object') {
+		// 	return userIdField.toString()
+		// } else if (typeof userIdField === 'string') {
+		// 	return userIdField
+		// }
+
+
+		let ownerId
+		// If user_id field is populated with the user record instead of just id (object)
 		if (userIdField && userIdField.id) {
-			userId = userIdField.id
-		} else {
-			userId = userIdField
+			ownerId = userIdField.id.toString('hex')
 		}
-		return userId
+		else ownerId = userIdField.toString()
+
+		return ownerId
 	}
 
 	static validateToSchema(modelSchema, record) {
@@ -209,6 +245,14 @@ class Controller {
 	static async middleware(req, res, next) {
 		try {
 			res.setHeader('X-Powered-By', 'Caffe Manager')
+
+			// Default local response data scoped to the request 
+			res.locals = {
+				authorized: false,
+				status: 200,
+				json: null,
+				file: null
+			}
 
 			await Controller.handleQueryStringsFromRequest(req)
 			req.urlParsed = new URL(req.url, [Controller.api.protocol, '://', req.headers.host].join(''))
@@ -347,7 +391,7 @@ class Controller {
 	}
 
 	static logError(err) {
-		console.error('Error: ', err)
+		console.error(`\n---Error logger---\n`, err)
 	}
 }
 

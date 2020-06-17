@@ -146,11 +146,11 @@ function electronLog (data, color) {
 }
 
 function greeting () {
-  const cols = process.stdout.columns
+	const cols = process.stdout.columns
   let text = ''
 
-  if (cols > 104) text = 'electron-vue'
-  else if (cols > 76) text = 'electron-|vue'
+  if (cols > 119) text = 'caffe-manager'
+  else if (cols > 68) text = 'caffe|manager'
   else text = false
 
   if (text) {
@@ -159,7 +159,7 @@ function greeting () {
       font: 'simple3d',
       space: false
     })
-  } else console.log(chalk.yellow.bold('\n  electron-vue'))
+  } else console.log(chalk.yellow.bold('\n  caffe-manager'))
   console.log(chalk.blue('  getting ready...') + '\n')
 }
 

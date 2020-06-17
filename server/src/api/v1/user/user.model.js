@@ -2,8 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
 
-// TODO: Create Inventory model and implement tracking of the current inventory in the cafe/store
-// TODO: When user is used replace user_id with user _id field
 const UserSchema = new Schema({
 	// built-in roles: 'user', 'admin' 'anon'
 	roles: {

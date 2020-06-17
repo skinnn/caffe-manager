@@ -2,21 +2,21 @@
  * Helper to normalize record ID
  */
 const normalizeId = (ret) => {
-  // if (ret._id && typeof ret._id === 'object' && ret._id.toString) {
-  //   if (typeof ret.id === 'undefined') {
-  //     ret.id = ret._id.toString()
-  //   }
-  // }
-  // if (typeof ret._id !== 'undefined') {
-  //   delete ret._id
-	// }
+  if (ret._id && typeof ret._id === 'object' && ret._id.toString) {
+    if (typeof ret.id === 'undefined') {
+			ret.id = ret._id.toString()
+    }
+	}
 	
-	if (ret._id && typeof ret._id === 'object' && ret._id.toString) {
-		ret.id = ret._id.toString()
-  }
   if (typeof ret._id !== 'undefined') {
     delete ret._id
-  }
+	}
+	
+	// if (ret._id) {
+	// 	console.log('DA')
+	// 	ret.id = ret._id.toString()
+	// 	delete ret._id
+	// }
 }
 
 /**
@@ -62,7 +62,8 @@ const toJSON = (schema) => {
       //   removePrivatePaths(ret, schema)
       // }
 
-      // Remove version
+			// Remove version
+			console.log(schema.options.removeVersion)
       if (schema.options.removeVersion !== false) {
         removeVersion(ret)
       }
