@@ -1,0 +1,38 @@
+.btn-submit {
+	padding: 5px 15px;
+	color: #fff;
+	background-color: $success;
+	border: 1px solid transparent;
+
+	&:hover {
+		color: $success;
+		background-color: #fff;
+		border-color: $success;
+	}
+}
+
+.btn-edit {
+	padding: 5px 15px;
+	color: #fff;
+	background-color: $info;
+	border: 1px solid transparent;
+
+	&:hover {
+		color: $info;
+		background-color: #fff;
+		border-color: $info;
+	}
+}
+
+.btn-delete {
+	padding: 5px 15px;
+	color: #fff;
+	background-color: $error;
+	border: 1px solid transparent;
+
+	&:hover {
+		color: $error;
+		background-color: #fff;
+		border-color: $error;
+	}
+}

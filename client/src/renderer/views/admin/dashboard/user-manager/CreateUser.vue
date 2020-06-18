@@ -3,7 +3,7 @@
 
 		<form
 			@submit="onSubmit"
-			class="register-user-form"
+			class="create-user-form"
 		>
 			<div class="form-group">
 				<label for="username">Username <span class="required-field">*</span></label>
@@ -25,7 +25,7 @@
 				>
 				<div
 					class="passwordStrengthMessage"
-					v-if="showMessage"
+					v-if="showPasswordStrength"
 					v-bind:class="{
 						strong : passwordStrength === 'strong',
 						weak : passwordStrength === 'weak',
@@ -57,7 +57,7 @@
 
 				<div
 					class="confirmPasswordMessage"
-					v-if="showMessage"
+					v-if="showPasswordStrength"
 					v-bind:class="{
 						passwordMatched : confirmPasswordMatched === true,
 						passwordWrong : confirmPasswordMatched === false
@@ -133,156 +133,8 @@
 			<div class="success-msg" v-if="success" v-html="success" />
 			<div class="info-msg" v-if="info" v-html="info" />
 
-			<button type="submit" class="btn btn-primary">Submit</button>
+			<button type="submit" class="btn create-user-btn">Submit</button>
 		</form>
-
-
-
-		<!-- <v-layout column class="right-side">
-			<v-flex class="admin-container">
-				<v-form
-					@submit="onSubmit"
-					class="register-user-form"
-				>
-					<h3 title="Required field">
-						Username <span class="required-field">*</span>
-					</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							title="Required field"
-							maxlength="15"
-							type="text"
-							v-model="form.fields.username"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3 title="Required field">
-						Password <span class="required-field">*</span>
-						<div
-							class="passwordStrengthMessage"
-							v-if="showMessage"
-							v-bind:class="{
-								strong : passwordStrength === 'strong',
-								weak : passwordStrength === 'weak',
-								medium: passwordStrength === 'medium'
-							}"
-						>
-							<p class="pwMessageText">{{passwordStrengthText}}</p>
-						</div>
-					</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							@input="analyzePasswordStrength(form.fields.password), isPasswordConfirmed(form.fields.password2)"
-							maxlength="32"
-							type="password"
-							v-model="form.fields.password"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3 title="Required field">
-						Confirm password <span class="required-field">*</span>
-						<div
-							class="confirmPasswordMessage"
-							v-if="showMessage"
-							v-bind:class="{
-								passwordMatched : confirmPasswordMatched === true,
-								passwordWrong : confirmPasswordMatched === false
-							}"
-						>
-							<p class="pwMessageText">{{isPasswordConfirmedText}}</p>
-						</div>
-					</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							@input="isPasswordConfirmed(form.fields.password2)"
-							maxlength="32"
-							type="password"
-							v-model="form.fields.password2"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3 title="Required field">
-						Full name <span class="required-field">*</span>
-					</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							maxlength="32"
-							type="text"
-							v-model="form.fields.name"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3 title="Required field">
-						Email
-					</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							title="Required field"
-							maxlength="30"
-							type="text"
-							v-model="form.fields.email"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3>Phone</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							maxlength="20"
-							type="text"
-							v-model="form.fields.phone"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3>Address</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							maxlength="35"
-							type="text"
-							v-model="form.fields.address"
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3>Note:</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-textarea
-							maxlength="250"
-							type="text"
-							v-model="form.fields.note"
-							placeholder="Write a short note about the person.."
-							outline
-						></v-textarea>
-					</v-flex>
-
-					<h3>Add image</h3>
-					<br>
-					<div class="upload-image">
-						<input
-							type="file"
-							@change="imagePreview()"
-							name="imageUpload"
-						>
-						<img class="previewImg" :src="form.files.profileImage.src" alt="Profile image">
-					</div>
-					<br>
-
-					<div class="error-msg" v-if="error" v-html="error" />
-					<div class="success-msg" v-if="success" v-html="success" />
-					<div class="info-msg" v-if="info" v-html="info" />
-
-					<v-btn type="submit" class="yellow">
-						Create
-					</v-btn>
-				</v-form>
-			</v-flex>
-
-		</v-layout> -->
 	</div>
 </template>
 
@@ -306,7 +158,6 @@ export default {
 		return {
 			form: {
 				fields: {
-					// TODO: Create multiselect for choosing roles istead of hardcoded value user
 					username: 'jdoe1',
 					password: '123123',
 					password2: '123123',
@@ -316,8 +167,6 @@ export default {
 					address: 'Some st. 1312 1233',
 					note: 'Short user note...',
 					roles: ['user']
-					// TODO: Implement roles selector
-					// roles: []
 				},
 				files: {
 					profileImage: {
@@ -327,7 +176,7 @@ export default {
 				}
 			},
 
-			showMessage: false,
+			showPasswordStrength: false,
 			// Password strength
 			passwordStrength: 'weak',
 			passwordStrengthText: '',
@@ -368,10 +217,10 @@ export default {
 					
 					this.resetFormFields()
 
-					// this.$store.dispatch('addNotification', {
-					// 	type: 'success',
-					// 	text: `User with username <span style="color: blue; font-size:17px;">${user.username}</span> created successfully.`
-					// })
+					this.$store.dispatch('addNotification', {
+						type: 'success',
+						text: `User with username <span style="color: blue; font-size:17px;">${user.username}</span> created successfully.`
+					})
 
 					// Set success message and timeout
 					this.error = null
@@ -413,19 +262,19 @@ export default {
 			if (this.strongRegex.test(password)) {
 				this.passwordStrength = 'strong'
 				this.passwordStrengthText = 'Strong password'
-				this.showMessage = true
+				this.showPasswordStrength = true
 			} else if (this.mediumRegex.test(password)) {
 				this.passwordStrength = 'medium'
 				this.passwordStrengthText = 'Medium strength'
-				this.showMessage = true
+				this.showPasswordStrength = true
 			} else if (password === '') {
 				this.passwordStrength = 'weak'
 				this.passwordStrengthText = ''
-				this.showMessage = false
+				this.showPasswordStrength = false
 			} else {
 				this.passwordStrength = 'weak'
 				this.passwordStrengthText = 'Weak password'
-				this.showMessage = true
+				this.showPasswordStrength = true
 			}
 		},
 
@@ -468,7 +317,7 @@ export default {
 			this.form.files.profileImage.file = null
 			this.form.files.profileImage.src = ''
 			// Hide password messages
-			this.showMessage = false
+			this.showPasswordStrength = false
 			this.confirmPasswordMatched = null
 
 			this.$refs.profileImageRef.value = ''
@@ -483,7 +332,7 @@ export default {
 	$light-orange: lighten(orange, 25);
 	$light-red: lighten(red, 30);
 
-	.register-user-form {
+	form.create-user-form {
 		width: 600px;
 		max-width: 600px;
 		padding: 20px;
@@ -560,7 +409,11 @@ export default {
 		.previewImgInput {
 			margin: 5px 0 0 10px;
 		}
-	} // Register User form
+
+		button.create-user-btn {
+			@extend .btn-submit
+		}
+	}
 
 	.list-title {
 		font-size: 17px;

@@ -11,6 +11,9 @@
 @import './base/fonts.scss';
 @import './base/typography.scss';
 
+// Components
+@import './components/button.scss';
+
 *,
 *::before,
 *::after {
