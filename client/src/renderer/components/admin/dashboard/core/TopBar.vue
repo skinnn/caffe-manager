@@ -24,6 +24,9 @@
 						<a class="nav-link" href="docs">API Docs</a>
 					</li> -->
 					<li class="nav-item text-nowrap">
+						<NotificationBtn />
+					</li>
+					<li class="nav-item text-nowrap">
 						<LogoutBtn />
 					</li>
 				</ul>
@@ -34,6 +37,7 @@
 
 <script>
 // Components
+import NotificationBtn from '@/components/_globals/NotificationBtn'
 import LogoutBtn from '@/components/_globals/LogoutBtn'
 import BackBtn from '@/components/_globals/BackBtn'
 // Helpers
@@ -45,7 +49,7 @@ library.add(faUserTie)
 
 export default {
 	name: 'DashboardTopBar',
-	components: { LogoutBtn, BackBtn },
+	components: { BackBtn, LogoutBtn, NotificationBtn },
 
 	props: {
 		payload: { type: Object }
@@ -116,7 +120,7 @@ export default {
 
 					li.nav-item {
 						&:not(:last-child) {
-							margin-right: 15px;
+							margin-right: 20px;
 						}
 					}
 				}

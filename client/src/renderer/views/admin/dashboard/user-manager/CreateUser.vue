@@ -1,19 +1,147 @@
 <template>
 	<div class="admin-create-user">
-		<v-layout column class="right-side">
-			<!-- <v-flex>
-				<div class="admin-header">
-						<h1 class="heading">
-							Create Staff Member Account
-						</h1>
-						<LogoutBtn />
-				</div>
-			</v-flex> -->
 
+		<form
+			@submit="onSubmit"
+			class="register-user-form"
+		>
+			<div class="form-group">
+				<label for="username">Username <span class="required-field">*</span></label>
+				<input
+					type="text"
+					v-model="form.fields.username"
+					id="username"
+					class="form-control"
+				>
+			</div>
+			<div class="form-group">
+				<label for="password">Password <span class="required-field">*</span></label>
+				<input
+					type="password"
+					id="password"
+					class="form-control"
+					v-model="form.fields.password"
+					@input="analyzePasswordStrength(form.fields.password), isPasswordConfirmed(form.fields.password2)"
+				>
+				<div
+					class="passwordStrengthMessage"
+					v-if="showMessage"
+					v-bind:class="{
+						strong : passwordStrength === 'strong',
+						weak : passwordStrength === 'weak',
+						medium: passwordStrength === 'medium'
+					}"
+				>
+					<p class="pwMessageText">{{passwordStrengthText}}</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="password2">Confirm password <span class="required-field">*</span></label>
+				<input
+					type="password"
+					id="password2"
+					class="form-control"
+					v-model="form.fields.password2"
+					@input="isPasswordConfirmed(form.fields.password2)"
+				>
+
+				<div class="form-group">
+					<label for="username">Full name <span class="required-field">*</span></label>
+					<input
+						type="text"
+						v-model="form.fields.name"
+						id="username"
+						class="form-control"
+					>
+				</div>
+
+				<div
+					class="confirmPasswordMessage"
+					v-if="showMessage"
+					v-bind:class="{
+						passwordMatched : confirmPasswordMatched === true,
+						passwordWrong : confirmPasswordMatched === false
+					}"
+				>
+					<p class="pwMessageText">{{isPasswordConfirmedText}}</p>
+					<!-- TODO: Add icons for match/wrong -->
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input
+					type="email"
+					id="email"
+					v-model="form.fields.email"
+					class="form-control"
+				>
+			</div>
+
+			<div class="form-group">
+				<label for="phone">Phone</label>
+				<input
+					type="text"
+					id="phone"
+					v-model="form.fields.phone"
+					class="form-control"
+				>
+			</div>
+
+			<div class="form-group">
+				<label for="address">Address</label>
+				<input
+					type="text"
+					id="address"
+					v-model="form.fields.address"
+					class="form-control"
+				>
+			</div>
+
+			<div class="form-group">
+				<label for="note">Note</label>
+				<textarea
+					id="note"
+					v-model="form.fields.note"
+					class="form-control"
+					rows="3"
+				></textarea>
+			</div>
+
+			<div class="form-group">
+				<label>Permissions</label>
+				<select @change="dev()" class="form-control">
+					<option value="user">user</option>
+					<option value="admin">admin</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label for="profile-image">Profile image</label>
+				<input
+					type="file"
+					@change="imagePreview()"
+					ref="profileImageRef"
+					id="profile-image"
+					class="form-control-file"
+				>
+				<img class="previewImg" :src="form.files.profileImage.src" alt="Profile image">
+			</div>
+
+			<!-- Display messages -->
+			<div class="error-msg" v-if="error" v-html="error" />
+			<div class="success-msg" v-if="success" v-html="success" />
+			<div class="info-msg" v-if="info" v-html="info" />
+
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+
+
+
+		<!-- <v-layout column class="right-side">
 			<v-flex class="admin-container">
 				<v-form
 					@submit="onSubmit"
-					enctype="multipart/form-data"
 					class="register-user-form"
 				>
 					<h3 title="Required field">
@@ -41,7 +169,7 @@
 							}"
 						>
 							<p class="pwMessageText">{{passwordStrengthText}}</p>
-							</div>
+						</div>
 					</h3>
 					<v-flex xs12 sm8 d-flex>
 						<v-text-field
@@ -64,7 +192,6 @@
 							}"
 						>
 							<p class="pwMessageText">{{isPasswordConfirmedText}}</p>
-							<!-- TODO: Add icons for match/fail <v-icon>check_box</v-icon> -->
 						</div>
 					</h3>
 					<v-flex xs12 sm8 d-flex>
@@ -133,17 +260,6 @@
 						></v-textarea>
 					</v-flex>
 
-					<!-- TODO: Set it up and test -->
-					<!-- <h3 class="mt-4">Permissions</h3>
-					<v-checkbox
-						:label="`Warehouse - ${userMenu.warehouse.toString()}`"
-						v-model="userMenu.warehouse"
-					></v-checkbox>
-					<v-checkbox
-						:label="`Tables - ${userMenu.tables.toString()}`"
-						v-model="userMenu.tables"
-					></v-checkbox> -->
-
 					<h3>Add image</h3>
 					<br>
 					<div class="upload-image">
@@ -156,7 +272,6 @@
 					</div>
 					<br>
 
-					<!-- Display messages -->
 					<div class="error-msg" v-if="error" v-html="error" />
 					<div class="success-msg" v-if="success" v-html="success" />
 					<div class="info-msg" v-if="info" v-html="info" />
@@ -167,7 +282,7 @@
 				</v-form>
 			</v-flex>
 
-		</v-layout>
+		</v-layout> -->
 	</div>
 </template>
 
@@ -192,7 +307,6 @@ export default {
 			form: {
 				fields: {
 					// TODO: Create multiselect for choosing roles istead of hardcoded value user
-					roles: ['user'],
 					username: 'jdoe1',
 					password: '123123',
 					password2: '123123',
@@ -200,13 +314,10 @@ export default {
 					email: 'jdoe@test.com',
 					phone: '+1 123 123 13',
 					address: 'Some st. 1312 1233',
-					note: 'Short user note...'
-					// TODO: Get userMenu/permissions from the API
-					// userMenu: {
-					// 	home: true, // Default is that all users have home page
-					// 	warehouse: false,
-					// 	tables: false
-					// },
+					note: 'Short user note...',
+					roles: ['user']
+					// TODO: Implement roles selector
+					// roles: []
 				},
 				files: {
 					profileImage: {
@@ -235,14 +346,17 @@ export default {
 	},
 
 	methods: {
+		dev() {
+			// console.log(this.form.fields)
+			const role = event.target.value
+			this.form.fields.roles = [role]
+		},
+
 		async onSubmit() {
 			event.preventDefault()
 			try {
-				// TODO: Finish permissions & roles
-
 				// Send the request
 				const response = await UserService.createUser(this.form.fields)
-				// const data = response.data
 				const user = response.data.user
 
 				// Created successfully
@@ -254,6 +368,11 @@ export default {
 					
 					this.resetFormFields()
 
+					// this.$store.dispatch('addNotification', {
+					// 	type: 'success',
+					// 	text: `User with username <span style="color: blue; font-size:17px;">${user.username}</span> created successfully.`
+					// })
+
 					// Set success message and timeout
 					this.error = null
 					this.info = null
@@ -264,6 +383,11 @@ export default {
 				}
 			} catch (error) {
 				console.log(error.response.data)
+
+				this.$store.dispatch('addNotification', {
+					type: 'error',
+					text: error.response.data.message
+				})
 
 				// Display form error message
 				this.error = error.response.data.message
@@ -346,6 +470,8 @@ export default {
 			// Hide password messages
 			this.showMessage = false
 			this.confirmPasswordMatched = null
+
+			this.$refs.profileImageRef.value = ''
 		}
 	}
 }
