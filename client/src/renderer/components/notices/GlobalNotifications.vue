@@ -1,8 +1,9 @@
 <template>
 	<div>
 		<!-- Temporary notifications -->
+		
 		<ul
-			v-if="!showNotifications"
+			v-if="!showNotifications && notifications.length > 0"
 			class="notification-list temporary-list"
 			ref="notificationList"
 		>
@@ -380,9 +381,9 @@ export default {
 	 */
 	ul.temporary-list {
 		position: fixed;
-		right: 10px;
+		left: auto;
+		right: 0;
 		bottom: 20px;
-		margin-left: auto;
 	}
 
 	/**

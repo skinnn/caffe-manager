@@ -1,87 +1,78 @@
 <template>
 	<div class="user-list">
-		<v-layout column class="right-side">
-			<!-- <v-flex>
-				<div class="admin-header">
-						<h1 class="heading">Staff Members</h1>
-						<LogoutBtn />
-				</div>
-			</v-flex> -->
+		<!-- Display messages -->
+		<div class="error-msg" v-if="error" v-html="error" />
+		<div class="success-msg" v-if="success" v-html="success" />
+		<div class="info-msg" v-if="info" v-html="info" />
 
-			<v-flex class="admin-container">
-				<!-- Display messages -->
-				<div class="error-msg" v-if="error" v-html="error" />
-				<div class="success-msg" v-if="success" v-html="success" />
-				<div class="info-msg" v-if="info" v-html="info" />
+		<!-- TODO: Add animation for fetching/displaying Users possibly with Scroll Reveal -->
+		<!-- List of all Users/Staff in the db -->
+		<div class="list-of-users">
+			<v-select
+				v-model="pagination.itemsPerPage"
+				:items="pagination.selectItemsPerPage"
+				@change="changePagination"
+				label="Items per page"
+				class="pagination-items-per-page"
+				required
+			></v-select>
 
-				<!-- TODO: Add animation for fetching/displaying Users possibly with Scroll Reveal -->
-				<!-- List of all Users/Staff in the db -->
-				<div class="list-of-users">
-					<v-select
-						v-model="pagination.itemsPerPage"
-						:items="pagination.selectItemsPerPage"
-						@change="changePagination"
-						label="Items per page"
-						class="pagination-items-per-page"
-						required
-					></v-select>
+			<!-- Pagination top -->
+			<v-pagination
+				v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+				v-model="pagination.currentPage"
+				:length="pagination.totalPages"
+				@input="pageChanged"
+			></v-pagination>
 
-					<!-- Pagination top -->
-					<v-pagination
-						v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
-						v-model="pagination.currentPage"
-						:length="pagination.totalPages"
-						@input="pageChanged"
-					></v-pagination>
+			<!-- TODO: Implement Search -->
 
-					<!-- TODO: Implement Search -->
+			<v-data-table
+				:headers="headers"
+				:items="displayedUsers"
+				hide-actions
+				class="elevation-1"
+				dark
+			>
+				<template slot="items" slot-scope="props">
+					<td class="td text-xs-left">
+						<img @click="viewUser(props.item.id)" class="user-image" :src="props.item.profileImage ? props.item.profileImage : null" />
+					</td>
+					<td class="td text-xs-left">
+						<span @click="viewUser(props.item.id)" class="user-name">
+							{{ props.item.name }}
+						</span>
+					</td>
+					<td class="td text-xs-left">
+						<span @click="viewUser(props.item.id)" class="user-username">
+							{{ props.item.username }}
+						</span>
+					</td>
+					<td class="td text-xs-left">
+						<span class="user-permissions">
+							{{ props.item.roles[0] }}
+						</span>
+					</td>
+					<td class="td text-xs-center options">
+						<button @click="editUserPage(props.item.id)" class="btn-edit">Edit</button>
+						<button @click="deleteUser(props.item)" class="btn-delete">Delete</button>
+					</td>
+				</template>
+			</v-data-table>
 
-					<v-data-table
-						:headers="headers"
-						:items="users"
-						hide-actions
-						class="elevation-1"
-						dark
-					>
-						<template slot="items" slot-scope="props">
-							<td class="td text-xs-left" @click="viewUser(props.item.id)">
-								<img class="admin-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
-							</td>
-							<td class="td text-xs-left" @click="viewUser(props.item.id)">
-								<span class="admin-name">
-									{{ props.item.name }}
-								</span>
-							</td>
-							<td class="td text-xs-left" @click="viewUser(props.item.id)">
-								<span class="admin-username">
-									{{ props.item.username }}
-								</span>
-							</td>
-							<td class="td text-xs-center">
-								<v-btn @click="editUserPage(props.item.id)" class="edit-btn yellow">Edit</v-btn>
-								<v-btn @click="deleteUser(props.item)" class="delete-btn white">Delete</v-btn>
-							</td>
-						</template>
-					</v-data-table>
+			<!-- Pagination bottom -->
+			<v-pagination
+			v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+			v-model="pagination.currentPage"
+			:length="pagination.totalPages"
+			@input="pageChanged"
+		></v-pagination>
 
-					<!-- Pagination bottom -->
-					<v-pagination
-					v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
-					v-model="pagination.currentPage"
-					:length="pagination.totalPages"
-					@input="pageChanged"
-				></v-pagination>
-
-				</div>
-
-			</v-flex>
-		</v-layout>
+		</div>
 	</div>
 </template>
 
 <script>
-// Components
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
 // Services
 import AdminService from '@/services/AdminService'
 import UserService from '@/services/UserService'
@@ -89,9 +80,7 @@ import UserService from '@/services/UserService'
 import { mapGetters } from 'vuex'
 
 export default {
-	components: {
-		// AdminSideMenu
-	},
+	components: {},
 
 	computed: {
 		...mapGetters([])
@@ -103,21 +92,16 @@ export default {
 			displayedUsers: [],
 			adminId: this.$store.state.user.id,
 			headers: [
-				{
-					text: 'Image',
-					align: 'left',
-					sortable: false,
-					value: 'image'
-				},
-				{
-					text: 'Name', align: 'left', sortable: true, value: 'name'},
+				{ text: 'Image', align: 'left', sortable: false, value: 'image' },
+				{ text: 'Name', align: 'left', sortable: true, value: 'name' },
 				{ text: 'Username', sortable: true, value: 'username' },
-				{ text: 'Options', sortable: false, align: 'center', value: 'option' }
+				{ text: 'Permissions', sortable: true, value: 'roles' },
+				{ text: 'Options', align: 'center', sortable: false, value: 'option' }
 			],
 			pagination: {
 				currentPage: 1,
 				totalPages: null,
-				itemsPerPage: 5,
+				itemsPerPage: 20,
 				selectItemsPerPage: [
 					1,
 					5,
@@ -140,10 +124,10 @@ export default {
 		async getUsers() {
 			try {
 				const res = (await UserService.getAllUsers()).data
+				const users = res.users
 
-				// Get User list
 				if (res.users) {
-					this.users = res.users
+					this.users = users
 
 					// Handle pagination
 					let l = this.users.length
@@ -151,13 +135,46 @@ export default {
 					this.pagination.totalPages = Math.floor(l / s)
 					let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
 					let end = start + this.pagination.itemsPerPage
-					// Set Displayed Articles
-					this.displayedUsers = this.users.slice(start, end)
+
+					const usersToDisplay = this.users.slice(start, end)
+
+					const usersWithAttachments = await this.getAttachmentsForUsers(usersToDisplay)
+
+					// Set displayed users
+					this.displayedUsers = usersWithAttachments
 				}
 			} catch (error) {
 				this.success = null
 				this.error = error.response.data.error
 				console.log(error)
+			}
+		},
+
+		async getAttachmentsForUsers(users) {
+			try {
+				// TODO: Create watcher for visible users which will update the attachments
+				let promises = users.map(async(user) => {
+					const response = await UserService.getUserAttachment(user.id, 'profile_image')
+					if (response && response.data) {
+						const blob = response.data || null
+						user.profileImage = URL.createObjectURL(blob)
+					}
+					return user
+				})
+
+				const allUsersArr = await Promise.all(promises)
+				return allUsersArr
+			} catch (err) {
+				throw err
+			}
+		},
+
+		async getUserAttachment(userId, identifier) {
+			try {
+				const attachment = await UserService.getUserAttachment(userId, identifier)
+				return attachment
+			} catch (err) {
+				throw err
 			}
 		},
 
@@ -169,6 +186,7 @@ export default {
 			let end = start + this.pagination.itemsPerPage
 			// Set Displayed Articles
 			this.displayedUsers = this.users.slice(start, end)
+			console.log('this: ', this.displayedUsers)
 			console.log(this.pagination.itemsPerPage)
 		},
 
@@ -180,6 +198,7 @@ export default {
 		},
 
 		viewUser(userId, item) {
+			event.stopPropagation()
 			console.log('props.item: ', item)
 			this.$router.push({name: 'admin-view-user', params: { userId: userId }})
 		},
@@ -197,15 +216,14 @@ export default {
 			if (confirmation) {
 				try {
 					const userId = user.id
-					// TODO: Change files deleting, create file db model and upload files in separate request
-					const imgPath = user.files[0]
-					console.log(imgPath)
-					const res = await UserService.deleteUserById(userId, imgPath)
+					const res = await UserService.deleteUserById(userId)
+					const data = res.data
 					// If User is deleted successfully
 					if (res.status === 200) {
+						console.log('USER DELETED FROM RES:', data.user)
 						// Set success message and timeout
 						this.error = null
-						this.success = res.data.message
+						this.success = data.message
 						setTimeout(() => {
 							this.success = null
 						}, 3000)
@@ -237,30 +255,32 @@ export default {
 
 		.td {
 			height: 92px;
-			cursor: pointer;
+			// cursor: pointer;
+
+			span {
+				font-size: 17px;
+			}
+
+			.user-image:hover,
+			.user-name:hover,
+			.user-username:hover {
+				opacity: 0.6;
+				cursor: pointer;
+			}
 		}
-		.admin-image {
+		.user-image {
 			max-width: 80px;
 			max-height: 80px;
 			margin-top: 5px;
 			margin-left: 5px;
 			border-radius: 5px;
 		}
-		.admin-name {
-			font-size: 18px;
-		}
-		.admin-username {
-			font-weight: 600;
-			font-size: 17px;
-		}
-		.edit-btn {
-			color: black;
-			font-size: 15px;
-		}
-		.delete-btn {
-			color: red;
-			font-size: 15px;
-			border: 1px solid red;
+
+		.options {
+
+			button {
+				margin-right: 5px;
+			}
 		}
 	}
 

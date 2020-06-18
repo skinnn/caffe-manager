@@ -4,7 +4,6 @@ const { uploadImage } = require('../../../config/multer')
 
 // Controllers
 const UserController = require('./user.controller')
-const FileController = require('../file/file.controller')
 
 /* Base: /user
 ===================================================== */

@@ -116,20 +116,27 @@ class Controller {
 
 	static responseHandler(req, res, next) {
 		// Access create operation doesn't have owner field
-		if (req.operation === 'create') req.authorized = true
-		if (!req.authorized) return res.sendStatus(401)
+		// if (req.operation === 'create') req.authorized = true
 
 		const status = res.locals.status || 200
+		const jsonData = res.locals.json
+		const fileData = res.locals.file
 
 		// JSON response
-		if (res.locals.json) {
+		if (jsonData) {
 			return res.status(status).json(res.locals.json)
 
 		// File response
-		} else if (res.locals.file) {
+		} else if (fileData) {
 			const fileName = res.locals.file.name
 			const directory = Controller.api.uploads.imagesDirectory
 			const fullPath = path.join(directory, fileName)
+			
+			// Check if file exists, if not send empty 204
+			fs.access(fullPath, fs.F_OK, (err) => {
+				if (err) return res.sendStatus(204)
+			})
+
 			return res.status(status).sendFile(fullPath)
 
 		} else {
@@ -147,8 +154,10 @@ class Controller {
 		req.authorized = false
 		
 		// if (!Array.isArray(records)) throw new TypeError(records, ` is not an array`)
+		if (records === null) return req.authorized = true
 		if (!records) throw new Error('Records are not defined: ', records)
 		if (records && !Array.isArray(records)) records = [records]
+		
 		if (req.user.roles.includes('root')) return req.authorized = true
 
 		const schema = Controller.api.schemas[req.resource]
@@ -161,8 +170,6 @@ class Controller {
 			for (let i = 0; i < records.length; i++) {
 				// Check if record owner matches user id
 				const ownerId = req.resource === 'user' ? Controller.getOwnerId(records[i].id) : Controller.getOwnerId(records[i].user_id)
-				console.log('req.user.id: ', req.user.id)
-				console.log('ownerId: ', ownerId)
 				if (req.user.id === ownerId) req.authorized = true
 				else {
 					req.authorized = false

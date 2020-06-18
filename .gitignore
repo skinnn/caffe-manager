@@ -4,6 +4,7 @@ node_modules
 *.txt
 *.md
 !README.md
+!TODO
 
 # Server
 server/uploads/images/*

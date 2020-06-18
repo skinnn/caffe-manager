@@ -53,7 +53,7 @@ class UserController extends Controller {
 	// Delete User by id
 	static async deleteUserById(req, res, next) {
 		try {
-			let query = { _id: req.params.id }
+			const query = {_id: req.params.id }
 
 			const userToDelete = await User.findOne(query)
 			if (!userToDelete) {
@@ -66,21 +66,35 @@ class UserController extends Controller {
 
 			const deletedUser = await User.deleteOne(query)
 
-			// Remove user files if any (both attachments and user file meta)
-			if (userToDelete.files.length > 0) {
-				userToDelete.files.forEach((file) => {
-					// TODO: Get file meta
-					// TODO: Remove file
-					// fs.unlink(absoluteFilePath)
-					// TODO: Write a test which adds a user and attachment and then deletes it
-				})
+			if (deletedUser) {
+				// Remove user files if any (both actual files and user file meta)
+				if (userToDelete.files.length > 0) {
+					const promises = userToDelete.files.map(async (fileId) => {
+						// const file = await FileController.getFileById(fileId)
+						const deletedFile = await FileController.deleteFileById(fileId)
+						
+						if (deletedFile) {
+							const filePath = path.join(Controller.api.uploads.imagesDirectory, deletedFile.name)
+
+							// Check if file exists
+							fs.access(filePath, fs.F_OK, (err) => {
+								if (err) return
+							})
+							const deletedAttachment = await fs.unlinkSync(filePath)
+
+							return deletedFile
+						}
+					})
+
+					const deletedFiles = await Promise.all(promises)
+					console.log('DEL FILES: ', deletedFiles)
+				}
 			}
 
 			res.locals = {
 				status: 200,
 				json: {
-					message: 'User deleted successfully',
-					user: deletedUser
+					message: 'User deleted'
 				}
 			}
 
@@ -101,13 +115,9 @@ class UserController extends Controller {
 			}
 			const users = await User.find(query).select('-_id username name')
 
-			req.authorized = true
-			res.locals = {
-				status: 200,
-				json: { users: users }
-			}
-			return next()
-		
+			return res.status(200).json({
+				users: users
+			})
 		} catch (err) {
 			return next(err)
 		}
@@ -228,6 +238,7 @@ class UserController extends Controller {
 
 			Controller.validateOwnership(req, file)
 
+			console.log(file)
 			res.locals = {
 				status: 200,
 				file: file

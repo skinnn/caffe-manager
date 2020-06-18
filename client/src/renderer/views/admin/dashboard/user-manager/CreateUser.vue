@@ -128,11 +128,6 @@
 				<img class="previewImg" :src="form.files.profileImage.src" alt="Profile image">
 			</div>
 
-			<!-- Display messages -->
-			<div class="error-msg" v-if="error" v-html="error" />
-			<div class="success-msg" v-if="success" v-html="success" />
-			<div class="info-msg" v-if="info" v-html="info" />
-
 			<button type="submit" class="btn create-user-btn">Submit</button>
 		</form>
 	</div>
@@ -186,11 +181,7 @@ export default {
 			// TODO: Centralize regexes/form policies, constants, create helpers
 			// Password regexes ( password strength )
 			strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
-			mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'),
-			// Form messages
-			info: null,
-			error: null,
-			success: null
+			mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})')
 		}
 	},
 
@@ -221,14 +212,6 @@ export default {
 						type: 'success',
 						text: `User with username <span style="color: blue; font-size:17px;">${user.username}</span> created successfully.`
 					})
-
-					// Set success message and timeout
-					this.error = null
-					this.info = null
-					this.success = `User with username <span style="color: blue; font-size:17px;">${user.username}</span> created successfully.`
-					setTimeout(() => {
-						this.success = null
-					}, 5000)
 				}
 			} catch (error) {
 				console.log(error.response.data)
@@ -237,11 +220,6 @@ export default {
 					type: 'error',
 					text: error.response.data.message
 				})
-
-				// Display form error message
-				this.error = error.response.data.message
-				this.info = null
-				this.success = null
 			}
 		},
 
@@ -305,7 +283,6 @@ export default {
 		},
 
 		resetFormFields() {
-			// Set all Values to default after successful registering
 			this.form.fields.username = ''
 			this.form.fields.password = ''
 			this.form.fields.password2 = ''
