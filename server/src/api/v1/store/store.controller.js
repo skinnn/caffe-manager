@@ -38,10 +38,7 @@ class StoreController extends Controller {
 
 	static async getAllStores(req, res, next) {
 		try {
-			let fields = {}
-			for (const fieldName in req.queryParsed.fields) {
-				fields[fieldName] = req.queryParsed.fields[fieldName] ? 1 : 0
-			}
+			const fields = req.queryParsed.fields
 			const sort = req.queryParsed.sort
 			const include = req.queryParsed.include
 

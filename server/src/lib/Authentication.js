@@ -31,9 +31,11 @@ class Authentication extends Controller {
 			} else {
 				let unauthorizedError = new Error('Access denied'); unauthorizedError.name = 'UnauthorizedError';
 				
+				// Get token
+				// TODO: Move to a helper function
+				// TODO: Also look for the token in query params
 				let token = req.headers['authorization'] || req.headers['x-access-token'] || req.cookies.token || null // Express headers are auto converted to lowercase
 				if (token && token.startsWith('Bearer')) {
-					// Get only token from the string
 					token = token.split(' ')[1]
 				}	else throw unauthorizedError
 

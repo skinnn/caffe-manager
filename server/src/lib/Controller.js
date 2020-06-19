@@ -115,8 +115,10 @@ class Controller {
 	}
 
 	static responseHandler(req, res, next) {
-		// Access create operation doesn't have owner field
-		// if (req.operation === 'create') req.authorized = true
+		if (req.authorized === false) {
+			let err = new Error('Forbidden'); err.name = 'ForbiddenError'
+			throw err
+		}
 
 		const status = res.locals.status || 200
 		const jsonData = res.locals.json
@@ -162,7 +164,6 @@ class Controller {
 
 		const schema = Controller.api.schemas[req.resource]
 		const ownerFlag = schema.access[req.operation].owner === true
-		let forbiddenError = new Error('Invalid permission'); forbiddenError.name = 'ForbiddenError'
 
 		// If operation is not create and owner in access schema is true, check record ownership
 		if (req.operation !== 'create' && ownerFlag) {
@@ -180,17 +181,16 @@ class Controller {
 		// If owner in access schema is false, authorize the req
 		} else if (schema.access[req.operation].owner === false) {
 			req.authorized = true
-
 		// Owner field not set in access schema
 		} else {
 			console.log(`Access owner field is not set for:\nResource: ${req.resource}\nOperation: ${req.operation}\nAccess schema:\n`, schema.access)
 			req.authorized = false
 		}
 
-		if (req.authorized) return req.authorized
+		if (req.authorized === true) return true
 		else {
 			console.log(`User: ${req.user.username} (${req.user.id}) is not the owner of these record/s:\n`, records)
-			throw forbiddenError
+			return false
 		}
 	}
 
@@ -273,7 +273,7 @@ class Controller {
 			req.queryParsed = {}
 			if (isEmptyObject(req.query)) resolve(true)
 
-			var limit = 0, fields = {}, sort = {}, match = {}, include = {}, token = null
+			var limit = 0, fields = {}, sort = {}, match = {}, include = '', token = null
 			if (req.query.limit) limit = parseInt(req.query.limit)
 			if (req.query.fields) fields = req.query.fields
 			if (req.query.sort) sort = req.query.sort
@@ -295,17 +295,19 @@ class Controller {
 				try {
 					fields = JSON.parse(fields)
 					// Transform prop 'id' in '_id' (mongodb supported field)
-					if (fields.id !== undefined) fields._id = fields.id; delete fields.id;
+					if (fields.id !== undefined) fields._id = fields.id; delete fields.id
 				} catch (err) {}
 
 			// Fields (handle format JS object - fields[id]=true)
 			} else {
 				for (let f in fields) {
-					if (fields.hasOwnProperty(f)) {
-						// Transform prop 'id' in '_id' (mongodb supported field)
-						if (f === 'id') { fields.id = toBoolean(fields[f]); delete fields.id; }
-						else { fields[f] = toBoolean(fields[f]) }
-					}
+					// Transform field to boolean and then to 1/0
+					let bool = toBoolean(fields[f])
+					fields[f] = bool ? 1 : 0
+
+					// Transform prop 'id' in '_id' (mongodb _id field)
+					if (f === 'id') { fields._id = fields.id; delete fields.id }
+					// else { fields[f] = toBoolean(fields[f]) }
 				}
 			}
 

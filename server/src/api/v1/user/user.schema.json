@@ -11,7 +11,7 @@
 		},
 		"read": {
 			"roles": ["admin", "user"],
-			"owner": false
+			"owner": true
 		},
 		"update": {
 			"roles": ["admin", "user"],

@@ -125,10 +125,33 @@ class UserController extends Controller {
 	// Get all Users
 	static async getAllUsers(req, res, next) {
 		try {
-			const users = await User.find({ roles: 'user' })
-			return res.status(200).json({
-				users: users
-			})
+			// Only root and admin can get all users
+			if (req.user.roles.includes('root') || req.user.roles.includes('admin')) {
+				req.authorized = true
+
+			} else {
+				let err = new Error('Forbidden'); err.name = 'ForbiddenError'
+				throw err
+			}
+
+			const match = req.queryParsed.match
+			const fields = req.queryParsed.fields
+			const include = req.queryParsed.include
+			const limit = req.queryParsed.limit
+			const sort = req.queryParsed.sort
+			
+			const users = await User
+				.find(match)
+				.populate(include)
+				.select(fields)
+				.limit(limit)
+				.sort(sort)
+			
+			res.locals = {
+				status: 200,
+				json: { users: users }
+			}
+			return next()
 		} catch (err) {
 			return next(err)
 		}
