@@ -3,6 +3,7 @@ const cors = require('cors')
 const morganLogger = require('morgan')
 const http = require('http')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 // const favicon = require('serve-favicon')
 const Controller = require('./lib/Controller')
 
@@ -22,6 +23,7 @@ app.use(cors({
 app.use(express.json())
 // Parse application/xwww-form-urlencoded
 app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
 
 // Static assets
 // app.use('/public', express.static(path.join(__dirname, '../public')))

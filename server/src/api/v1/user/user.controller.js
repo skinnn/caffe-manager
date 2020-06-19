@@ -65,7 +65,6 @@ class UserController extends Controller {
 			Controller.validateOwnership(req, userToDelete)
 
 			const deletedUser = await User.deleteOne(query)
-
 			if (deletedUser) {
 				// Remove user files if any (both actual files and user file meta)
 				if (userToDelete.files.length > 0) {
@@ -107,13 +106,13 @@ class UserController extends Controller {
 	// Get User login List - just usernames and names
 	static async getUsersByRole(req, res, next) {
 		try {
-			const role = req.query.role || null
+			// const role = req.query.role || ''
 			// Dont allow querying for the root user
-			if (role.includes('root')) role = null
+			// if (role.includes('root')) role = null
 			let query = {
-				roles: { $all: [role] }
+				roles: { $all: ['user'] }
 			}
-			const users = await User.find(query).select('-_id username name')
+			const users = await User.find({ roles: 'user' }).select('-_id username name')
 
 			return res.status(200).json({
 				users: users

@@ -6,7 +6,7 @@
 const path = require('path')
 const env = require('dotenv').config().parsed
 
-module.exports = {
+const config = {
 	protocol: 'http',
 	host: 'localhost',
 	port: env.PORT || 9090,
@@ -33,3 +33,5 @@ module.exports = {
 	server: null,
 	schemas: null
 }
+
+module.exports = config

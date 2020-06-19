@@ -30,13 +30,13 @@ class Authentication extends Controller {
 				return next()
 			} else {
 				let unauthorizedError = new Error('Access denied'); unauthorizedError.name = 'UnauthorizedError';
-
-				let token = req.headers['authorization'] || req.headers['x-access-token'] || '' // Express headers are auto converted to lowercase
-				if (token.startsWith('Bearer')) {
+				
+				let token = req.headers['authorization'] || req.headers['x-access-token'] || req.cookies.token || null // Express headers are auto converted to lowercase
+				if (token && token.startsWith('Bearer')) {
 					// Get only token from the string
 					token = token.split(' ')[1]
-				}
-				if (!token) throw unauthorizedError
+				}	else throw unauthorizedError
+
 				
 				// TODO: Save token and decoded user in cache, check cache first
 				const { validToken, decoded } = await checkToken(token)

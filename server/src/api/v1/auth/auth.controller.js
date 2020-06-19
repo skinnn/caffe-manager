@@ -45,6 +45,9 @@ class AuthController extends Controller {
 
 			await login.save()
 
+			res.set('Authorization', `Bearer ${token}`)
+			res.cookie('token', 'Bearer ' + token, { path: '/' })
+			
 			req.authorized = true
 			res.locals = {
 				status: 200,
