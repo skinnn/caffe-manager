@@ -179,7 +179,6 @@ export default {
 			try {
 				// const userId = this.$store.state.route.params.userId
 				const userId = this.$route.params.userId
-				// console.log('USERID: ', userId)
 				const res = await UserService.getUserById(userId)
 				const user = res.data.user
 
@@ -204,6 +203,7 @@ export default {
 			try {
 				// Get all fields which are changed (need to be updated)
 				const changedFields = this.checkForChangedFields(this.form.fields, this.user)
+				
 				if (!isEmptyObject(changedFields)) {
 					const userId = this.user.id
 					const res = await UserService.updateUserById(userId, changedFields)
@@ -234,9 +234,15 @@ export default {
 			try {
 				const userId = this.user.id
 				const res = await UserService.updateUserById(userId, this.form.passwordFields)
-				console.log('res: ', res)
-				console.log('UPDATED USER: ', res.data.user)
-				// const updatedUser = res.data.user
+				const user = res.data.user
+
+				this.togglePasswordEditMode()
+				this.resetPasswordFields()
+
+				this.$store.dispatch('addNotification', {
+					type: 'success',
+					text: `Password for user ${user.username} has been updated`
+				})
 			} catch (err) {
 				this.$store.dispatch('addNotification', {
 					type: 'error',
@@ -280,12 +286,9 @@ export default {
 			
 			if (this.options.passwordEditMode === true) {
 				this.$refs.editUserBtn.setAttribute('disabled', true)
-				// TODO Scroll to the password form
 			} else {
 				this.$refs.editUserBtn.removeAttribute('disabled')
-				// Reser password fields
-				this.form.passwordFields.password = ''
-				this.form.passwordFields.password2 = ''
+				this.resetPasswordFields()
 			}
 		},
 
@@ -297,6 +300,12 @@ export default {
 		discardUserEditing() {
 			this.populateFormData(this.form.fields, this.user)
 			// this.clearPasswordFields()
+		},
+
+		resetPasswordFields() {
+			// Reser password fields
+			this.form.passwordFields.password = ''
+			this.form.passwordFields.password2 = ''
 		},
 
 		populateFormData(fields, userRecord) {
@@ -321,6 +330,7 @@ export default {
 <style scoped lang="scss">
 
 	.view-user-page {
+		padding-bottom: 50px;
 		
 		.btn-edit-password {
 			
