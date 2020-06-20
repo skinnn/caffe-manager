@@ -1,22 +1,22 @@
 'use strict'
 
-const { app, BrowserWindow, Menu, MenuItem, dialog, shell } = require('electron')
-const path = require('path')
+const { app, BrowserWindow, Menu, dialog, nativeImage, shell } = require('electron')
 const createMenuTemplate = require('./menu/menu')
+const AuthService = require('../renderer/services/AuthService')
 
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-	global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
+	global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 // Icon path
-let iconPath = path.join(__static, '/logo/caffe_manager_256x256.png')
+let iconPath = __static + '/logo/caffe_manager_1024x1024.png'
 
 let mainWindow
-const winURL = process.env.NODE_ENV === 'development'
+const winURL = process.env.NODE_ENV === 'development'	
 	? `http://localhost:9080`
 	: `file://${__dirname}/index.html`
 
@@ -55,15 +55,17 @@ function createWindow() {
 	 * Main window events
 	 */
 	mainWindow.on('close', (e) => {
-		// Prompt the user before quitting
-		var choice = dialog.showMessageBoxSync(mainWindow, {
-			type: 'question',
-			buttons: ['Yes', 'No'],
-			title: 'Confirm',
-			message: 'Are you sure you want to quit?',
-			detail: ''
-		})
-		if (choice === 1) e.preventDefault()
+		// // Prompt the user before quitting
+		// var choice = dialog.showMessageBoxSync(mainWindow, {
+		// 	type: 'question',
+		// 	buttons: ['Yes', 'No'],
+		// 	title: 'Confirm',
+		// 	message: 'Are you sure you want to quit?',
+		// 	detail: ''
+		// })
+		// if (choice === 1) {
+		// 	e.preventDefault()
+		// }
 	})
 
 	mainWindow.once('ready-to-show', () => {

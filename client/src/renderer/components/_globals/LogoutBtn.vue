@@ -29,24 +29,15 @@ export default {
 	methods: {
 		async onClick() {
 			try {
-				const res = await AuthService.logout()
-				// this.$router.push({
-				// 	name: 'admin-login',
-				// 	params: { loggedOutMessage: 'Logged out' }
-				// })
+				// Send req to logout the user
+				const res = await this.$store.dispatch('logoutUser')
 
 				if (res.status === 200) {
-					// Clear store and local storage data
-					const isLoggedOut = await this.$store.dispatch('logoutUser', null)
-
-					// First logout user and then navigate
-					if (isLoggedOut) {
-						// Redirect to login page
-						this.$router.push({
-							name: 'login',
-							params: { loggedOutMessage: 'Logged out' }
-						})
-					}
+					// Redirect to login page
+					this.$router.push({
+						name: 'login',
+						params: { loggedOutMessage: 'Logged out' }
+					})
 				}
 			} catch (error) {
 				console.log(error)

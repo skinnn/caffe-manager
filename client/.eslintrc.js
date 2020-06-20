@@ -16,6 +16,7 @@ module.exports = {
 	rules: {
 		'camelcase': 0,
 		'no-useless-return': 0,
+		'padded-blocks': 0,
 		'no-padded-blocks': 0,
 		'no-trailing-spaces': 0,
 		'no-unused-expressions': 0,

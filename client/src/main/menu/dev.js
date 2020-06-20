@@ -29,6 +29,13 @@ function developerMenuItem(app, mainWindow) {
 				label: 'Force Reload',
 				role: 'forceReload'
 			},
+			{
+				label: 'Quit',
+				accelerator: 'Ctrl + W',
+				click() {
+					app.quit()
+				}
+			},
 			{ type: 'separator' },
 			{
 				label: 'About',

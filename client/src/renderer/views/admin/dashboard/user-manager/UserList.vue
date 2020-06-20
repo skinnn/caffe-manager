@@ -83,7 +83,7 @@ export default {
 	components: {},
 
 	computed: {
-		...mapGetters([])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -124,7 +124,11 @@ export default {
 		async getUsers() {
 			try {
 				const res = (await UserService.getAllUsers()).data
-				const users = res.users
+				const allUsers = res.users
+
+				const loggedInUser = this.getUser
+				// Filter logged in user
+				const users = allUsers.filter((user) => user.id !== loggedInUser.id)
 
 				if (res.users) {
 					this.users = users

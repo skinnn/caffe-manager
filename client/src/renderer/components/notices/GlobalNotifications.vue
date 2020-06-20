@@ -382,7 +382,7 @@ export default {
 	ul.temporary-list {
 		position: fixed;
 		left: auto;
-		right: 0;
+		right: 20px;
 		bottom: 20px;
 	}
 

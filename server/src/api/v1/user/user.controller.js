@@ -132,6 +132,10 @@ class UserController extends Controller {
 	static async getAllUsers(req, res, next) {
 		try {
 			const match = req.queryParsed.match
+			// Dont return the root user
+			match.roles = {
+				$in: ['user', 'admin']
+			}
 			const fields = req.queryParsed.fields
 			const include = req.queryParsed.include
 			const limit = req.queryParsed.limit
@@ -174,27 +178,21 @@ class UserController extends Controller {
 	
 	// Update User by id
 	static async updateUserById(req, res, next) {
-		// TODO: Not working
 		try {
-			let query = {_id: req.body.id}
+			let query = { _id: req.params.id }
 			let options = { new: true }
+
+			const modifiedSchema = UserJSONSchema.required = []
+			const error = Controller.validateToSchema(UserJSONSchema, req.body)
+			if (error) throw new Error(error)
 			
-			// TODO: Remove parsing if not needed
-			const jsonData = JSON.parse(JSON.stringify(req.body))
-			var dataToReplace = {}
-
-			for (let [key, value] of Object.entries(jsonData)) {
-				// console.log(`${key}: ${value}`)
-				if (value !== undefined && value !== null) {
-					dataToReplace[key] = value
-				}
-			}
-
 			const user = await User.findOne(query)
 
-			Controller.validateOwnership(req, user)
+			if (!req.user.roles.includes('admin')) {
+				Controller.validateOwnership(req, user)
+			}
 
-			const updatedUser = await User.findOneAndUpdate(query, dataToReplace, options)
+			const updatedUser = await User.findOneAndUpdate(query, req.body, options)
 
 			res.locals = {
 				status: 200,

@@ -29,7 +29,6 @@ import TableList from '@/views/admin/dashboard/table-manager/AdminTableList'
 // User manager
 import CreateUser from '@/views/admin/dashboard/user-manager/CreateUser'
 import UserList from '@/views/admin/dashboard/user-manager/UserList'
-import EditUser from '@/views/admin/dashboard/user-manager/EditUser'
 import ViewUser from '@/views/admin/dashboard/user-manager/ViewUser'
 // Tax manager
 import TaxesGraph from '@/views/admin/dashboard/taxes/tax-graph'
@@ -110,12 +109,6 @@ const routes = [
 				name: 'admin-taxes-settings',
 				component: TaxesSettings,
 				meta: { title: 'Taxes | Settings' }
-			},
-			{
-				path: 'user/:userId/edit',
-				name: 'admin-edit-user',
-				component: EditUser,
-				meta: { title: 'Edit user' }
 			},
 			{
 				path: 'storage/list',

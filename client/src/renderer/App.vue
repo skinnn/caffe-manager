@@ -1,40 +1,31 @@
 <template>
 	<div id="app">
-		<!-- TODO: Remove when vuetify is removed -->
+		<!-- TODO: Remove v-app when vuetify is removed -->
 		<v-app>
 			<router-view></router-view>
-			<!-- <GlobalNotifications /> -->
 		</v-app>
 	</div>
 </template>
 
 <script>
-	// Components
-	import UserSideMenu from '@/components/user/UserSideMenu'
-	import GlobalNotifications from '@/components/notices/GlobalNotifications'
-
+	// Services
+	import AuthService from '@/services/AuthService'
+	
 	export default {
-		components: {	
-			UserSideMenu,
-			GlobalNotifications
-		},
 
-		created() {
-			// process.env.NODE_ENV === 'production' ? this.init() : null
-			// this.init()
-		},
-
-		methods: {
-			init() {
-				this.$store.dispatch('logoutUser')
-				this.$router.push('login')
+		async mounted() {
+			try {
+				const isUserLoggedIn = this.$store.getters.isLoggedIn
+				if (isUserLoggedIn) {
+					const res = await this.$store.dispatch('logoutUser')
+					this.$router.push({ name: 'login' })
+				}
+			} catch (err) {
+				this.$store.dispatch('clearToken')
+				this.$store.dispatch('clearUser')
+				this.$router.push({ name: 'login' })
+				throw err
 			}
 		}
 	}
 </script>
-
-<style lang="scss">
-	#app {
-		// user-select: none;
-	}
-</style>
