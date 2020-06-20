@@ -16,7 +16,7 @@ export default {
 
 	data() {
 		return {
-			9: null
+			lastRoutePath: null
 		}
 	},
 
@@ -28,14 +28,14 @@ export default {
 
 	methods: {
 		handleGoBack() {
-			if (this.$route.name !== this.lastRoute) {
-				this.lastRoute = this.$route.name
+			if (this.$route.name !== this.lastRoutePath) {
+				this.lastRoutePath = this.$route.path
 				this.$router.back()
 				this.$refs.button.classList.add('disabled')
 			} else {
-				console.log('trying to go to the same route')
-				console.log('lastRoute: ', this.lastRoute)
-				console.log('this.$route: ', this.$route.name)
+				// console.log('trying to go to the same route')
+				// console.log('lastRoutePath: ', this.lastRoutePath)
+				// console.log('this.$route: ', this.$route.name)
 				this.$refs.button.classList.add('disabled')
 			}
 		}

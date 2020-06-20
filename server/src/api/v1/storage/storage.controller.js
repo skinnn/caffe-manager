@@ -1,66 +1,92 @@
-const Storage = require('./storage.model')
+const Controller = require('../../../lib/Controller')
 
-module.exports = {
+const Storage = require('./storage.model')
+const StorageJSONSchema = require('./storage.schema.json')
+
+class StorageController extends Controller {
 
 	// Create Storage
-	async createStorage(req, res, next) {
+	static async createStorage(req, res, next) {
 		try {
-			let storage = new Storage()
-			storage.name = req.body.storageName
-			storage.type = req.body.type
-			// TODO: Do validation with Joi
-			// Validation
-			if (storage.name !== '' && storage.type !== '') {
-				await storage.save((err) => {
-					if (err) throw err
-					return res.status(201).json({
-						saved: true,
-						success: 'Storage created.'
-					})
-				})
-			} else {
+			const error = Controller.validateToSchema(StorageJSONSchema, req.body)
+			if (error) {
+				let err = new Error(error); err.name = 'BadRequestError';
+				throw err
+			}
+
+			const exist = await Storage.findOne({ name: req.body.name }) 
+			if (exist) {
 				return res.status(400).json({
-					error: 'Please fill out all required fields.'
+					message: `Storage with name ${req.body.name} already exist`
 				})
 			}
+
+			let storage = new Storage()
+			storage.name = req.body.name
+			storage.type = req.body.type
+			storage.active = req.body.active
+
+			storage.user_id = req.user.id
+
+			const savedStorage = await storage.save()
+			res.locals = {
+				status: 201,
+				json: { storage: savedStorage }
+			}
+
+			return next()
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
 	// Get All Storages
-	async getAllStorages(req, res, next) {
+	static async getAllStorages(req, res, next) {
 		try {
-			await Storage.find({}, (err, storages) => {
-				if (err) throw err
-				return res.status(200).json({
-					storages: storages
-				})
-			})
+			const query = {}
+
+			const storages = await Storage.find(query)
+			
+			res.locals = {
+				status: 200,
+				json: storages
+			}
+
+			return next()
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
 	// Get Storage by id
-	async getStorageById(req, res, next) {
+	static async getStorageById(req, res, next) {
 		try {
-			let query = req.params.storageId
-			await Storage.getStorageById(query, (err, storage) => {
-				if (err) throw err
-				return res.status(200).json({
-					storage: storage
-				})
-			})
+			let query = req.params.id
+
+			const storage = await Storage.findById(query)
+
+			res.locals = {
+				status: 200,
+				json: storage
+			}
+
+			return next()
+
+			// await Storage.getStorageById(query, (err, storage) => {
+			// 	if (err) throw err
+			// 	return res.status(200).json({
+			// 		storage: storage
+			// 	})
+			// })
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
 	// Update Storage by id
-	async saveStorage(req, res, next) {
+	static async updateStorage(req, res, next) {
 		try {
-			let query = {_id: req.params.storageId}
+			let query = {_id: req.params.id}
 
 			await Storage.findOneAndUpdate(query, req.body, (err, storage) => {
 				if (err) throw err
@@ -73,4 +99,6 @@ module.exports = {
 		}
 	}
 
-} /* Module exports */
+}
+
+module.exports = StorageController

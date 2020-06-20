@@ -13,7 +13,7 @@ const config = {
 	baseApiURL: env.BASE_API_URL || '/api',
 
 	rootUser: {
-		username: 'admin',
+		username: 'root',
 		password: '123123'
 	},
 	db: {

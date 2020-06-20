@@ -7,8 +7,8 @@ export default {
 	getAllStorages() {
 		return Api().get('/storage')
 	},
-	getStorageById(storageId) {
-		return Api().get(`/storage/${storageId}`)
+	getStorageById(id) {
+		return Api().get(`/storage/${id}`)
 	},
 	saveStorage(storage) {
 		return Api().patch(`/storage/${storage.id}`, storage)

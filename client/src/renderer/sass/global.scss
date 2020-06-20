@@ -14,7 +14,7 @@
 // Components
 @import './components/button.scss';
 
-*,
+*:not(input),
 *::before,
 *::after {
 	margin: 0 0;
@@ -22,7 +22,7 @@
 	box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, h6, p, div, button, input {
+h1, h2, h3, h4, h5, h6, p, div, button {
 	padding: 0;
 	margin: 0;
 }

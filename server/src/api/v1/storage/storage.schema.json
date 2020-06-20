@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Storage",
+	"type": "object",
+	"description": "Storage schema",
+	"additionalProperties": false,
+	"required": ["name", "type", "active"],
+	"access": {
+		"create": {
+			"roles": ["admin"]
+		},
+		"read": {
+			"roles": ["admin", "user"],
+			"owner": false
+		},
+		"update": {
+			"roles": ["admin"],
+			"owner": false
+		},
+		"delete": {
+			"roles": ["admin"],
+			"owner": false
+		}
+	},
+  "properties": {
+    "name": {
+			"$id": "#/properties/name",
+			"title": "Name",
+      "description": "Storage name",
+			"type": "string",
+			"minLength": 1
+		},
+    "type": {
+			"$id": "#/properties/type",
+			"title": "Address",
+      "description": "Storage type, can be 'primary', 'secondary'",
+			"type": "string",
+			"enum": ["primary", "secondary"]
+    },
+    "active": {
+			"$id": "#/properties/active",
+			"title": "Active",
+			"description": "Tells if this storage is used for listing it's articles in menus/orders",
+			"type": "boolean"
+		}
+	}
+}

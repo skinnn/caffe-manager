@@ -1,75 +1,91 @@
 <template>
-	<div class="admin-create-storage-page">
-		<v-layout column class="right-side">
-			<!-- <v-flex>
-				<div class="admin-header">
-						<h1 class="heading">
-							Create Storage
-						</h1>
-						<LogoutBtn />
-				</div>
+	<div class="admin-storage-create-page">
+		<form
+			@submit="createStorage()"
+			class="create-storage"
+		>
+
+			<div class="form-group">
+				<label for="name">Storage name</label>
+				<input
+					type="text"
+					id="name"
+					v-model="form.fields.name"
+					class="form-control"
+					placeholder="Example: Storage 1.."
+				>
+			</div>
+
+			<div class="form-group">
+				<label>Type</label>
+				<select @change="handleSelectType()" class="form-control">
+					<option
+						v-for="opt in select.type"
+						:key="opt.value"
+						:value="opt.value"
+						:selected="opt.value === form.fields.type"
+					>
+						{{ opt.text }}
+					</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>Active</label>
+				<select @change="handleSelectActive()" class="form-control">
+					<option
+						v-for="opt in select.active"
+						:key="opt.value"
+						:value="opt.value"
+					>
+						{{ opt.text }}
+					</option>
+				</select>
+			</div>
+
+			
+
+			<!-- <h3>Active (Are articles from this storage used for creating orders)</h3>
+			<v-flex xs12 sm5 d-flex>
+				<v-select
+					:items="select.active"
+					v-model="form.fields.active"
+					label="Select"
+					solo
+				></v-select>
 			</v-flex> -->
 
-			<v-flex class="admin-container">
-				<div class="create-storage">
-
-					<h3>Storage name:</h3>
-					<v-flex xs12 sm8 d-flex>
-						<v-text-field
-							type="text"
-							maxlength = "35"
-							v-model="storage.name"
-							label="Example: Storage 1, Main, Alternative 1..."
-							solo
-						></v-text-field>
-					</v-flex>
-
-					<h3>Type:</h3>
-					<v-flex xs12 sm5 d-flex>
-						<v-select
-							:items="select.storageType"
-							v-model="storage.type"
-							label="Select"
-							solo
-						></v-select>
-					</v-flex>
-				</div>
-
-					<!-- Display messages -->
-					<div class="error-msg" v-if="error" v-html="error" />
-					<div class="success-msg" v-if="success" v-html="success" />
-					<div class="info-msg" v-if="info" v-html="info" />
-
-					<v-btn @click="createStorage()" class="yellow">
-						Create
-					</v-btn>
-
-			</v-flex>
-		</v-layout>
+			<button type="submit" class="btn-submit">
+				Create
+			</button>
+		</form>
 	</div>
 </template>
 
 <script>
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
+// Services
 import StorageService from '@/services/StorageService'
 
 export default {
-	components: {
-		// AdminSideMenu
-	},
 	data() {
 		return {
-			storage: {
-				name: '',
-				type: ''
+			form: {
+				fields: {
+					name: '',
+					active: true,
+					type: 'primary'
+				}
 			},
 			select: {
-				storageType: ['Main', 'Alt']
-			},
-			// Messages
-			error: null,
-			success: null,
-			info: null
+				type: [
+					{ text: 'Primary', value: 'primary' },
+					{ text: 'Secondary', value: 'secondary' }
+				],
+				active: [
+					{ text: 'Yes', value: true },
+					{ text: 'No', value: false }
+				]
+			}
 		}
 	},
 	mounted() {
@@ -77,36 +93,40 @@ export default {
 	},
 	methods: {
 		async createStorage() {
+			event.preventDefault()
 			try {
-				if (this.storage.name !== '' && this.storage.type !== '') {
-					const response = (await StorageService.createStorage({
-						storageName: this.storage.name,
-						type: this.storage.type
-					})).data
+				const res = await StorageService.createStorage(this.form.fields)
+				const storage = res.data.storage
+				console.log('storage res: ', res)
 
-					if (response.saved) {
-						this.error = null
-						this.info = null
-						this.success = response.success
-						setTimeout(() => {
-							this.success = null
-						}, 3000)
-						console.log(response)
+				if (res.status === 201) {
+					this.$store.dispatch('addNotification', {
+						type: 'success',
+						text: `Storage: ${storage.name} is created`
+					})
 
-						// Reset input fields
-						this.storage.name = ''
-						this.storage.type = ''
-					}
-				} else {
-					this.success = null
-					this.info = null
-					this.error = 'Please fill out all required fields.'
+					// Reset input fields
+					this.form.fields.name = ''
+					this.form.fields.type = ''
+					this.form.fields.active = true
 				}
-			} catch (error) {
-				console.log(error)
-				this.success = ''
-				this.error = error.response.data.error
+			} catch (err) {
+				console.log(err.response.data)
+				this.$store.dispatch('addNotification', {
+					type: 'error',
+					text: err.response.data.message
+				})
 			}
+		},
+
+		handleSelectActive() {
+			const active = event.target.value
+			this.form.fields.active = Boolean(active)
+			console.log(this.form.fields)
+		},
+		handleSelectType() {
+			const type = event.target.value
+			this.form.fields.type = type
 		}
 	}
 }

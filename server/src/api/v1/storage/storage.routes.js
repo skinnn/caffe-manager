@@ -3,10 +3,8 @@ const router = express.Router()
 const { uploadImage } = require('../../../config/multer')
 
 const StorageController = require('./storage.controller')
-const ArticleController = require('../article/article.controller')
-const ArticleSubgroupController = require('../category/category.controller')
-
-// TODO: Refactor routes
+// const ArticleController = require('../article/article.controller')
+// const ArticleSubgroupController = require('../category/category.controller')
 
 // Get all Storages
 router.get('/',
@@ -17,19 +15,20 @@ router.post('/',
 	StorageController.createStorage)
 
 // Get Storage by id
-router.get('/:storageId',
+router.get('/:id',
 StorageController.getStorageById)
 
 // Update Storage
-router.patch('/:storageId',
-	StorageController.saveStorage)
+router.patch('/:id',
+	StorageController.updateStorage)
 
-// Get Articles by storage id
-router.get('/:storageId/articles',
-	ArticleController.getArticlesByStorageId)
+// TODO: Move to article routes
+// // Get Articles by storage id
+// router.get('/:id/articles',
+// 	ArticleController.getArticlesByStorageId)
 
-// Get Article by id
-router.get('/:storageId/article/:articleId',
-ArticleController.getArticleById)
+// // Get Article by id
+// router.get('/:id/article/:articleId',
+// ArticleController.getArticleById)
 
 module.exports = router

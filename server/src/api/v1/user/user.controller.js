@@ -106,13 +106,19 @@ class UserController extends Controller {
 	// Get User login List - just usernames and names
 	static async getUsersByRole(req, res, next) {
 		try {
-			// const role = req.query.role || ''
-			// Dont allow querying for the root user
-			// if (role.includes('root')) role = null
-			let query = {
-				roles: { $all: ['user'] }
+			// If not root or admin return only users with 'user' role
+			let role = 'user'
+			if (req.user) {
+				if (req.user.roles.includes('root') || req.user.roles.includes('admin')) {
+					role = req.queryParsed.match.role ? req.queryParsed.match.role : ''
+				}
+				req.user.roles.includes('root') && req.user.roles.includes('admin')
 			}
-			const users = await User.find({ roles: 'user' }).select('-_id username name')
+
+			let query = {
+				roles: { $all: [role] }
+			}
+			const users = await User.find(query).select('-_id username name')
 
 			return res.status(200).json({
 				users: users
@@ -125,15 +131,6 @@ class UserController extends Controller {
 	// Get all Users
 	static async getAllUsers(req, res, next) {
 		try {
-			// Only root and admin can get all users
-			if (req.user.roles.includes('root') || req.user.roles.includes('admin')) {
-				req.authorized = true
-
-			} else {
-				let err = new Error('Forbidden'); err.name = 'ForbiddenError'
-				throw err
-			}
-
 			const match = req.queryParsed.match
 			const fields = req.queryParsed.fields
 			const include = req.queryParsed.include

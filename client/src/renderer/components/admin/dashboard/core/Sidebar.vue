@@ -179,7 +179,6 @@
 // Font Awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
-
 library.add(faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt)
 
 export default {

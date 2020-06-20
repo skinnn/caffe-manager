@@ -15,11 +15,11 @@
 		},
 		"update": {
 			"roles": ["admin"],
-			"owner": false
+			"owner": true
 		},
 		"delete": {
 			"roles": ["admin"],
-			"owner": false
+			"owner": true
 		}
 	},
   "properties": {

@@ -110,7 +110,7 @@
 
 			<div class="form-group">
 				<label>Permissions</label>
-				<select @change="dev()" class="form-control">
+				<select @change="handleSelectRole()" class="form-control">
 					<option value="user">user</option>
 					<option value="admin">admin</option>
 				</select>
@@ -135,15 +135,10 @@
 
 <script>
 // Components
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
 import UserService from '@/services/UserService'
 import { mapGetters } from 'vuex'
 
 export default {
-
-	components: {
-		// AdminSideMenu
-	},
 
 	computed: {
 		...mapGetters(['getUser'])
@@ -186,8 +181,7 @@ export default {
 	},
 
 	methods: {
-		dev() {
-			// console.log(this.form.fields)
+		handleSelectRole() {
 			const role = event.target.value
 			this.form.fields.roles = [role]
 		},

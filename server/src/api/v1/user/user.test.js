@@ -5,7 +5,7 @@ const api = require('../../../lib/tests').api
 
 // Test helpers
 const { userKeys } = require('../../../lib/tests').constants
-const { rootUser, user } = require('../../../lib/tests').users
+const { rootUser, user , admin} = require('../../../lib/tests').users
 
 /**
  * Tests
@@ -27,7 +27,7 @@ describe('*********** User ***********', () => {
 		it('(root) should respond with ONLY one user containing ONLY "id" and "files" fields (200)', async () => {
 			const res = await rootUser
 				.get('/user')
-				.query({ limit: 1, fields:{ id: true }, include: 'files'})
+				.query({ limit: 1, fields:{ id: true }, include: 'files' })
 
 			expect(res.status).to.equal(200)
 			expect(res).to.have.header('Content-Type', /json/)
@@ -47,13 +47,26 @@ describe('*********** User ***********', () => {
 			})
 		})
 
-		it('(user) should fail getting an array of users with forbidden message (403)', async () => {
+		it('(user) should respond with an array of users (200)', async () => {
 			const res = await user
 				.get('/user')
-				.query({ fields:{ id: true }, include: 'files'  })
-			expect(res.status).to.equal(403)
+			expect(res.status).to.equal(200)
 			expect(res).to.have.header('Content-Type', /json/)
-			expect(res.body).to.not.have.property('users')
+			expect(res.body).to.have.property('users').and.to.be.an('array')
+			expect(res.body.users).to.satisfy((users) => { 
+				return users.every((user) => expect(user).to.have.all.keys(userKeys))
+			})
+		})
+
+		it('(admin) should respond with an array of users (200)', async () => {
+			const res = await admin
+				.get('/user')
+			expect(res.status).to.equal(200)
+			expect(res).to.have.header('Content-Type', /json/)
+			expect(res.body).to.have.property('users').and.to.be.an('array')
+			expect(res.body.users).to.satisfy((users) => { 
+				return users.every((user) => expect(user).to.have.all.keys(userKeys))
+			})
 		})
 	})
 	
@@ -66,10 +79,6 @@ describe('*********** User ***********', () => {
 			expect(res.body.users).to.satisfy((users) => { 
 				return users.every((user) => expect(user).to.have.all.keys('username', 'name'))
 			})
-			// res.body.users.every(i => expect(i).to.have.all.keys('username', 'name'))
-			// expect(res.body.users).to.satisfy((users) => { 
-			// 	return users.every((user) => expect(user).to.have.all.keys('username', 'name'))
-			// })
 		})
 	})
 

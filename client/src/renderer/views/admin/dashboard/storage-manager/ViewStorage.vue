@@ -16,72 +16,63 @@
 				</div>
 			</v-flex> -->
 
-			<v-flex class="admin-container">
-				<!-- Display messages -->
-				<div class="error-msg" v-if="error" v-html="error" />
-				<div class="success-msg" v-if="success" v-html="success" />
-				<div class="info-msg" v-if="info" v-html="info" />
+			<!-- Storage data-->
+			<h3>Storage info:</h3>
+			<p>STORAGE ID: {{ storage.id }} </p>
 
-				<!-- Storage data-->
-					<h3>Storage info:</h3>
-					<p>STORAGE ID: {{storage.id}} </p>
+			<v-select
+				v-model="pagination.itemsPerPage"
+				:items="pagination.selectItemsPerPage"
+				@change="changePagination"
+				label="Items per page"
+				class="pagination-items-per-page"
+				required
+			></v-select>
+			
+			<!-- TODO: Add animation for fetching/displaying Articles possibly with Scroll Reveal -->
+			<!-- TODO: Create pagination and limit fetching Articles with ~20 per page -->
+			<!-- Articles from the current storage -->
+			<v-pagination
+				v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
+				v-model="pagination.currentPage"
+				:length="pagination.totalPages"
+				@input="pageChanged"
+			></v-pagination>
 
-					<v-select
-						v-model="pagination.itemsPerPage"
-						:items="pagination.selectItemsPerPage"
-						@change="changePagination"
-						label="Items per page"
-						class="pagination-items-per-page"
-						required
-					></v-select>
-					<hr>
-					<br>
-
-					<!-- TODO: Add animation for fetching/displaying Articles possibly with Scroll Reveal -->
-					<!-- TODO: Create pagination and limit fetching Articles with ~20 per page -->
-					<!-- Articles from the current storage -->
-					<v-pagination
-						v-if="pagination.totalPages !== null && pagination.totalPages !== 0"
-						v-model="pagination.currentPage"
-						:length="pagination.totalPages"
-						@input="pageChanged"
-					></v-pagination>
-					<div id="list-div">
-
-						<v-data-table
-							:headers="headers"
-							:items="displayedArticles"
-							hide-actions
-							class="elevation-1"
-							dark
-						>
-							<template slot="items" slot-scope="props">
-								<td class="td text-xs-left">
-									<img class="article-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
-								</td>
-								<td class="td text-xs-left">
-									<span class="article-name">
-										{{ props.item.name }}
-									</span>
-								</td>
-								<td class="td text-xs-left">
-									<span class="article-quantity">
-										{{ props.item.quantity }}
-									</span>
-								</td>
-								<td class="td text-xs-left">
-									<span class="article-price">
-										{{ props.item.price }} <span class="currency">{{settings.currency}}</span>
-									</span>
-								</td>
-								<td class="td text-xs-right">
-									<v-btn @click="editArticlePage(props.item.id)" class="edit-btn yellow">Edit</v-btn>
-									<v-btn @click="deleteArticle(props.item.id, props.item)" class="delete-btn white">Delete</v-btn>
-								</td>
-							</template>
-						</v-data-table>
-					</div>
-			</v-flex>
+			<div id="list-div">
+				<v-data-table
+					:headers="headers"
+					:items="displayedArticles"
+					hide-actions
+					class="elevation-1"
+					dark
+				>
+					<template slot="items" slot-scope="props">
+						<td class="td text-xs-left">
+							<img class="article-image" v-if="props.item.image" :src="`http://localhost:9090/${props.item.image}`" />
+						</td>
+						<td class="td text-xs-left">
+							<span class="article-name">
+								{{ props.item.name }}
+							</span>
+						</td>
+						<td class="td text-xs-left">
+							<span class="article-quantity">
+								{{ props.item.quantity }}
+							</span>
+						</td>
+						<td class="td text-xs-left">
+							<span class="article-price">
+								{{ props.item.price }} <span class="currency">{{settings.currency}}</span>
+							</span>
+						</td>
+						<td class="td text-xs-right">
+							<v-btn @click="editArticlePage(props.item.id)" class="edit-btn yellow">Edit</v-btn>
+							<v-btn @click="deleteArticle(props.item.id, props.item)" class="delete-btn white">Delete</v-btn>
+						</td>
+					</template>
+				</v-data-table>
+			</div>
 		</v-layout>
 	</div>
 </template>
@@ -97,10 +88,10 @@ export default {
 	},
 	data() {
 		return {
-			subgroup: {
-				_id: this.$store.state.route.params.subgroup.id,
-				name: this.$store.state.route.params.subgroup.name
-			},
+			// subgroup: {
+			// 	_id: this.$store.state.route.params.subgroup.id,
+			// 	name: this.$store.state.route.params.subgroup.name
+			// },
 			displayedArticles: [],
 			pagination: {
 				currentPage: 1,
@@ -131,41 +122,37 @@ export default {
 				{ text: 'Quantity', value: 'quantity' },
 				{ text: 'Price', value: 'price' },
 				{ text: 'Options', sortable: false, align: 'center', value: 'option' }
-			],
-			// Message
-			error: null,
-			success: null,
-			info: null
+			]
 		}
 	},
 	async mounted() {
 		try {
-			console.log('Subgroup _id: ', this.subgroup.id)
-			console.log('Subgroup name: ', this.subgroup.name)
+			// console.log('Subgroup _id: ', this.subgroup.id)
+			// console.log('Subgroup name: ', this.subgroup.name)
 			let storageId = this.storageId
 			// Get Storage data
-			const response = (await StorageService.getStorageById(storageId)).data
-			if (response.storage) {
-				this.storage = response.storage
+			const storageResponse = await StorageService.getStorageById(storageId)
+			const storage = storageResponse.data
+			if (storage) {
+				this.storage = storage
 			}
 
-			// Get Articles from the selected Subgroup
-			const res = (await ArticleService.getArticlesBySubgroupId(this.subgroup.id)).data
-			console.log('ArticlesBySubgroupId: ', res)
+			// // Get Articles from the selected Subgroup
+			// const articleResponse = (await ArticleService.getArticlesBySubgroupId(this.subgroup.id)).data
+			// console.log('ArticlesBySubgroupId: ', articleResponse)
 
-			if (res.articles) {
-				this.articles = await res.articles
-				let l = this.articles.length
-				let s = this.pagination.itemsPerPage
-				this.pagination.totalPages = await Math.floor(l / s)
-				let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
-				let end = start + this.pagination.itemsPerPage
-				// Set Displayed Articles
-				this.displayedArticles = this.articles.slice(start, end)
-			}
-		} catch (error) {
-			this.success = null
-			this.error = error.response.data.error
+			// if (articleResponse.articles) {
+			// 	this.articles = await articleResponse.articles
+			// 	let l = this.articles.length
+			// 	let s = this.pagination.itemsPerPage
+			// 	this.pagination.totalPages = await Math.floor(l / s)
+			// 	let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
+			// 	let end = start + this.pagination.itemsPerPage
+			// 	// Set Displayed Articles
+			// 	this.displayedArticles = this.articles.slice(start, end)
+			// }
+		} catch (err) {
+			console.log(err)
 		}
 	},
 	methods: {
@@ -208,25 +195,19 @@ export default {
 			)
 			if (confirmation) {
 				try {
-					// Get path for the article image
-					const imgPath = article.image
+					// // Get path for the article image
+					// const imgPath = article.image
 					// Delete article
-					const response = (await ArticleService.deleteArticle(articleId, imgPath)).data
+					const res = await ArticleService.deleteArticle(articleId)
+					const article = res.data.article
 					// If Article is deleted successfully
-					if (response.deleted) {
-						// Set success message and timeout
-						this.error = null
-						this.success = response.success
-						setTimeout(() => {
-							this.success = null
-						}, 3000)
-
+					if (res.status === 200) {
 						// Reset Article list after deleting
 						let storageId = this.storageId
 						const ress = (await ArticleService.getArticlesByStorageId(storageId)).data
-						if (ress.articles) {
-							this.articles = ress.articles
-						}
+						// if (res.articles) {
+						// 	this.articles = ress.articles
+						// }
 					}
 				} catch (error) {
 					this.success = null
@@ -240,12 +221,10 @@ export default {
 
 <style scoped lang="scss">
 
-.admin-container {
-	
 	.pagination-items-per-page {
 		max-width: 120px;
+		margin-top: 25px;
 	}
-}
 
 	#list-div {
 		width: 100%;

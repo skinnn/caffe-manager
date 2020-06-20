@@ -1,52 +1,34 @@
 <template>
-	<div class="admin-storage-list">
-			<v-layout column class="right-side">
-				<!-- <v-flex>
-					<div class="admin-header">
-							<h1 class="heading">Storage List</h1>
-							<LogoutBtn />
-					</div>
-				</v-flex> -->
+	<div class="admin-storage-list-page">
 
-				<v-flex class="admin-container">
-					<!-- Display messages -->
-					<div class="error-msg" v-if="error" v-html="error" />
-					<div class="success-msg" v-if="success" v-html="success" />
+		<ul class="storage-list">
+			<li
+				v-for="storage in storages"
+				:key="storage.id"
+				@click="viewStorage(storage)"
+			>
+				<font-awesome-icon :icon="['fas', 'box-open']" class="icon"></font-awesome-icon>
+				<span class="name">{{ storage.name }}</span>
+				<span class="type">({{ storage.type }})</span>
+				<span class="active">{{ storage.active ? 'Active' : 'Not active' }}</span>
+				<!-- TODO: Get article count for the storage -->
+				<span class="article-number">(2312 items)</span>
+			</li>
+		</ul>
 
-					<!-- Should list the storages from the db -->
-					<div class="list-of-storages">
-						<v-list two-line>
-							<v-list-tile
-								v-for="storage in this.storages"
-								:key="storage.id"
-								@click="viewSubgroups(storage.id, storage.name)"
-							>
-
-								<v-list-tile-action>
-									<v-icon>gavel</v-icon>
-								</v-list-tile-action>
-
-								<v-list-tile-content>
-									<v-list-tile-title>{{storage.name}}</v-list-tile-title>
-									<v-list-tile-sub-title>{{storage.articleNumber}}</v-list-tile-sub-title>
-								</v-list-tile-content>
-							</v-list-tile>
-						</v-list>
-					</div>
-
-				</v-flex>
-			</v-layout>
 	</div>
 </template>
 
 <script>
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
+// Services
 import StorageService from '@/services/StorageService'
+// Font Awesome icons
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faBoxOpen } from '@fortawesome/free-solid-svg-icons'
+library.add(faBoxOpen)
 
 export default {
-	components: {
-		// AdminSideMenu
-	},
+	
 	data() {
 		return {
 			storages: [],
@@ -54,29 +36,34 @@ export default {
 			success: null
 		}
 	},
+	
 	async mounted() {
 		try {
-			const response = (await StorageService.getAllStorages()).data
+			// Get storages
+			const res = await StorageService.getAllStorages()
+			const storages = res.data
+			console.log(storages)
 
-			// Get User list
-			if (response.storages) {
-				const storages = this.storages
-				// Add user in the storages array
-				response.storages.forEach(function(user) {
-					storages.push(user)
-				})
+			if (res.status === 200) {
+				this.storages = storages
 			}
-		} catch (error) {
-			console.log(error)
-			this.success = ''
-			this.error = error.response.data.error
+		} catch (err) {
+			console.log(err)
+			this.$store.dispatch('addNotification', {
+				type: 'error',
+				test: err.response.data.message
+			})
 		}
 	},
+
 	methods: {
-		viewSubgroups(storageId, storageName) {
+		viewStorage(storage) {
 			this.$router.push({
-				name: 'admin-storage-subgroup-list',
-				params: {storageId, storageName}
+				name: 'admin-storage-view',
+				params: {
+					storageId: storage.id,
+					storageName: storage.name
+				}
 			})
 		}
 	}
@@ -85,8 +72,32 @@ export default {
 
 <style scoped lang="scss">
 
-	.list-title {
-		font-size: 17px;
+	.admin-storage-list-page {
+		
+		ul.storage-list {
+			list-style: none;
+
+			li {
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				padding: 10px 10px;
+				border-radius: 5px;
+
+				&:hover {
+					cursor: pointer;
+					background-color: #fff;
+				}
+
+				.icon {
+					font-size: 24px;
+				}
+
+				span {
+					margin-left: 10px;
+				}
+			}
+		}
 	}
 
 </style>
