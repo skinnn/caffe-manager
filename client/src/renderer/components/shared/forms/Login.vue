@@ -49,6 +49,7 @@ export default {
 	mounted() {
 		let msg = this.$route.params.loggedOutMessage
 		if (msg) this.handleLoggingOut(msg)
+		this.$refs.inputUsername.focus()
 	},
 
 	methods: {
@@ -59,25 +60,6 @@ export default {
 				// Send req to login
 				const res = await this.$store.dispatch('loginUser', data)
 				var user = res.data.user
-				console.log('LOGIN RES: ', res)
-
-				// // Login
-				// const loginRes = await AuthService.login({
-				// 	username: this.username,
-				// 	password: this.password
-				// })
-
-				// // If user login is successfull
-				// if (loginRes.status === 200) {
-				// 	const user = loginRes.data.user
-				// 	const token = loginRes.data.token
-				// 	// Set user in the Vuex Store
-				// 	const data = {
-				// 		user,
-				// 		token
-				// 	}
-
-				// 	const isLoggedIn = await this.$store.dispatch('loginUser', data)
 
 				if (res.status === 200) {
 					// Redirect admin/root user to admin dashboard
@@ -94,6 +76,7 @@ export default {
 					}
 				}
 			} catch (err) {
+				console.error(err)
 				// Error message
 				this.showMessage('error', err.response.data.message)
 			}

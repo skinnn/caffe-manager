@@ -62,7 +62,9 @@ class UserController extends Controller {
 				})
 			}
 
-			Controller.validateOwnership(req, userToDelete)
+			if (!req.user.roles.includes('admin')) {
+				Controller.validateOwnership(req, userToDelete)
+			}
 
 			const deletedUser = await User.deleteOne(query)
 			if (deletedUser) {
@@ -181,18 +183,29 @@ class UserController extends Controller {
 		try {
 			let query = { _id: req.params.id }
 			let options = { new: true }
+			var data = req.body
 
-			const modifiedSchema = UserJSONSchema.required = []
-			const error = Controller.validateToSchema(UserJSONSchema, req.body)
+			// Validate body
+			const modifiedSchema = UserJSONSchema
+			modifiedSchema.required = []
+			const error = Controller.validateToSchema(modifiedSchema, req.body)
 			if (error) throw new Error(error)
-			
-			const user = await User.findOne(query)
 
+			const userToUpdate = await User.findOne(query)
+
+			// Validate ownership if its user
 			if (!req.user.roles.includes('admin')) {
-				Controller.validateOwnership(req, user)
+				Controller.validateOwnership(req, userToUpdate)
 			}
 
-			const updatedUser = await User.findOneAndUpdate(query, req.body, options)
+			// Check if password field is passed
+			if (req.body.password) {
+				// Hash password
+				const hash = await User.hashPassword(req.body.password)
+				data.password = hash
+			}
+
+			const	updatedUser = await User.findOneAndUpdate(query, data, options)
 
 			res.locals = {
 				status: 200,

@@ -96,21 +96,21 @@
 				ref="changePasswordForm"
 			>
 				<div class="col">
-					<label for="newPassword">New Password</label>
+					<label for="password">New Password</label>
 					<input 
-						id="newPassword"
+						id="password"
 						type="password" 
 						class="form-control" 
-						v-model="form.password.newPassword"
+						v-model="form.passwordFields.password"
 					>
 				</div>
 				<div class="col">
-					<label for="confirmPassword">Confirm Password</label>
+					<label for="password2">Confirm Password</label>
 					<input 
-						id="confirmPassword"
+						id="password2"
 						type="password" 
 						class="form-control" 
-						v-model="form.password.confirmPassword"
+						v-model="form.passwordFields.password2"
 					>
 					</div>	
 				
@@ -162,9 +162,9 @@ export default {
 					updated: '',
 					updated_by: ''
 				},
-				password: {
-					newPassword: '',
-					confirmPassword: ''
+				passwordFields: {
+					password: '',
+					password2: ''
 				}
 			}
 		}
@@ -182,7 +182,6 @@ export default {
 				// console.log('USERID: ', userId)
 				const res = await UserService.getUserById(userId)
 				const user = res.data.user
-				console.log('User: ', user)
 
 				// Save original user data
 				this.user = user
@@ -209,7 +208,6 @@ export default {
 					const userId = this.user.id
 					const res = await UserService.updateUserById(userId, changedFields)
 					const updatedUser = res.data.user
-					console.log('UPDATE RES: ', res)
 					
 					// Set user data to the updated user
 					this.user = updatedUser
@@ -231,8 +229,21 @@ export default {
 			}
 		},
 
-		onSubmitUpdatePassword() {
-
+		async onSubmitUpdatePassword() {
+			event.preventDefault()
+			try {
+				const userId = this.user.id
+				const res = await UserService.updateUserById(userId, this.form.passwordFields)
+				console.log('res: ', res)
+				console.log('UPDATED USER: ', res.data.user)
+				// const updatedUser = res.data.user
+			} catch (err) {
+				this.$store.dispatch('addNotification', {
+					type: 'error',
+					text: err.response.data.message
+				})
+				console.error(err)
+			}
 		},
 
 		/**
@@ -257,6 +268,11 @@ export default {
 
 		toggleUserEditMode() {
 			this.options.userEditMode = !this.options.userEditMode
+
+			// Reset user form fields when discarded
+			if (this.options.userEditMode === false) {
+				this.discardUserEditing()
+			}
 		},
 
 		togglePasswordEditMode() {
@@ -267,12 +283,20 @@ export default {
 				// TODO Scroll to the password form
 			} else {
 				this.$refs.editUserBtn.removeAttribute('disabled')
+				// Reser password fields
+				this.form.passwordFields.password = ''
+				this.form.passwordFields.password2 = ''
 			}
 		},
 
 		handleSelectRole() {
 			const role = event.target.value
 			this.form.fields.roles = [role]
+		},
+
+		discardUserEditing() {
+			this.populateFormData(this.form.fields, this.user)
+			// this.clearPasswordFields()
 		},
 
 		populateFormData(fields, userRecord) {

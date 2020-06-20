@@ -54,7 +54,6 @@
 						</span>
 					</td>
 					<td class="td text-xs-center options">
-						<button @click="editUserPage(props.item.id)" class="btn-edit">Edit</button>
 						<button @click="deleteUser(props.item)" class="btn-delete">Delete</button>
 					</td>
 				</template>
@@ -207,13 +206,6 @@ export default {
 			this.$router.push({name: 'admin-view-user', params: { userId: userId }})
 		},
 
-		editUserPage(userId) {
-			this.$router.push({
-				name: 'admin-edit-user',
-				params: {userId}
-			})
-		},
-
 		async deleteUser(user) {
 			const confirmation = confirm('Are you sure?')
 
@@ -224,7 +216,6 @@ export default {
 					const data = res.data
 					// If User is deleted successfully
 					if (res.status === 200) {
-						console.log('USER DELETED FROM RES:', data.user)
 						// Set success message and timeout
 						this.error = null
 						this.success = data.message
