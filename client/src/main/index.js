@@ -1,18 +1,19 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
-import path from 'path'
+const { app, BrowserWindow, Menu, MenuItem, dialog, shell } = require('electron')
+const path = require('path')
+const createMenuTemplate = require('./menu/menu')
 
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-	global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+	global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 // Icon path
-let iconPath = path.join(__static, '/logo/caffe_manager_256x256.ico')
+let iconPath = path.join(__static, '/logo/caffe_manager_256x256.png')
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
@@ -24,6 +25,8 @@ function createWindow() {
    * Initial window options
    */
 	mainWindow = new BrowserWindow({
+		show: false,
+		// alwaysOnTop: true,
 		title: 'Caffe Manager',
 		height: 800,
 		width: 1400,
@@ -31,7 +34,8 @@ function createWindow() {
 		minWidth: 1400,
 		center: true,
 		useContentSize: true,
-		fullscreen: true,
+		// If fullscreen is on, turn off mainWindow.maximize()
+		// fullscreen: true,
 		icon: iconPath,
 		resizable: true,
 		webPreferences: {
@@ -39,28 +43,39 @@ function createWindow() {
 		}
 	})
 
+	// Load file
 	mainWindow.loadURL(winURL)
 
+	// Load menu
+	const menuTemplate = createMenuTemplate(mainWindow)
+	Menu.setApplicationMenu(menuTemplate)
+	// console.log(Menu.getApplicationMenu().commandsMap)
+
+	/**
+	 * Main window events
+	 */
 	mainWindow.on('close', (e) => {
-		// Prompt the user before quitting with yes or no
-		var choice = require('electron').dialog.showMessageBox(this,
-			{
-				type: 'question',
-				buttons: ['Yes', 'No'],
-				title: 'Confirm',
-				message: 'Are you sure you want to quit?'
-			})
-		if (choice === 1) {
-			e.preventDefault()
-		}
+		// Prompt the user before quitting
+		var choice = dialog.showMessageBoxSync(mainWindow, {
+			type: 'question',
+			buttons: ['Yes', 'No'],
+			title: 'Confirm',
+			message: 'Are you sure you want to quit?',
+			detail: ''
+		})
+		if (choice === 1) e.preventDefault()
 	})
 
-	mainWindow.webContents.on('did-frame-finish-load', () => {
+	mainWindow.once('ready-to-show', () => {
+		mainWindow.show()
+		mainWindow.maximize()
 		mainWindow.webContents.openDevTools()
 	})
-
 } /* createWindow */
 
+/**
+ * App events
+ */
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {

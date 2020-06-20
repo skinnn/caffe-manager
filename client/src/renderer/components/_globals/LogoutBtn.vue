@@ -1,19 +1,26 @@
 <template>
-	<v-btn
+	<button
 		@click="onClick"
-		class="logout-btn pink"
+		class="btn logout-btn"
 	>
+		<font-awesome-icon :icon="['fas', 'sign-out-alt']" class="icon" />
 		Logout
-	</v-btn>
+	</button>
 </template>
 
 <script>
 // Services
-import LoginService from '@/services/LoginService'
+import AuthService from '@/services/AuthService'
 // Helpers
 import { mapGetters } from 'vuex'
+// Font awesome icons
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faSignOutAlt)
 
 export default {
+	name: 'LogoutBtn',
 
 	computed: {
 		...mapGetters([])
@@ -22,7 +29,7 @@ export default {
 	methods: {
 		async onClick() {
 			try {
-				const res = await LoginService.logout()
+				const res = await AuthService.logout()
 				// this.$router.push({
 				// 	name: 'admin-login',
 				// 	params: { loggedOutMessage: 'Logged out' }
@@ -31,12 +38,10 @@ export default {
 				if (res.status === 200) {
 					// Clear store and local storage data
 					const isLoggedOut = await this.$store.dispatch('logoutUser', null)
-					const isSettingsRemoved = await this.$store.dispatch('setSettings', null)
-					// TODO: Change logic for active page and side navigation
-					this.$store.dispatch('setActivePage', null)
 
-					if (isLoggedOut && isSettingsRemoved) {
-						// Redirect to admin login page and send success msg
+					// First logout user and then navigate
+					if (isLoggedOut) {
+						// Redirect to login page
 						this.$router.push({
 							name: 'login',
 							params: { loggedOutMessage: 'Logged out' }
@@ -56,11 +61,20 @@ export default {
 <style scoped lang="scss">
 
 .logout-btn {
-	margin-right: 10px;
-	position: fixed;
-	top: 25px;
-	left: 91%;
-	color: white;
+	padding: 5px 10px;
+	border: 1px solid #fff;
+	font-weight: 600;
+	color: #fff;
+
+	&:hover {
+		color: $red-color;
+		border-color: $red-color;
+	}
+
+	.icon {
+		color: inherit;
+		margin-right: 8px;
+	}
 }
 
 </style>

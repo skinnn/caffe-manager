@@ -42,7 +42,7 @@ let mainConfig = {
       {
         test: /\.scss/,
         loaders: ['style', 'css', 'sass']
-      }
+			}
     ]
   },
   node: {

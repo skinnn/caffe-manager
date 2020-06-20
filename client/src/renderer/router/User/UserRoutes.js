@@ -1,6 +1,5 @@
 /*
-	User routes - Needs to be atuhenticated as User to get
-	this assets (in production)
+	User routes - Needs to be atuhenticated as User to get this assets
 */
 const config = require('../../config/config')
 
@@ -10,24 +9,30 @@ const UserTables = require('@/views/user/UserTables').default
 const UserWarehouse = require('@/views/user/UserWarehouse').default
 
 const routes = [
-	{
-		path: '/user/home',
-		name: 'user-home',
-		component: UserHome,
-		meta: {
-			title: 'Home'
-		}
-	},
-	{
-		path: '/user/warehouse',
-		name: 'user-warehouse',
-		component: UserWarehouse
-	},
-	{
-		path: '/user/tables',
-		name: 'user-tables',
-		component: UserTables
-	}
+	// {
+	// 	path: '/user/home',
+	// 	name: 'user-home',
+	// 	component: UserHome,
+	// 	meta: {
+	// 		title: 'Home'
+	// 	}
+	// },
+	// {
+	// 	path: '/user/warehouse',
+	// 	name: 'user-warehouse',
+	// 	meta: {
+	// 		title: 'Warehouse'
+	// 	},
+	// 	component: UserWarehouse
+	// },
+	// {
+	// 	path: '/user/tables',
+	// 	name: 'user-tables',
+	// 	meta: {
+	// 		title: 'Tables'
+	// 	},
+	// 	component: UserTables
+	// }
 ]
 
 // Should always be a bool - false, or string - 'user'

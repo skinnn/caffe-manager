@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "User",
+	"type": "object",
+	"description": "User schema.",
+	"additionalProperties": false,
+	"required": ["username", "password", "name"],
+  "properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"title": "ID",
+			"description": "Unique ID of the user.",
+			"type": "string"
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"title": "File name",
+      "description": "File name which is generated after uploading on the server.",
+			"type": "string"
+		},
+		"identifier": {
+			"$id": "#/properties/identifier",
+			"title": "Identifier",
+			"description": "String which identifies for which purpose the file is used. Can be: profile_image, store_logo.",
+			"type": "string",
+			"enum": ["profile_image", "store_logo"]
+		},
+		"ext": {
+			"$id": "#/properties/ext",
+			"title": "Name",
+			"description": "File extension.",
+			"type": "string"
+		},
+		"mime": {
+			"$id": "#/properties/mime",
+			"title": "Mime type",
+			"description": "File mime type.",
+			"type": "string"
+		},
+		"size": {
+			"$id": "#/properties/size",
+			"title": "Size",
+			"description": "File size in bytes.",
+			"type": "number"
+		},
+		"user_id": {
+			"$id": "#/properties/user_id",
+			"title": "User ID",
+			"description": "ID of the user whom this file belongs.",
+			"type": "string"
+		}
+  }
+}

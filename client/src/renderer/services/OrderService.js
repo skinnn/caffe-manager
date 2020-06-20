@@ -2,18 +2,18 @@ import Api from '@/services/Api'
 
 export default {
 	getReservedArticles(sendData) {
-		return Api().get(`/admin/${sendData.ownerId}/table/${sendData.currentTableId}/reserved-articles`)
+		return Api().get(`/admin/${sendData.user_id}/table/${sendData.currentTableId}/reserved-articles`)
 	},
-	createOrder(ownerId, currentTableId, order) {
-		return Api().post(`/admin/${ownerId}/table/${currentTableId}/order`, order)
+	createOrder(user_id, currentTableId, order) {
+		return Api().post(`/admin/${user_id}/table/${currentTableId}/order`, order)
 	},
-	getOrdersByTableId(ownerId, currentTableId) {
-		return Api().get(`/admin/${ownerId}/table/${currentTableId}/order`)
+	getOrdersByTableId(user_id, currentTableId) {
+		return Api().get(`/admin/${user_id}/table/${currentTableId}/order`)
 	},
-	deleteOrder(ownerId, orderId, currentTableId) {
-		return Api().delete(`/admin/${ownerId}/table/${currentTableId}/order/${orderId}`)
+	deleteOrder(user_id, orderId, currentTableId) {
+		return Api().delete(`/admin/${user_id}/table/${currentTableId}/order/${orderId}`)
 	},
 	reserveArticles(orderData) {
-		return Api().post(`/admin/${orderData.ownerId}/table/${orderData.currentTableId}/order/${orderData.orderId}/reserve`, orderData)
+		return Api().post(`/admin/${orderData.user_id}/table/${orderData.currentTableId}/order/${orderData.orderId}/reserve`, orderData)
 	}
 }

@@ -4,13 +4,13 @@ export default {
 	createTable(table) {
 		return Api().post(`/admin/${table.owner}/table/create`, table)
 	},
-	getTablesByOwnerId(ownerId) {
-		return Api().get(`/admin/${ownerId}/tables`)
+	getTablesByuser_id(user_id) {
+		return Api().get(`/admin/${user_id}/tables`)
 	},
-	getTable(ownerId, currentTableId) {
-		return Api().get(`/admin/${ownerId}/table/${currentTableId}`)
+	getTable(user_id, currentTableId) {
+		return Api().get(`/admin/${user_id}/table/${currentTableId}`)
 	},
-	deleteTable(ownerId, tableId) {
-		return Api().delete(`/admin/${ownerId}/table/${tableId}`)
+	deleteTable(user_id, tableId) {
+		return Api().delete(`/admin/${user_id}/table/${tableId}`)
 	}
 }

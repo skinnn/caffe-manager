@@ -1,6 +1,6 @@
 var state = {
 	user: JSON.parse(localStorage.getItem('user')) || null,
-	token: localStorage.getItem('token') || null
+	token: localStorage.getItem('token') || ''
 }
 
 const mutations = {
@@ -43,10 +43,11 @@ const actions = {
 	logoutUser(context) {
 		return new Promise((resolve, reject) => {
 			const isUserRemoved = context.dispatch('setUser', null)
-			const isTokenRemoved = context.dispatch('setToken', null)
+			const isTokenRemoved = context.dispatch('setToken', '')
+			const areNotificationsRemoved = context.dispatch('clearNotifications')
 
 			if (isUserRemoved && isTokenRemoved) resolve(true)
-			else reject(new Error('Could not remove user and token.'))
+			else reject(new Error('Could not remove user and token'))
 		})
 	}
 }
@@ -61,7 +62,7 @@ const getters = {
 	},
 
 	isLoggedIn(state) {
-		return state.token !== null
+		return state.token !== null && state.token !== ''
 	}
 }
 

@@ -1,147 +1,166 @@
 /*
-	Admin routes - Need to be atuhenticated as Admin to get
-	this assets (in production)
+	Admin routes - Need to be atuhenticated as  to get this assets
 */
 import config from '@/config/config'
-// Admin Components
-import AdminDashboard from '@/views/admin/AdminDashboard'
-import AdminTaxes from '@/views/admin/AdminTaxes'
-// Settings
-import Settings from '@/views/admin/settings/Settings'
-import EditSettings from '@/views/admin/settings/EditSettings'
-// Storage-Manager
-import AdminViewSubgroup from '@/views/admin/storage-manager/ViewArticleSubgroup'
-import AdminEditStorage from '@/views/admin/storage-manager/EditStorage'
-import AdminStorageList from '@/views/admin/storage-manager/StorageList'
-import AdminArticleSubgroupList from '@/views/admin/storage-manager/ArticleSubgroupList'
-import AdminCreateStorage from '@/views/admin/storage-manager/CreateStorage'
-import AdminCreateArticle from '@/views/admin/storage-manager/CreateArticle'
-import AdminEditArticle from '@/views/admin/storage-manager/EditArticle'
-// Table-Manager
-import AdminCurrentTable from '@/views/admin/table-manager/AdminCurrentTable'
-import AdminTableList from '@/views/admin/table-manager/AdminTableList'
-// Admin-Manager
-import AdminCreateAdmin from '@/views/admin/admin-manager/CreateAdmin'
-import AdminViewAdmin from '@/views/admin/admin-manager/ViewAdmin'
-import AdminEditAdmin from '@/views/admin/admin-manager/EditAdmin'
-import AdminAdminList from '@/views/admin/admin-manager/AdminList'
-// User-Manager
-import AdminCreateUser from '@/views/admin/user-manager/CreateUser'
-import AdminUserList from '@/views/admin/user-manager/UserList'
-import AdminEditUser from '@/views/admin/user-manager/EditUser'
-import AdminViewUser from '@/views/admin/user-manager/ViewUser'
+//  Dashboard
+import Dashboard from '@/components/admin/dashboard/AdminDashboard'
 
-// Admin Routes
+/**
+ * Pages
+ */
+import Index from '@/views/admin/dashboard/index'
+// Settings
+import Settings from '@/views/admin/dashboard/settings/Settings'
+import EditSettings from '@/views/admin/dashboard/settings/EditSettings'
+// Store
+import ViewStore from '@/views/admin/dashboard/store/viewStore'
+// Storage manager
+// import ViewCategory from '@/views/admin/dashboard/storage-manager/ViewArticleCategory'
+import ViewStorage from '@/views/admin/dashboard/storage-manager/ViewStorage'
+import EditStorage from '@/views/admin/dashboard/storage-manager/EditStorage'
+import StorageList from '@/views/admin/dashboard/storage-manager/StorageList'
+import ArticleCategoryList from '@/views/admin/dashboard/storage-manager/ArticleCategoryList'
+import CreateStorage from '@/views/admin/dashboard/storage-manager/CreateStorage'
+import CreateArticle from '@/views/admin/dashboard/storage-manager/CreateArticle'
+import EditArticle from '@/views/admin/dashboard/storage-manager/EditArticle'
+// Table manager
+import CurrentTable from '@/views/admin/dashboard/table-manager/AdminCurrentTable'
+import TableList from '@/views/admin/dashboard/table-manager/AdminTableList'
+// User manager
+import CreateUser from '@/views/admin/dashboard/user-manager/CreateUser'
+import UserList from '@/views/admin/dashboard/user-manager/UserList'
+import EditUser from '@/views/admin/dashboard/user-manager/EditUser'
+import ViewUser from '@/views/admin/dashboard/user-manager/ViewUser'
+// Tax manager
+import TaxesGraph from '@/views/admin/dashboard/taxes/tax-graph'
+import TaxesSettings from '@/views/admin/dashboard/taxes/tax-settings'
+
+//  Routes
 const routes = [
 	{
-		path: '/admin/home',
-		name: 'admin-home',
-		component: AdminDashboard,
-		meta: {
-			title: 'Home'
-		}
-		// TODO: Each route needs to be protected with requiresAuth meta
-	},
-	{
-		path: '/admin/user/create',
-		name: 'admin-create-user',
-		component: AdminCreateUser
-	},
-	{
-		path: '/admin/register',
-		name: 'admin-register',
-		component: AdminCreateAdmin
-	},
-	{
-		path: '/admin/settings',
-		name: 'admin-settings',
-		component: Settings
-	},
-	{
-		path: '/admin/settings/edit',
-		name: 'admin-edit-settings',
-		component: EditSettings
-	},
-	{
-		path: '/admin/tables',
-		name: 'admin-table-list',
-		component: AdminTableList
-	},
-	{
-		path: '/admin/table/:tableId',
-		name: 'admin-current-table',
-		component: AdminCurrentTable
-	},
-	{
-		path: '/admin/admin-list',
-		name: 'admin-admin-list',
-		component: AdminAdminList
-	},
-	{
-		path: '/admin/user-list',
-		name: 'admin-user-list',
-		component: AdminUserList
-	},
-	{
-		path: '/admin/:adminId',
-		name: 'admin-view-admin',
-		component: AdminViewAdmin
-	},
-	{
-		path: '/admin/:userId',
-		name: 'admin-view-user',
-		component: AdminViewUser
-	},
-	{
-		path: '/admin/taxes',
-		name: 'admin-taxes',
-		component: AdminTaxes
-	},
-	{
-		path: '/admin/:adminId/edit',
-		name: 'admin-edit-admin',
-		component: AdminEditAdmin
-	},
-	{
-		path: '/admin/user/:userId/edit',
-		name: 'admin-edit-user',
-		component: AdminEditUser
-	},
-	{
-		path: '/admin/storage-list',
-		name: 'admin-storage-list',
-		component: AdminStorageList
-	},
-	{
-		path: '/admin/storage/:storageId/subgroup-list',
-		name: 'admin-storage-subgroup-list',
-		component: AdminArticleSubgroupList
-	},
-	{
-		path: '/admin/storage/create',
-		name: 'admin-create-storage',
-		component: AdminCreateStorage
-	},
-	{
-		path: '/admin/storage/:storageId',
-		name: 'admin-view-article-subgroups',
-		component: AdminViewSubgroup
-	},
-	{
-		path: '/admin/storage/:storageId/edit',
-		name: 'admin-edit-storage',
-		component: AdminEditStorage
-	},
-	{
-		path: '/admin/storage/:storageId/article/create',
-		name: 'admin-create-article',
-		component: AdminCreateArticle
-	},
-	{
-		path: '/admin/article/:articleId/edit',
-		name: 'admin-edit-article',
-		component: AdminEditArticle
-	}
+		path: '/admin',
+		// redirect: '/admin/home',
+		component: Dashboard,
+
+		//  Dashboard pages
+		children: [
+			{
+				path: 'home',
+				name: 'admin-home',
+				component: Index,
+				meta: { title: 'Dashboard' }
+			},
+			{
+				path: 'store',
+				name: 'admin-store',
+				component: ViewStore,
+				meta: { title: 'Store' }
+			},
+			{
+				path: 'user/create',
+				name: 'admin-create-user',
+				component: CreateUser,
+				meta: { title: 'Create user' }
+			},
+			{
+				path: 'settings',
+				name: 'admin-settings',
+				component: Settings,
+				meta: { title: 'Settings' }
+			},
+			{
+				path: 'settings/edit',
+				name: 'admin-edit-settings',
+				component: EditSettings,
+				meta: { title: 'Edit settings' }
+			},
+			{
+				path: 'table/list',
+				name: 'admin-table-list',
+				component: TableList,
+				meta: { title: 'Admin tables' }
+			},
+			{
+				path: 'table/:tableId',
+				name: 'admin-current-table',
+				component: CurrentTable,
+				meta: { title: 'Current table' }
+			},
+			{
+				path: 'user/list',
+				name: 'admin-user-list',
+				component: UserList,
+				meta: { title: 'User list' }
+			},
+			{
+				path: 'user/:userId',
+				name: 'admin-view-user',
+				component: ViewUser,
+				meta: { title: 'View user' }
+			},
+			// Taxes
+			{
+				path: 'taxes/graph',
+				name: 'admin-taxes-graph',
+				component: TaxesGraph,
+				meta: { title: 'Taxes | Graph' }
+			},
+			{
+				path: 'taxes/settings',
+				name: 'admin-taxes-settings',
+				component: TaxesSettings,
+				meta: { title: 'Taxes | Settings' }
+			},
+			{
+				path: 'user/:userId/edit',
+				name: 'admin-edit-user',
+				component: EditUser,
+				meta: { title: 'Edit user' }
+			},
+			{
+				path: 'storage/list',
+				name: 'admin-storage-list',
+				component: StorageList,
+				meta: { title: 'Storage list' }
+			},
+			{
+				path: 'storage/create',
+				name: 'admin-storage-create',
+				component: CreateStorage,
+				meta: { title: 'Create storage' }
+			},
+			{
+				path: 'storage/:storageId',
+				name: 'admin-storage-view',
+				component: ViewStorage,
+				meta: { title: 'Article categories' }
+			},
+			// {
+			// 	path: 'storage/:storageId/category/:categoryId',
+			// 	name: 'admin-view-article-subgroups',
+			// 	component: ViewCategory,
+			// 	meta: { title: 'View category' }
+			// },
+			{
+				path: 'storage/:storageId/edit',
+				name: 'admin-edit-storage',
+				component: EditStorage,
+				meta: { title: 'Edit storage' }
+			},
+			{
+				path: 'storage/:storageId/article/create',
+				name: 'admin-create-article',
+				component: CreateArticle,
+				meta: { title: 'Create article' }
+			},
+			{
+				path: 'article/:articleId/edit',
+				name: 'admin-edit-article',
+				component: EditArticle,
+				meta: { title: 'Edit article' }
+			}
+		]
+	}		
 ]
 
 // Should always be a bool - false, or string - 'admin'

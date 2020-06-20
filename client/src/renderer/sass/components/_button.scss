@@ -1,0 +1,43 @@
+.btn {
+	font-size: 15px;
+	padding: 5px 15px;
+	color: #fff;
+	border: 1px solid transparent;
+	border-radius: 5px;
+	transition: color 200ms ease-in-out,
+							background-color 200ms ease-in-out,
+							border-color 200ms ease-in-out;
+}
+
+.btn-submit {
+	@extend .btn;
+	background-color: $success;
+
+	&:hover {
+		color: $success;
+		background-color: #fff;
+		border-color: $success;
+	}
+}
+
+.btn-edit {
+	@extend .btn;
+	background-color: $info;
+
+	&:hover {
+		color: $info;
+		background-color: #fff;
+		border-color: $info;
+	}
+}
+
+.btn-delete {
+	@extend .btn;
+	background-color: $error;
+
+	&:hover {
+		color: $error;
+		background-color: #fff;
+		border-color: $error;
+	}
+}

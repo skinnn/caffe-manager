@@ -1,0 +1,61 @@
+/*
+ * Global SCSS (injected with webpack and can be accessed in every component)
+ */
+
+ // Abstracts
+@import './abstracts/variables.scss';
+@import './abstracts/mixins.scss';
+@import './abstracts/functions.scss';
+
+// Base
+@import './base/fonts.scss';
+@import './base/typography.scss';
+
+// Components
+@import './components/button.scss';
+
+*:not(input),
+*::before,
+*::after {
+	margin: 0 0;
+	padding: 0 0;
+	box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6, p, div, button {
+	padding: 0;
+	margin: 0;
+}
+
+*:focus {
+	outline: none;
+}
+
+html {
+	scroll-behavior: smooth;
+	overflow-y: hidden;
+}
+
+html, body {
+	width: 100vw;
+	height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}/* Track */
+::-webkit-scrollbar-track {
+	background: #f1f1f1; 
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(51, 51, 51, 0.2); 
+	border-radius: 20px;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	/* background: #555; */
+	background: rgba(17, 13, 13, 0.6); 
+}

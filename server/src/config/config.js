@@ -3,16 +3,17 @@
  */
 
 // Load env variables
+const path = require('path')
 const env = require('dotenv').config().parsed
 
-module.exports = {
-	host: 'localhost',
+const config = {
 	protocol: 'http',
+	host: 'localhost',
 	port: env.PORT || 9090,
 	baseApiURL: env.BASE_API_URL || '/api',
 
 	rootUser: {
-		username: 'admin',
+		username: 'root',
 		password: '123123'
 	},
 	db: {
@@ -24,6 +25,13 @@ module.exports = {
 		jwtSecret: env.JWT_SECRET || 'secret',
 		sessionSecret: env.JWT_SECRET || 'session_secret'
 	},
+	uploads: {
+		directory: path.join(__dirname, '../../uploads'),
+		imagesDirectory: path.join(__dirname, '../../uploads/images')
+	},
 
-	server: null
+	server: null,
+	schemas: null
 }
+
+module.exports = config

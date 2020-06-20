@@ -11,18 +11,18 @@
 process.env.NODE_ENV = 'development'
 
 // Install `electron-debug` with `devtron`
-// require('electron-debug')({ showDevTools: true })
+// require('electron-debug')
 
 // Install `vue-devtools`
 require('electron').app.on('ready', () => {
-	var { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer')
+	const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer')
 	
   installExtension(VUEJS_DEVTOOLS)
     .then((extension) => {
 			console.log(`Added Extension: ${extension.name}`)
 		})
     .catch(err => {
-      console.log('Unable to install `vue-devtools`: \n', err)
+      console.log(`Unable to install ${extension.name}: \n`, err)
 		})		
 })
 
