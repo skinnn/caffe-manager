@@ -181,8 +181,8 @@ class UserController extends Controller {
 	// Update User by id
 	static async updateUserById(req, res, next) {
 		try {
-			let query = { _id: req.params.id }
-			let options = { new: true }
+			const query = { _id: req.params.id }
+			const options = { new: true }
 			var data = req.body
 
 			// Validate body

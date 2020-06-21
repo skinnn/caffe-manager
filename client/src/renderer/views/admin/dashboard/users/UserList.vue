@@ -101,13 +101,7 @@ export default {
 				currentPage: 1,
 				totalPages: null,
 				itemsPerPage: 20,
-				selectItemsPerPage: [
-					1,
-					5,
-					20,
-					50,
-					80
-				]
+				selectItemsPerPage: [ 1, 5, 20, 50, 80 ]
 			},
 			error: null,
 			success: null,

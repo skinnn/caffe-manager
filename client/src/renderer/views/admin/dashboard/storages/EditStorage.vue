@@ -68,7 +68,7 @@ export default {
 		async saveStorage(storageId) {
 			try {
 				// Save storage
-				const response = (await StorageService.saveStorage(this.storage)).data
+				const response = (await StorageService.updateStorage(this.storage)).data
 				console.log(response)
 				// If successfully saved
 				// if (response.saved) {

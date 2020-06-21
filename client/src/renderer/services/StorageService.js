@@ -10,7 +10,7 @@ export default {
 	getStorageById(id) {
 		return Api().get(`/storage/${id}`)
 	},
-	saveStorage(storage) {
-		return Api().patch(`/storage/${storage.id}`, storage)
+	updateStorage(id, storage) {
+		return Api().patch(`/storage/${id}`, storage)
 	}
 }

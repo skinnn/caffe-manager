@@ -57,7 +57,7 @@
         </a>
         <div id="warehouseDropdown" class="collapse" aria-labelledby="warehouseDropdown" data-parent="#warehouseDropdown">
           <div class="py-2 collapse-inner">
-            <!-- <h6 class="collapse-header">Storage manager</h6> -->
+						<!-- <h6 class="collapse-header">Storages</h6> -->
             <router-link to="/admin/storage/list" class="collapse-item">
 							<font-awesome-icon :icon="['fas', 'list-ul']" class="icon" style=""/>
 							Storage list
@@ -65,7 +65,44 @@
 						<router-link to="/admin/storage/create" class="collapse-item">
 							<font-awesome-icon :icon="['fas', 'plus']" class="icon" style=""/>
 							Create storage
-						</router-link>         
+						</router-link>
+          </div>
+        </div>
+      </li>
+
+			<!-- Articles -->
+			<li class="nav-item">
+        <a @click="handleDropdownToggle('articles')" 
+					:class="[!dropdowns.articles ? 'not-active-dropdown-link' : 'active-dropdown-link', 'nav-link', 'collapsed']"
+					href="#" 
+					data-toggle="collapse" 
+					data-target="#articlesDropdown" 
+					aria-expanded="true" 
+					aria-controls="articlesDropdown"
+				>
+          <font-awesome-icon :icon="['fas', 'glass-cheers']" class="icon" /> 
+					<span class="nav-item-name">Articles</span>
+					<div 
+						:class="[!dropdowns.articles ? 'active-dropdown' : 'not-active-dropdown', 'dropdown-arrow-icon']"
+					>
+						<font-awesome-icon :icon="['fas', 'angle-right']" />
+					</div>
+        </a>
+        <div id="articlesDropdown" class="collapse" aria-labelledby="articlesDropdown" data-parent="#articlesDropdown">
+          <div class="py-2 collapse-inner">
+						<!-- <h6 class="collapse-header">Storages</h6> -->
+            <router-link to="/admin/articles" class="collapse-item">
+							<font-awesome-icon :icon="['fas', 'list-ul']" class="icon" style=""/>
+							List
+						</router-link>
+						<router-link to="/admin/articles/create" class="collapse-item">
+							<font-awesome-icon :icon="['fas', 'plus']" class="icon" style=""/>
+							Add
+						</router-link>
+						<router-link to="/admin/categories" class="collapse-item">
+							<font-awesome-icon :icon="['fas', 'list-alt']" class="icon" style=""/>
+							Categories
+						</router-link>
           </div>
         </div>
       </li>
@@ -178,8 +215,8 @@
 <script>
 // Font Awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt } from '@fortawesome/free-solid-svg-icons'
-library.add(faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faPlus, faCalendarDay, faMapMarkedAlt)
+import { faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faListAlt, faPlus, faCalendarDay, faMapMarkedAlt, faGlassCheers } from '@fortawesome/free-solid-svg-icons'
+library.add(faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faListAlt, faPlus, faCalendarDay, faMapMarkedAlt, faGlassCheers)
 
 export default {
 	name: 'AdminSidebar',
@@ -188,6 +225,7 @@ export default {
 		return {
 			dropdowns: {
 				warehouse: false,
+				articles: false,
 				users: false,
 				taxes: false
 			}
@@ -204,6 +242,8 @@ export default {
 		handleDropdownToggle(which) {
 			if (which === 'warehouse') {
 				this.dropdowns.warehouse = !this.dropdowns.warehouse
+			} else if (which === 'articles') {
+				this.dropdowns.articles = !this.dropdowns.articles
 			} else if (which === 'users') {
 				this.dropdowns.users = !this.dropdowns.users
 			} else if (which === 'taxes') {
@@ -261,6 +301,11 @@ export default {
 
 			.collapsing,
 			.collapse {
+				.collapse-header {
+					font-size: 14px;
+					margin-left: 22px;
+					color: #fff;
+				}
 
 				.collapse-inner {
 
@@ -279,7 +324,7 @@ export default {
 				}
 			}
 
-			.router-link-active {
+			.router-link-exact-active {
 				color: $dashboard-sb-link-active-color;
 				background-color: rgba(255, 255, 255, 0.9);
 				border-radius: 20px;
@@ -309,7 +354,7 @@ export default {
 					padding: 5px 5px 5px 12px;
 					color: rgba($dashboard-sb-link-color, 1); //asd
 
-					&.router-link-active {
+					&.router-link-exact-active {
 						color: rgba($dashboard-sb-link-color, 1); //asd
 						font-weight: 600;
 					}
@@ -337,25 +382,25 @@ export default {
 	}
 
 	footer.bottom-menu {
-			position: absolute;
-			left: 0;
-			bottom: 0;
-			display: flex;
-			align-items: center;
-			justify-content: center;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: $dashboard-sb-footer-height;
+		padding: 10px 0;
+		// background-color: $dark-color;
+		
+		.powered-by {
 			width: 100%;
-			height: $dashboard-sb-footer-height;
-			padding: 10px 0;
-			// background-color: $dark-color;
-			
-			.powered-by {
-				width: 100%;
-				margin: 0;
-				font-size: 10px;
-				text-align: center;
-				color: $dashboard-sb-link-color;
-			}
+			margin: 0;
+			font-size: 10px;
+			text-align: center;
+			color: $dashboard-sb-link-color;
 		}
+	}
 
 	.icon {
 		width: 18px;

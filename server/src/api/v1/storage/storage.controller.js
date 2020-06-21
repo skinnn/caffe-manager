@@ -86,14 +86,26 @@ class StorageController extends Controller {
 	// Update Storage by id
 	static async updateStorage(req, res, next) {
 		try {
-			let query = {_id: req.params.id}
+			const query = {_id: req.params.id}
+			const options = { new: true }
+			const data = req.body
+			
+			// Validate body
+			const modifiedSchema = StorageJSONSchema
+			modifiedSchema.required = []
+			const error = Controller.validateToSchema(modifiedSchema, req.body)
+			if (error) throw new Error(error)
 
-			await Storage.findOneAndUpdate(query, req.body, (err, storage) => {
-				if (err) throw err
-				return res.status(200).json({
-					storage: storage
-				})
-			})
+			// const storageToUpdate = await Storage.findOne(query)
+
+			const	updatedStorage = await Storage.findOneAndUpdate(query, data, options)
+
+			res.locals = {
+				status: 200,
+				json: { user: updatedStorage }
+			}
+			
+			return next()
 		} catch (err) {
 			return next(err)
 		}

@@ -1,25 +1,6 @@
 <template>
 	<div class="admin-view-storage">
 		<v-layout column class="right-side">
-			<!-- <v-flex>
-				<div class="admin-header">
-						<h1 class="heading">
-							{{subgroup.name}}
-							<v-btn @click="createArticlePage(storage.id, subgroup.id, subgroup.name)" class="green">
-								Add Article
-							</v-btn>
-							<v-btn @click="editArticleSubgroupPage(storage.id, subgroup.id)" class="yellow">
-								Edit
-							</v-btn>
-						</h1>
-						<LogoutBtn />
-				</div>
-			</v-flex> -->
-
-			<!-- Storage data-->
-			<h3>Storage info:</h3>
-			<p>STORAGE ID: {{ storage.id }} </p>
-
 			<v-select
 				v-model="pagination.itemsPerPage"
 				:items="pagination.selectItemsPerPage"
@@ -78,21 +59,20 @@
 </template>
 
 <script>
-// import AdminSideMenu from '@/components/admin/AdminSideMenu'
-import StorageService from '@/services/StorageService'
 import ArticleService from '@/services/ArticleService'
 
 export default {
-	components: {
-		// AdminSideMenu
+	name: 'ArticleTable',
+
+	props: {
+		storageId: String
 	},
+
 	data() {
 		return {
-			// subgroup: {
-			// 	_id: this.$store.state.route.params.subgroup.id,
-			// 	name: this.$store.state.route.params.subgroup.name
-			// },
+			articles: [],
 			displayedArticles: [],
+			// Table data
 			pagination: {
 				currentPage: 1,
 				totalPages: null,
@@ -105,12 +85,10 @@ export default {
 					80
 				]
 			},
-			storage: {},
-			storageId: this.$store.state.route.params.storageId,
-			articles: [],
-			settings: {
-				currency: this.$store.state.settings.currency
-			},
+			// TODO: Get sdata from store endpoint
+			// settings: {
+			// 	currency: this.$store.state.settings.currency
+			// },
 			headers: [
 				{
 					text: '',
@@ -121,41 +99,19 @@ export default {
 				{ text: 'Name', value: 'name' },
 				{ text: 'Quantity', value: 'quantity' },
 				{ text: 'Price', value: 'price' },
-				{ text: 'Options', sortable: false, align: 'center', value: 'option' }
+				{ text: 'Options', sortable: false, align: 'center' }
 			]
 		}
 	},
-	async mounted() {
-		try {
-			// console.log('Subgroup _id: ', this.subgroup.id)
-			// console.log('Subgroup name: ', this.subgroup.name)
-			let storageId = this.storageId
-			// Get Storage data
-			const storageResponse = await StorageService.getStorageById(storageId)
-			const storage = storageResponse.data
-			if (storage) {
-				this.storage = storage
-			}
-
-			// // Get Articles from the selected Subgroup
-			// const articleResponse = (await ArticleService.getArticlesBySubgroupId(this.subgroup.id)).data
-			// console.log('ArticlesBySubgroupId: ', articleResponse)
-
-			// if (articleResponse.articles) {
-			// 	this.articles = await articleResponse.articles
-			// 	let l = this.articles.length
-			// 	let s = this.pagination.itemsPerPage
-			// 	this.pagination.totalPages = await Math.floor(l / s)
-			// 	let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
-			// 	let end = start + this.pagination.itemsPerPage
-			// 	// Set Displayed Articles
-			// 	this.displayedArticles = this.articles.slice(start, end)
-			// }
-		} catch (err) {
-			console.log(err)
-		}
+	
+	mounted() {
+		// this.getArticlesByStorageId()
 	},
+
 	methods: {
+		// TODO: Finish
+		// getArticlesByStorageId() {},
+
 		changePagination() {
 			let l = this.articles.length
 			let s = this.pagination.itemsPerPage
@@ -166,17 +122,20 @@ export default {
 			this.displayedArticles = this.articles.slice(start, end)
 			console.log(this.pagination.itemsPerPage)
 		},
-		createArticlePage(storageId, subgroupId, subgroupName) {
-			this.$router.push({name: 'admin-create-article', params: {storageId, subgroupId, subgroupName}})
-		},
-		editArticleSubgroupPage(subgroupId) {
-			// TODO: Edit Article Subgroup
-			this.$router.push({name: 'admin-edit-article-subgroup', params: {subgroupId}})
-		},
-		editArticlePage(articleId) {
-			let storageId = this.storageId
-			this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
-		},
+
+		// createArticlePage(storageId, subgroupId, subgroupName) {
+		// 	this.$router.push({name: 'admin-create-article', params: {storageId, subgroupId, subgroupName}})
+		// },
+
+		// editArticleSubgroupPage(subgroupId) {
+		// 	// TODO: Edit Article Subgroup
+		// 	this.$router.push({name: 'admin-edit-article-subgroup', params: {subgroupId}})
+		// },
+		
+		// editArticlePage(articleId) {
+		// 	let storageId = this.storageId
+		// 	this.$router.push({name: 'admin-edit-article', params: {articleId, storageId}})
+		// },
 
 		async pageChanged() {
 			try {

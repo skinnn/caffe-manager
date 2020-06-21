@@ -34,7 +34,8 @@ button[disabled] {
 	}
 }
 
-.btn-edit {
+.btn-edit,
+.btn-view {
 	@extend .btn;
 	background-color: $info;
 
