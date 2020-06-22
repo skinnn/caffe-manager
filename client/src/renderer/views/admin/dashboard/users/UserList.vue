@@ -181,10 +181,9 @@ export default {
 			this.pagination.totalPages = Math.floor(l / s)
 			let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
 			let end = start + this.pagination.itemsPerPage
-			// Set Displayed Articles
+			
+			// Set displayed users
 			this.displayedUsers = this.users.slice(start, end)
-			console.log('this: ', this.displayedUsers)
-			console.log(this.pagination.itemsPerPage)
 		},
 
 		pageChanged() {
@@ -194,10 +193,9 @@ export default {
 			this.displayedUsers = this.users.slice(start, end)
 		},
 
-		viewUser(userId, item) {
+		viewUser(userId) {
 			event.stopPropagation()
-			console.log('props.item: ', item)
-			this.$router.push({name: 'admin-view-user', params: { userId: userId }})
+			this.$router.push({ name: 'admin-view-user', params: { userId: userId } })
 		},
 
 		async deleteUser(user) {

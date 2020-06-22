@@ -55,7 +55,9 @@
 				</td>
 				<td class="td text-xs-center options">
 					<!-- <button @click="deleteStoage(item)" class="btn-delete">Delete</button> -->
-					<button @click="viewStorage(item)" class="btn-view">View</button>
+					<button type="button" @click="viewStorageDetails(item)" class="btn-info">
+						Details
+					</button>
 				</td>
 			</template>
 		</v-data-table>
@@ -80,11 +82,11 @@ export default {
 
 			// Table data
 			headers: [
-				{ text: 'Avatar', align: 'left', sortable: false },
+				{ text: 'Image', align: 'left', sortable: false },
 				{ text: 'Name', align: 'left', sortable: true, value: 'name' },
 				{ text: 'Type', sortable: true, value: 'type' },
 				{ text: 'Active (in use)', sortable: true, value: 'roles' },
-				{ text: 'Options', align: 'center', sortable: false, value: 'option' }
+				{ text: 'Actions', align: 'center', sortable: false }
 			],
 			pagination: {
 				currentPage: 1,
@@ -128,6 +130,16 @@ export default {
 		viewStorage(storage) {
 			this.$router.push({
 				name: 'admin-storage-view',
+				params: {
+					storageId: storage.id,
+					storageName: storage.name
+				}
+			})
+		},
+
+		viewStorageDetails(storage) {
+			this.$router.push({
+				name: 'admin-storage-view-details',
 				params: {
 					storageId: storage.id,
 					storageName: storage.name

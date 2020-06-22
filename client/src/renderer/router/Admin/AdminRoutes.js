@@ -17,6 +17,7 @@ import ViewStore from '@/views/admin/dashboard/store/viewStore'
 // Storage manager
 // import ViewCategory from '@/views/admin/dashboard/storages/ViewArticleCategory'
 import ViewStorage from '@/views/admin/dashboard/storages/ViewStorage'
+import ViewStorageDetails from '@/views/admin/dashboard/storages/ViewStorageDetails'
 import EditStorage from '@/views/admin/dashboard/storages/EditStorage'
 import StorageList from '@/views/admin/dashboard/storages/StorageList'
 import ArticleCategoryList from '@/views/admin/dashboard/storages/ArticleCategoryList'
@@ -80,7 +81,7 @@ const routes = [
 				component: EditSettings,
 				meta: { title: 'Edit settings' }
 			},
-			// Warehouse
+			// Storage
 			{
 				path: 'storage/list',
 				name: 'admin-storage-list',
@@ -97,7 +98,13 @@ const routes = [
 				path: 'storage/:storageId',
 				name: 'admin-storage-view',
 				component: ViewStorage,
-				meta: { title: 'Storage' }
+				meta: { title: 'Storage items' }
+			},
+			{
+				path: 'storage/:storageId/details',
+				name: 'admin-storage-view-details',
+				component: ViewStorageDetails,
+				meta: { title: 'Storage details' }
 			},
 			// {
 			// 	path: 'storage/:storageId/edit',

@@ -7,6 +7,7 @@
 				<input
 					type="text"
 					id="name"
+					:readonly="!editMode"
 					v-model="form.fields.name"
 					class="form-control"
 					placeholder="Example: Storage 1.."
@@ -15,7 +16,11 @@
 
 			<div class="form-group">
 				<label>Type</label>
-				<select @change="handleSelectType()" class="form-control">
+				<select class="form-control"
+					@change="handleSelectType()"
+					:readonly="!editMode"
+					:disabled="!editMode"
+				>
 					<option
 						v-for="opt in select.type"
 						:key="opt.value"
@@ -32,6 +37,8 @@
 				<select class="form-control"
 					@change="handleSelectActive()"
 					v-model="form.fields.active"
+					:readonly="!editMode"
+					:disabled="!editMode"
 				>
 					<option
 						v-for="opt in select.active"
@@ -51,7 +58,7 @@
 			</button>
 
 			<button type="button" class="btn-submit"
-				v-if="form.mode === 'update'"
+				v-if="form.mode === 'update' && editMode"
 				@click="updateStorage()"
 			>
 				Update
@@ -77,7 +84,8 @@ export default {
 		},
 
 		editMode: {
-			type: Boolean
+			type: Boolean,
+			default: false
 		}
 	},
 

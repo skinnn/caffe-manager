@@ -34,8 +34,7 @@ button[disabled] {
 	}
 }
 
-.btn-edit,
-.btn-view {
+.btn-info {
 	@extend .btn;
 	background-color: $info;
 
@@ -43,6 +42,19 @@ button[disabled] {
 		color: $info;
 		background-color: #fff;
 		border-color: $info;
+	}
+
+	&-outline {
+		@extend .btn;
+		background-color: #f4f4f4;
+		border-color: $info;
+		color: $info;
+		
+		&:hover {
+			color: #fff;
+			background-color: $info;
+			border-color: $info;
+		}
 	}
 }
 

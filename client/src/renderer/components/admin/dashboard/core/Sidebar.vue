@@ -81,7 +81,7 @@
 					aria-controls="articlesDropdown"
 				>
           <font-awesome-icon :icon="['fas', 'glass-cheers']" class="icon" /> 
-					<span class="nav-item-name">Articles</span>
+					<span class="nav-item-name">Products</span>
 					<div 
 						:class="[!dropdowns.articles ? 'active-dropdown' : 'not-active-dropdown', 'dropdown-arrow-icon']"
 					>

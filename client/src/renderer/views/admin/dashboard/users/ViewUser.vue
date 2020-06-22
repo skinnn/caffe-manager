@@ -4,7 +4,7 @@
 			{{ user.name }}
 			
 			<button
-				:class="[options.userEditMode ? 'btn-delete' : 'btn-edit']"
+				:class="[options.userEditMode ? 'btn-delete' : 'btn-info']"
 				@click="toggleUserEditMode()"
 				ref="editUserBtn"
 			>
@@ -58,8 +58,8 @@
 		<div class="form-group">
 			<label for="permissions">Permissions</label>
 			<select class="form-control"
-				:disabled="!options.userEditMode"
 				@change="handleSelectRole()"
+				:disabled="!options.userEditMode"
 				:readonly="!options.userEditMode"
 			>
 				<option value="user">user</option>
@@ -78,7 +78,7 @@
 
 		<div class="form-group">
 			<button type="button"
-				:class="[options.passwordEditMode ? 'btn-delete' : 'btn-edit', 'btn-edit-password']"
+				:class="[options.passwordEditMode ? 'btn-delete' : 'btn-info', 'btn-info-password']"
 				v-if="!options.userEditMode"
 				@click="togglePasswordEditMode()"
 			>
@@ -332,7 +332,7 @@ export default {
 	.view-user-page {
 		padding-bottom: 50px;
 		
-		.btn-edit-password {
+		.btn-info-password {
 			
 		}
 	}

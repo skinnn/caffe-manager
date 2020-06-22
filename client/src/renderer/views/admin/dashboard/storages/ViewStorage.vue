@@ -16,22 +16,12 @@
 		</v-flex> -->
 
 		<h1 class="heading">
-			{{ storage.name }}
-			
-			<button
-				:class="[options.storageEditMode ? 'btn-delete' : 'btn-edit']"
-				@click="toggleStorageEditMode()"
-				ref="editUserBtn"
-			>
-				{{ options.storageEditMode ? 'Discard' : 'Edit' }}
-			</button>
+			Storage: {{ storage.name }}
 		</h1>
-
-		<StorageForm
-			v-if="options.storageEditMode"
-			:editMode="options.storageEditMode"
-			:storage="storage"
-		/>
+		
+		<button type="button" class="btn-info" @click="viewDetails(storage)">
+			Details
+		</button>
 
 		<ArticleTable :storageId="storageId" />
 	</div>
@@ -84,8 +74,11 @@ export default {
 			}
 		},
 
-		toggleStorageEditMode() {
-			this.options.storageEditMode = !this.options.storageEditMode
+		viewDetails(storage) {
+			this.$router.push({
+				name: 'admin-storage-view-details',
+				storageId: storage.id
+			})
 		}
 	}
 }
