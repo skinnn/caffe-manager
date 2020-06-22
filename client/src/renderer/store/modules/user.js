@@ -1,5 +1,6 @@
+import AuthService from '../../services/AuthService'
 var state = {
-	user: JSON.parse(localStorage.getItem('user')) || null,
+	user: JSON.parse(localStorage.getItem('user')),
 	token: localStorage.getItem('token') || ''
 }
 
@@ -15,12 +16,12 @@ const mutations = {
 const actions = {
 	setUser({ commit }, user) {
 		return new Promise((resolve, reject) => {
-			localStorage.setItem('user', JSON.stringify(user))
+			const jsonUser = user ? JSON.stringify(user) : ''
+			localStorage.setItem('user', jsonUser)
 			commit('SET_USER', user)
 			resolve(user)
 		})
 	},
-
 	setToken({ commit }, token) {
 		return new Promise((resolve, reject) => {
 			localStorage.setItem('token', token)
@@ -29,26 +30,40 @@ const actions = {
 		})
 	},
 
-	// Set all data when user logs in
-	loginUser(context, data) {
-		return new Promise((resolve, reject) => {
-			const isUserSet = context.dispatch('setUser', data.user)
-			const isTokenSet = context.dispatch('setToken', data.token)
-
-			if (isUserSet && isTokenSet) resolve(data.user, data.token)
-			else reject(new Error('Could not set user and token.'))
-		})
+	clearUser(context) {
+		localStorage.removeItem('user')
+		context.commit('SET_USER', '')
+	},
+	clearToken(context) {
+		localStorage.removeItem('token')
+		context.commit('SET_TOKEN', '')
 	},
 
-	logoutUser(context) {
-		return new Promise((resolve, reject) => {
-			const isUserRemoved = context.dispatch('setUser', null)
-			const isTokenRemoved = context.dispatch('setToken', '')
-			const areNotificationsRemoved = context.dispatch('clearNotifications')
+	// Set all data when user logs in
+	async loginUser(context, data) {
+		try {
+			const res = await AuthService.login(data)
 
-			if (isUserRemoved && isTokenRemoved) resolve(true)
-			else reject(new Error('Could not remove user and token'))
-		})
+			context.dispatch('setUser', res.data.user)
+			context.dispatch('setToken', res.data.token)
+			return res
+		} catch (err) {
+			throw err
+		}
+	},
+
+	async logoutUser(context) {
+		try {
+			const res = await AuthService.logout()
+			// Remove all user data
+			context.dispatch('clearUser')
+			context.dispatch('clearToken')
+			localStorage.removeItem('user')
+			localStorage.removeItem('token')
+			return res
+		} catch (err) {
+			throw err
+		}
 	}
 }
 
@@ -62,7 +77,9 @@ const getters = {
 	},
 
 	isLoggedIn(state) {
-		return state.token !== null && state.token !== ''
+		const t = state.token
+		const isLoggedIn = typeof t === 'string' && t.length > 10
+		return isLoggedIn
 	}
 }
 

@@ -62,7 +62,9 @@ class UserController extends Controller {
 				})
 			}
 
-			Controller.validateOwnership(req, userToDelete)
+			if (!req.user.roles.includes('admin')) {
+				Controller.validateOwnership(req, userToDelete)
+			}
 
 			const deletedUser = await User.deleteOne(query)
 			if (deletedUser) {
@@ -132,17 +134,17 @@ class UserController extends Controller {
 	static async getAllUsers(req, res, next) {
 		try {
 			const match = req.queryParsed.match
-			const fields = req.queryParsed.fields
-			const include = req.queryParsed.include
-			const limit = req.queryParsed.limit
-			const sort = req.queryParsed.sort
+			// Dont return the root user
+			match.roles = {
+				$in: ['user', 'admin']
+			}
 			
 			const users = await User
 				.find(match)
-				.populate(include)
-				.select(fields)
-				.limit(limit)
-				.sort(sort)
+				.populate(req.queryParsed.include)
+				.select(req.queryParsed.fields)
+				.limit(req.queryParsed.limit)
+				.sort(req.queryParsed.sort)
 			
 			res.locals = {
 				status: 200,
@@ -174,27 +176,34 @@ class UserController extends Controller {
 	
 	// Update User by id
 	static async updateUserById(req, res, next) {
-		// TODO: Not working
 		try {
-			let query = {_id: req.body.id}
-			let options = { new: true }
-			
-			// TODO: Remove parsing if not needed
-			const jsonData = JSON.parse(JSON.stringify(req.body))
-			var dataToReplace = {}
+			const query = { _id: req.params.id }
+			const options = { new: true }
+			var data = req.body
 
-			for (let [key, value] of Object.entries(jsonData)) {
-				// console.log(`${key}: ${value}`)
-				if (value !== undefined && value !== null) {
-					dataToReplace[key] = value
-				}
+			// Validate body
+			const modifiedSchema = UserJSONSchema
+			modifiedSchema.required = []
+			const error = Controller.validateToSchema(modifiedSchema, req.body)
+			if (error) throw new Error(error)
+
+			const userToUpdate = await User.findOne(query)
+
+			// Validate ownership if its user
+			if (!req.user.roles.includes('admin')) {
+				Controller.validateOwnership(req, userToUpdate)
 			}
 
-			const user = await User.findOne(query)
+			// Check if password field is passed
+			if (req.body.password) {
+				// Hash password
+				const hash = await User.hashPassword(req.body.password)
+				data.password = hash
+			}
 
-			Controller.validateOwnership(req, user)
-
-			const updatedUser = await User.findOneAndUpdate(query, dataToReplace, options)
+			data.updated = new Date(Date.now()).toString()
+			data.updated_by = req.user.id
+			const	updatedUser = await User.findOneAndUpdate(query, data, options)
 
 			res.locals = {
 				status: 200,

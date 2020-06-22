@@ -1,4 +1,4 @@
-import Api from '@/services/Api'
+import Api from '../services/Api'
 
 export default {
 	createStorage(storage) {
@@ -7,10 +7,10 @@ export default {
 	getAllStorages() {
 		return Api().get('/storage')
 	},
-	getStorageById(id) {
-		return Api().get(`/storage/${id}`)
+	getStorageById(id, query = '') {
+		return Api().get(`/storage/${id}${query}`)
 	},
-	saveStorage(storage) {
-		return Api().patch(`/storage/${storage.id}`, storage)
+	updateStorage(id, storage, query = '') {
+		return Api().patch(`/storage/${id}${query}`, storage)
 	}
 }

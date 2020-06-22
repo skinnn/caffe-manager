@@ -54,7 +54,6 @@
 						</span>
 					</td>
 					<td class="td text-xs-center options">
-						<button @click="editUserPage(props.item.id)" class="btn-edit">Edit</button>
 						<button @click="deleteUser(props.item)" class="btn-delete">Delete</button>
 					</td>
 				</template>
@@ -83,7 +82,7 @@ export default {
 	components: {},
 
 	computed: {
-		...mapGetters([])
+		...mapGetters(['getUser'])
 	},
 
 	data() {
@@ -102,13 +101,7 @@ export default {
 				currentPage: 1,
 				totalPages: null,
 				itemsPerPage: 20,
-				selectItemsPerPage: [
-					1,
-					5,
-					20,
-					50,
-					80
-				]
+				selectItemsPerPage: [ 1, 5, 20, 50, 80 ]
 			},
 			error: null,
 			success: null,
@@ -124,7 +117,11 @@ export default {
 		async getUsers() {
 			try {
 				const res = (await UserService.getAllUsers()).data
-				const users = res.users
+				const allUsers = res.users
+
+				const loggedInUser = this.getUser
+				// Filter logged in user
+				const users = allUsers.filter((user) => user.id !== loggedInUser.id)
 
 				if (res.users) {
 					this.users = users
@@ -184,10 +181,9 @@ export default {
 			this.pagination.totalPages = Math.floor(l / s)
 			let start = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage
 			let end = start + this.pagination.itemsPerPage
-			// Set Displayed Articles
+			
+			// Set displayed users
 			this.displayedUsers = this.users.slice(start, end)
-			console.log('this: ', this.displayedUsers)
-			console.log(this.pagination.itemsPerPage)
 		},
 
 		pageChanged() {
@@ -197,17 +193,9 @@ export default {
 			this.displayedUsers = this.users.slice(start, end)
 		},
 
-		viewUser(userId, item) {
+		viewUser(userId) {
 			event.stopPropagation()
-			console.log('props.item: ', item)
-			this.$router.push({name: 'admin-view-user', params: { userId: userId }})
-		},
-
-		editUserPage(userId) {
-			this.$router.push({
-				name: 'admin-edit-user',
-				params: {userId}
-			})
+			this.$router.push({ name: 'admin-view-user', params: { userId: userId } })
 		},
 
 		async deleteUser(user) {
@@ -220,7 +208,6 @@ export default {
 					const data = res.data
 					// If User is deleted successfully
 					if (res.status === 200) {
-						console.log('USER DELETED FROM RES:', data.user)
 						// Set success message and timeout
 						this.error = null
 						this.success = data.message

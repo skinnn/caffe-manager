@@ -49,46 +49,34 @@ export default {
 	mounted() {
 		let msg = this.$route.params.loggedOutMessage
 		if (msg) this.handleLoggingOut(msg)
+		this.$refs.inputUsername.focus()
 	},
 
 	methods: {
 		async postLogin() {
 			event.preventDefault()
 			try {
-				// Login
-				const loginRes = await AuthService.login({
-					username: this.username,
-					password: this.password
-				})
+				const data = { username: this.username, password: this.password }
+				// Send req to login
+				const res = await this.$store.dispatch('loginUser', data)
+				var user = res.data.user
 
-				// If user login is successfull
-				if (loginRes.status === 200) {
-					const user = loginRes.data.user
-					const token = loginRes.data.token
-					// Set user in the Vuex Store
-					const data = {
-						user,
-						token
-					}
+				if (res.status === 200) {
+					// Redirect admin/root user to admin dashboard
+					if (user.roles.includes('admin') || user.roles.includes('root')) {
+						return this.$router.push({
+							name: 'admin-home'
+						})
 
-					const isLoggedIn = await this.$store.dispatch('loginUser', data)
-
-					if (isLoggedIn) {
-						// Redirect admin/root user to admin dashboard
-						if (user.roles.includes('admin') || user.roles.includes('root')) {
-							return this.$router.push({
-								name: 'admin-home'
-							})
-
-						// Redirect user to user dashboard
-						} else if (user.roles.includes('user')) {
-							return this.$router.push({
-								name: 'user-home'
-							})
-						}
+					// Redirect user to user dashboard
+					} else if (user.roles.includes('user')) {
+						return this.$router.push({
+							name: 'user-home'
+						})
 					}
 				}
 			} catch (err) {
+				console.error(err)
 				// Error message
 				this.showMessage('error', err.response.data.message)
 			}

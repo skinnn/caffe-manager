@@ -1,14 +1,13 @@
 <template>
 	<div class="admin-home">
-		<div class="admin-info">
-			<p>TEST</p>
-			<!-- TODO: Create admin profile page and option to edit profile -->
-			<p>Name: <span class="info-data">{{admin_info.name}}</span></p>
-			<p>Username: <span class="info-data">{{admin_info.username}}</span></p>
-			<p>Telephone 1: <span class="info-data">{{admin_info.telephone1}}</span></p>
-			<p>Telephone 2: <span class="info-data">{{admin_info.telephone2}}</span></p>
-			<p>Address: <span class="info-data">{{admin_info.address}}</span></p>
-			<p>Last time updated: <span class="info-data">{{admin_info.updated}}</span></p>
+		<div class="info-wrapper">
+			<p>Name: <span class="info-data">{{user.name}}</span></p>
+			<p>Username: <span class="info-data">{{user.username}}</span></p>
+			<p>Phone: <span class="info-data">{{user.phone}}</span></p>
+			<p>Address: <span class="info-data">{{user.address}}</span></p>
+			<p>Last time updated: <span class="info-data">{{user.updated}}</span></p>
+			<p>Last update by: <span class="info-data">{{user.updated_by}}</span></p>
+			<p>Created: <span class="info-data">{{user.created}}</span></p>
 		</div>
 	</div>
 </template>
@@ -19,13 +18,13 @@ export default {
 	
 	data() {
 		return {
-			admin_info: {
+			user: {
 				name: this.$store.state.user.name,
 				username: this.$store.state.user.username,
-				telephone1: this.$store.state.user.telephone1,
-				telephone2: this.$store.state.user.telephone2,
+				phone: this.$store.state.user.phone,
 				address: this.$store.state.user.address,
-				updated: this.$store.state.user.updated
+				updated: this.$store.state.user.updated,
+				updated_by: this.$store.state.user.updated_by
 			},
 			user_id: this.$store.state.user.id,
 			error: null,
@@ -35,8 +34,7 @@ export default {
 	},
 
 	mounted() {
-		console.log('STORE: ', this.$store.state)
-		// TODO: Get and populate admin info from the database instead of Vuex Store
+		// console.log('STORE: ', this.$store.state)
 	}
 }
 </script>
@@ -47,7 +45,7 @@ export default {
 	}
 	.admin-container {
 
-		.admin-info {
+		.info-wrapper {
 			p {
 				font-size: 17px;
 				color: darken(grey, 10);

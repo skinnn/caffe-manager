@@ -9,6 +9,20 @@
 							border-color 200ms ease-in-out;
 }
 
+button[disabled] {
+	cursor: not-allowed;
+	opacity: 0.8;
+	border-color: grey;
+	color: grey;
+	background-color: #fff;
+
+	&:hover {
+		border-color: grey;
+		color: grey;
+		background-color: #fff;
+	}
+}
+
 .btn-submit {
 	@extend .btn;
 	background-color: $success;
@@ -20,7 +34,7 @@
 	}
 }
 
-.btn-edit {
+.btn-info {
 	@extend .btn;
 	background-color: $info;
 
@@ -28,6 +42,19 @@
 		color: $info;
 		background-color: #fff;
 		border-color: $info;
+	}
+
+	&-outline {
+		@extend .btn;
+		background-color: #f4f4f4;
+		border-color: $info;
+		color: $info;
+		
+		&:hover {
+			color: #fff;
+			background-color: $info;
+			border-color: $info;
+		}
 	}
 }
 

@@ -43,9 +43,12 @@ class StorageController extends Controller {
 	// Get All Storages
 	static async getAllStorages(req, res, next) {
 		try {
-			const query = {}
-
-			const storages = await Storage.find(query)
+			const storages = await Storage
+				.find(req.queryParsed.match)
+				.populate(req.queryParsed.include)
+				.select(req.queryParsed.fields)
+				.limit(req.queryParsed.limit)
+				.sort(req.queryParsed.sort)
 			
 			res.locals = {
 				status: 200,
@@ -61,9 +64,10 @@ class StorageController extends Controller {
 	// Get Storage by id
 	static async getStorageById(req, res, next) {
 		try {
-			let query = req.params.id
+			const query = req.params.id
+			const include = req.queryParsed.include
 
-			const storage = await Storage.findById(query)
+			const storage = await Storage.findById(query).populate(include)
 
 			res.locals = {
 				status: 200,
@@ -86,14 +90,30 @@ class StorageController extends Controller {
 	// Update Storage by id
 	static async updateStorage(req, res, next) {
 		try {
-			let query = {_id: req.params.id}
+			const query = {_id: req.params.id}
+			const include = req.queryParsed.include
 
-			await Storage.findOneAndUpdate(query, req.body, (err, storage) => {
-				if (err) throw err
-				return res.status(200).json({
-					storage: storage
-				})
-			})
+			const options = { new: true }
+			const data = req.body
+			
+			// Validate body
+			const modifiedSchema = StorageJSONSchema
+			modifiedSchema.required = []
+			const error = Controller.validateToSchema(modifiedSchema, req.body)
+			if (error) throw new Error(error)
+
+			// const storageToUpdate = await Storage.findOne(query)
+
+			data.updated = new Date(Date.now()).toString()
+			data.updated_by = req.user.id
+			const	updatedStorage = await Storage.findOneAndUpdate(query, data, options).populate(include)
+
+			res.locals = {
+				status: 200,
+				json: { storage: updatedStorage }
+			}
+			
+			return next()
 		} catch (err) {
 			return next(err)
 		}

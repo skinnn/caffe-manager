@@ -15,22 +15,27 @@ import EditSettings from '@/views/admin/dashboard/settings/EditSettings'
 // Store
 import ViewStore from '@/views/admin/dashboard/store/viewStore'
 // Storage manager
-// import ViewCategory from '@/views/admin/dashboard/storage-manager/ViewArticleCategory'
-import ViewStorage from '@/views/admin/dashboard/storage-manager/ViewStorage'
-import EditStorage from '@/views/admin/dashboard/storage-manager/EditStorage'
-import StorageList from '@/views/admin/dashboard/storage-manager/StorageList'
-import ArticleCategoryList from '@/views/admin/dashboard/storage-manager/ArticleCategoryList'
-import CreateStorage from '@/views/admin/dashboard/storage-manager/CreateStorage'
-import CreateArticle from '@/views/admin/dashboard/storage-manager/CreateArticle'
-import EditArticle from '@/views/admin/dashboard/storage-manager/EditArticle'
+// import ViewCategory from '@/views/admin/dashboard/storages/ViewArticleCategory'
+import ViewStorage from '@/views/admin/dashboard/storages/ViewStorage'
+import ViewStorageDetails from '@/views/admin/dashboard/storages/ViewStorageDetails'
+import EditStorage from '@/views/admin/dashboard/storages/EditStorage'
+import StorageList from '@/views/admin/dashboard/storages/StorageList'
+import ArticleCategoryList from '@/views/admin/dashboard/storages/ArticleCategoryList'
+import CreateStorage from '@/views/admin/dashboard/storages/CreateStorage'
+import CreateArticle from '@/views/admin/dashboard/storages/CreateArticle'
+import EditArticle from '@/views/admin/dashboard/storages/EditArticle'
+// Articles
+import ArticleList from '@/views/admin/dashboard/articles/ArticleList'
+import ArticleCreate from '@/views/admin/dashboard/articles/ArticleCreate'
+// Categories
+import CategoryList from '@/views/admin/dashboard/articles/CategoryList'
 // Table manager
-import CurrentTable from '@/views/admin/dashboard/table-manager/AdminCurrentTable'
-import TableList from '@/views/admin/dashboard/table-manager/AdminTableList'
+import CurrentTable from '@/views/admin/dashboard/tables/AdminCurrentTable'
+import TableList from '@/views/admin/dashboard/tables/AdminTableList'
 // User manager
-import CreateUser from '@/views/admin/dashboard/user-manager/CreateUser'
-import UserList from '@/views/admin/dashboard/user-manager/UserList'
-import EditUser from '@/views/admin/dashboard/user-manager/EditUser'
-import ViewUser from '@/views/admin/dashboard/user-manager/ViewUser'
+import CreateUser from '@/views/admin/dashboard/users/CreateUser'
+import UserList from '@/views/admin/dashboard/users/UserList'
+import ViewUser from '@/views/admin/dashboard/users/ViewUser'
 // Tax manager
 import TaxesGraph from '@/views/admin/dashboard/taxes/tax-graph'
 import TaxesSettings from '@/views/admin/dashboard/taxes/tax-settings'
@@ -50,6 +55,7 @@ const routes = [
 				component: Index,
 				meta: { title: 'Dashboard' }
 			},
+			// Store
 			{
 				path: 'store',
 				name: 'admin-store',
@@ -62,6 +68,7 @@ const routes = [
 				component: CreateUser,
 				meta: { title: 'Create user' }
 			},
+			// Settings
 			{
 				path: 'settings',
 				name: 'admin-settings',
@@ -74,6 +81,76 @@ const routes = [
 				component: EditSettings,
 				meta: { title: 'Edit settings' }
 			},
+			// Storage
+			{
+				path: 'storage/list',
+				name: 'admin-storage-list',
+				component: StorageList,
+				meta: { title: 'Storage list' }
+			},
+			{
+				path: 'storage/create',
+				name: 'admin-storage-create',
+				component: CreateStorage,
+				meta: { title: 'Create storage' }
+			},
+			{
+				path: 'storage/:storageId',
+				name: 'admin-storage-view',
+				component: ViewStorage,
+				meta: { title: 'Storage items' }
+			},
+			{
+				path: 'storage/:storageId/details',
+				name: 'admin-storage-view-details',
+				component: ViewStorageDetails,
+				meta: { title: 'Storage details' }
+			},
+			// {
+			// 	path: 'storage/:storageId/edit',
+			// 	name: 'admin-edit-storage',
+			// 	component: EditStorage,
+			// 	meta: { title: 'Edit storage' }
+			// },
+			// {
+			// 	path: 'storage/:storageId/category/:categoryId',
+			// 	name: 'admin-view-article-subgroups',
+			// 	component: ViewCategory,
+			// 	meta: { title: 'View category' }
+			// },
+			// {
+			// 	path: 'storage/:storageId/article/create',
+			// 	name: 'admin-create-article',
+			// 	component: CreateArticle,
+			// 	meta: { title: 'Create article' }
+			// },
+			// {
+			// 	path: 'article/:articleId/edit',
+			// 	name: 'admin-edit-article',
+			// 	component: EditArticle,
+			// 	meta: { title: 'Edit article' }
+			// },
+			// Articles
+			{
+				path: 'articles',
+				name: 'admin-article-list',
+				component: ArticleList,
+				meta: { title: 'Article list' }
+			},
+			{
+				path: 'articles/create',
+				name: 'admin-article-create',
+				component: ArticleCreate,
+				meta: { title: 'Create article' }
+			},
+			// Categories
+			{
+				path: 'categories',
+				name: 'admin-category-list',
+				component: CategoryList,
+				meta: { title: 'Categories' }
+			},
+			// Tables
 			{
 				path: 'table/list',
 				name: 'admin-table-list',
@@ -86,6 +163,7 @@ const routes = [
 				component: CurrentTable,
 				meta: { title: 'Current table' }
 			},
+			// Users
 			{
 				path: 'user/list',
 				name: 'admin-user-list',
@@ -110,54 +188,6 @@ const routes = [
 				name: 'admin-taxes-settings',
 				component: TaxesSettings,
 				meta: { title: 'Taxes | Settings' }
-			},
-			{
-				path: 'user/:userId/edit',
-				name: 'admin-edit-user',
-				component: EditUser,
-				meta: { title: 'Edit user' }
-			},
-			{
-				path: 'storage/list',
-				name: 'admin-storage-list',
-				component: StorageList,
-				meta: { title: 'Storage list' }
-			},
-			{
-				path: 'storage/create',
-				name: 'admin-storage-create',
-				component: CreateStorage,
-				meta: { title: 'Create storage' }
-			},
-			{
-				path: 'storage/:storageId',
-				name: 'admin-storage-view',
-				component: ViewStorage,
-				meta: { title: 'Article categories' }
-			},
-			// {
-			// 	path: 'storage/:storageId/category/:categoryId',
-			// 	name: 'admin-view-article-subgroups',
-			// 	component: ViewCategory,
-			// 	meta: { title: 'View category' }
-			// },
-			{
-				path: 'storage/:storageId/edit',
-				name: 'admin-edit-storage',
-				component: EditStorage,
-				meta: { title: 'Edit storage' }
-			},
-			{
-				path: 'storage/:storageId/article/create',
-				name: 'admin-create-article',
-				component: CreateArticle,
-				meta: { title: 'Create article' }
-			},
-			{
-				path: 'article/:articleId/edit',
-				name: 'admin-edit-article',
-				component: EditArticle,
-				meta: { title: 'Edit article' }
 			}
 		]
 	}		

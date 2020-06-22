@@ -204,7 +204,7 @@ export default {
 
 					this.$store.dispatch('addNotification', {
 						type: 'success',
-						text: `User with username <span style="color: blue; font-size:17px;">${user.username}</span> created successfully.`
+						text: `User with username <span style="color: blue; font-size:17px;">${user.username}</span> has been created.`
 					})
 				}
 			} catch (error) {

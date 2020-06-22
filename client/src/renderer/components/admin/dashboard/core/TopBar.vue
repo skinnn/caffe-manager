@@ -106,9 +106,13 @@ export default {
 			}
 
 			.middle {
+				position: absolute;
+				left: 0 !important;
+				right: 0 !important;
+				margin: 0 auto;
+				width: fit-content;
 
 				h2.page-heading {
-					margin-left: 30px;
 					color: #fff;
 					font-size: 26px;
 				}
