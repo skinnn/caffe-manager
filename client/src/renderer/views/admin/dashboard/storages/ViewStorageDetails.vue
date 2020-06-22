@@ -14,7 +14,8 @@
 
 		<StorageForm
 			:editMode="options.storageEditMode"
-			:storage="storage"
+			:storageData="storage"
+			@storageUpdate="handleStorageUpdate"
 		/>
 	</div>
 </template>
@@ -30,8 +31,8 @@ export default {
 
 	data() {
 		return {
-			storageId: this.$store.state.route.params.storageId,
 			storage: {},
+			storageId: this.$store.state.route.params.storageId,
 
 			options: {
 				storageEditMode: false
@@ -61,6 +62,10 @@ export default {
 			} catch (err) {
 				console.log(err)
 			}
+		},
+
+		handleStorageUpdate(storage) {
+			this.storage = storage
 		},
 
 		toggleStorageEditMode() {

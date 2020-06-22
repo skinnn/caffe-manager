@@ -102,7 +102,7 @@ class StorageController extends Controller {
 
 			res.locals = {
 				status: 200,
-				json: { user: updatedStorage }
+				json: { storage: updatedStorage }
 			}
 			
 			return next()

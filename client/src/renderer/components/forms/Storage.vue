@@ -78,7 +78,7 @@ export default {
 
 	props: {
 		// If storage is passed then component is acting as Edit form, otherwise as Create form
-		storage: {
+		storageData: {
 			type: Object,
 			default: null
 		},
@@ -91,6 +91,7 @@ export default {
 
 	data() {
 		return {
+			storage: this.storage,
 			form: {
 				mode: null, // 'edit' or 'create'
 
@@ -120,19 +121,20 @@ export default {
 			}
 		},
 
-		storage: function(val) {
-			this.populateFormData(this.form.fields, this.$props.storage)
+		storageData: function(val) {
+			this.storage = this.$props.storageData
+			this.populateFormData(this.form.fields, this.$props.storageData)
 			// // Populate storage meta fields
 			// this.populateFormData(this.form.meta, user)
 		}
 	},
 
 	mounted() {
-		if (this.$props.storage) this.form.mode = 'update'
+		if (this.$props.storageData) this.form.mode = 'update'
 		else this.form.mode = 'create'
 
 		if (this.form.mode === 'update') {
-			this.populateFormData(this.form.fields, this.$props.storage)
+			this.populateFormData(this.form.fields, this.$props.storageData)
 		}
 	},
 
@@ -164,24 +166,28 @@ export default {
 		},
 
 		async updateStorage(storageId) {
-			// Get all changed fields (that need to be updated)
+			// Get all fields that should be updated (data that user changed, if any)
 			const changedFields = this.checkForChangedFields(this.form.fields, this.storage)
 
 			try {
+				// If there is anything to update
 				if (!isEmptyObject(changedFields)) {
 					// Update storage
 					const res = await StorageService.updateStorage(this.storage.id, changedFields)
-					console.log('STORAGE UPDATE RES: ', res)
+					const storage = res.data.storage
+					this.storage = storage
+
+					// Emit update event to parent
+					this.$emit('storageUpdate', this.storage)
+
 					// If successfully saved
-					if (res.status === 200) {
-						this.$store.dispatch('addNotification', {
-							type: 'success',
-							text: 'Storage updated successfully'
-						})
-					}
+					this.$store.dispatch('addNotification', {
+						type: 'success',
+						text: 'Storage updated successfully'
+					})
 				} else {
 					this.$store.dispatch('addNotification', {
-						type: 'warning',
+						type: 'info',
 						text: 'Nothing to update'
 					})
 				}
@@ -192,8 +198,7 @@ export default {
 		},
 
 		discardForm() {
-			console.log('DISCARD')
-			this.populateFormData(this.form.fields, this.$props.storage)
+			this.populateFormData(this.form.fields, this.storage)
 		},
 
 		handleSelectActive() {

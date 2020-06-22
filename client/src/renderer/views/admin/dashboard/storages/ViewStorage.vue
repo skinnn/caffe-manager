@@ -32,10 +32,9 @@
 import StorageService from '@/services/StorageService'
 // Components
 import ArticleTable from '@/components/tables/Articles'
-import StorageForm from '@/components/forms/Storage'
 
 export default {
-	components: { ArticleTable, StorageForm },
+	components: { ArticleTable },
 
 	data() {
 		return {
