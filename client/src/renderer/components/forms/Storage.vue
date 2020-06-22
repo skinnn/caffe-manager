@@ -50,17 +50,27 @@
 				</select>
 			</div>
 
-			<p>Created by: {{ form.meta.user_id.username }}</p>
+			<p>Created by: 
+				<span class="clickable" style="color: blue;"
+					@click="viewUser(form.meta.user_id.id)"
+				>
+					{{ form.meta.user_id.username }}
+				</span>
+			</p>
 			<p>Created: {{ _formatDate(form.meta.created) }}</p>
 			<p>
 				Last update:
-				{{ _formatDate(form.meta.created) }}
-				{{
-					form.meta.updated_by.username
-					? ' by '+form.meta.updated_by.username
-					: ''
-				}}
-				</p>
+				{{ _formatDate(form.meta.updated) }}
+
+				<span v-if="form.meta.updated_by.username">
+					by
+					<span class="clickable" style="color: blue;"
+						@click="viewUser(form.meta.user_id.id)"
+					>
+						{{ form.meta.updated_by.username ? form.meta.updated_by.username : ''}}
+					</span>
+				</span>
+			</p>
 
 			<button type="button" class="btn-submit"
 				v-if="form.mode === 'create'"
@@ -103,7 +113,7 @@ export default {
 
 	data() {
 		return {
-			storage: this.storage,
+			storage: {},
 			form: {
 				mode: null, // 'edit' or 'create'
 
@@ -141,10 +151,10 @@ export default {
 		},
 
 		storageData: function(val) {
-			this.storage = this.$props.storageData
-			this.populateFormData(this.form.fields, this.storage)
+			this.storage = val
+			this.populateFormData(this.form.fields, val)
 			// Populate storage meta fields
-			this.populateFormData(this.form.meta, this.storage)
+			this.populateFormData(this.form.meta, val)
 		}
 	},
 
@@ -154,6 +164,7 @@ export default {
 
 		if (this.form.mode === 'update') {
 			this.populateFormData(this.form.fields, this.$props.storageData)
+			this.populateFormData(this.form.meta, this.$props.storageData)
 		}
 	},
 
@@ -211,10 +222,17 @@ export default {
 						text: 'Nothing to update'
 					})
 				}
-			} catch (error) {
-				this.success = null
-				this.error = error.response.data.error
+			} catch (err) {
+				console.log(err)
+				this.$store.dispatch('addNotification', {
+					type: 'error',
+					text: err.response.data.error
+				})
 			}
+		},
+
+		viewUser(id) {
+			this.$router.push({ name: 'admin-view-user', params: { userId: id } })
 		},
 
 		discardForm() {

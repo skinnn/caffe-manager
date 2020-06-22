@@ -92,7 +92,6 @@ class StorageController extends Controller {
 		try {
 			const query = {_id: req.params.id}
 			const include = req.queryParsed.include
-			console.log('include: ', include)
 
 			const options = { new: true }
 			const data = req.body
