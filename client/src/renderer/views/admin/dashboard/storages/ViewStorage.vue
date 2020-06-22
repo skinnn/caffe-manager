@@ -62,9 +62,10 @@ export default {
 			try {
 				// console.log('Subgroup _id: ', this.subgroup.id)
 				// console.log('Subgroup name: ', this.subgroup.name)
-				let storageId = this.storageId
+				const id = this.storageId
+				const query = '?include=updated_by,user_id'
 				// Get Storage data
-				const storageResponse = await StorageService.getStorageById(storageId)
+				const storageResponse = await StorageService.getStorageById(id, query)
 				const storage = storageResponse.data
 
 				this.storage = storage

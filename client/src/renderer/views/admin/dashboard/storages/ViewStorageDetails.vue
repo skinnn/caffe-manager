@@ -53,9 +53,10 @@ export default {
 	methods: {
 		async getStorageById() {
 			try {
-				let storageId = this.storageId
+				const id = this.storageId
+				const query = '?include=updated_by,user_id'
 				// Get Storage data
-				const storageResponse = await StorageService.getStorageById(storageId)
+				const storageResponse = await StorageService.getStorageById(id, query)
 				const storage = storageResponse.data
 
 				this.storage = storage

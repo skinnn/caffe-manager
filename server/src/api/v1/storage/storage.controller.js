@@ -43,9 +43,12 @@ class StorageController extends Controller {
 	// Get All Storages
 	static async getAllStorages(req, res, next) {
 		try {
-			const query = {}
-
-			const storages = await Storage.find(query)
+			const storages = await Storage
+				.find(req.queryParsed.match)
+				.populate(req.queryParsed.include)
+				.select(req.queryParsed.fields)
+				.limit(req.queryParsed.limit)
+				.sort(req.queryParsed.sort)
 			
 			res.locals = {
 				status: 200,
@@ -61,9 +64,10 @@ class StorageController extends Controller {
 	// Get Storage by id
 	static async getStorageById(req, res, next) {
 		try {
-			let query = req.params.id
+			const query = req.params.id
+			const include = req.queryParsed.include
 
-			const storage = await Storage.findById(query)
+			const storage = await Storage.findById(query).populate(include)
 
 			res.locals = {
 				status: 200,
@@ -87,6 +91,9 @@ class StorageController extends Controller {
 	static async updateStorage(req, res, next) {
 		try {
 			const query = {_id: req.params.id}
+			const include = req.queryParsed.include
+			console.log('include: ', include)
+
 			const options = { new: true }
 			const data = req.body
 			
@@ -98,7 +105,9 @@ class StorageController extends Controller {
 
 			// const storageToUpdate = await Storage.findOne(query)
 
-			const	updatedStorage = await Storage.findOneAndUpdate(query, data, options)
+			data.updated = new Date(Date.now()).toString()
+			data.updated_by = req.user.id
+			const	updatedStorage = await Storage.findOneAndUpdate(query, data, options).populate(include)
 
 			res.locals = {
 				status: 200,

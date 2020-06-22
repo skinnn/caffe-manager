@@ -138,17 +138,13 @@ class UserController extends Controller {
 			match.roles = {
 				$in: ['user', 'admin']
 			}
-			const fields = req.queryParsed.fields
-			const include = req.queryParsed.include
-			const limit = req.queryParsed.limit
-			const sort = req.queryParsed.sort
 			
 			const users = await User
 				.find(match)
-				.populate(include)
-				.select(fields)
-				.limit(limit)
-				.sort(sort)
+				.populate(req.queryParsed.include)
+				.select(req.queryParsed.fields)
+				.limit(req.queryParsed.limit)
+				.sort(req.queryParsed.sort)
 			
 			res.locals = {
 				status: 200,
@@ -205,6 +201,8 @@ class UserController extends Controller {
 				data.password = hash
 			}
 
+			data.updated = new Date(Date.now()).toString()
+			data.updated_by = req.user.id
 			const	updatedUser = await User.findOneAndUpdate(query, data, options)
 
 			res.locals = {

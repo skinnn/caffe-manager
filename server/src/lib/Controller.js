@@ -290,13 +290,24 @@ class Controller {
 				}
 			}
 				
-			// Fields (handle format JSON object - fields={"id":true})
+			// Fields (handle string format - fields=-id,name)
 			if (typeof fields === 'string') {
-				try {
-					fields = JSON.parse(fields)
-					// Transform prop 'id' in '_id' (mongodb supported field)
-					if (fields.id !== undefined) fields._id = fields.id; delete fields.id
-				} catch (err) {}
+				// // Fields (handle format JSON object - fields={"id":true})
+				// try {
+				// 	fields = JSON.parse(fields)
+				// 	// Transform prop 'id' in '_id' (mongodb supported field)
+				// 	if (fields.id !== undefined) fields._id = fields.id; delete fields.id
+				// } catch (err) {}
+
+				let items = fields.split(',')
+
+				for (let i = items.length - 1; i >= 0; i--) {
+					if (items[i] === '') items.splice(i, 1)
+					if (items[i] === 'id') items[i] = '_id'
+					if (items[i] === '-id') items[i] = '-_id'
+				}
+
+				fields = items.join(' ')
 
 			// Fields (handle format JS object - fields[id]=true)
 			} else {
@@ -313,8 +324,15 @@ class Controller {
 
 			// Include
 			if (include) {
-				if (include === 'user') include = 'user_id'
-				if (include === 'file') include = 'files'
+				let items = include.split(',')
+
+				for (let i = items.length - 1; i >= 0; i--) {
+					if (items[i] === '') items.splice(i, 1)
+					if (items[i] === 'user') include = 'user_id'
+					if (items[i] === 'file') include = 'files'
+				}
+
+				include = items.join(' ')
 			}
 
 			req.queryParsed.limit = limit
@@ -361,6 +379,7 @@ class Controller {
 	static errorHandler(err, req, res, next) {
 		if (res.headersSent) return null
 		// Handle custom errors/responses here
+		if (err.message == 'Projection cannot have a mix of inclusion and exclusion.') err.message = 'Fields cannot have a mix of inclusion and exclusion.'
 
 		const statusCodeMap = {
 			'ForbiddenError': 403,

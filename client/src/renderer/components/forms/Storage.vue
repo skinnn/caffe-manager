@@ -50,6 +50,18 @@
 				</select>
 			</div>
 
+			<p>Created by: {{ form.meta.user_id.username }}</p>
+			<p>Created: {{ _formatDate(form.meta.created) }}</p>
+			<p>
+				Last update:
+				{{ _formatDate(form.meta.created) }}
+				{{
+					form.meta.updated_by.username
+					? ' by '+form.meta.updated_by.username
+					: ''
+				}}
+				</p>
+
 			<button type="button" class="btn-submit"
 				v-if="form.mode === 'create'"
 				@click="createStorage()"
@@ -99,6 +111,13 @@ export default {
 					name: '',
 					active: null,
 					type: ''
+				},
+				// Data not to be manipulated/updated
+				meta: {
+					created: '',
+					user_id: '',
+					updated: '',
+					updated_by: ''
 				}
 			},
 			select: {
@@ -123,9 +142,9 @@ export default {
 
 		storageData: function(val) {
 			this.storage = this.$props.storageData
-			this.populateFormData(this.form.fields, this.$props.storageData)
-			// // Populate storage meta fields
-			// this.populateFormData(this.form.meta, user)
+			this.populateFormData(this.form.fields, this.storage)
+			// Populate storage meta fields
+			this.populateFormData(this.form.meta, this.storage)
 		}
 	},
 
@@ -157,7 +176,7 @@ export default {
 					this.form.fields.active = true
 				}
 			} catch (err) {
-				console.log(err.response.data)
+				console.log(err.response.data.message)
 				this.$store.dispatch('addNotification', {
 					type: 'error',
 					text: err.response.data.message
@@ -172,8 +191,9 @@ export default {
 			try {
 				// If there is anything to update
 				if (!isEmptyObject(changedFields)) {
+					const query = '?include=updated_by,user_id'
 					// Update storage
-					const res = await StorageService.updateStorage(this.storage.id, changedFields)
+					const res = await StorageService.updateStorage(this.storage.id, changedFields, query)
 					const storage = res.data.storage
 					this.storage = storage
 

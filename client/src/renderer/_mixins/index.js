@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import moment from 'moment'
 
 /**
  * Global mixins (methods available globally)
@@ -23,6 +24,10 @@ Vue.mixin({
 			let time = hour + 'h : ' + minutes + 'm : ' + seconds + 's'
 
 			return date + time
+		},
+
+		_formatDate(date, format = 'MMMM DD YYYY, HH:mm:ss') {
+			return moment(date).format(format)
 		}
 	}
 })
