@@ -102,10 +102,9 @@ class StorageController extends Controller {
 			const error = Controller.validateToSchema(modifiedSchema, req.body)
 			if (error) throw new Error(error)
 
-			// const storageToUpdate = await Storage.findOne(query)
-
 			data.updated = new Date(Date.now()).toString()
 			data.updated_by = req.user.id
+			
 			const	updatedStorage = await Storage.findOneAndUpdate(query, data, options).populate(include)
 
 			res.locals = {

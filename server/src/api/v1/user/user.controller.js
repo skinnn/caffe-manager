@@ -105,7 +105,7 @@ class UserController extends Controller {
 		}
 	}
 
-	// Get User login List - just usernames and names
+	// Get User login List - [usernames and names]
 	static async getUsersByRole(req, res, next) {
 		try {
 			// If not root or admin return only users with 'user' role
@@ -114,10 +114,9 @@ class UserController extends Controller {
 				if (req.user.roles.includes('root') || req.user.roles.includes('admin')) {
 					role = req.queryParsed.match.role ? req.queryParsed.match.role : ''
 				}
-				req.user.roles.includes('root') && req.user.roles.includes('admin')
 			}
 
-			let query = {
+			const query = {
 				roles: { $all: [role] }
 			}
 			const users = await User.find(query).select('-_id username name')
@@ -159,7 +158,8 @@ class UserController extends Controller {
 	// Get User by id
 	static async getUserById(req, res, next) {
 		try {
-			const user = await User.getUserById(req.params.id)
+			const user = await User.findById(req.params.id)
+				.populate(req.queryParsed.include)
 
 			Controller.validateOwnership(req, user)
 
@@ -203,7 +203,9 @@ class UserController extends Controller {
 
 			data.updated = new Date(Date.now()).toString()
 			data.updated_by = req.user.id
-			const	updatedUser = await User.findOneAndUpdate(query, data, options)
+			const	updatedUser = await User
+				.findOneAndUpdate(query, data, options)
+				.populate(req.queryParsed.include)
 
 			res.locals = {
 				status: 200,

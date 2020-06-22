@@ -20,7 +20,7 @@ import { sync } from 'vuex-router-sync'
 import { dom } from '@fortawesome/fontawesome-svg-core'
 
 // Global Components
-import LogoutBtn from '@/components/_globals/LogoutBtn'
+import LogoutBtn from '@/components/base/LogoutBtn'
 
 dom.watch()
 

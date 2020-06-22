@@ -51,10 +51,10 @@ const toJSON = (schema) => {
   schema.options.toJSON = Object.assign(schema.options.toJSON || {}, {
     transform(doc, ret, options) {
 
-      // // Remove private paths
-      // if (schema.options.removePrivatePaths !== false) {
-      //   removePrivatePaths(ret, schema)
-      // }
+      // Remove private paths
+      if (schema.options.removePrivatePaths !== false) {
+        removePrivatePaths(ret, schema)
+      }
 
 			// Remove version
       if (schema.options.removeVersion !== false) {

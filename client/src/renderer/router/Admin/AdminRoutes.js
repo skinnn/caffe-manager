@@ -172,6 +172,7 @@ const routes = [
 			},
 			{
 				path: 'user/:userId',
+				props: true,
 				name: 'admin-view-user',
 				component: ViewUser,
 				meta: { title: 'View user' }
