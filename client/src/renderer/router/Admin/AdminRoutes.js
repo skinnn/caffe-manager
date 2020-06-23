@@ -2,8 +2,8 @@
 	Admin routes - Need to be atuhenticated as  to get this assets
 */
 import config from '@/config/config'
-//  Dashboard
-import Dashboard from '@/components/admin/dashboard/AdminDashboard'
+//  Dashboard component
+import AdminDashboard from '@/components/dashboard/admin/AdminDashboard'
 
 /**
  * Pages
@@ -45,7 +45,7 @@ const routes = [
 	{
 		path: '/admin',
 		// redirect: '/admin/home',
-		component: Dashboard,
+		component: AdminDashboard,
 
 		//  Dashboard pages
 		children: [

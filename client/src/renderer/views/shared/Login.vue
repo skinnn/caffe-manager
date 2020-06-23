@@ -7,13 +7,13 @@
 
 <script>
 // Components
-import LoginList from '@/components/shared/lists/LoginList'
-import LoginForm from '@/components/shared/forms/Login'
+import LoginList from '@/components/lists/LoginList'
+import LoginForm from '@/components/forms/Login'
 
 export default {
 	components: { LoginForm, LoginList },
 
-	data() {
+	data: function() {
 		return {
 			selectedUser: {}
 		}
@@ -27,7 +27,11 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+	p {
+		font-size: 2em;
+		text-align: center;
+	}
 	.login-page {
 		width: 100%;
 		height: 100%;
