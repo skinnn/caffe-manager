@@ -1,17 +1,17 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
+const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
 const UserSchema = new Schema({
 	// built-in roles: 'user', 'admin' 'anon'
 	roles: {
 		type: Array,
-		default: ['user']
+		required: true
 	},
 	username: {
 		type: String,
-		required: true,
-		unique: true
+		required: true
 	},
 	password: {
 		type: String,
@@ -35,21 +35,21 @@ const UserSchema = new Schema({
 		default: null
 	},
 	files: [{
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'file'
+		type: ObjectId,
+		ref: 'file',
+		required: true
 	}],
 	note: {
 		type: String,
 		default: null
 	},
 	created_by: {
-		type: Schema.Types.ObjectId,
+		type: ObjectId,
 		ref: 'user',
 		required: true
 	},
 	updated_by: {
-		type: mongoose.Types.ObjectId,
+		type: ObjectId,
 		ref: 'user',
 		default: null
 	},

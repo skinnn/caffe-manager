@@ -74,7 +74,7 @@ class Authentication extends Controller {
 		if (!req.user) return authorized = false
 		if (Array.isArray(req.user.roles) && req.user.roles.length <= 0) req.user.roles = ['anon']
 
-		console.log(`Requested operation ${req.operation.toUpperCase()} on protected endpoint: ${req.resource} `)
+		// console.log(`Requested operation ${req.operation.toUpperCase()} on protected endpoint: ${req.resource} `)
 		
 		const hasRole = haveCommonElements(schema.access[req.operation].roles, req.user.roles)
 		if (hasRole) authorized = true

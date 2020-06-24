@@ -23,7 +23,7 @@
 			"title": "Identifier",
 			"description": "String which identifies for which purpose the file is used. Can be: profile_image, store_logo.",
 			"type": "string",
-			"enum": ["profile_image", "store_logo"]
+			"enum": ["profile_image", "category_image", "article_image", "store_logo"]
 		},
 		"ext": {
 			"$id": "#/properties/ext",

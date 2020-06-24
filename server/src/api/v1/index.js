@@ -18,6 +18,8 @@ router.use('/user', require('./user/user.routes'))
 router.use('/file', require('./file/file.routes'))
 router.use('/storage', require('./storage/storage.routes'))
 router.use('/store', require('./store/store.routes'))
+router.use('/category', require('./category/category.routes'))
+router.use('/article', require('./article/article.routes'))
 
 // Output response middleware
 router.use(Controller.responseHandler)

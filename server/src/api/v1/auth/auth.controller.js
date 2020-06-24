@@ -73,6 +73,8 @@ class AuthController extends Controller {
 
 			Controller.validateOwnership(req, loginRecord)
 
+			await Login.deleteOne(query)
+
 			res.locals.status = 200
 			res.locals.json = {
 				message: 'Logged out successfully'

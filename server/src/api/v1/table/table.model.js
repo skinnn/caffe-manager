@@ -1,20 +1,20 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
 const TableSchema = new Schema({
 	number: {
 		type: Number,
-		required: true,
-		unique: true
+		required: true
 	},
 	user_id: {
-		type: Schema.Types.ObjectId,
+		type: ObjectId,
 		ref: 'user',
 		required: true
 	},
 	active: {
 		type: Boolean,
-		default: false
+		required: true
 	},
 	date: { type: Date, default: Date.now },
 	updated: { type: Date, default: null }

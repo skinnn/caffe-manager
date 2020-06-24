@@ -1,23 +1,30 @@
 const express = require('express')
 const router = express.Router()
-const { uploadImage } = require('../../config/multer')
+// const { uploadImage } = require('../../../config/multer')
 
 // Controllers
-const ArticleCategoryController = require('./category.controller')
+const CategoryController = require('./category.controller')
 
-// Get Article Subgroups from Main Storages
-router.get('/admin/main-storages/subgroups',
-ArticleCategoryController.getCategoriesFromMainStorages)
+// TODO: Create attachment for category 'category_image'
 
-// Create Article Subgroup
-router.post('/:storageId/subgroup/create',
-	uploadImage.single('imageUpload'),
-	ArticleCategoryController.createArticleCategory)
+// Create category
+router.post('/', CategoryController.createCategory)
 
-// Get Article Subgroup list by storage id
-router.get('/:storageId/subgroups',
-	ArticleCategoryController.getSubgroupsByStorageId)
+// Get category by id
+router.get('/:id', CategoryController.getCategoryById)
 
+// Update category by id
+router.patch('/:id', CategoryController.updateCategoryById)
 
+// Delete category by id
+router.delete('/:id', CategoryController.deleteCategoryById)
+
+// Get category
+// router.get('/:storageId/subgroups',
+// 	CategoryController.getSubgroupsByStorageId)
+
+// // Get Article Subgroups from Main Storages
+// router.get('/admin/main-storages/subgroups',
+// CategoryController.getCategoriesFromMainStorages)
 
 module.exports = router

@@ -205,7 +205,26 @@ class Controller {
 		return ownerId
 	}
 
+	static validateRequestBody(body) {
+		let error = null
+
+		if (body.user_id) error = 'Owner of the record can not be changed'
+		if (body.updated_by) error = 'updated_by field can not be changed'
+		if (body.created) error = 'created field can not be changed'
+		if (body.updated) error = 'updated field can not be changed'
+		if (body.files) error = 'files field can not be changed'
+		if (body.image_id) error = 'image_id field can not be changed'
+
+		if (error) {
+			let err = new Error(error)
+			err.name = 'BadRequestError'
+			throw err
+		}
+	}
+
 	static validateToSchema(modelSchema, record) {
+		// if (record.user_id) return 'Owner of the record can not be changed.'
+
 		const valid = Controller.ajv.validate(modelSchema, record)
 		const errorMessage = Controller.formatSchemaErrors(Controller.ajv.errors)
 		if (!valid) {
@@ -251,7 +270,9 @@ class Controller {
 				file: null
 			}
 
-			await Controller.handleQueryStringsFromRequest(req)
+			Controller.handleQueryStringsFromRequest(req)
+			Controller.validateRequestBody(req.body)
+
 			req.urlParsed = new URL(req.url, [Controller.api.protocol, '://', req.headers.host].join(''))
 			// Get resource name from URL - /api/<resource_name>
 			req.resource = req.urlParsed.pathname.split('/')[1].toLowerCase()			
@@ -269,80 +290,77 @@ class Controller {
 	 * @param 	{Object} 	req 	[The request object]
 	 */
 	static handleQueryStringsFromRequest(req) {
-		return new Promise((resolve, reject) => {
-			req.queryParsed = {}
-			if (isEmptyObject(req.query)) resolve(true)
+		req.queryParsed = {}
+		if (isEmptyObject(req.query)) return
 
-			var limit = 0, fields = {}, sort = {}, match = {}, include = '', token = null
-			if (req.query.limit) limit = parseInt(req.query.limit)
-			if (req.query.fields) fields = req.query.fields
-			if (req.query.sort) sort = req.query.sort
-			if (req.query.match) match = req.query.match
-			if (req.query.include) include = req.query.include
-			if (req.query.token) token = req.query.token
+		var limit = 0, fields = {}, sort = {}, match = {}, include = '', token = null
+		if (req.query.limit) limit = parseInt(req.query.limit)
+		if (req.query.fields) fields = req.query.fields
+		if (req.query.sort) sort = req.query.sort
+		if (req.query.match) match = req.query.match
+		if (req.query.include) include = req.query.include
+		if (req.query.token) token = req.query.token
 
-			// Sort
-			for (let field in sort) {
-				if (sort.hasOwnProperty(field)) {
-					if (sort[field] === 'asc' || sort[field] == '1') sort[field] = 1
-					else if (sort[field] === 'desc' || sort[field] === '-1') sort[field] = -1
-					else delete sort[field]
-				}
+		// Sort
+		for (let field in sort) {
+			if (sort.hasOwnProperty(field)) {
+				if (sort[field] === 'asc' || sort[field] == '1') sort[field] = 1
+				else if (sort[field] === 'desc' || sort[field] === '-1') sort[field] = -1
+				else delete sort[field]
 			}
-				
-			// Fields (handle string format - fields=-id,name)
-			if (typeof fields === 'string') {
-				// // Fields (handle format JSON object - fields={"id":true})
-				// try {
-				// 	fields = JSON.parse(fields)
-				// 	// Transform prop 'id' in '_id' (mongodb supported field)
-				// 	if (fields.id !== undefined) fields._id = fields.id; delete fields.id
-				// } catch (err) {}
+		}
+			
+		// Fields (handle string format - fields=-id,name)
+		if (typeof fields === 'string') {
+			// // Fields (handle format JSON object - fields={"id":true})
+			// try {
+			// 	fields = JSON.parse(fields)
+			// 	// Transform prop 'id' in '_id' (mongodb supported field)
+			// 	if (fields.id !== undefined) fields._id = fields.id; delete fields.id
+			// } catch (err) {}
 
-				let items = fields.split(',')
+			let items = fields.split(',')
 
-				for (let i = items.length - 1; i >= 0; i--) {
-					if (items[i] === '') items.splice(i, 1)
-					if (items[i] === 'id') items[i] = '_id'
-					if (items[i] === '-id') items[i] = '-_id'
-				}
-
-				fields = items.join(' ')
-
-			// Fields (handle format JS object - fields[id]=true)
-			} else {
-				for (let f in fields) {
-					// Transform field to boolean and then to 1/0
-					let bool = toBoolean(fields[f])
-					fields[f] = bool ? 1 : 0
-
-					// Transform prop 'id' in '_id' (mongodb _id field)
-					if (f === 'id') { fields._id = fields.id; delete fields.id }
-					// else { fields[f] = toBoolean(fields[f]) }
-				}
+			for (let i = items.length - 1; i >= 0; i--) {
+				if (items[i] === '') items.splice(i, 1)
+				if (items[i] === 'id') items[i] = '_id'
+				if (items[i] === '-id') items[i] = '-_id'
 			}
 
-			// Include
-			if (include) {
-				let items = include.split(',')
+			fields = items.join(' ')
 
-				for (let i = items.length - 1; i >= 0; i--) {
-					if (items[i] === '') items.splice(i, 1)
-					if (items[i] === 'user') include = 'user_id'
-					if (items[i] === 'file') include = 'files'
-				}
+		// Fields (handle format JS object - fields[id]=true)
+		} else {
+			for (let f in fields) {
+				// Transform field to boolean and then to 1/0
+				let bool = toBoolean(fields[f])
+				fields[f] = bool ? 1 : 0
 
-				include = items.join(' ')
+				// Transform prop 'id' in '_id' (mongodb _id field)
+				if (f === 'id') { fields._id = fields.id; delete fields.id }
+				// else { fields[f] = toBoolean(fields[f]) }
+			}
+		}
+
+		// Include
+		if (include) {
+			let items = include.split(',')
+
+			for (let i = items.length - 1; i >= 0; i--) {
+				if (items[i] === '') items.splice(i, 1)
+				if (items[i] === 'user') include = 'user_id'
+				if (items[i] === 'file') include = 'files'
 			}
 
-			req.queryParsed.limit = limit
-			req.queryParsed.fields = fields
-			req.queryParsed.sort = sort
-			req.queryParsed.match = match
-			req.queryParsed.include = include
-			req.queryParsed.token = token
-			resolve(true)
-		})
+			include = items.join(' ')
+		}
+
+		req.queryParsed.limit = limit
+		req.queryParsed.fields = fields
+		req.queryParsed.sort = sort
+		req.queryParsed.match = match
+		req.queryParsed.include = include
+		req.queryParsed.token = token
 	}
 	
 	static getEndpointSchemas() {
@@ -401,6 +419,17 @@ class Controller {
 		
 		Controller.logError(err)
 		return res.status(statusCode).send(errObj)
+	}
+
+	/**
+	 * 
+	 * @param {String} name 		[Error name]	
+	 * @param {String} message 	[Error message]
+	 */
+	static makeError(name = 'BadRequestError', message = 'Not specified') {
+		let err = new Error(message)
+		err.name = name
+		return err
 	}
 
 	static modify(obj, newObj) {

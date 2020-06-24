@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
 const StorageSchema = new Schema({
 	// TODO: Add user_id field
@@ -18,12 +19,12 @@ const StorageSchema = new Schema({
 		default: true
 	},
 	user_id: {
-		type: Schema.Types.ObjectId,
+		type: ObjectId,
 		ref: 'user',
 		required: true
 	},
 	updated_by: {
-		type: Schema.Types.ObjectId,
+		type: ObjectId,
 		ref: 'user',
 		default: null
 	},

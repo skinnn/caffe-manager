@@ -15,7 +15,7 @@ class StorageController extends Controller {
 			}
 
 			const exist = await Storage.findOne({ name: req.body.name }) 
-			if (exist) {
+			if (exist && exist.length >= 1) {
 				return res.status(400).json({
 					message: `Storage with name ${req.body.name} already exist`
 				})

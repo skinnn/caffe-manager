@@ -1,5 +1,7 @@
+const mongoose = require('mongoose')
+
 /**
- * Helper to normalize record ID
+ * Helper to normalize record ID (_id)
  */
 const normalizeId = (ret) => {
   if (ret._id && typeof ret._id === 'object' && ret._id.toString) {
@@ -10,6 +12,18 @@ const normalizeId = (ret) => {
 	
   if (typeof ret._id !== 'undefined') {
     delete ret._id
+	}
+}
+
+/**
+ * Helper to normalize floating point numbers (remove $numberDecimal nested property)
+ */
+const normalizeFloat = (ret, schema) => {
+	for (let key in ret) {
+		if (ret[key] instanceof mongoose.Types.Decimal128) {
+			// Parse to float number
+			ret[key] = parseFloat(ret[key].toString())
+		}
 	}
 }
 
@@ -61,10 +75,13 @@ const toJSON = (schema) => {
         removeVersion(ret)
       }
 
-      // Normalize ID
+      // Normalize _id
       if (schema.options.normalizeId !== false) {
         normalizeId(ret)
-      }
+			}
+			
+			// Normalize float
+			normalizeFloat(ret)
 
       // Call custom transform if present
       if (transform) {

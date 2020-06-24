@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Table",
+	"type": "object",
+	"description": "Table schema",
+	"additionalProperties": false,
+	"required": ["number", "active"],
+	"access": {
+		"create": {
+			"roles": ["admin"]
+		},
+		"read": {
+			"roles": ["admin", "user"],
+			"owner": false
+		},
+		"update": {
+			"roles": ["admin"],
+			"owner": false
+		},
+		"delete": {
+			"roles": ["admin"],
+			"owner": false
+		}
+	},
+  "properties": {
+    "number": {
+			"$id": "#/properties/number",
+			"title": "Name",
+      "description": "Table number",
+			"type": "number",
+			"minLength": 1
+		},
+    "active": {
+			"$id": "#/properties/active",
+			"title": "Active (in use)",
+      "description": "Is this table in use?",
+			"type": "boolean"
+		}
+	}
+}

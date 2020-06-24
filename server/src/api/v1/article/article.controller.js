@@ -1,98 +1,98 @@
+const Controller = require('../../../lib/Controller')
 const Article = require('./article.model')
-const helpers = require('../../../lib/helpers')
-const fs = require('fs')
+const ArticleJSONSchema = require('./article.schema.json')
 
-module.exports = {
+class ArticleController extends Controller {
 
 	// Create Article
-	async createArticle(req, res, next) {
+	static async createArticle(req, res, next) {
 		try {
-			let article = new Article()
-			article.name = req.body.articleName
-			article.quantity = req.body.articleQuantity
-			article.price = req.body.articlePrice
-			article.retail_price = req.body.articleRetailPrice
-			// Storage and Subgroup data
-			article.inStorage = req.body.storageId
-			article.subgroup_name = req.body.subgroupName
-			article.subgroup_id = req.body.subgroupId
-
-			// TODO: File upload with /file endpoint
-			// If image is added create image path
-			if (req.file !== undefined && req.file !== '') {
-				article.image = req.file.path
-				// console.log('IMG', article.image)
-			} else {
-				article.image = ''
+			const error = Controller.validateToSchema(ArticleJSONSchema, req.body)
+			if (error) {
+				throw Controller.makeError('BadRequestError', error)
 			}
 
-			// TODO: Validation with Joi
-			// Check if the name is typed and create article in the db
-			if (article.name !== '' && article.quantity !== '' && article.quantity !== 0) {
-				await article.save((err) => {
-					if (err) throw err
-						
-					return res.status(201).json({
-						created: true,
-						success: 'Article was successfully created.'
-					})
-				})
-			} else {
-				res.status(400).json({
-					error: 'Article must have a name, quantity and price.'
-				})
+			const query = {
+				$or: [
+					{ name: req.body.name },
+					{ code: req.body.code }
+				]
 			}
+			const exist = await Article.find(query)
+			if (exist && exist.length >= 1) {
+				throw Controller.makeError('BadRequestError', `Article with this name or code already exist. Name: ${req.body.name}, Code: ${req.body.code}`)
+			}
+
+			// "minimum": { "$data": "1/purchase_price" }
+			// Validate purchase and selling price
+			if (req.body.purchase_price > req.body.selling_price) {
+				throw Controller.makeError('BadRequestError', `Purchase price (${req.body.purchase_price}) should not be greater than selling price (${req.body.selling_price})`)
+			}
+
+			const newArticle = new Article(req.body)
+			newArticle.code = req.body.code
+			newArticle.user_id = req.user.id
+
+			const createdArticle = await newArticle.save()
+
+			return res.status(200).json({ article: createdArticle})
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
-	// Get Articles by storage id
-	async getArticlesByStorageId(req, res, next) {
+	static async testAdd(req, res, next) {
 		try {
-			let query = { inStorage: req.params.storageId }
-			await Article.find(query, (err, articles) => {
-				if (err) throw err
+			const options = { new: true }
+			const inc = 0.1
+			const data = {
+				$inc: {
+					selling_price: inc
+				}
+			}
 
-				return res.status(200).json({
-					articles: articles
-				})
+			const updatedArticle = await Article.updateOne({}, data, options)
+
+			return res.status(200).json({
+				article: updatedArticle
 			})
-			// await Article
-			//   .find(query)
-			//   // .sort()
-			//   .limit(20)
-			//   .exec((err, articles) => {
-			//     if (err) {
-			//       console.log(err)
-			//     }
-			//     res.json({
-			//       articles: articles
-			//     })
-			//   })
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
+
+	// // Get Articles by storage id
+	// static async getArticlesByStorageId(req, res, next) {
+	// 	try {
+	// 		let query = { storage_id: req.params }
+	// 		await Article.find(query, (err, articles) => {
+	// 			if (err) throw err
+
+	// 			return res.status(200).json({
+	// 				articles: articles
+	// 			})
+	// 		})
+	// 	} catch (err) {
+	// 		return next(err)
+	// 	}
+	// }
 
 	// Get Article by id
-	async getArticleById(req, res, next) {
+	static async getArticleById(req, res, next) {
 		try {
-			let query = req.params.articleId
-			await Article.getArticleById(query, (err, article) => {
-				if (err) throw err
+			let query = req.params.id
+			const article = await Article.findById(query)
 
-				return res.status(200).json({
-					article: article
-				})
+			return res.status(200).json({
+				article: article
 			})
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
 	// Get all Articles
-	async getAllArticles(req, res, next) {
+	static async getArticles(req, res, next) {
 		try {
 			await Article.find({}, (err, articles) => {
 				if (err) throw err
@@ -104,71 +104,75 @@ module.exports = {
 		} catch (err) {
 			return next(err)
 		}
-	},
+	}
 
-	// Get Articles from selected Subgroup
-	async getArticlesFromSubgroup(req, res, next) {
-		try {
-			let query = { subgroup_id: req.params.subgroupId }
-			await Article.find(query, (err, articles) => {
-				if (err) throw err
-				return res.status(200).json({
-					articles: articles
-				})
-			})
-		} catch (err) {
-			return next(err)
-		}
-	},
+	// // Get Articles from selected Subgroup
+	// static async getArticlesFromSubgroup(req, res, next) {
+	// 	try {
+	// 		let query = { subgroup_id: req.params.subgroupId }
+	// 		await Article.find(query, (err, articles) => {
+	// 			if (err) throw err
+	// 			return res.status(200).json({
+	// 				articles: articles
+	// 			})
+	// 		})
+	// 	} catch (err) {
+	// 		return next(err)
+	// 	}
+	// }
 
 	// Update Article by id
-	async saveArticle(req, res, next) {
-		try {
-			let query = {_id: req.params.articleId}
-			let options = { upsert: true, new: true }
-
-			let article = {}
-			article.name = req.body.articleName
-			article.quantity = req.body.articleQuantity
-			article.price = req.body.articlePrice
-			article.retail_price = req.body.articleRetailPrice
-			article.updated = helpers.getCurrentTime()
-
-			// File upload with /file endpoint
-			// If image is changed update the image path
-			if (req.file !== undefined && req.file !== '') {
-				// TODO: If there is previous article image delete it from the images folder
-				article.image = req.file.path
-			}
-
-			// TODO: Validation with Joi
-			// If fields are not empty save article
-			if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
-				await Article.findOneAndUpdate(query, article, options, (err, article) => {
-					if (err) {
-						res.status(500).json({
-							error: 'A database error has occurred trying to update the article. Please try again.'
-						})
-					} else {
-						res.json({
-							saved: true,
-							article: article,
-							success: 'Article updated successfully.'
-						})
-					}
-				})
-			} else {
-				return res.status(500).json({
-					error: 'Article must have a name, quantity and price.'
-				})
-			}
-		} catch (err) {
-			return next(err)
+	static async updateArticle(req, res, next) {
+		// Validate purchase and selling price
+		if (req.body.purchase_price || req.body.selling_price) {
+				
 		}
-	},
+		// try {
+		// 	let query = {_id: req.params.articleId}
+		// 	let options = { upsert: true, new: true }
+
+		// 	let article = {}
+		// 	article.name = req.body.articleName
+		// 	article.quantity = req.body.articleQuantity
+		// 	article.price = req.body.articlePrice
+		// 	article.retail_price = req.body.articleRetailPrice
+		// 	article.updated = helpers.getCurrentTime()
+
+		// 	// File upload with /file endpoint
+		// 	// If image is changed update the image path
+		// 	if (req.file !== undefined && req.file !== '') {
+		// 		// TODO: If there is previous article image delete it from the images folder
+		// 		article.image = req.file.path
+		// 	}
+
+		// 	// TODO: Validation
+		// 	// If fields are not empty save article
+		// 	if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
+		// 		await Article.findOneAndUpdate(query, article, options, (err, article) => {
+		// 			if (err) {
+		// 				res.status(500).json({
+		// 					error: 'A database error has occurred trying to update the article. Please try again.'
+		// 				})
+		// 			} else {
+		// 				res.json({
+		// 					saved: true,
+		// 					article: article,
+		// 					success: 'Article updated successfully.'
+		// 				})
+		// 			}
+		// 		})
+		// 	} else {
+		// 		return res.status(500).json({
+		// 			error: 'Article must have a name, quantity and price.'
+		// 		})
+		// 	}
+		// } catch (err) {
+		// 	return next(err)
+		// }
+	}
 
 	// Delete Article
-	async deleteArticle(req, res, next) {
+	static async deleteArticle(req, res, next) {
 		try {
 			let query = {_id: req.params.articleId}
 
@@ -199,4 +203,6 @@ module.exports = {
 		}
 	}
 
-} /* Module exports */
+}
+
+module.exports = ArticleController
