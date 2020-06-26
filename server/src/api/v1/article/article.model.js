@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 const Decimal128 = Schema.Types.Decimal128
@@ -66,8 +67,8 @@ const ArticleSchema = new Schema({
 	updated: { type: Date, default: null },
 })
 
-let Article = module.exports = mongoose.model('article', ArticleSchema)
+const Article = module.exports = mongoose.model('article', ArticleSchema)
 
-module.exports.getArticleById = function(id, callback) {
-	Article.findById(id, callback)
-}
+// module.exports.getArticleById = function(id, callback) {
+// 	Article.findById(id, callback)
+// }

@@ -33,8 +33,9 @@
     "code": {
 			"$id": "#/properties/code",
 			"title": "Code",
-      "description": "Article code represented by a 4 digit number.",
+      "description": "Article code represented by 4 numbers.",
 			"type": "string",
+			"pattern": "^[0-9]*$",
 			"minLength": 4,
 			"maxLength": 4
 		},

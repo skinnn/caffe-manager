@@ -5,7 +5,7 @@ const ArticleJSONSchema = require('./article.schema.json')
 class ArticleController extends Controller {
 
 	// Create Article
-	static async createArticle(req, res, next) {
+	static async create(req, res, next) {
 		try {
 			const error = Controller.validateToSchema(ArticleJSONSchema, req.body)
 			if (error) {
@@ -20,10 +20,10 @@ class ArticleController extends Controller {
 			}
 			const exist = await Article.find(query)
 			if (exist && exist.length >= 1) {
-				throw Controller.makeError('BadRequestError', `Article with this name or code already exist. Name: ${req.body.name}, Code: ${req.body.code}`)
+				const art = exist[0]
+				throw Controller.makeError('BadRequestError', `Article with this name or code already exist. Existing article: ${art.name}, Code: ${art.code}`)
 			}
 
-			// "minimum": { "$data": "1/purchase_price" }
 			// Validate purchase and selling price
 			if (req.body.purchase_price > req.body.selling_price) {
 				throw Controller.makeError('BadRequestError', `Purchase price (${req.body.purchase_price}) should not be greater than selling price (${req.body.selling_price})`)
@@ -41,26 +41,114 @@ class ArticleController extends Controller {
 		}
 	}
 
-	static async testAdd(req, res, next) {
-		try {
-			const options = { new: true }
-			const inc = 0.1
-			const data = {
-				$inc: {
-					selling_price: inc
-				}
-			}
+	// static async testAdd(req, res, next) {
+	// 	try {
+	// 		const options = { new: true }
+	// 		const inc = 0.1
+	// 		const data = {
+	// 			$inc: {
+	// 				selling_price: inc
+	// 			}
+	// 		}
 
-			const updatedArticle = await Article.updateOne({}, data, options)
+	// 		const updatedArticle = await Article.updateOne({}, data, options)
+
+	// 		return res.status(200).json({
+	// 			article: updatedArticle
+	// 		})
+	// 	} catch (err) {
+	// 		return next(err)
+	// 	}
+	// }
+
+	// Get Article by id
+	static async getById(req, res, next) {
+		try {
+			let query = req.params.id
+			const article = await Article.findById(query)
 
 			return res.status(200).json({
-				article: updatedArticle
+				article: article
 			})
 		} catch (err) {
 			return next(err)
 		}
 	}
 
+	// Get all Articles
+	static async get(req, res, next) {
+		try {
+			const articles = await Article.find(req.queryParsed.match)
+				.populate(req.queryParsed.include)
+				.select(req.queryParsed.fields)
+				.limit(req.queryParsed.limit)
+				.sort(req.queryParsed.sort)
+			
+			return res.status(200).json({
+				articles: articles
+			})
+		} catch (err) {
+			return next(err)
+		}
+	}
+
+	// Update Article by id
+	static async update(req, res, next) {
+		try {
+			const query = { _id: req.params.id }
+			const options = { new: true }
+			let data = req.body
+			const ctrl = Controller
+
+			// Validate body
+			const modifiedSchema = ArticleJSONSchema
+			modifiedSchema.required = []
+			const error = ctrl.validateToSchema(modifiedSchema, data)
+			if (error) throw ctrl.makeError('BadRequestError', error)
+
+			const articleDoc = await Article
+				.findOne(query)
+			
+			if (!articleDoc) {
+				throw ctrl.makeError('BadRequestError', `Article with id: ${req.params.id} does not exist`)
+			}
+
+			const articleToUpdate = articleDoc.toJSON()
+
+			// If updating only purchase_price
+			if (data.purchase_price && !data.selling_price) {
+				// console.log(JSON.stringify(articleToUpdate))
+				if (articleToUpdate.selling_price < data.purchase_price) {
+					throw ctrl.makeError('BadRequestError', `Purchase price (${data.purchase_price}) should not be greater than current selling price (${articleToUpdate.selling_price})`)
+				}
+			// If updating only selling_price
+			} else if (data.selling_price && !data.purchase_price) {
+				if (data.selling_price < articleToUpdate.purchase_price) {
+					throw ctrl.makeError('BadRequestError', `Selling price (${data.selling_price}) should be greater than current purchase price (${articleToUpdate.purchase_price})`)
+				}
+			// If both are updating
+			} else if (data.selling_price && data.purchase_price) {
+				if (data.purchase_price > data.selling_price) {
+					throw ctrl.makeError('BadRequestError', `Purchase price (${data.purchase_price}) should not be greater than selling price (${data.selling_price})`)
+				}
+			}
+
+			data.updated = new Date(Date.now()).toString()
+			data.updated_by = req.user.id
+			const	updatedArticle = await Article
+				.findOneAndUpdate(query, data, options)
+				.populate(req.queryParsed.include)
+
+			return res.status(200).json({ article: updatedArticle })
+		} catch (err) {
+			return next(err)
+		}
+	}
+
+		// Delete Article by id
+		static async delete(req, res, next) {
+			
+		}
 	// // Get Articles by storage id
 	// static async getArticlesByStorageId(req, res, next) {
 	// 	try {
@@ -77,35 +165,6 @@ class ArticleController extends Controller {
 	// 	}
 	// }
 
-	// Get Article by id
-	static async getArticleById(req, res, next) {
-		try {
-			let query = req.params.id
-			const article = await Article.findById(query)
-
-			return res.status(200).json({
-				article: article
-			})
-		} catch (err) {
-			return next(err)
-		}
-	}
-
-	// Get all Articles
-	static async getArticles(req, res, next) {
-		try {
-			await Article.find({}, (err, articles) => {
-				if (err) throw err
-
-				return res.status(200).json({
-					articles: articles
-				})
-			})
-		} catch (err) {
-			return next(err)
-		}
-	}
-
 	// // Get Articles from selected Subgroup
 	// static async getArticlesFromSubgroup(req, res, next) {
 	// 	try {
@@ -121,87 +180,37 @@ class ArticleController extends Controller {
 	// 	}
 	// }
 
-	// Update Article by id
-	static async updateArticle(req, res, next) {
-		// Validate purchase and selling price
-		if (req.body.purchase_price || req.body.selling_price) {
-				
-		}
-		// try {
-		// 	let query = {_id: req.params.articleId}
-		// 	let options = { upsert: true, new: true }
-
-		// 	let article = {}
-		// 	article.name = req.body.articleName
-		// 	article.quantity = req.body.articleQuantity
-		// 	article.price = req.body.articlePrice
-		// 	article.retail_price = req.body.articleRetailPrice
-		// 	article.updated = helpers.getCurrentTime()
-
-		// 	// File upload with /file endpoint
-		// 	// If image is changed update the image path
-		// 	if (req.file !== undefined && req.file !== '') {
-		// 		// TODO: If there is previous article image delete it from the images folder
-		// 		article.image = req.file.path
-		// 	}
-
-		// 	// TODO: Validation
-		// 	// If fields are not empty save article
-		// 	if (article.name !== '' && article.quantity !== '' && article.quantity !== 0 && article.price !== '' && article.price !== 0) {
-		// 		await Article.findOneAndUpdate(query, article, options, (err, article) => {
-		// 			if (err) {
-		// 				res.status(500).json({
-		// 					error: 'A database error has occurred trying to update the article. Please try again.'
-		// 				})
-		// 			} else {
-		// 				res.json({
-		// 					saved: true,
-		// 					article: article,
-		// 					success: 'Article updated successfully.'
-		// 				})
-		// 			}
-		// 		})
-		// 	} else {
-		// 		return res.status(500).json({
-		// 			error: 'Article must have a name, quantity and price.'
-		// 		})
-		// 	}
-		// } catch (err) {
-		// 	return next(err)
-		// }
-	}
-
 	// Delete Article
-	static async deleteArticle(req, res, next) {
-		try {
-			let query = {_id: req.params.articleId}
+	// static async deleteArticle(req, res, next) {
+	// 	try {
+	// 		let query = {_id: req.params.articleId}
 
-			// Get image path
-			let img = req.body.imgPath
-			// Create full image path so it can be deleted with fs.unlink
-			let fullImgPath = ''
-			if (img !== '') {
-				let dirPath = process.cwd()
-				fullImgPath = dirPath + '/' + img
-			}
+	// 		// Get image path
+	// 		let img = req.body.imgPath
+	// 		// Create full image path so it can be deleted with fs.unlink
+	// 		let fullImgPath = ''
+	// 		if (img !== '') {
+	// 			let dirPath = process.cwd()
+	// 			fullImgPath = dirPath + '/' + img
+	// 		}
 
-			await Article.deleteOne(query, (err) => {
-				if (err) throw err
+	// 		await Article.deleteOne(query, (err) => {
+	// 			if (err) throw err
 					
-				if (fullImgPath !== '') {
-					fs.unlink(fullImgPath, (err) => {
-						if (err) throw err
-					})
-				}
-				return res.status(200).json({
-					deleted: true,
-					success: 'Article deleted.'
-				})
-			})
-		} catch (err) {
-			return next(err)
-		}
-	}
+	// 			if (fullImgPath !== '') {
+	// 				fs.unlink(fullImgPath, (err) => {
+	// 					if (err) throw err
+	// 				})
+	// 			}
+	// 			return res.status(200).json({
+	// 				deleted: true,
+	// 				success: 'Article deleted.'
+	// 			})
+	// 		})
+	// 	} catch (err) {
+	// 		return next(err)
+	// 	}
+	// }
 
 }
 

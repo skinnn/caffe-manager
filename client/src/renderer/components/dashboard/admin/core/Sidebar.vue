@@ -29,6 +29,15 @@
 				</router-link>
 			</li>
 
+			<!-- My account -->
+			<li class="nav-item">
+				<router-link :to="`/admin/account/${user.id}`" class="nav-link">
+					<font-awesome-icon :icon="['fas', 'user-circle']" class="icon" />
+          <span class="nav-item-name">My account</span>
+				</router-link>
+			</li>
+
+
 			<!-- Store -->
 			<li class="nav-item">
 				<router-link to="/admin/store" class="nav-link collapsed">
@@ -215,14 +224,15 @@
 <script>
 // Font Awesome icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faListAlt, faPlus, faCalendarDay, faMapMarkedAlt, faGlassCheers } from '@fortawesome/free-solid-svg-icons'
-library.add(faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faListAlt, faPlus, faCalendarDay, faMapMarkedAlt, faGlassCheers)
+import { faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faListAlt, faPlus, faCalendarDay, faMapMarkedAlt, faGlassCheers, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+library.add(faChartBar, faChartArea, faCog, faStore, faAngleUp, faAngleRight, faWarehouse, faUsers, faListUl, faListAlt, faPlus, faCalendarDay, faMapMarkedAlt, faGlassCheers, faUserCircle)
 
 export default {
 	name: 'AdminSidebar',
 
 	data() {
 		return {
+			user: {},
 			dropdowns: {
 				warehouse: false,
 				articles: false,
@@ -236,6 +246,10 @@ export default {
 		isLoggedIn() {
 			return this.$store.getters.isLoggedIn
 		}
+	},
+
+	mounted() {
+		this.user = this.$store.getters.getUser
 	},
 
 	methods: {
@@ -371,8 +385,7 @@ export default {
 					color: rgba(255, 255, 255, 0.7);
 				}
 
-				.nav-item-name {
-				}
+				.nav-item-name {}
 			}
 
 			.dropdown-arrow-icon {

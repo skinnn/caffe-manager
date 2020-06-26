@@ -16,15 +16,15 @@ import EditSettings from '@/views/admin/dashboard/settings/EditSettings'
 import ViewStore from '@/views/admin/dashboard/store/viewStore'
 // Storage manager
 // import ViewCategory from '@/views/admin/dashboard/storages/ViewArticleCategory'
+import CreateStorage from '@/views/admin/dashboard/storages/CreateStorage'
 import ViewStorage from '@/views/admin/dashboard/storages/ViewStorage'
 import ViewStorageDetails from '@/views/admin/dashboard/storages/ViewStorageDetails'
 import EditStorage from '@/views/admin/dashboard/storages/EditStorage'
 import StorageList from '@/views/admin/dashboard/storages/StorageList'
-import ArticleCategoryList from '@/views/admin/dashboard/storages/ArticleCategoryList'
-import CreateStorage from '@/views/admin/dashboard/storages/CreateStorage'
+// Articles
 import CreateArticle from '@/views/admin/dashboard/storages/CreateArticle'
 import EditArticle from '@/views/admin/dashboard/storages/EditArticle'
-// Articles
+import ArticleCategoryList from '@/views/admin/dashboard/storages/ArticleCategoryList'
 import ArticleList from '@/views/admin/dashboard/articles/ArticleList'
 import ArticleCreate from '@/views/admin/dashboard/articles/ArticleCreate'
 // Categories
@@ -55,18 +55,19 @@ const routes = [
 				component: Index,
 				meta: { title: 'Dashboard' }
 			},
+			// My account
+			{
+				path: 'account/:userId',
+				name: 'admin-account',
+				component: ViewUser,
+				meta: { title: 'My account' }
+			},
 			// Store
 			{
 				path: 'store',
 				name: 'admin-store',
 				component: ViewStore,
 				meta: { title: 'Store' }
-			},
-			{
-				path: 'user/create',
-				name: 'admin-create-user',
-				component: CreateUser,
-				meta: { title: 'Create user' }
 			},
 			// Settings
 			{
@@ -164,6 +165,12 @@ const routes = [
 				meta: { title: 'Current table' }
 			},
 			// Users
+			{
+				path: 'user/create',
+				name: 'admin-create-user',
+				component: CreateUser,
+				meta: { title: 'Create user' }
+			},
 			{
 				path: 'user/list',
 				name: 'admin-user-list',

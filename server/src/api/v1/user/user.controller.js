@@ -1,11 +1,7 @@
-const fs = require('fs')
-const path = require('path')
-
 const Controller = require('../../../lib/Controller')
-const FileController = require('../file/file.controller')
+const AttachmentController = require('./attachment/attachment.controller')
 
 const User = require('./user.model')
-const File = require('../file/file.model')
 // const UserSchema = require('./user.schema')
 const UserJSONSchema = require('./user.schema.json')
 
@@ -68,28 +64,7 @@ class UserController extends Controller {
 
 			const deletedUser = await User.deleteOne(query)
 			if (deletedUser) {
-				// Remove user files if any (both actual files and user file meta)
-				if (userToDelete.files.length > 0) {
-					const promises = userToDelete.files.map(async (fileId) => {
-						// const file = await FileController.getFileById(fileId)
-						const deletedFile = await FileController.deleteFileById(fileId)
-						
-						if (deletedFile) {
-							const filePath = path.join(Controller.api.uploads.imagesDirectory, deletedFile.name)
-
-							// Check if file exists
-							fs.access(filePath, fs.F_OK, (err) => {
-								if (err) return
-							})
-							const deletedAttachment = await fs.unlinkSync(filePath)
-
-							return deletedFile
-						}
-					})
-
-					const deletedFiles = await Promise.all(promises)
-					console.log('DEL FILES: ', deletedFiles)
-				}
+				AttachmentController.deleteAttachments(userToDelete.files)
 			}
 
 			res.locals = {
@@ -161,7 +136,9 @@ class UserController extends Controller {
 			const user = await User.findById(req.params.id)
 				.populate(req.queryParsed.include)
 
-			Controller.validateOwnership(req, user)
+			if (!req.user.roles.includes('admin')) {
+				Controller.validateOwnership(req, user)
+			}
 
 			res.locals = {
 				status: 200,
@@ -211,90 +188,12 @@ class UserController extends Controller {
 				status: 200,
 				json: { user: updatedUser }
 			}
-			
 			return next()
 		} catch (err) {
 			return next(err)
 		}
 	}
 
-	// Create attachment for a user
-	static async createAttachment(req, res, next) {
-		try {
-			if (!req.query.identifier) {
-				return res.status(400).json({
-					message: 'File identifier is required.'
-				})
-			}
-
-			const file = req.file
-			const identifier = req.query.identifier
-			const userId = req.params.id
-			// Save uploaded file's metadata in the db
-			const fileMeta = await FileController.saveFileMeta(file, identifier, userId)
-
-			// Add new file id to user's files array
-			const user = await User.findById(userId)
-			user.files.push(fileMeta.id)
-			await user.save()
-
-			// const qUser = await User.findById(userId).populate('files')
-
-			res.locals = {
-				status: 201
-			}
-			return next()			
-		} catch (err) {
-			return next(err)
-		}
-	}
-
-	// TODO: Get user attachment
-	// GET /user/:id/attachment
-
-	// Create attachment for a user
-	static async getAttachment(req, res, next) {
-		try {
-			if (!req.queryParsed.match.identifier) {
-				let err = new Error('Query string parameter: "identifier" for the attachment is not specified.')
-				err.name = 'BadRequestError'
-				throw err
-			}
-			const id = req.params.id || null
-			// const identifier = req.query.identifier || null
-			const match = req.queryParsed.match
-			match.user_id = id
-			const file = await File.findOne(match)
-
-			Controller.validateOwnership(req, file)
-
-			console.log(file)
-			res.locals = {
-				status: 200,
-				file: file
-			}
-			return next()
-		} catch (err) {
-			return next(err)
-		}
-	}
-
-	static async getAttachmentById(req, res, next) {
-		const id = req.params.id || ''
-
-		const file = await File.findById(id)
-		if (!file) {
-			return res.sendStatus(404)
-		}
-
-		Controller.validateOwnership(req, file)
-
-		res.locals = {
-			status: 200,
-			file: file
-		}
-		return next()
-	}
 }
 
 module.exports = UserController

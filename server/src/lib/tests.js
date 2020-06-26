@@ -10,7 +10,7 @@ const apiURL = `${protocol}://${host}:${port}${baseApiURL}`
 const api = chai.request(apiURL)
 
 // Constants
-const userKeys = ['id', 'roles', 'username', 'password', 'name', 'email', 'phone', 'address', 'files', 'note', 'updated_by', 'updated', 'created', 'created_by']
+const userKeys = ['id', 'roles', 'username', 'name', 'email', 'phone', 'address', 'files', 'note', 'updated_by', 'updated', 'created', 'created_by']
 
 // TODO: Move to test helpers so we can individually login a root, admin or user
 

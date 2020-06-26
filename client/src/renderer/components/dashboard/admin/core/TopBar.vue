@@ -16,13 +16,15 @@
 					<li class="nav-item text-nowrap">
 						<a class="nav-link disabled" href="#">
 							<font-awesome-icon :icon="['fas', 'user-tie']" class="icon" />
-							<!-- TODO: Display logged in user's username -->
 							{{ user.username }}
 						</a>
 					</li>
 					<!-- <li class="nav-item text-nowrap">
-						<a class="nav-link" href="docs">API Docs</a>
+						<a class="nav-link" href="Example">Example</a>
 					</li> -->
+					<li>
+						<router-link to="example" class="nav-link"></router-link>
+					</li>
 					<li class="nav-item text-nowrap">
 						<NotificationBtn />
 					</li>

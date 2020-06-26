@@ -200,9 +200,11 @@ export default {
 
 	watch: {
 		editMode: function(val) {
-			if (val === false) {
-				this.discardForm()
-			}
+			if (val === false) this.discardForm()
+		},
+		user: function(val) {
+			this.populateFormData(this.form.fields, val)
+			this.populateFormData(this.form.meta, val)
 		}
 	},
 
@@ -212,8 +214,8 @@ export default {
 			const user = await this.getUserById(id)
 			this.user = user
 
-			this.populateFormData(this.form.fields, this.user)
-			this.populateFormData(this.form.meta, this.user)
+			// this.populateFormData(this.form.fields, this.user)
+			// this.populateFormData(this.form.meta, this.user)
 		} catch (err) {
 			console.error(err)
 		}
@@ -307,25 +309,25 @@ export default {
 			}
 		},
 
-		analyzePasswordStrength(password) {
-			if (this.strongRegex.test(password)) {
-				this.passwordStrength = 'strong'
-				this.passwordStrengthText = 'Strong password'
-				this.showPasswordStrength = true
-			} else if (this.mediumRegex.test(password)) {
-				this.passwordStrength = 'medium'
-				this.passwordStrengthText = 'Medium strength'
-				this.showPasswordStrength = true
-			} else if (password === '') {
-				this.passwordStrength = 'weak'
-				this.passwordStrengthText = ''
-				this.showPasswordStrength = false
-			} else {
-				this.passwordStrength = 'weak'
-				this.passwordStrengthText = 'Weak password'
-				this.showPasswordStrength = true
-			}
-		},
+		// analyzePasswordStrength(password) {
+		// 	if (this.strongRegex.test(password)) {
+		// 		this.passwordStrength = 'strong'
+		// 		this.passwordStrengthText = 'Strong password'
+		// 		this.showPasswordStrength = true
+		// 	} else if (this.mediumRegex.test(password)) {
+		// 		this.passwordStrength = 'medium'
+		// 		this.passwordStrengthText = 'Medium strength'
+		// 		this.showPasswordStrength = true
+		// 	} else if (password === '') {
+		// 		this.passwordStrength = 'weak'
+		// 		this.passwordStrengthText = ''
+		// 		this.showPasswordStrength = false
+		// 	} else {
+		// 		this.passwordStrength = 'weak'
+		// 		this.passwordStrengthText = 'Weak password'
+		// 		this.showPasswordStrength = true
+		// 	}
+		// },
 
 		handleSelectRole() {
 			const role = event.target.value
@@ -378,7 +380,7 @@ export default {
 			}
 		},
 
-		// TODO: Move to form helpers
+		// TODO: Move to form helpers file
 		/**
 		 * Returns object with props which keys are changed comparing to the origina fields.
 		 * @param objToCheck

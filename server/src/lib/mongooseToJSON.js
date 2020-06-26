@@ -58,7 +58,7 @@ const toJSON = (schema) => {
   // overwrite it. Hence, we remember it here and call it later.
   let transform
   if (schema.options.toJSON && schema.options.toJSON.transform) {
-    transform = options.toJSON.transform
+    transform = schema.options.toJSON.transform
   }
 
   // Extend toJSON options
@@ -85,8 +85,8 @@ const toJSON = (schema) => {
 
       // Call custom transform if present
       if (transform) {
-        return transform(doc, ret, options)
-      }
+				return transform(doc, ret, options)
+			}
     }
   })
 }

@@ -63,6 +63,7 @@ class Controller {
 				})
 
 			Controller.api.db.conn = mongoose.connection.db
+			Controller.api.mongoose = mongoose
 			console.log('MongoDB connected')
 		} catch (err) {
 			throw err
@@ -162,14 +163,14 @@ class Controller {
 		
 		if (req.user.roles.includes('root')) return req.authorized = true
 
-		const schema = Controller.api.schemas[req.resource]
+		const schema = req.schema
 		const ownerFlag = schema.access[req.operation].owner === true
 
 		// If operation is not create and owner in access schema is true, check record ownership
 		if (req.operation !== 'create' && ownerFlag) {
-
 			for (let i = 0; i < records.length; i++) {
 				// Check if record owner matches user id
+				console.log(records[i])
 				const ownerId = req.resource === 'user' ? Controller.getOwnerId(records[i].id) : Controller.getOwnerId(records[i].user_id)
 				if (req.user.id === ownerId) req.authorized = true
 				else {
@@ -179,12 +180,12 @@ class Controller {
 			}
 
 		// If owner in access schema is false, authorize the req
-		} else if (schema.access[req.operation].owner === false) {
+		} else if (!ownerFlag) {
 			req.authorized = true
 		// Owner field not set in access schema
 		} else {
 			console.log(`Access owner field is not set for:\nResource: ${req.resource}\nOperation: ${req.operation}\nAccess schema:\n`, schema.access)
-			req.authorized = false
+			throw Controller.makeError('BadRequestError', `File with id ${fileId} does not exist`)
 		}
 
 		if (req.authorized === true) return true
@@ -264,7 +265,6 @@ class Controller {
 
 			// Default local response data scoped to the request 
 			res.locals = {
-				authorized: false,
 				status: 200,
 				json: null,
 				file: null
@@ -276,6 +276,9 @@ class Controller {
 			req.urlParsed = new URL(req.url, [Controller.api.protocol, '://', req.headers.host].join(''))
 			// Get resource name from URL - /api/<resource_name>
 			req.resource = req.urlParsed.pathname.split('/')[1].toLowerCase()			
+			req.schema = Controller.getSchemaFromRequest(req)
+			if (!req.schema) throw Controller.makeError('InternalServerError', `Schema for resource ${req.resource} is not defined`)
+
 			return next()
 		} catch (err) {
 			return next(err)
@@ -291,7 +294,6 @@ class Controller {
 	 */
 	static handleQueryStringsFromRequest(req) {
 		req.queryParsed = {}
-		if (isEmptyObject(req.query)) return
 
 		var limit = 0, fields = {}, sort = {}, match = {}, include = '', token = null
 		if (req.query.limit) limit = parseInt(req.query.limit)
@@ -303,22 +305,13 @@ class Controller {
 
 		// Sort
 		for (let field in sort) {
-			if (sort.hasOwnProperty(field)) {
-				if (sort[field] === 'asc' || sort[field] == '1') sort[field] = 1
-				else if (sort[field] === 'desc' || sort[field] === '-1') sort[field] = -1
-				else delete sort[field]
-			}
+			if (sort[field] === 'asc' || sort[field] == '1' || sort[field] === 1) sort[field] = 1
+			else if (sort[field] === 'desc' || sort[field] === '-1' || sort[field] === -1) sort[field] = -1
+			else delete sort[field]
 		}
 			
 		// Fields (handle string format - fields=-id,name)
 		if (typeof fields === 'string') {
-			// // Fields (handle format JSON object - fields={"id":true})
-			// try {
-			// 	fields = JSON.parse(fields)
-			// 	// Transform prop 'id' in '_id' (mongodb supported field)
-			// 	if (fields.id !== undefined) fields._id = fields.id; delete fields.id
-			// } catch (err) {}
-
 			let items = fields.split(',')
 
 			for (let i = items.length - 1; i >= 0; i--) {
@@ -351,7 +344,6 @@ class Controller {
 				if (items[i] === 'user') include = 'user_id'
 				if (items[i] === 'file') include = 'files'
 			}
-
 			include = items.join(' ')
 		}
 
@@ -370,18 +362,36 @@ class Controller {
 			const parsedSchemas = {}
 			for (let i = 0; i < jsonSchemas.length; i++) {
 				const schemaParsed = JSON.parse(fs.readFileSync(jsonSchemas[i].path, 'utf8'));
-				// Controller.api.schemas[jsonSchemas[i].name] = schemaParsed
-				const name = jsonSchemas[i].name.split('.')[0]
-				parsedSchemas[name] = schemaParsed
+
+				const modelName = jsonSchemas[i].name.split('.')[0]
+
+				// If it is Attachment schema
+				if (jsonSchemas[i].name.includes('attachment')) {
+					if (!parsedSchemas.attachment) parsedSchemas.attachment = {}
+					parsedSchemas.attachment[modelName] = schemaParsed
+
+				// Model schema
+				} else {
+					parsedSchemas[modelName] = schemaParsed
+				}
 			}
 			return parsedSchemas
 		} catch (err) {
 			throw err
 		}
 	}
+
+	static getSchemaFromRequest(req) {
+		if (req.urlParsed.pathname.includes('/attachment')) {
+			const attachmentSchema = Controller.api.schemas.attachment[req.resource]
+			return attachmentSchema
+		} else {
+			return Controller.api.schemas[req.resource]
+		}
+	}
 	
-	static getCRUDFromMethod(method) {
-    switch (method.toUpperCase()) {
+	static getCRUDFromRequest(req) {
+    switch (req.method.toUpperCase()) {
       case 'GET':
         return 'read'
       case 'POST':
@@ -408,12 +418,14 @@ class Controller {
 			'NotAcceptableError': 406,
 			'ConflictError': 409,
 			'UnsupportedError': 415,
-			'UnprocessableError': 422
+			'UnprocessableError': 422,
+			'InternalServerError': 500
 		}
 		const statusCode = statusCodeMap[err.name] ? statusCodeMap[err.name] : 400
 		let errObj = {}
 		err.name ? errObj.name = err.name : null
 		err.message ? errObj.message = err.message : null
+		err.data ? errObj.data = err.data : null
 		// Stack is only returned in development mode
 		errObj.stack = process.env.NODE_ENV === 'development' ? err.details || err.stack : null
 		
@@ -426,9 +438,10 @@ class Controller {
 	 * @param {String} name 		[Error name]	
 	 * @param {String} message 	[Error message]
 	 */
-	static makeError(name = 'BadRequestError', message = 'Not specified') {
+	static makeError(name = 'BadRequestError', message = 'Not specified', data) {
 		let err = new Error(message)
 		err.name = name
+		data ? err.data = data : null
 		return err
 	}
 

@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const Authentication = require('../../lib/Authentication')
+
 const Controller = require('../../lib/Controller')
 const UserController = require('./user/user.controller')
 

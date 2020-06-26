@@ -23,7 +23,7 @@ const FileSchema = new Schema({
 		required: true
 	},
 	size: {
-		type: String,
+		type: Number,
 		required: true
 	},
 	user_id: {
@@ -32,16 +32,7 @@ const FileSchema = new Schema({
 		required: true
 	},
 	created: { type: Date, default: Date.now },
-	updated: { type: String, default: null },
+	updated: { type: Date, default: null },
 })
 
 const File = (module.exports = mongoose.model('file', FileSchema))
-
-module.exports.createFile = (file) => {
-	return new Promise((resolve, reject) => {
-		File.create(file, (err, doc) => {
-			if (err) reject(err)
-			resolve(doc)
-		})
-	})
-}
