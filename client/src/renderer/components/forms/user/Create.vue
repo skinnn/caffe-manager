@@ -247,10 +247,9 @@ export default {
 		async createUserAttachment(userId, profileImage) {
 			try {
 				const formData = new FormData()
-				const identifier = 'profile_image'
 				formData.append('attachment', profileImage)
 				// Upload image
-				const fileResponse = await UserService.uploadUserAttachment(userId, identifier, formData)
+				const fileResponse = await UserService.uploadUserAttachment(userId, 'profile_image', formData)
 				return fileResponse
 			} catch (err) {
 				console.error(err)

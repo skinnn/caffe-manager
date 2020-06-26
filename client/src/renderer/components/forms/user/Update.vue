@@ -1,148 +1,183 @@
 <template>
 	<div class="update-user-wrapper">
-		<div class="form-group">
-			<label for="username">Username</label>
-			<input id="username" type="text" class="form-control" 
-				:readonly="!editMode"
-				v-model="form.fields.username"
-			>
-		</div>
-		<div class="form-group">
-			<label for="username">Full name</label>
-			<input id="name" type="text" class="form-control" 
-				:readonly="!editMode"
-				v-model="form.fields.name"
-			>
-		</div>
-		<div class="form-group">
-			<label for="email">Email</label>
-			<input id="email" type="email" class="form-control" 
-				:readonly="!editMode"
-				v-model="form.fields.email"
-			>
-		</div>
-		<div class="form-group">
-			<label for="phone">Phone</label>
-			<input id="phone" type="text" class="form-control" 
-				:readonly="!editMode"
-				v-model="form.fields.phone"
-			>
-		</div>
-		<div class="form-group">
-			<label for="address">Address</label>
-			<input id="address" type="text" class="form-control" 
-				:readonly="!editMode"
-				v-model="form.fields.address"
-			>
-		</div>
-		<div class="form-group">
-			<label for="note">Note</label>
-			<textarea id="note" type="text" class="form-control" 
-				:readonly="!editMode"
-				v-model="form.fields.note"
-			></textarea>
-		</div>
-
-		<div class="form-group">
-			<label for="permissions">Permissions</label>
-			<select class="form-control"
-				v-if="user && user.roles"
-				@change="handleSelectRole()"
-				:disabled="!editMode"
-				:readonly="!editMode"
-			>
-				<option
-					v-for="opt in form.select.roles"
-					:key="opt.value"
-					:value="opt.value"
-					:selected="opt.value == user.roles[0]"
-				>
-					{{ opt.text }}
-				</option>
-			</select>
-		</div>
-
-		<p>Created by: 
-			<span class="clickable" style="color: blue;"
-				@click="viewUser(form.meta.created_by.id)"
-			>
-				{{ form.meta.created_by.username }}
-			</span>
-		</p>
-		<p>Created: {{ _formatDate(form.meta.created) }}</p>
-		<p>
-			Last update:
-			{{ form.meta.updated ? _formatDate(form.meta.updated) : '' }}
-
-			<span v-if="form.meta.updated_by && form.meta.updated_by.username">
-				by
-				<span class="clickable" style="color: blue;"
-					@click="viewUser(form.meta.created_by.id)"
-				>
-					{{ form.meta.updated_by.username ? form.meta.updated_by.username : ''}}
-				</span>
-			</span>
-			<span v-else>Never</span>
-		</p>
-
-		<!-- Password form -->
-		<div class="form-group">
-			<button type="button"
-				:class="[form.passwordEditMode ? 'btn-delete' : 'btn-info', 'btn-info-password']"
-				v-if="!editMode"
-				@click="togglePasswordEditMode()"
-			>
-				{{ form.passwordEditMode ? 'Discard password change' : 'Change password'  }}
-			</button>
-		</div>
-
-		<div class="password-form-wrapper"
-			ref="passwordFormWrapper"
-		>
-			<form class="form-row"
-				v-if="form.passwordEditMode"
-				@submit="updatePassword()"
-				ref="changePasswordForm"
-			>
-				<div class="col">
-					<label for="password">New Password</label>
-					<input 
-						id="password"
-						type="password" 
-						class="form-control" 
-						v-model="form.passwordFields.password"
+		<div class="row">
+			<!-- Left -->
+			<div class="col left">
+				<div class="form-group">
+					<label for="username">Username</label>
+					<input id="username" type="text" class="form-control" 
+						:readonly="!editMode"
+						v-model="form.fields.username"
 					>
 				</div>
-				<div class="col">
-					<label for="password2">Confirm Password</label>
-					<input 
-						id="password2"
-						type="password" 
-						class="form-control" 
-						v-model="form.passwordFields.password2"
+				<div class="form-group">
+					<label for="username">Full name</label>
+					<input id="name" type="text" class="form-control" 
+						:readonly="!editMode"
+						v-model="form.fields.name"
 					>
-					</div>	
-				
-				<div class="col">
-					<button 
-						type="submit" 
-						class="btn-submit"
+				</div>
+				<div class="form-group">
+					<label for="email">Email</label>
+					<input id="email" type="email" class="form-control" 
+						:readonly="!editMode"
+						v-model="form.fields.email"
 					>
-						Change
+				</div>
+				<div class="form-group">
+					<label for="phone">Phone</label>
+					<input id="phone" type="text" class="form-control" 
+						:readonly="!editMode"
+						v-model="form.fields.phone"
+					>
+				</div>
+				<div class="form-group">
+					<label for="address">Address</label>
+					<input id="address" type="text" class="form-control" 
+						:readonly="!editMode"
+						v-model="form.fields.address"
+					>
+				</div>
+				<div class="form-group">
+					<label for="note">Note</label>
+					<textarea id="note" type="text" class="form-control" 
+						:readonly="!editMode"
+						v-model="form.fields.note"
+					></textarea>
+				</div>
+
+				<div class="form-group">
+					<label for="permissions">Permissions</label>
+					<select class="form-control"
+						v-if="user && user.roles"
+						@change="handleSelectRole()"
+						:disabled="!editMode"
+						:readonly="!editMode"
+					>
+						<option
+							v-for="opt in form.select.roles"
+							:key="opt.value"
+							:value="opt.value"
+							:selected="opt.value == user.roles[0]"
+						>
+							{{ opt.text }}
+						</option>
+					</select>
+				</div>
+
+				<p>Created by: 
+					<span class="clickable" style="color: blue;"
+						@click="viewUser(form.meta.created_by.id)"
+					>
+						{{ form.meta.created_by.username }}
+					</span>
+				</p>
+				<p>Created: {{ _formatDate(form.meta.created) }}</p>
+				<p>
+					Last update:
+					{{ form.meta.updated ? _formatDate(form.meta.updated) : '' }}
+
+					<span v-if="form.meta.updated_by && form.meta.updated_by.username">
+						by
+						<span class="clickable" style="color: blue;"
+							@click="viewUser(form.meta.created_by.id)"
+						>
+							{{ form.meta.updated_by.username ? form.meta.updated_by.username : ''}}
+						</span>
+					</span>
+					<span v-else>Never</span>
+				</p>
+
+				<!-- Password form -->
+				<div class="form-group">
+					<button type="button"
+						:class="[form.passwordEditMode ? 'btn-delete' : 'btn-info', 'btn-info-password']"
+						v-if="!editMode"
+						@click="togglePasswordEditMode()"
+					>
+						{{ form.passwordEditMode ? 'Discard password change' : 'Change password'  }}
 					</button>
 				</div>
-			</form>
-		</div>
 
-		<button type="button" class="btn-submit"
-			@click="updateUser()"
-		>
-			Update
-		</button>
+				<div class="password-form-wrapper"
+					ref="passwordFormWrapper"
+				>
+					<form class="form-row"
+						v-if="form.passwordEditMode"
+						@submit="updatePassword()"
+						ref="changePasswordForm"
+					>
+						<div class="col">
+							<label for="password">New Password</label>
+							<input 
+								id="password"
+								type="password" 
+								class="form-control" 
+								v-model="form.passwordFields.password"
+							>
+						</div>
+						<div class="col">
+							<label for="password2">Confirm Password</label>
+							<input 
+								id="password2"
+								type="password" 
+								class="form-control" 
+								v-model="form.passwordFields.password2"
+							>
+							</div>	
+						
+						<div class="col">
+							<button 
+								type="submit" 
+								class="btn-submit"
+							>
+								Update password
+							</button>
+						</div>
+					</form>
+				</div>
+
+				<button type="button" class="btn-submit"
+					v-if="editMode && !form.passwordEditMode"
+					@click="updateUser()"
+				>
+					Update
+				</button>
+			</div>
+
+			<!-- Right -->
+			<div class="col right">
+				<div class="form-group">
+					<ImgPlaceholder
+						:isLoading="form.file.profileImage.isLoading"
+						:src="form.file.profileImage.src"
+						:fallbackSrc="'img/placeholders/user_profile_image.jpg'"
+					/>
+				</div>
+				<div class="form-group">
+					<label for="profile-image">Profile image</label>
+					<input
+						type="file"
+						@change="imagePreview()"
+						ref="profileImageRef"
+						id="profile-image"
+						class="form-control-file"
+					>
+					<button type="button"
+						:class="['btn-info']"
+						@click="updateAttachment()"
+					>
+						Save
+					</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script>
+// Components
+import ImgPlaceholder from '@/components/base/img/ImgPlaceholder'
 // Services
 import UserService from '@/services/UserService'
 // Helpers
@@ -150,6 +185,7 @@ import { isEmptyObject } from '@/lib/helpers'
 
 export default {
 	name: 'UpdateUserForm',
+	components: { ImgPlaceholder },
 
 	props: {
 		editMode: {
@@ -177,9 +213,10 @@ export default {
 					password: '',
 					password2: ''
 				},
-				files: {
+				file: {
 					profileImage: {
-						src: null,
+						isLoading: false,
+						src: '',
 						file: null
 					}
 				},
@@ -214,6 +251,8 @@ export default {
 			const user = await this.getUserById(id)
 			this.user = user
 
+			this.getUserAttachment()
+
 			// this.populateFormData(this.form.fields, this.user)
 			// this.populateFormData(this.form.meta, this.user)
 		} catch (err) {
@@ -231,7 +270,7 @@ export default {
 
 				const res = await UserService.getUserById(id, query)
 				const user = res.data.user
-				
+
 				return user
 			} catch (err) {
 				console.log(err)
@@ -298,6 +337,27 @@ export default {
 			}
 		},
 
+		async updateAttachment() {
+			if (!this.form.file.profileImage.file) {
+				return this.$store.dispatch('addNotification', {
+					type: 'info',
+					text: 'Image not changed'
+				})
+			}
+			try {
+				const formData = new FormData()
+				formData.append('attachment', this.form.file.profileImage.file)
+				const res = await UserService.updateAttachmentByUserId(this.user.id, 'profile_image', formData)
+				console.log('Update attachment res: ', res)
+				this.$store.dispatch('addNotification', {
+					type: 'success',
+					text: 'Image updated successfully'
+				})
+			} catch (err) {
+				console.log(err)
+			}
+		},
+
 		togglePasswordEditMode() {
 			this.form.passwordEditMode = !this.form.passwordEditMode
 			
@@ -329,6 +389,22 @@ export default {
 		// 	}
 		// },
 
+		async getUserAttachment() {
+			try {
+				this.form.file.profileImage.isLoading = true
+				const res = await UserService.getUserAttachment(this.user.id, 'profile_image')
+				if (res.status == 200) {
+					const blob = res.data || null
+					this.form.file.profileImage.src = URL.createObjectURL(blob)
+					this.form.file.profileImage.isLoading = false
+				}
+			} catch (err) {
+				this.form.file.profileImage.isLoading = false
+				console.log(err)
+				throw err
+			}
+		},
+
 		handleSelectRole() {
 			const role = event.target.value
 			this.form.fields.roles = [role]
@@ -348,6 +424,20 @@ export default {
 		// 		this.isPasswordConfirmedText = 'Passwords don\'t match'
 		// 	}
 		// },
+
+		imagePreview() {
+			const file = event.target.files[0]
+			// Set selected image
+			this.form.file.profileImage.file = file
+			// Preview selected image
+			const profileImg = this.form.file.profileImage
+			var reader = new FileReader()
+			reader.onload = function(e) {
+				profileImg.src = e.target.result
+			}
+			reader.readAsDataURL(file)
+			console.log(this.form.file)
+		},
 
 		discardForm() {
 			this.populateFormData(this.form.fields, this.user)

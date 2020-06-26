@@ -31,7 +31,7 @@ router.patch('/:fileId',
 // Update attachment for user
 router.patch('/',
 	uploadImage.single('attachment'),
-	AttachmentController.update)
+	AttachmentController.updateByUserId)
 
 // Delete attachment for user sending the request
 router.delete('/', AttachmentController.deleteUserAttachment)

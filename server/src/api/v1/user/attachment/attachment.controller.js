@@ -125,18 +125,16 @@ class AttachmentController extends Controller {
 	}
 
 	// Update attachment
-	static async update(req, res, next) {
+	static async updateByUserId(req, res, next) {
 		try {
 			const newAttachment = req.file
-
-			const userId = req.user.id
+			const userId = req.params.id
 			const identifier = req.queryParsed.match.identifier
-			const oldAttachment = await File.findById(fileId)
-
 			const query = {
 				user_id: userId,
 				identifier: identifier
 			}
+			const oldAttachment = await File.findOne(query)
 
 			const options = { new: true }
 			const data = {

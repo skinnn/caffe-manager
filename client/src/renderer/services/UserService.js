@@ -27,5 +27,8 @@ export default {
 	getUserAttachment(userId, identifier) {
 		const options = { responseType: 'blob' }
 		return Api().get(`/user/${userId}/attachment?match[identifier]=${identifier}`, options)
+	},
+	updateAttachmentByUserId(userId, identifier, data) {
+		return Api().patch(`/user/${userId}/attachment?match[identifier]=${identifier}`, data)
 	}
 }
