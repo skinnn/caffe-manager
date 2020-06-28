@@ -22,11 +22,10 @@ import ViewStorageDetails from '@/views/admin/dashboard/storages/ViewStorageDeta
 import EditStorage from '@/views/admin/dashboard/storages/EditStorage'
 import StorageList from '@/views/admin/dashboard/storages/StorageList'
 // Articles
-import CreateArticle from '@/views/admin/dashboard/storages/CreateArticle'
-import EditArticle from '@/views/admin/dashboard/storages/EditArticle'
 import ArticleCategoryList from '@/views/admin/dashboard/storages/ArticleCategoryList'
 import ArticleList from '@/views/admin/dashboard/articles/ArticleList'
 import ArticleCreate from '@/views/admin/dashboard/articles/ArticleCreate'
+import ArticleView from '@/views/admin/dashboard/articles/ArticleView'
 // Categories
 import CategoryList from '@/views/admin/dashboard/articles/CategoryList'
 // Table manager
@@ -119,21 +118,9 @@ const routes = [
 			// 	component: ViewCategory,
 			// 	meta: { title: 'View category' }
 			// },
-			// {
-			// 	path: 'storage/:storageId/article/create',
-			// 	name: 'admin-create-article',
-			// 	component: CreateArticle,
-			// 	meta: { title: 'Create article' }
-			// },
-			// {
-			// 	path: 'article/:articleId/edit',
-			// 	name: 'admin-edit-article',
-			// 	component: EditArticle,
-			// 	meta: { title: 'Edit article' }
-			// },
 			// Articles
 			{
-				path: 'articles',
+				path: 'articles/list',
 				name: 'admin-article-list',
 				component: ArticleList,
 				meta: { title: 'Article list' }
@@ -143,6 +130,12 @@ const routes = [
 				name: 'admin-article-create',
 				component: ArticleCreate,
 				meta: { title: 'Create article' }
+			},
+			{
+				path: 'articles/:articleId',
+				name: 'admin-article-view',
+				component: ArticleView,
+				meta: { title: 'Article' }
 			},
 			// Categories
 			{

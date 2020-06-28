@@ -384,6 +384,7 @@ export default {
 		left: auto;
 		right: 20px;
 		bottom: 20px;
+		height: fit-content;
 	}
 
 	/**

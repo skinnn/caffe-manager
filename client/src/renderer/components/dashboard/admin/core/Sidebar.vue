@@ -100,7 +100,7 @@
         <div id="articlesDropdown" class="collapse" aria-labelledby="articlesDropdown" data-parent="#articlesDropdown">
           <div class="py-2 collapse-inner">
 						<!-- <h6 class="collapse-header">Storages</h6> -->
-            <router-link to="/admin/articles" class="collapse-item">
+            <router-link to="/admin/articles/list" class="collapse-item">
 							<font-awesome-icon :icon="['fas', 'list-ul']" class="icon" style=""/>
 							List
 						</router-link>
@@ -385,7 +385,7 @@ export default {
 					color: rgba(255, 255, 255, 0.7);
 				}
 
-				.nav-item-name {}
+				// .nav-item-name {}
 			}
 
 			.dropdown-arrow-icon {

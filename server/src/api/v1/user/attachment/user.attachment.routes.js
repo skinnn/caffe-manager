@@ -4,7 +4,7 @@ const router = express.Router({ mergeParams: true })
 const { uploadImage } = require('../../../../config/multer')
 
 // Controllers
-const AttachmentController = require('./attachment.controller')
+const AttachmentController = require('./user.attachment.controller')
 
 /* Endpoints
 ===================================================== */

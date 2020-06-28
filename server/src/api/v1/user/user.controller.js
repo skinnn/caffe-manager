@@ -1,5 +1,5 @@
 const Controller = require('../../../lib/Controller')
-const AttachmentController = require('./attachment/attachment.controller')
+const AttachmentController = require('./attachment/user.attachment.controller')
 
 const User = require('./user.model')
 // const UserSchema = require('./user.schema')

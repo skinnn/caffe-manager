@@ -34,13 +34,13 @@ const ArticleSchema = new Schema({
 		type: Boolean,
 		default: true
 	},
+	description: {
+		type: String,
+		default: null
+	},
 	image_id: {
 		type: ObjectId,
 		ref: 'file',
-		default: null
-	},
-	description: {
-		type: String,
 		default: null
 	},
 	categories: [{

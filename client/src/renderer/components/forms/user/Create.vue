@@ -71,7 +71,13 @@
 						</option>
 					</select>
 				</div>
-				
+
+				<div class="form-group">
+					<label for="salary">Salary (monthly)</label>
+					<input id="salary" type="number" class="form-control" 
+						v-model="form.fields.salary"
+					>
+				</div>
 				<div class="form-group">
 					<label for="email">Email</label>
 					<input id="email" type="email" class="form-control" 
@@ -128,13 +134,6 @@ import { isEmptyObject } from '@/lib/helpers'
 export default {
 	name: 'CreateUserForm',
 
-	props: {
-		editMode: {
-			type: Boolean,
-			default: false
-		}
-	},
-
 	data() {
 		return {
 			user: {},
@@ -146,6 +145,7 @@ export default {
 					password: '123123',
 					password2: '123123',
 					name: 'John Doe',
+					salary: null,
 					email: 'jdoe@test.com',
 					phone: '+1 123123 1231',
 					address: 'Some st. 123',
@@ -181,43 +181,22 @@ export default {
 			// Is password confirmed
 			confirmPasswordMatched: false,
 			isPasswordConfirmedText: '',
-			// TODO: Centralize regexes/form policies, constants, create helpers
+			// TODO: Centralize regexes/form policies, create /constants
 			// Password regexes ( password strength )
 			strongRegex: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})'),
 			mediumRegex: new RegExp('^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})')
 		}
 	},
 
-	mounted() {
-		console.log(this.form.fields)
-	},
-
 	methods: {
-
-		async getUserById(id) {
-			try {
-				// const userId = this.$store.state.route.params.userId
-				// const id = this.$route.params.userId
-				const query = '?include=created_by,updated_by,files'
-
-				const res = await UserService.getUserById(id, query)
-				const user = res.data.user
-
-				this.user = user
-			} catch (err) {
-				console.log(err)
-				this.$store.dispatch('addNotification', {
-					type: 'error',
-					text: err.response.data.message
-				})
-			}
-		},
 	
 		async createUser() {
 			event.preventDefault()
 			try {
+				const data = this.form.fields
+				data.salary ? data.salary = parseInt(data.salary, 10) : delete data.salary
 				// Send the request
-				const response = await UserService.createUser(this.form.fields)
+				const response = await UserService.createUser(data)
 				const user = response.data.user
 
 				// Created successfully
@@ -231,7 +210,7 @@ export default {
 
 					this.$store.dispatch('addNotification', {
 						type: 'success',
-						text: `User with username <span style="color: blue; font-size:17px;">${user.username}</span> has been created.`
+						text: `User <span style="color: #fff; font-size:17px;">${user.username}</span> has been created.`
 					})
 				}
 			} catch (error) {

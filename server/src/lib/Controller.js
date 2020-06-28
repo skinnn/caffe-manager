@@ -360,6 +360,7 @@ class Controller {
 			const apiDir = path.join(__dirname, '../api')
 			const jsonSchemas = filesFromDir(apiDir, '.schema.json')
 			const parsedSchemas = {}
+
 			for (let i = 0; i < jsonSchemas.length; i++) {
 				const schemaParsed = JSON.parse(fs.readFileSync(jsonSchemas[i].path, 'utf8'));
 

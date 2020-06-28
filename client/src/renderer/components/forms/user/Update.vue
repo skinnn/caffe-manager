@@ -25,6 +25,13 @@
 					>
 				</div>
 				<div class="form-group">
+					<label for="salary">Salary (monthly)</label>
+					<input id="salary" type="number" class="form-control" 
+						:readonly="!editMode"
+						v-model="form.fields.salary"
+					>
+				</div>
+				<div class="form-group">
 					<label for="phone">Phone</label>
 					<input id="phone" type="text" class="form-control" 
 						:readonly="!editMode"
@@ -207,6 +214,7 @@ export default {
 					phone: '',
 					address: '',
 					note: '',
+					salary: null,
 					roles: []
 				},
 				passwordFields: {
@@ -273,7 +281,7 @@ export default {
 
 				return user
 			} catch (err) {
-				console.log(err)
+				console.error(err)
 				this.$store.dispatch('addNotification', {
 					type: 'error',
 					text: err.response.data.message
@@ -285,7 +293,8 @@ export default {
 			try {
 				// Get all fields which are changed (need to be updated)
 				const changedFields = this.checkForChangedFields(this.form.fields, this.user)
-				
+				changedFields.salary ? changedFields.salary = parseInt(changedFields.salary, 10) : null
+
 				if (!isEmptyObject(changedFields)) {
 					const id = this.user.id
 					const query = '?include=created_by,updated_by,files'
@@ -310,7 +319,7 @@ export default {
 					})
 				}
 			} catch (err) {
-				console.log(err)
+				console.error(err)
 			}
 		},
 
@@ -348,13 +357,12 @@ export default {
 				const formData = new FormData()
 				formData.append('attachment', this.form.file.profileImage.file)
 				const res = await UserService.updateAttachmentByUserId(this.user.id, 'profile_image', formData)
-				console.log('Update attachment res: ', res)
 				this.$store.dispatch('addNotification', {
 					type: 'success',
 					text: 'Image updated successfully'
 				})
 			} catch (err) {
-				console.log(err)
+				console.error(err)
 			}
 		},
 
@@ -368,6 +376,35 @@ export default {
 				this.resetPasswordFields()
 			}
 		},
+
+		async getUserAttachment() {
+			try {
+				this.form.file.profileImage.isLoading = true
+				const res = await UserService.getUserAttachment(this.user.id, 'profile_image')
+				if (res.status == 200) {
+					const blob = res.data || null
+					this.form.file.profileImage.src = URL.createObjectURL(blob)
+					this.form.file.profileImage.isLoading = false
+				}
+			} catch (err) {
+				this.form.file.profileImage.isLoading = false
+				console.error(err)
+				throw err
+			}
+		},
+
+		// isPasswordConfirmed(password) {
+		// 	if (password === '') {
+		// 		this.confirmPasswordMatched = null
+		// 		this.isPasswordConfirmedText = ''
+		// 	} else if (password === this.form.fields.password) {
+		// 		this.confirmPasswordMatched = true
+		// 		this.isPasswordConfirmedText = 'Passwords match'
+		// 	} else {
+		// 		this.confirmPasswordMatched = false
+		// 		this.isPasswordConfirmedText = 'Passwords don\'t match'
+		// 	}
+		// },
 
 		// analyzePasswordStrength(password) {
 		// 	if (this.strongRegex.test(password)) {
@@ -389,41 +426,10 @@ export default {
 		// 	}
 		// },
 
-		async getUserAttachment() {
-			try {
-				this.form.file.profileImage.isLoading = true
-				const res = await UserService.getUserAttachment(this.user.id, 'profile_image')
-				if (res.status == 200) {
-					const blob = res.data || null
-					this.form.file.profileImage.src = URL.createObjectURL(blob)
-					this.form.file.profileImage.isLoading = false
-				}
-			} catch (err) {
-				this.form.file.profileImage.isLoading = false
-				console.log(err)
-				throw err
-			}
-		},
-
 		handleSelectRole() {
 			const role = event.target.value
 			this.form.fields.roles = [role]
-
-			console.log(this.form.fields)
 		},
-
-		// isPasswordConfirmed(password) {
-		// 	if (password === '') {
-		// 		this.confirmPasswordMatched = null
-		// 		this.isPasswordConfirmedText = ''
-		// 	} else if (password === this.form.fields.password) {
-		// 		this.confirmPasswordMatched = true
-		// 		this.isPasswordConfirmedText = 'Passwords match'
-		// 	} else {
-		// 		this.confirmPasswordMatched = false
-		// 		this.isPasswordConfirmedText = 'Passwords don\'t match'
-		// 	}
-		// },
 
 		imagePreview() {
 			const file = event.target.files[0]
@@ -436,7 +442,6 @@ export default {
 				profileImg.src = e.target.result
 			}
 			reader.readAsDataURL(file)
-			console.log(this.form.file)
 		},
 
 		discardForm() {

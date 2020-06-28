@@ -9,7 +9,7 @@ const UserController = require('./user.controller')
 ===================================================== */
 
 // Attachment endpoints
-const attachmentRoutes = require('./attachment/attachment.routes')
+const attachmentRoutes = require('./attachment/user.attachment.routes')
 router.use('/attachment', attachmentRoutes)
 router.use('/:id/attachment', attachmentRoutes)
 

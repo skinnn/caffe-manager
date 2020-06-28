@@ -36,15 +36,6 @@
       "description": "Category image",
 			"type": "string"
 		},
-		"storages": {
-			"$id": "#/properties/storages",
-			"title": "Associated storages",
-      "description": "Storages associated with this category.",
-			"type": "array",
-			"items": {
-				"type": "string"
-			}
-		},
 		"description": {
 			"$id": "#/properties/description",
 			"title": "Description",

@@ -60,6 +60,12 @@
         "$data": "1/password"
       }
 		},
+		"salary": {
+			"$id": "#/properties/salary",
+			"title": "Salary",
+      "description": "Person's monthly salary",
+			"type": "number"
+    },
 		"name": {
 			"$id": "#/properties/name",
 			"title": "Full name",

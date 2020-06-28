@@ -1,12 +1,14 @@
 const Controller = require('../../../lib/Controller')
 const Article = require('./article.model')
 const ArticleJSONSchema = require('./article.schema.json')
+const AttachmentController = require('./attachment/article.attachment.controller')
 
 class ArticleController extends Controller {
 
 	// Create Article
 	static async create(req, res, next) {
 		try {
+			console.log('GOT: ', req.body)
 			const error = Controller.validateToSchema(ArticleJSONSchema, req.body)
 			if (error) {
 				throw Controller.makeError('BadRequestError', error)
@@ -35,7 +37,7 @@ class ArticleController extends Controller {
 
 			const createdArticle = await newArticle.save()
 
-			return res.status(200).json({ article: createdArticle})
+			return res.status(201).json({ article: createdArticle})
 		} catch (err) {
 			return next(err)
 		}
@@ -145,10 +147,37 @@ class ArticleController extends Controller {
 		}
 	}
 
-		// Delete Article by id
-		static async delete(req, res, next) {
-			
+	// Delete Article by id
+	static async delete(req, res, next) {
+		try {
+			console.log(req.params.id)
+			const query = {_id: req.params.id }
+
+			const articleToDelete = await Article.findOne(query)
+			if (!articleToDelete) {
+				return res.status(404).json({
+					message: 'Article not found'
+				})
+			}
+
+			// if (!req.user.roles.includes('admin')) {
+			// 	Controller.validateOwnership(req, articleToDelete)
+			// }
+
+			const deletedArticle = await Article.deleteOne(query)
+			if (deletedArticle) {
+				AttachmentController.deleteAttachments(articleToDelete.files)
+			}
+
+
+			return res.status(200).json({
+				message: 'Article deleted'
+			})
+		} catch (err) {
+			return next(err)
 		}
+	}
+
 	// // Get Articles by storage id
 	// static async getArticlesByStorageId(req, res, next) {
 	// 	try {

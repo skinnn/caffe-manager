@@ -12,11 +12,6 @@ const CategorySchema = new Schema({
 		ref: 'file',
 		default: null
 	},
-	associated_storages: [{
-		type: ObjectId,
-		ref: 'storage',
-		required: true
-	}],
 	description: {
 		type: String,
 		default: null

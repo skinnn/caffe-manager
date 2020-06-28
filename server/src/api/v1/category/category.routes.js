@@ -10,6 +10,9 @@ const CategoryController = require('./category.controller')
 // Create category
 router.post('/', CategoryController.createCategory)
 
+// Get categories
+router.get('/', CategoryController.getCategories)
+
 // Get category by id
 router.get('/:id', CategoryController.getCategoryById)
 

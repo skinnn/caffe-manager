@@ -39,9 +39,9 @@
 
 <script>
 // Components
-import NotificationBtn from '@/components/base/buttons/NotificationBtn'
-import LogoutBtn from '@/components/base/buttons/LogoutBtn'
-import BackBtn from '@/components/base/buttons/BackBtn'
+import NotificationBtn from '@/components/base/button/NotificationBtn'
+import LogoutBtn from '@/components/base/button/LogoutBtn'
+import BackBtn from '@/components/base/button/BackBtn'
 // Helpers
 import { mapGetters } from 'vuex'
 // Font awesome icons

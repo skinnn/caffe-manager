@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Article attachment",
+	"type": "object",
+	"description": "Article attachment schema",
+	"additionalProperties": false,
+	"required": [],
+	"access": {
+		"create": {
+			"roles": ["admin"]
+		},
+		"read": {
+			"roles": ["admin", "user"],
+			"owner": false
+		},
+		"update": {
+			"roles": ["admin"],
+			"owner": false
+		},
+		"delete": {
+			"roles": ["admin"],
+			"owner": false
+		}
+	},
+  "properties": {}
+}

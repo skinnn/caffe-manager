@@ -89,6 +89,23 @@ class CategoryController extends Controller {
 		}
 	}
 
+	static async getCategories(req, res, next) {
+		try {
+			const categories = await Category
+				.find(req.queryParsed.match)
+				.populate(req.queryParsed.include)
+				.select(req.queryParsed.fields)
+				.limit(req.queryParsed.limit)
+				.sort(req.queryParsed.sort)
+
+			return res.status(200).json({
+				categories: categories
+			})
+		} catch (err) {
+			return next(err)
+		}
+	}
+
 	// // TODO: Refactor
 	// // Get Article Subgroups from the Main Storage/s
 	// static async getCategoriesFromMainStorages(req, res, next) {

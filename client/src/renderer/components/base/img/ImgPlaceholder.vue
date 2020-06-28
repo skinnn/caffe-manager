@@ -49,6 +49,12 @@ export default {
 		}
 	},
 
+	mounted() {
+		setTimeout(() => {
+			this.loadingDone = true
+		}, 2000)
+	},
+
 	watch: {
 		isLoading: function(val) {
 			if (val === false) {

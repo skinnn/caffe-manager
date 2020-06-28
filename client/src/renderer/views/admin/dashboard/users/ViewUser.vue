@@ -107,9 +107,7 @@ export default {
 	.view-user-page {
 		padding-bottom: 50px;
 		
-		.btn-info-password {
-			
-		}
+		// .btn-info-password {}
 	}
 
 	.user-info {

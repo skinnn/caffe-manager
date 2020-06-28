@@ -34,6 +34,10 @@ const UserSchema = new Schema({
 		type: String,
 		default: null
 	},
+	salary: {
+		type: Number,
+		default: null
+	},
 	files: [{
 		type: ObjectId,
 		ref: 'file',
