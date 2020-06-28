@@ -12,7 +12,11 @@
 				</form>
 			</main>
 		</div>
-		<div ref="messageEl" v-html="message" class="message"></div>
+		<div class="message"
+			ref="messageEl"
+		>
+			{{ message }}
+		</div>
 	</div>
 </template>
 
@@ -34,8 +38,8 @@ export default {
 
 	data() {
 		return {
-			username: '',
-			password: '',
+			username: 'admin',
+			password: '123123',
 			message: ''
 		}
 	},

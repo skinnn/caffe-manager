@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 
+const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
+const Decimal128 = Schema.Types.Decimal128
+
+// TODO: User can send request to the admin, asking to remove article from the reserved list (from the order)
 const ArticleSchema = new Schema({
 	name: {
 		type: String,
@@ -10,61 +14,61 @@ const ArticleSchema = new Schema({
 		type: Number,
 		required: true
 	},
-	storage_id: {
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'storage'
-	},
-	visible: {
-		type: Boolean,
-		default: true
-	},
-	quantity: {
+	units_in_stock: {
 		type: Number,
 		required: true
-	},
-	reserved_quantity: {
-		type: Number,
-		default: null
 	},
 	purchase_price: {
-		type: Number,
-		required: true
+		type: Decimal128,
+		default: null
 	},
 	selling_price: {
-		type: Number,
-		default: null
+		type: Decimal128,
+		required: true
 	},
 	sale_price: {
-		type: Number,
+		type: Decimal128,
 		default: null
 	},
-	article_categories: [{
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'article_category'
-	}],
-	image_url: {
-		type: String,
-		default: null
+	available: {
+		type: Boolean,
+		default: true
 	},
 	description: {
 		type: String,
 		default: null
 	},
+	image_id: {
+		type: ObjectId,
+		ref: 'file',
+		default: null
+	},
+	categories: [{
+		type: ObjectId,
+		ref: 'category',
+		required: true
+	}],
+	storage_id: {
+		type: ObjectId,
+		ref: 'storage',
+		required: true
+	},
 	user_id: {
-		type: Schema.Types.ObjectId,
+		type: ObjectId,
 		ref: 'user',
 		required: true
 	},
+	updated_by: {
+		type: ObjectId,
+		ref: 'user',
+		default: null
+	},
 	created: { type: Date, default: Date.now },
 	updated: { type: Date, default: null },
-	updated_by: { type: String, default: null }
-
 })
 
-let Article = module.exports = mongoose.model('article', ArticleSchema)
+const Article = module.exports = mongoose.model('article', ArticleSchema)
 
-module.exports.getArticleById = function(id, callback) {
-	Article.findById(id, callback)
-}
+// module.exports.getArticleById = function(id, callback) {
+// 	Article.findById(id, callback)
+// }

@@ -36,11 +36,10 @@ export default {
 		this.getUserLoginList()
 	},
 
-	// TODO: Create/add circular loader
 	methods: {
 		async getUserLoginList() {
 			try {
-				const res = await UserService.getLoginList({ role: 'user' })
+				const res = await UserService.getLoginList()
 				const users = res.data.users
 
 				if (res.status === 200) {

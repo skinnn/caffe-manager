@@ -1,37 +1,43 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
-const ArticleCategorySchema = new Schema({
-	// TODO: Add user_id field
+const CategorySchema = new Schema({
 	name: {
 		type: String,
 		required: true
 	},
-	image_url: {
-		type: String,
+	image_id: {
+		type: ObjectId,
+		ref: 'file',
 		default: null
 	},
-	storage_id: {
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'storage'
-	},
-	parent_category: {
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'article_category'
-	},
-	child_categories: [{
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'article_category'
-	}],
 	description: {
 		type: String,
 		default: null
 	},
+	user_id: {
+		type: ObjectId,
+		ref: 'user',
+		required: true
+	},
+	updated_by: {
+		type: ObjectId,
+		ref: 'user',
+		default: null
+	},
+	// parent_category: {
+	// 	type: ObjectId,
+	// 	ref: 'category',
+	// 	required: true
+	// },
+	// child_categories: [{
+	// 	type: ObjectId,
+	// 	ref: 'category',
+	// 	required: true
+	// }],
 	created: { type: Date, default: Date.now },
 	updated: { type: Date, default: null	}
 })
 
-const ArticleCategory = module.exports = mongoose.model('article_category', ArticleCategorySchema)
+const Category = module.exports = mongoose.model('category', CategorySchema)

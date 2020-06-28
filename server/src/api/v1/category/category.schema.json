@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Category",
+	"type": "object",
+	"description": "Category schema",
+	"additionalProperties": false,
+	"required": ["name"],
+	"access": {
+		"create": {
+			"roles": ["admin"]
+		},
+		"read": {
+			"roles": ["admin", "user"],
+			"owner": false
+		},
+		"update": {
+			"roles": ["admin"],
+			"owner": false
+		},
+		"delete": {
+			"roles": ["admin"],
+			"owner": false
+		}
+	},
+  "properties": {
+    "name": {
+			"$id": "#/properties/name",
+			"title": "Name",
+      "description": "Category name",
+			"type": "string",
+			"minLength": 1
+		},
+		"image_id": {
+			"$id": "#/properties/image_id",
+			"title": "Image",
+      "description": "Category image",
+			"type": "string"
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"title": "Description",
+      "description": "Category description.",
+			"type": "string",
+			"maxLength": 255
+		}
+	}
+}

@@ -16,13 +16,15 @@
 					<li class="nav-item text-nowrap">
 						<a class="nav-link disabled" href="#">
 							<font-awesome-icon :icon="['fas', 'user-tie']" class="icon" />
-							<!-- TODO: Display logged in user's username -->
 							{{ user.username }}
 						</a>
 					</li>
 					<!-- <li class="nav-item text-nowrap">
-						<a class="nav-link" href="docs">API Docs</a>
+						<a class="nav-link" href="Example">Example</a>
 					</li> -->
+					<li>
+						<router-link to="example" class="nav-link"></router-link>
+					</li>
 					<li class="nav-item text-nowrap">
 						<NotificationBtn />
 					</li>
@@ -37,9 +39,9 @@
 
 <script>
 // Components
-import NotificationBtn from '@/components/_globals/NotificationBtn'
-import LogoutBtn from '@/components/_globals/LogoutBtn'
-import BackBtn from '@/components/_globals/BackBtn'
+import NotificationBtn from '@/components/base/button/NotificationBtn'
+import LogoutBtn from '@/components/base/button/LogoutBtn'
+import BackBtn from '@/components/base/button/BackBtn'
 // Helpers
 import { mapGetters } from 'vuex'
 // Font awesome icons

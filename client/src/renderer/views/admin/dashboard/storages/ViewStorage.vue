@@ -31,7 +31,7 @@
 // Services
 import StorageService from '@/services/StorageService'
 // Components
-import ArticleTable from '@/components/tables/Articles'
+import ArticleTable from '@/components/tables/Article'
 
 export default {
 	components: { ArticleTable },

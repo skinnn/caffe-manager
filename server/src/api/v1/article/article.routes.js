@@ -1,31 +1,22 @@
 const express = require('express')
 const router = express.Router()
-const { uploadImage } = require('../../config/multer')
-const Auth = require('../../middleware/authentication')
-
 // Controllers
 const ArticleController = require('./article.controller')
-	
-// Get Articles from Subgroup
-router.get('/admin/subgroup/:subgroupId/articles',
-	ArticleController.getArticlesFromSubgroup)
 
-// Get all Articles
-router.get('/admin/articles',
-	ArticleController.getAllArticles)
+// Attachment endpoints
+const attachmentRoutes = require('./attachment/article.attachment.routes')
+router.use('/attachment', attachmentRoutes)
+router.use('/:id/attachment', attachmentRoutes)
 
-// Delete Article
-router.delete('/article/:articleId',
-	ArticleController.deleteArticle)
-
-// Create Article
-router.post('/admin/article/create',
-	uploadImage.single('imageUpload'),
-	ArticleController.createArticle)
-
-// Update Article
-router.patch('/article/:articleId',
-	uploadImage.single('imageUpload'),
-	ArticleController.saveArticle)
+// Create article
+router.post('/', ArticleController.create)
+// Get articles
+router.get('/', ArticleController.get)
+// Get article by id
+router.get('/:id', ArticleController.getById)
+// Update article
+router.patch('/:id', ArticleController.update)
+// Delete article
+router.delete('/:id', ArticleController.delete)
 
 module.exports = router

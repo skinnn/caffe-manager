@@ -15,7 +15,7 @@ class StorageController extends Controller {
 			}
 
 			const exist = await Storage.findOne({ name: req.body.name }) 
-			if (exist) {
+			if (exist && exist.length >= 1) {
 				return res.status(400).json({
 					message: `Storage with name ${req.body.name} already exist`
 				})
@@ -102,10 +102,9 @@ class StorageController extends Controller {
 			const error = Controller.validateToSchema(modifiedSchema, req.body)
 			if (error) throw new Error(error)
 
-			// const storageToUpdate = await Storage.findOne(query)
-
 			data.updated = new Date(Date.now()).toString()
 			data.updated_by = req.user.id
+			
 			const	updatedStorage = await Storage.findOneAndUpdate(query, data, options).populate(include)
 
 			res.locals = {

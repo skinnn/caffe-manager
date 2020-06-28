@@ -2,8 +2,8 @@
 	Admin routes - Need to be atuhenticated as  to get this assets
 */
 import config from '@/config/config'
-//  Dashboard
-import Dashboard from '@/components/admin/dashboard/AdminDashboard'
+//  Dashboard component
+import AdminDashboard from '@/components/dashboard/admin/AdminDashboard'
 
 /**
  * Pages
@@ -16,17 +16,16 @@ import EditSettings from '@/views/admin/dashboard/settings/EditSettings'
 import ViewStore from '@/views/admin/dashboard/store/viewStore'
 // Storage manager
 // import ViewCategory from '@/views/admin/dashboard/storages/ViewArticleCategory'
+import CreateStorage from '@/views/admin/dashboard/storages/CreateStorage'
 import ViewStorage from '@/views/admin/dashboard/storages/ViewStorage'
 import ViewStorageDetails from '@/views/admin/dashboard/storages/ViewStorageDetails'
 import EditStorage from '@/views/admin/dashboard/storages/EditStorage'
 import StorageList from '@/views/admin/dashboard/storages/StorageList'
-import ArticleCategoryList from '@/views/admin/dashboard/storages/ArticleCategoryList'
-import CreateStorage from '@/views/admin/dashboard/storages/CreateStorage'
-import CreateArticle from '@/views/admin/dashboard/storages/CreateArticle'
-import EditArticle from '@/views/admin/dashboard/storages/EditArticle'
 // Articles
+import ArticleCategoryList from '@/views/admin/dashboard/storages/ArticleCategoryList'
 import ArticleList from '@/views/admin/dashboard/articles/ArticleList'
 import ArticleCreate from '@/views/admin/dashboard/articles/ArticleCreate'
+import ArticleView from '@/views/admin/dashboard/articles/ArticleView'
 // Categories
 import CategoryList from '@/views/admin/dashboard/articles/CategoryList'
 // Table manager
@@ -45,7 +44,7 @@ const routes = [
 	{
 		path: '/admin',
 		// redirect: '/admin/home',
-		component: Dashboard,
+		component: AdminDashboard,
 
 		//  Dashboard pages
 		children: [
@@ -55,18 +54,19 @@ const routes = [
 				component: Index,
 				meta: { title: 'Dashboard' }
 			},
+			// My account
+			{
+				path: 'account/:userId',
+				name: 'admin-account',
+				component: ViewUser,
+				meta: { title: 'My account' }
+			},
 			// Store
 			{
 				path: 'store',
 				name: 'admin-store',
 				component: ViewStore,
 				meta: { title: 'Store' }
-			},
-			{
-				path: 'user/create',
-				name: 'admin-create-user',
-				component: CreateUser,
-				meta: { title: 'Create user' }
 			},
 			// Settings
 			{
@@ -118,21 +118,9 @@ const routes = [
 			// 	component: ViewCategory,
 			// 	meta: { title: 'View category' }
 			// },
-			// {
-			// 	path: 'storage/:storageId/article/create',
-			// 	name: 'admin-create-article',
-			// 	component: CreateArticle,
-			// 	meta: { title: 'Create article' }
-			// },
-			// {
-			// 	path: 'article/:articleId/edit',
-			// 	name: 'admin-edit-article',
-			// 	component: EditArticle,
-			// 	meta: { title: 'Edit article' }
-			// },
 			// Articles
 			{
-				path: 'articles',
+				path: 'articles/list',
 				name: 'admin-article-list',
 				component: ArticleList,
 				meta: { title: 'Article list' }
@@ -142,6 +130,12 @@ const routes = [
 				name: 'admin-article-create',
 				component: ArticleCreate,
 				meta: { title: 'Create article' }
+			},
+			{
+				path: 'articles/:articleId',
+				name: 'admin-article-view',
+				component: ArticleView,
+				meta: { title: 'Article' }
 			},
 			// Categories
 			{
@@ -165,6 +159,12 @@ const routes = [
 			},
 			// Users
 			{
+				path: 'user/create',
+				name: 'admin-create-user',
+				component: CreateUser,
+				meta: { title: 'Create user' }
+			},
+			{
 				path: 'user/list',
 				name: 'admin-user-list',
 				component: UserList,
@@ -172,6 +172,7 @@ const routes = [
 			},
 			{
 				path: 'user/:userId',
+				props: true,
 				name: 'admin-view-user',
 				component: ViewUser,
 				meta: { title: 'View user' }

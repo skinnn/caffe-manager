@@ -19,9 +19,6 @@ import { sync } from 'vuex-router-sync'
 // Font awesome icons
 import { dom } from '@fortawesome/fontawesome-svg-core'
 
-// Global Components
-import LogoutBtn from '@/components/_globals/LogoutBtn'
-
 dom.watch()
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
@@ -32,7 +29,6 @@ Vue.http = Vue.prototype.$http = axios
 
 // Global Components
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-Vue.component('LogoutBtn', LogoutBtn)
 
 // Sync store and router
 sync(store, router)

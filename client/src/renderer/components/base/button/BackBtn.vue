@@ -48,8 +48,6 @@ export default {
 	button.back-btn {
 		color: #fff;
 		
-		.icon {
-			// width: 2rem;
-		}
+		// .icon {}
 	}
 </style>

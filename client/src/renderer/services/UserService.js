@@ -4,17 +4,17 @@ export default {
 	createUser(data) {
 		return Api().post('/user', data)
 	},
-	getLoginList(data) {
-		return Api().get(`/user/login-list?role=${data.role}`)
+	getLoginList() {
+		return Api().get(`/user/login-list`)
 	},
-	getUserById(id) {
-		return Api().get(`/user/${id}`)
+	getUserById(id, query = '') {
+		return Api().get(`/user/${id}${query}`)
 	},
-	getAllUsers() {
-		return Api().get('/user')
+	getAllUsers(query = '') {
+		return Api().get(`/user${query}`)
 	},
-	updateUserById(id, data) {
-		return Api().patch(`/user/${id}`, data)
+	updateUserById(id, data, query = '') {
+		return Api().patch(`/user/${id}${query}`, data)
 	},
 	deleteUserById(id) {
 		return Api().delete(`/user/${id}`)
@@ -27,5 +27,8 @@ export default {
 	getUserAttachment(userId, identifier) {
 		const options = { responseType: 'blob' }
 		return Api().get(`/user/${userId}/attachment?match[identifier]=${identifier}`, options)
+	},
+	updateAttachmentByUserId(userId, identifier, data) {
+		return Api().patch(`/user/${userId}/attachment?match[identifier]=${identifier}`, data)
 	}
 }

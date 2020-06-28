@@ -8,16 +8,10 @@ const UserController = require('./user.controller')
 /* Base: /user
 ===================================================== */
 
-// Upload user attachment
-router.post('/:id/attachment',
-	uploadImage.single('attachment'),
-	UserController.createAttachment)
-// Get user attachment by query param identifier
-router.get('/:id/attachment',
-	UserController.getAttachment)
-// Get user attachment by id
-router.get('/attachment/:id',
-	UserController.getAttachmentById)
+// Attachment endpoints
+const attachmentRoutes = require('./attachment/user.attachment.routes')
+router.use('/attachment', attachmentRoutes)
+router.use('/:id/attachment', attachmentRoutes)
 
 // Create user
 router.post('/',
@@ -36,7 +30,7 @@ router.patch('/:id',
 	uploadImage.single('profileImage'),
 	UserController.updateUserById)
 
-// Delete User by id
+// Delete user by id
 router.delete('/:id',
 	UserController.deleteUserById)
 

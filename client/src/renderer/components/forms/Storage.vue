@@ -62,7 +62,7 @@
 				Last update:
 				{{ _formatDate(form.meta.updated) }}
 
-				<span v-if="form.meta.updated_by.username">
+				<span v-if="form.meta.updated_by && form.meta.updated_by.username">
 					by
 					<span class="clickable" style="color: blue;"
 						@click="viewUser(form.meta.user_id.id)"
@@ -70,6 +70,7 @@
 						{{ form.meta.updated_by.username ? form.meta.updated_by.username : ''}}
 					</span>
 				</span>
+				<span v-else>Never</span>
 			</p>
 
 			<button type="button" class="btn-submit"

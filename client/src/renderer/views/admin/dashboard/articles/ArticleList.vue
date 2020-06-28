@@ -1,10 +1,17 @@
 <template>
-	<h1>Article list</h1>
+	<div class="article-list-page">
+		<h1>Articles</h1>
+
+		<ArticleTable />
+	</div>
 </template>
 
 <script>
-export default {
+// Components
+import ArticleTable from '@/components/tables/Article'
 
+export default {
+	components: { ArticleTable }
 }
 </script>
 

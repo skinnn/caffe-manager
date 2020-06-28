@@ -40,7 +40,7 @@
     "active": {
 			"$id": "#/properties/active",
 			"title": "Active",
-			"description": "Tells if this storage is used for listing it's articles in menus/orders",
+			"description": "Can articles from this storage be sold? (used for creating orders, menus, etc.)",
 			"type": "boolean"
 		}
 	}

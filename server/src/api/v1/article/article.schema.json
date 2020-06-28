@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Article",
+	"type": "object",
+	"description": "Article schema",
+	"additionalProperties": false,
+	"required": ["name", "code", "units_in_stock", "selling_price", "available", "storage_id"],
+	"access": {
+		"create": {
+			"roles": ["admin"]
+		},
+		"read": {
+			"roles": ["admin", "user"],
+			"owner": false
+		},
+		"update": {
+			"roles": ["admin", "user"],
+			"owner": false
+		},
+		"delete": {
+			"roles": ["admin"],
+			"owner": false
+		}
+	},
+  "properties": {
+    "name": {
+			"$id": "#/properties/name",
+			"title": "Name",
+      "description": "Article name",
+			"type": "string",
+			"minLength": 1
+		},
+    "code": {
+			"$id": "#/properties/code",
+			"title": "Code",
+      "description": "Article code represented by 4 numbers.",
+			"type": "string",
+			"pattern": "^[0-9]*$",
+			"minLength": 4,
+			"maxLength": 4
+		},
+		"units_in_stock": {
+			"$id": "#/properties/units_in_stock",
+			"title": "Quantity",
+      "description": "Current article quantity in stock.",
+			"type": "integer",
+			"minLength": 1
+		},
+		"purchase_price": {
+			"$id": "#/properties/purchase_price",
+			"title": "Purchase price",
+      "description": "Purchase price for 1 item/piece. Used to calculate taxes and income.",
+			"type": "number"
+		},
+		"selling_price": {
+			"$id": "#/properties/selling_price",
+			"title": "Selling price",
+      "description": "Selling price of 1 item/piece. Used to calculate taxes and income.",
+			"type": "number",
+			"minLength": 1
+		},
+		"sale_price": {
+			"$id": "#/properties/sale_price",
+			"title": "Sale price",
+      "description": "Sale price of 1 item/piece. If set, article will be considered on sale.",
+			"type": "number"
+		},
+		"available": {
+			"$id": "#/properties/available",
+			"title": "Availability",
+      "description": "Indicates whether or not the item is available for selling.",
+			"type": "boolean"
+		},
+		"image_id": {
+			"$id": "#/properties/image",
+			"title": "Image",
+      "description": "Featured article image.",
+			"type": "string"
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"title": "Description",
+      "description": "Description of the article.",
+			"type": "string",
+			"maxLength": 255
+		},
+		"categories": {
+			"$id": "#/properties/categories",
+			"title": "Categories",
+      "description": "Article categories.",
+			"type": "array"
+		},
+    "storage_id": {
+			"$id": "#/properties/storage_id",
+			"title": "Storage",
+			"description": "Storage in which article is stored.",
+			"type": "string",
+			"minLength": 1
+		}
+	}
+}
