@@ -113,9 +113,13 @@ const filesFromDir = (startPath, filter) => {
 			if (stat.isDirectory()) fromDir(filename, filter)
 			else if (filename.indexOf(filter) >= 0) {
 				// console.log('-- found: ', filename)
-				
+				// Set file name
+				let name;
+				if (process.platform === 'win32') name = filename.split('\\').pop();
+				else name = filename.split('/').pop();
+
 				allFiles.push({
-					name: filename.split('/').pop(),
+					name: name,
 					path: filename
 				})
 			}

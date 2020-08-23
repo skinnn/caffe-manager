@@ -365,6 +365,8 @@ class Controller {
 				const schemaParsed = JSON.parse(fs.readFileSync(jsonSchemas[i].path, 'utf8'));
 
 				const modelName = jsonSchemas[i].name.split('.')[0]
+				// console.log('NAME: ', modelName)
+				// console.log('PATH: ', jsonSchemas[i].path)
 
 				// If it is Attachment schema
 				if (jsonSchemas[i].name.includes('attachment')) {
